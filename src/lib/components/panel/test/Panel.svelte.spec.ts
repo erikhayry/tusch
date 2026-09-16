@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { renderPanel } from '$lib/panel/test/utils/renderPanel';
+import { renderPanel } from '$lib/components/panel/test/utils/renderPanel';
 
 describe('Panel', () => {
 	it('should render title', () => {
