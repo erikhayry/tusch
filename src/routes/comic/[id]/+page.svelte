@@ -1,5 +1,5 @@
 <script>
-    import {ComicPropsMock1} from "$lib/comic/test/utils/mockComic";
+    import {ComicPropsMock1} from "$lib/components/comic/test/utils/mockComic";
 </script>
 
 <h1>Playwright e2e test demo</h1>
