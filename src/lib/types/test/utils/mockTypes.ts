@@ -1,8 +1,4 @@
-import { type Comic, ComicSchema, ImageAssetSchema } from '$lib/types';
-import { generateMock } from '@anatine/zod-mock';
+import { generateMocks } from '$lib/test/utils/generateMock';
+import { ComicSchema } from '$lib/types';
 
-export function getImageMock() {
-	return generateMock(ImageAssetSchema);
-}
-
-export const ComicMock1: Comic = Object.values(ComicSchema);
+export const ComicsMock = generateMocks(ComicSchema, 10);
