@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { type PanelProps } from "./panelTypes";
+	import { type PanelProps } from './panelTypes';
 
-    let {title}: PanelProps = $props();
+	let { title }: PanelProps = $props();
 </script>
-
 
 <h2>{title}</h2>
