@@ -1,7 +1,5 @@
 <script lang="ts">
-    export interface PanelProps {
-        title: string
-    }
+    import { type PanelProps } from "./panelTypes";
 
     let {title}: PanelProps = $props();
 </script>

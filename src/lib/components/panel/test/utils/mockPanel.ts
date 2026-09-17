@@ -1,5 +1,8 @@
-import type { PanelProps } from '$lib/components/panel/Panel.svelte';
+import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
+import { PanelPropsSchema } from '../../panelTypes';
 
-export const PanelPropsMock1: PanelProps = {
-	title: 'PanelPropsMock1 Title'
-};
+export function getPanelPropMock() {
+	return generateMock(PanelPropsSchema);
+}
+
+export const PanelPropsMock = generateMocks(PanelPropsSchema, 10);

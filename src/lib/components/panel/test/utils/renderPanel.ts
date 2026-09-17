@@ -1,8 +1,8 @@
-import { render } from '@testing-library/svelte';
 import Panel from '$lib/components/panel/Panel.svelte';
-import { PanelPropsMock1 } from '$lib/components/panel/test/utils/mockPanel';
+import { PanelPropsMock } from '$lib/components/panel/test/utils/mockPanel';
+import { render } from '@testing-library/svelte';
 
-export function renderPanel(props = PanelPropsMock1) {
+export function renderPanel(props = PanelPropsMock[0]) {
 	const { getByRole } = render(Panel, props);
 
 	return {

@@ -1,7 +1,5 @@
 <script lang="ts">
-    export interface ComicProps {
-        title: string
-    }
+  import { type ComicProps } from "./comicTypes";
 
     let {title}: ComicProps = $props();
 </script>
