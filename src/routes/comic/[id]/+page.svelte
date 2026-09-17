@@ -1,6 +1,7 @@
-<script>
-	import { ComicsMock } from '$lib/types/test/utils/mockTypes';
+<script lang="ts">
+	import { type Comic } from '$lib/types';
+
+	let { data }: { data: { comic: Comic } } = $props();
 </script>
 
-<h1>Playwright e2e test demo</h1>
-<h2>{ComicsMock[0].title}</h2>
+<h1>{data.comic.title}</h1>
