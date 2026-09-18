@@ -6,7 +6,7 @@ export function renderComic(props = ComicPropsMock[0]) {
 	const { getByRole } = render(Comic, props);
 
 	const {
-		comic: { script, title }
+		comic: { source, title }
 	} = props;
 
 	return {
@@ -14,7 +14,7 @@ export function renderComic(props = ComicPropsMock[0]) {
 		getCharacters: () => within(getByRole('list', { name: 'Characters' })).getAllByRole('listitem'),
 		getPanels: () => within(getByRole('list', { name: 'Panels' })).getAllByRole('listitem'),
 		getSettings: () => within(getByRole('list', { name: 'Setting' })).getAllByRole('listitem'),
-		getSource: () => getByRole('link', { name: script.source }),
+		getSource: () => getByRole('link', { name: source }),
 		props
 	};
 }

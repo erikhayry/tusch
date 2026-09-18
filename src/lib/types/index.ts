@@ -6,6 +6,9 @@ export type Season = z.infer<typeof SeasonEnum>;
 export const TimeOfDayEnum = z.enum(['dawn', 'morning', 'noon', 'afternoon', 'dusk', 'night']);
 export type TimeOfDay = z.infer<typeof TimeOfDayEnum>;
 
+export const UrlValue = z.url();
+export type Url = z.infer<typeof UrlValue>;
+
 export const YearSchema = z.number().int();
 
 export const ImageAssetSchema = z.object({
@@ -30,13 +33,13 @@ export const CharacterSchema = z.object({
 });
 export type Character = z.infer<typeof CharacterSchema>;
 
-export const ComicSettingSchema = z.object({
+export const SettingSchema = z.object({
 	years: z.array(YearSchema),
 	seasons: z.array(SeasonEnum),
 	places: z.array(z.string().min(1)),
 	timeOfDays: z.array(TimeOfDayEnum)
 });
-export type ComicSetting = z.infer<typeof ComicSettingSchema>;
+export type Setting = z.infer<typeof SettingSchema>;
 
 export const DialogueSchema = z.object({
 	characterId: z.uuid(),
@@ -44,7 +47,8 @@ export const DialogueSchema = z.object({
 });
 export type Dialogue = z.infer<typeof DialogueSchema>;
 
-export const ScriptPanelSchema = z.object({
+export const PanelSchema = z.object({
+	id: z.uuid(),
 	captions: z.array(z.string()),
 	dialogue: z.array(DialogueSchema),
 	year: YearSchema,
@@ -52,27 +56,14 @@ export const ScriptPanelSchema = z.object({
 	place: z.string().min(1),
 	timeOfDay: TimeOfDayEnum
 });
-export type ScriptPanel = z.infer<typeof ScriptPanelSchema>;
-
-export const ComicScriptSchema = z.object({
-	source: z.url(),
-	setting: ComicSettingSchema,
-	characters: z.array(CharacterSchema),
-	panels: z.array(ScriptPanelSchema)
-});
-export type ComicScript = z.infer<typeof ComicScriptSchema>;
-
-export const ComicPanelSchema = z.object({
-	image: ResponsiveImageSchema,
-	captions: z.array(z.string()),
-	dialogue: z.array(DialogueSchema)
-});
-export type ComicPanel = z.infer<typeof ComicPanelSchema>;
+export type ScriptPanel = z.infer<typeof PanelSchema>;
 
 export const ComicSchema = z.object({
 	id: z.uuid(),
 	title: z.string().min(1),
-	script: ComicScriptSchema,
-	panels: z.array(ComicPanelSchema)
+	source: z.url(),
+	setting: SettingSchema,
+	characters: z.array(CharacterSchema),
+	panels: z.array(PanelSchema)
 });
 export type Comic = z.infer<typeof ComicSchema>;

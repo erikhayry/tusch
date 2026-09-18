@@ -1,4 +1,4 @@
-import { renderCharachter } from '$lib/components/panel/components/charachter/test/utils/renderCharacter';
+import { renderCharachter } from '$lib/components/charachter/test/utils/renderCharacter';
 import { describe, expect, it } from 'vitest';
 
 describe('Character', () => {
