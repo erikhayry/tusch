@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { type Comic } from '$lib/types';
+	import Comic from '$lib/components/comic/Comic.svelte';
+	import { type Comic as ComicType } from '$lib/types';
 
-	let { data }: { data: { comic: Comic } } = $props();
+	let { data }: { data: { comic: ComicType } } = $props();
 </script>
 
-<h1>{data.comic.title}</h1>
+<Comic comic={data.comic} />

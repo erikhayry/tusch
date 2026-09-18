@@ -4,5 +4,5 @@ import { expect, test } from '@playwright/test';
 test('has expected title', async ({ page }) => {
 	await page.goto(`/comic/${ComicsMock[0].id}`);
 
-	await expect(page.getByRole('heading', { name: ComicsMock[0].title, level: 1 })).toBeVisible();
+	await expect(page.getByRole('heading', { name: ComicsMock[0].title, level: 2 })).toBeVisible();
 });

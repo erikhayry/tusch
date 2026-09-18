@@ -5,12 +5,16 @@ import { ComicPropsMock } from './mockComic';
 export function renderComic(props = ComicPropsMock[0]) {
 	const { getByRole } = render(Comic, props);
 
+	const {
+		comic: { script, title }
+	} = props;
+
 	return {
-		getTitle: () => getByRole('heading', { name: props.title, level: 2 }),
+		getTitle: () => getByRole('heading', { name: title, level: 2 }),
 		getCharacters: () => within(getByRole('list', { name: 'Characters' })).getAllByRole('listitem'),
 		getPanels: () => within(getByRole('list', { name: 'Panels' })).getAllByRole('listitem'),
 		getSettings: () => within(getByRole('list', { name: 'Setting' })).getAllByRole('listitem'),
-    getSource: () => getByRole('link', { name: ComicPropsMock[0].settings.source }),
-		props,
+		getSource: () => getByRole('link', { name: script.source }),
+		props
 	};
 }
