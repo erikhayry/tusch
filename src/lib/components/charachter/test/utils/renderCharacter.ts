@@ -3,9 +3,12 @@ import Character from '../../Character.svelte';
 import { CharachterPropsMock } from './mockCharacter';
 
 export function renderCharachter(props = CharachterPropsMock[0]) {
-	const { getByRole } = render(Character, props);
+	const { getByRole, getByText, getAllByRole } = render(Character, props);
 
 	return {
-		getName: () => getByRole('heading', { name: props.name, level: 3 })
+		getName: () => getByRole('heading', { name: props.character.name, level: 3 }),
+		getDescription: () => getByText(props.character.description),
+		getImages: () => getAllByRole('img'),
+		props
 	};
 }

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Character from '../charachter/Character.svelte';
 	import { type ComicProps } from './comicTypes';
 
 	let { comic }: ComicProps = $props();
@@ -15,7 +16,7 @@
 <ul aria-labelledby="characters">
 	{#each comic.characters as character (character)}
 		<li>
-			{character}
+			<Character {character} />
 		</li>
 	{/each}
 </ul>
