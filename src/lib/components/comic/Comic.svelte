@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Character from '../charachter/Character.svelte';
+	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import { type ComicProps } from './comicTypes';
 
 	let { comic }: ComicProps = $props();
@@ -25,7 +26,7 @@
 <ul aria-labelledby="panels">
 	{#each comic.panels as panel (panel)}
 		<li>
-			{panel}
+			<PanelThumbnail {panel} />
 		</li>
 	{/each}
 </ul>

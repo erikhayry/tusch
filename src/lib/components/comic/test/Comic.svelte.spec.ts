@@ -20,10 +20,10 @@ describe('Comic', () => {
 		expect(getCharacters()).toHaveLength(props.comic.characters.length);
 	});
 
-	it('should render panels', () => {
-		const { getPanels, props } = renderComic();
+	it('should render panels thumbnails', () => {
+		const { getPanelThumbnails, props } = renderComic();
 
-		expect(getPanels()).toHaveLength(props.comic.panels.length);
+		expect(getPanelThumbnails()).toHaveLength(props.comic.panels.length);
 	});
 
 	it('should render setting', () => {

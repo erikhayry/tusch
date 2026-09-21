@@ -6,3 +6,4 @@ export function getPanelPropMock() {
 }
 
 export const PanelPropsMock = generateMocks(PanelPropsSchema, 10);
+export const PanelThumbnailPropsMock = generateMocks(PanelPropsSchema, 10);

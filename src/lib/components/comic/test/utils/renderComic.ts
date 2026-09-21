@@ -12,7 +12,8 @@ export function renderComic(props = ComicPropsMock[0]) {
 	return {
 		getTitle: () => getByRole('heading', { name: title, level: 2 }),
 		getCharacters: () => within(getByRole('list', { name: 'Characters' })).getAllByRole('listitem'),
-		getPanels: () => within(getByRole('list', { name: 'Panels' })).getAllByRole('listitem'),
+		getPanelThumbnails: () =>
+			within(getByRole('list', { name: 'Panels' })).getAllByRole('listitem'),
 		getSettings: () => within(getByRole('list', { name: 'Setting' })).getAllByRole('listitem'),
 		getSource: () => getByRole('link', { name: source }),
 		props

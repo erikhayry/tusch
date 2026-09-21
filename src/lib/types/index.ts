@@ -54,7 +54,8 @@ export const PanelSchema = z.object({
 	year: YearSchema,
 	season: SeasonEnum,
 	place: z.string().min(1),
-	timeOfDay: TimeOfDayEnum
+	timeOfDay: TimeOfDayEnum,
+	image: ResponsiveImageSchema
 });
 export type ScriptPanel = z.infer<typeof PanelSchema>;
 

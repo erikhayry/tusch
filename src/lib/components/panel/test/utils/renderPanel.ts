@@ -6,6 +6,6 @@ export function renderPanel(props = PanelPropsMock[0]) {
 	const { getByRole } = render(Panel, props);
 
 	return {
-		getTitle: () => getByRole('heading', { name: props.title, level: 2 })
+		getId: () => getByRole('heading', { name: props.panel.id, level: 2 })
 	};
 }
