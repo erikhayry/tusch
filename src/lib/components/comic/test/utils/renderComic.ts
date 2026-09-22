@@ -1,9 +1,10 @@
 import Comic from '$lib/components/comic/Comic.svelte';
+import { SettingTestId } from '$lib/components/setting/settingValues';
 import { render, within } from '@testing-library/svelte';
 import { ComicPropsMock } from './mockComic';
 
 export function renderComic(props = ComicPropsMock[0]) {
-	const { getByRole } = render(Comic, props);
+	const { getByRole, getByTestId } = render(Comic, props);
 
 	const {
 		comic: { source, title }
@@ -14,7 +15,7 @@ export function renderComic(props = ComicPropsMock[0]) {
 		getCharacters: () => within(getByRole('list', { name: 'Characters' })).getAllByRole('listitem'),
 		getPanelThumbnails: () =>
 			within(getByRole('list', { name: 'Panels' })).getAllByRole('listitem'),
-		getSettings: () => within(getByRole('list', { name: 'Setting' })).getAllByRole('listitem'),
+		getSetting: () => getByTestId(SettingTestId),
 		getSource: () => getByRole('link', { name: source }),
 		props
 	};

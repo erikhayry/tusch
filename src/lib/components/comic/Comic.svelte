@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Character from '../charachter/Character.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
+	import Setting from '../setting/Setting.svelte';
 	import { type ComicProps } from './comicTypes';
 
 	let { comic }: ComicProps = $props();
@@ -31,11 +32,5 @@
 	{/each}
 </ul>
 
-<h4 id="settings">Setting</h4>
-<ul aria-labelledby="settings">
-	{#each Object.values(comic.setting) as setting (setting)}
-		<li>
-			{setting}
-		</li>
-	{/each}
-</ul>
+<h4>Setting</h4>
+<Setting setting={comic.setting} />

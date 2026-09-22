@@ -27,8 +27,8 @@ describe('Comic', () => {
 	});
 
 	it('should render setting', () => {
-		const { getSettings, props } = renderComic();
+		const { getSetting } = renderComic();
 
-		expect(getSettings()).toHaveLength(Object.values(props.comic.setting).length);
+		expect(getSetting()).toBeInTheDocument();
 	});
 });
