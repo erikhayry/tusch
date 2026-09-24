@@ -1,5 +1,5 @@
 import Comic from '$lib/components/comic/Comic.svelte';
-import { SettingTestId } from '$lib/components/setting/settingValues';
+import { TestId as SettingTestId } from '$lib/components/setting/Setting.svelte';
 import { render, within } from '@testing-library/svelte';
 import { ComicPropsMock } from './mockComic';
 
