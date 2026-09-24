@@ -1,12 +1,14 @@
-import { render } from '@testing-library/svelte';
+import { render, within } from '@testing-library/svelte';
 import Setting from '../../Setting.svelte';
 import { SettingPropsMock } from './mockSetting';
+import { m } from '$lib/paraglide/messages';
 
 export function renderSetting(props = SettingPropsMock) {
-	const { getAllByRole } = render(Setting, { props });
+	const { getByRole } = render(Setting, { props });
 
 	return {
 		props,
-		getYears: () => getAllByRole('listitem')
+    getYears: () => within(getByRole('list', { name: m.years()})).getAllByRole('listitem'),
+    getSeasons: () => within(getByRole('list', { name: m.seasons()})).getAllByRole('listitem'),
 	};
 }

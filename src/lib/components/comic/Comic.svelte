@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { m } from '$lib/paraglide/messages';
 	import Character from '../charachter/Character.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import Setting from '../setting/Setting.svelte';
@@ -14,7 +15,7 @@
 <h4>Source</h4>
 <a target="_blank" href={comic.source}>{comic.source}</a>
 
-<h4 id="characters">Characters</h4>
+<h4 id="characters">{m.characters()}</h4>
 <ul aria-labelledby="characters">
 	{#each comic.characters as character (character)}
 		<li>
@@ -23,7 +24,7 @@
 	{/each}
 </ul>
 
-<h4 id="panels">Panels</h4>
+<h4 id="panels">{m.panels()}</h4>
 <ul aria-labelledby="panels">
 	{#each comic.panels as panel (panel)}
 		<li>
@@ -32,5 +33,5 @@
 	{/each}
 </ul>
 
-<h4>Setting</h4>
+<h4>{m.setting()}</h4>
 <Setting setting={comic.setting} />
