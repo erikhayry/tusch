@@ -2,7 +2,7 @@ import { type Comic } from '$lib/types';
 
 const DB: Map<string, Comic> = new Map();
 
-export function getComic(id: string) {
+export function getComic(id: string): Comic | undefined {
 	return DB.get(id);
 }
 

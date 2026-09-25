@@ -57,7 +57,7 @@ export const PanelSchema = z.object({
 	timeOfDay: TimeOfDayEnum,
 	image: ResponsiveImageSchema,
 });
-export type ScriptPanel = z.infer<typeof PanelSchema>;
+export type Panel = z.infer<typeof PanelSchema>;
 
 export const ComicSchema = z.object({
 	id: z.uuid(),

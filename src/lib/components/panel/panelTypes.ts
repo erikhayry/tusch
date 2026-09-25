@@ -4,10 +4,18 @@ import { z } from 'zod';
 export const PanelPropsSchema = z.object({
 	panel: PanelSchema.pick({
 		id: true,
-		image: true
-	})
+		image: true,
+	}),
+});
+
+export const PanelThumbnailPropsSchema = z.object({
+	panel: PanelSchema.pick({
+		id: true,
+		image: true,
+	}),
+	alt: z.string(),
 });
 
 export type PanelProps = z.infer<typeof PanelPropsSchema>;
 
-export type PanelThumbnailProps = z.infer<typeof PanelPropsSchema>;
+export type PanelThumbnailProps = z.infer<typeof PanelThumbnailPropsSchema>;

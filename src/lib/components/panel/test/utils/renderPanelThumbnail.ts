@@ -6,7 +6,7 @@ export function renderPanelThumbnail(props = PanelThumbnailPropsMock[0]) {
 	const { getByRole } = render(PanelThumbnail, props);
 
 	return {
-		getImage: () => getByRole('img', { name: props.panel.image.alt }),
-		props
+		getPanelImage: () => getByRole('img', { name: props.alt }),
+		props,
 	};
 }

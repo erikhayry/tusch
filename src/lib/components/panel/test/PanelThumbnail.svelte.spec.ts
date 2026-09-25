@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 describe('Panel Thumbnail', () => {
 	it('should render image', () => {
-		const { getImage } = renderPanelThumbnail();
+		const { getPanelImage } = renderPanelThumbnail();
 
-		expect(getImage()).toBeInTheDocument();
+		expect(getPanelImage()).toBeInTheDocument();
 	});
 });

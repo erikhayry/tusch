@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { m } from '$lib/paraglide/messages';
 	import Character from '../charachter/Character.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
@@ -31,7 +32,9 @@
 			<ul aria-labelledby="panels">
 				{#each comic.panels as panel (panel)}
 					<li>
-						<PanelThumbnail {panel} />
+						<a href={resolve(`/comic/${comic.id}/${panel.id}`)}>
+							<PanelThumbnail {panel} alt={panel.id} />
+						</a>
 					</li>
 				{/each}
 			</ul>

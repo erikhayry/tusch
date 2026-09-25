@@ -1,9 +1,9 @@
-import type { Character, Comic, Setting, ScriptPanel, Url } from '$lib/types';
+import type { Character, Comic, Panel, Setting, Url } from '$lib/types';
 import {
 	CharactersMock,
 	ComicMock,
+	PanelsMock,
 	SettingMock,
-	PanelsMock
 } from '$lib/types/test/utils/mockTypes';
 import { randomUUID } from 'crypto';
 
@@ -15,7 +15,7 @@ function getSetting(): Setting {
 	return SettingMock;
 }
 
-function getScriptPanels(): ScriptPanel[] {
+function getScriptPanels(): Panel[] {
 	return PanelsMock;
 }
 
@@ -26,6 +26,6 @@ export async function init(url: Url): Promise<Comic> {
 		source: url,
 		characters: getCharacters(),
 		setting: getSetting(),
-		panels: getScriptPanels()
+		panels: getScriptPanels(),
 	};
 }
