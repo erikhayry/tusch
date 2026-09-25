@@ -14,14 +14,14 @@ export const YearSchema = z.number().int();
 export const ImageAssetSchema = z.object({
 	src: z.url(),
 	width: z.number().int().positive(),
-	height: z.number().int().positive()
+	height: z.number().int().positive(),
 });
 export type ImageAsset = z.infer<typeof ImageAssetSchema>;
 
 export const ResponsiveImageSchema = z.object({
 	wide: ImageAssetSchema,
 	narrow: ImageAssetSchema,
-	alt: z.string().min(1)
+	alt: z.string().min(1),
 });
 export type ResponsiveImage = z.infer<typeof ResponsiveImageSchema>;
 
@@ -29,21 +29,21 @@ export const CharacterSchema = z.object({
 	id: z.uuid(),
 	name: z.string().min(1),
 	description: z.string(),
-	images: z.array(z.url())
+	images: z.array(z.url()),
 });
 export type Character = z.infer<typeof CharacterSchema>;
 
 export const SettingSchema = z.object({
 	years: z.array(YearSchema),
 	seasons: z.array(SeasonEnum),
-	places: z.array(z.string().min(1)),
-	timeOfDays: z.array(TimeOfDayEnum)
+	locations: z.array(z.string().min(1)),
+	timeOfDays: z.array(TimeOfDayEnum),
 });
 export type Setting = z.infer<typeof SettingSchema>;
 
 export const DialogueSchema = z.object({
 	characterId: z.uuid(),
-	text: z.string().min(1)
+	text: z.string().min(1),
 });
 export type Dialogue = z.infer<typeof DialogueSchema>;
 
@@ -55,7 +55,7 @@ export const PanelSchema = z.object({
 	season: SeasonEnum,
 	place: z.string().min(1),
 	timeOfDay: TimeOfDayEnum,
-	image: ResponsiveImageSchema
+	image: ResponsiveImageSchema,
 });
 export type ScriptPanel = z.infer<typeof PanelSchema>;
 
@@ -65,6 +65,6 @@ export const ComicSchema = z.object({
 	source: z.url(),
 	setting: SettingSchema,
 	characters: z.array(CharacterSchema),
-	panels: z.array(PanelSchema)
+	panels: z.array(PanelSchema),
 });
 export type Comic = z.infer<typeof ComicSchema>;

@@ -3,7 +3,7 @@ const config = {
 	useTabs: true,
 	tabWidth: 2,
 	singleQuote: true,
-	trailingComma: 'trailing',
+	trailingComma: 'all',
 	printWidth: 100,
 	plugins: ['prettier-plugin-svelte'],
 	svelteSortOrder: 'options-scripts-markup-styles',

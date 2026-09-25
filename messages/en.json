@@ -4,5 +4,7 @@
 	"panels": "Panels",
 	"seasons": "Seasons",
 	"characters": "Characters",
-	"setting": "Setting"
+	"setting": "Setting",
+	"locations": "Locations",
+	"timeOfDay": "Time of Day"
 }
