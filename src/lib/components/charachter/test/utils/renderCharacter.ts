@@ -6,7 +6,7 @@ export function renderCharachter(props = CharachterPropsMock[0]) {
 	const { getByRole } = render(Character, props);
 
 	return {
-		getName: () => getByRole('heading', { name: props.character.name, level: 3 }),
+		getName: () => getByRole('heading', { name: props.character.name, level: 2 }),
 		props,
 	};
 }

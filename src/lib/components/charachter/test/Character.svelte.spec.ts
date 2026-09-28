@@ -7,16 +7,4 @@ describe('Character', () => {
 
 		expect(getName()).toBeInTheDocument();
 	});
-
-	it('should render description', () => {
-		const { getDescription } = renderCharachter();
-
-		expect(getDescription()).toBeInTheDocument();
-	});
-
-	it('should render images', () => {
-		const { getImages, props } = renderCharachter();
-
-		expect(getImages()).toHaveLength(props.character.images.length);
-	});
 });

@@ -21,3 +21,7 @@ export function removeComic(id: string): Comic[] {
 
 	return getComics();
 }
+
+export function clearComics(): void {
+	DB.clear();
+}

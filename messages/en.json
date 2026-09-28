@@ -6,5 +6,6 @@
 	"characters": "Characters",
 	"setting": "Setting",
 	"locations": "Locations",
-	"timeOfDay": "Time of Day"
+	"timeOfDay": "Time of Day",
+	"createNewComic": "Create New Comic"
 }

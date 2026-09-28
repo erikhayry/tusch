@@ -50,7 +50,7 @@ export type Dialogue = z.infer<typeof DialogueSchema>;
 export const PanelSchema = z.object({
 	id: z.uuid(),
 	captions: z.array(z.string()),
-	dialogue: z.array(DialogueSchema),
+	dialogue: z.array(z.string().min(1)),
 	year: YearSchema,
 	season: SeasonEnum,
 	place: z.string().min(1),
@@ -58,6 +58,9 @@ export const PanelSchema = z.object({
 	image: ResponsiveImageSchema,
 });
 export type Panel = z.infer<typeof PanelSchema>;
+
+export const InitialPanelSchema = PanelSchema.pick({ captions: true, dialogue: true });
+export type InitialPanel = z.infer<typeof InitialPanelSchema>;
 
 export const ComicSchema = z.object({
 	id: z.uuid(),
