@@ -1,7 +1,7 @@
 import { generateMocks } from '$lib/test/utils/generateMock';
 import { ComicSchema, type Comic } from '$lib/types';
 
-export const ComicsMock = generateMocks(ComicSchema, 10);
+export const ComicsMock = generateMocks(ComicSchema, 3);
 
 export const ComicMock = ComicsMock.at(0) as Comic;
 

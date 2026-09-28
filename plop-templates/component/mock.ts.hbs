@@ -1,0 +1,8 @@
+import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
+import { {{pascalCase name}}PropsSchema } from '$lib/components/{{camelCase name}}/{{camelCase name}}Types';
+
+export function get{{pascalCase name}}PropMock() {
+	return generateMock({{pascalCase name}}PropsSchema);
+}
+
+export const {{pascalCase name}}PropsMock = generateMocks({{pascalCase name}}PropsSchema, 10);

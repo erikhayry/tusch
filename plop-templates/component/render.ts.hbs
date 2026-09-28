@@ -1,0 +1,12 @@
+import {{pascalCase name}} from '$lib/components/{{camelCase name}}/{{pascalCase name}}.svelte';
+import { {{pascalCase name}}PropsMock } from '$lib/components/{{camelCase name}}/test/utils/mock{{camelCase name}}';
+import { render } from '@testing-library/svelte';
+
+export function render{{pascalCase name}}(props = {{pascalCase name}}PropsMock[0]) {
+	const { getByRole } = render({{pascalCase name}}, props);
+
+	return {
+		getName: () => getByRole('heading', { name: props.{{camelCase name}}.name, level: 2 }),
+		props,
+	};
+}

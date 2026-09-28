@@ -8,8 +8,4 @@
 
 <Section>
 	<Heading>{character.name}</Heading>
-	<p>{character.description}</p>
-	{#each character.images as image (image)}
-		<img src={image} alt="TODO" />
-	{/each}
 </Section>

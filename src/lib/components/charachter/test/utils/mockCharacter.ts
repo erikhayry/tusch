@@ -1,5 +1,5 @@
+import { CharacterPropsSchema } from '$lib/components/charachter/characterTypes';
 import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
-import { CharacterPropsSchema } from '../../characterTypes';
 
 export function getPanelPropMock() {
 	return generateMock(CharacterPropsSchema);

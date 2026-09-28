@@ -1,0 +1,10 @@
+import { render{{pascalCase name}} } from '$lib/components/{{camelCase name}}/test/utils/render{{pascalCase name}}';
+import { describe, expect, it } from 'vitest';
+
+describe('{{pascalCase name}}', () => {
+	it('should render name', () => {
+		const { getName } = render{{pascalCase name}}();
+
+		expect(getName()).toBeInTheDocument();
+	});
+});
