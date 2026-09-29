@@ -1,17 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { init } from '../ai';
-import { aiInitialResponse } from './mockAiResponse';
-
-const { mockSend } = vi.hoisted(() => ({
-	mockSend: vi.fn(),
-}));
-vi.mock('@openrouter/sdk', () => ({
-	OpenRouter: class {
-		chat = {
-			send: mockSend,
-		};
-	},
-}));
+import { ContentJSONMock, mockOpenRouterResponse } from './mockAiResponse';
 
 describe('ai', () => {
 	beforeEach(() => {
@@ -20,10 +9,10 @@ describe('ai', () => {
 
 	describe('init', () => {
 		it('should call openRouter sdk with the correct arguments', async () => {
-			mockSend.mockResolvedValueOnce({ id: 'gen-999', choices: [] });
-			const url = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
+			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
+			mockSend.mockResolvedValueOnce(mockOpenRouterResponse);
 
-			await init(url);
+			await init(source);
 
 			expect(mockSend.mock.calls[0][0].chatRequest.messages).toEqual([
 				{
@@ -41,12 +30,29 @@ describe('ai', () => {
 			]);
 		});
 
-		it('should return initial panels', async () => {
-			mockSend.mockResolvedValueOnce({ id: 'gen-999', choices: [] });
+		it('should return comic', async () => {
+			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
+			mockSend.mockResolvedValueOnce(mockOpenRouterResponse);
 
-			const panels = await init('https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna');
+			const { panels, id, source: returnedSource, title, setting, characters } = await init(source);
 
-			expect(panels).toEqual(aiInitialResponse);
+			expect(panels).toEqual(ContentJSONMock);
+			expect(id).toBeDefined();
+			expect(returnedSource).toEqual(source);
+			expect(title).toEqual('');
+			expect(setting).toBeUndefined();
+			expect(characters).toBeUndefined();
 		});
 	});
 });
+
+const { mockSend } = vi.hoisted(() => ({
+	mockSend: vi.fn(),
+}));
+vi.mock('@openrouter/sdk', () => ({
+	OpenRouter: class {
+		chat = {
+			send: mockSend,
+		};
+	},
+}));

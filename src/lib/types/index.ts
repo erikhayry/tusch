@@ -59,15 +59,12 @@ export const PanelSchema = z.object({
 });
 export type Panel = z.infer<typeof PanelSchema>;
 
-export const InitialPanelSchema = PanelSchema.pick({ captions: true, dialogue: true });
-export type InitialPanel = z.infer<typeof InitialPanelSchema>;
-
 export const ComicSchema = z.object({
 	id: z.uuid(),
 	title: z.string().min(1),
 	source: z.url(),
-	setting: SettingSchema,
-	characters: z.array(CharacterSchema),
 	panels: z.array(PanelSchema),
+	setting: z.optional(SettingSchema),
+	characters: z.optional(z.array(CharacterSchema)),
 });
 export type Comic = z.infer<typeof ComicSchema>;

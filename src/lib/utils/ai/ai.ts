@@ -1,10 +1,20 @@
-import type { InitialPanel, Url } from '$lib/types';
+import { type Comic, type Panel, type Url } from '$lib/types';
+import type { ChatResult } from '@openrouter/sdk/models';
+import { randomUUID } from 'crypto';
 import { chat } from './sdk/openRouter';
-import { aiInitialResponse } from './test/mockAiResponse';
 import { buildInitialMessages } from './utils/messages';
 
-export async function init(url: Url): Promise<InitialPanel[]> {
-	const response = await chat(buildInitialMessages(url));
+function getPanels(response: ChatResult): Panel[] {
+	return JSON.parse(response.choices[0].message.content);
+}
 
-	return aiInitialResponse;
+export async function init(source: Url): Promise<Comic> {
+	const response = await chat(buildInitialMessages(source));
+
+	return {
+		id: randomUUID(),
+		source,
+		title: '',
+		panels: getPanels(response),
+	};
 }

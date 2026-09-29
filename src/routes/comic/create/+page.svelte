@@ -4,7 +4,7 @@
 
 	import type { PageProps } from './$types';
 
-	let { data, form }: PageProps = $props();
+	let { data, form, loading }: PageProps = $props();
 </script>
 
 <Page title={m.createNewComic()}>

@@ -1,19 +1,18 @@
 import { OpenRouter } from '@openrouter/sdk';
-import type { ChatMessages } from '@openrouter/sdk/models';
-import type { SendChatCompletionRequestResponse } from '@openrouter/sdk/models/operations';
+import type { ChatMessages, ChatResult } from '@openrouter/sdk/models';
 
 const client = new OpenRouter({
-	apiKey: '<OPENROUTER_API_KEY>',
+	apiKey: import.meta.env.VITE_OPENROUTER_API_KEY,
 });
 
 function getChatMessages(messages: string[]): ChatMessages[] {
 	return messages.map((message) => ({ role: 'user', content: message }));
 }
 
-export async function chat(messages: string[]): Promise<SendChatCompletionRequestResponse> {
+export async function chat(messages: string[]): Promise<ChatResult> {
 	return client.chat.send({
 		chatRequest: {
-			model: 'openai/gpt-5.2',
+			model: 'openai/gpt-5-nano',
 			messages: getChatMessages(messages),
 		},
 	});
