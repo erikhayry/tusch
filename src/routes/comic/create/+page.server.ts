@@ -1,18 +1,22 @@
-import type { Actions, PageServerLoad } from './$types';
-
-export const load: PageServerLoad = async ({ cookies }) => {
-	return {
-		url: cookies.get('url'),
-	};
-};
+import { addComic } from '$lib/utils/db/db';
+import { redirect } from '@sveltejs/kit';
+import type { Actions } from './$types';
 
 export const actions = {
-	default: async ({ cookies, request }) => {
+	default: async ({ request, fetch }) => {
 		const data = await request.formData();
 		const url = data.get('url');
+		const comicResponse = await fetch('/api/chat/init', {
+			method: 'POST',
+			body: JSON.stringify({ url: url?.toString() }),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		const comicJSON = await comicResponse.json();
 
-		cookies.set('url', url?.toString() ?? '', { path: '/' });
+		addComic(comicJSON);
 
-		return { success: true };
+		redirect(303, `/comic/${comicJSON.id}`);
 	},
 } satisfies Actions;

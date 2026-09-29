@@ -1,10 +1,10 @@
 import { generateMocks } from '$lib/test/utils/generateMock';
-import { InitialPanelSchema } from '../aiTypes';
+import { InitialPanelsSchema } from '../aiTypes';
 
-export const aiInitialResponse = generateMocks(InitialPanelSchema, 3);
+export const aiInitialResponse = generateMocks(InitialPanelsSchema, 3);
 
 export const ContentJSONMock = {
-	panels: [
+	data: [
 		{
 			dialogue: ['Arbetare: Vi kräver bättre villkor och rätten att organisera oss.'],
 			caption: 'Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.',

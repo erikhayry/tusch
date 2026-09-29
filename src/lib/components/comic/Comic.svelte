@@ -39,8 +39,10 @@
 				{/each}
 			</ul>
 
-			<Heading>{m.setting()}</Heading>
-			<Setting setting={comic.setting} />
+			{#if comic.setting}
+				<Heading>{m.setting()}</Heading>
+				<Setting setting={comic.setting} />
+			{/if}
 		</Section>
 	</Section>
 </Section>

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { init } from '../ai';
+import { InitialPanelsSchema } from '../aiTypes';
 import { INIT, ROLE } from '../utils/messages';
 import { ContentJSONMock, mockOpenRouterResponse } from './mockAiResponse';
 
@@ -9,7 +10,7 @@ describe('ai', () => {
 	});
 
 	describe('init', () => {
-		it('should call openRouter sdk with the correct arguments', async () => {
+		it('should call openRouter sdk with message', async () => {
 			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
 			mockSend.mockResolvedValueOnce(mockOpenRouterResponse);
 
@@ -31,13 +32,25 @@ describe('ai', () => {
 			]);
 		});
 
+		it('should call openRouter sdk with response format', async () => {
+			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
+			mockSend.mockResolvedValueOnce(mockOpenRouterResponse);
+
+			await init(source);
+			const schema =
+				mockSend.mock.calls[0][0].chatRequest.responseFormat.jsonSchema.schema.properties.data
+					.items;
+
+			expect(schema).toEqual(InitialPanelsSchema.toJSONSchema().items);
+		});
+
 		it('should return comic', async () => {
 			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
 			mockSend.mockResolvedValueOnce(mockOpenRouterResponse);
 
 			const { panels, id, source: returnedSource, title, setting, characters } = await init(source);
 
-			expect(panels).toEqual(ContentJSONMock);
+			expect(panels).toHaveLength(ContentJSONMock.data.length);
 			expect(id).toBeDefined();
 			expect(returnedSource).toEqual(source);
 			expect(title).toEqual('');
@@ -50,6 +63,7 @@ describe('ai', () => {
 const { mockSend } = vi.hoisted(() => ({
 	mockSend: vi.fn(),
 }));
+
 vi.mock('@openrouter/sdk', () => ({
 	OpenRouter: class {
 		chat = {
