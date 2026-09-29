@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { init } from '../ai';
+import { INIT, ROLE } from '../utils/messages';
 import { ContentJSONMock, mockOpenRouterResponse } from './mockAiResponse';
 
 describe('ai', () => {
@@ -16,16 +17,16 @@ describe('ai', () => {
 
 			expect(mockSend.mock.calls[0][0].chatRequest.messages).toEqual([
 				{
-					content: 'Create a comic script from attached url and instructions',
-					role: 'user',
+					content: INIT.WHAT,
+					role: ROLE.USER,
 				},
 				{
-					content: 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna',
-					role: 'user',
+					content: source,
+					role: ROLE.USER,
 				},
 				{
-					content: 'number of panels should be 5 to 10',
-					role: 'user',
+					content: INIT.HOW,
+					role: ROLE.USER,
 				},
 			]);
 		});

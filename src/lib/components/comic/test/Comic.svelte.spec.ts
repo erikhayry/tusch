@@ -17,7 +17,7 @@ describe('Comic', () => {
 	it('should render charachters', () => {
 		const { getCharacters, props } = renderComic();
 
-		expect(getCharacters()).toHaveLength(props.comic.characters.length);
+		expect(getCharacters()).toHaveLength(props.comic.characters!.length);
 	});
 
 	it('should render panels thumbnails', () => {
