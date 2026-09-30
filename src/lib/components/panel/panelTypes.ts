@@ -5,6 +5,8 @@ export const PanelPropsSchema = z.object({
 	panel: PanelSchema.pick({
 		id: true,
 		image: true,
+		captions: true,
+		dialogue: true,
 	}),
 	number: z.int(),
 	totalNumberOfPanels: z.int(),

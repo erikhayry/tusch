@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Page from '$lib/components/page/Page.svelte';
-	import Heading from '$lib/components/relativeHeading/Heading.svelte';
-	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import Panel from '$lib/components/panel/Panel.svelte';
 
 	import type { Data } from './+page.server';
 
@@ -9,9 +8,5 @@
 </script>
 
 <Page title="Panel">
-	<Section>
-		<Heading>
-			{data.panel.id}
-		</Heading>
-	</Section>
+	<Panel panel={data.panel} number={data.number} totalNumberOfPanels={data.totalNumberOfPanels} />
 </Page>

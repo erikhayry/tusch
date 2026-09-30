@@ -12,9 +12,7 @@ test('opens panel view', async ({ page }) => {
 
 	await page.getByRole('link', { name: ComicsMock[0].panels[0].id }).click();
 
-	await expect(
-		page.getByRole('heading', { name: ComicsMock[0].panels[0].id, level: 2 }),
-	).toBeVisible();
+	await page.waitForURL(`**/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
 });
 
 test('shows error when comic not found', async ({ page }) => {

@@ -7,3 +7,8 @@ export function getPanelPropMock() {
 
 export const PanelPropsMock = generateMocks(PanelPropsSchema, 10);
 export const PanelThumbnailPropsMock = generateMocks(PanelThumbnailPropsSchema, 10);
+
+export const PanelPropsWithoutImage = PanelPropsMock.map((props) => ({
+	...props,
+	panel: { ...props.panel, image: undefined },
+}));

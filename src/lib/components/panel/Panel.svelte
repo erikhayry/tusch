@@ -4,9 +4,73 @@
 	import Section from '../relativeHeading/Section.svelte';
 	import { type PanelProps } from './panelTypes';
 
-	let { number, totalNumberOfPanels }: PanelProps = $props();
+	let currentCaption = $state<number | null>(null);
+	let currentDialogue = $state<number | null>(null);
+
+	let { number, totalNumberOfPanels, panel }: PanelProps = $props();
+
+	function startEditingCaption(index: number) {
+		currentCaption = index;
+	}
+
+	function startEditingDialogue(index: number) {
+		currentDialogue = index;
+	}
 </script>
 
 <Section>
 	<Heading>{m.panelTitle({ number, total: totalNumberOfPanels })}</Heading>
+
+	{#if panel.image === undefined}
+		<button type="button" onclick={() => {}}>{m.addImage()}</button>
+	{:else}
+		<img src={panel.image.wide.src} alt={panel.image.alt} />
+		<form>
+			<button type="button">{m.removeImage()}</button>
+		</form>
+	{/if}
+
+	<Section>
+		<Heading id="panel-caption">{m.captions()}</Heading>
+		<ul aria-labelledby="panel-caption">
+			{#each panel.captions as caption, index (caption)}
+				<li>
+					{#if currentCaption === index}
+						<form>
+							<label>
+								<span>{m.editCaption({ number: index + 1 })}</span>
+								<input type="text" value={caption} />
+							</label>
+						</form>
+					{:else}
+						{caption}
+						<button type="button" onclick={() => startEditingCaption(index)}>
+							{m.editCaption({ number: index + 1 })}
+						</button>
+					{/if}
+				</li>
+			{/each}
+		</ul>
+
+		<Heading id="panel-dialogue">{m.dialogues()}</Heading>
+		<ul aria-labelledby="panel-dialogue">
+			{#each panel.dialogue as dialogue, index (dialogue)}
+				<li>
+					{#if currentDialogue === index}
+						<form>
+							<label>
+								<span>{m.editDialogue({ number: index + 1 })}</span>
+								<input type="text" value={dialogue} />
+							</label>
+						</form>
+					{:else}
+						{dialogue}
+						<button type="button" onclick={() => startEditingDialogue(index)}>
+							{m.editDialogue({ number: index + 1 })}
+						</button>
+					{/if}
+				</li>
+			{/each}
+		</ul>
+	</Section>
 </Section>
