@@ -6,4 +6,6 @@
 
 {#if panel.image}
 	<img src={panel.image.narrow.src} {alt} />
+{:else}
+	{panel.id}
 {/if}

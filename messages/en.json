@@ -1,5 +1,8 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"tusch": "Tusch",
+	"settings": "Settings",
+	"comics": "Comics",
 	"years": "Years",
 	"panels": "Panels",
 	"seasons": "Seasons",
@@ -7,5 +10,7 @@
 	"setting": "Setting",
 	"locations": "Locations",
 	"timeOfDay": "Time of Day",
-	"createNewComic": "Create New Comic"
+	"createNewComic": "Create New Comic",
+	"comicTitle": "Comic: {title}",
+	"panelTitle": "Panel: {number} of {total}"
 }

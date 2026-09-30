@@ -14,23 +14,14 @@
 <Section>
 	<Heading>{comic.title}</Heading>
 	<Section>
-		<Heading>Settings</Heading>
+		<Heading>{m.settings()}</Heading>
 		<Section>
 			<Heading>Source</Heading>
 			<a target="_blank" rel="external" href={comic.source}>{comic.source}</a>
 
-			<Heading id="characters">{m.characters()}</Heading>
-			<ul aria-labelledby="characters">
-				{#each comic.characters as character (character)}
-					<li>
-						<Character {character} />
-					</li>
-				{/each}
-			</ul>
-
 			<Heading id="panels">{m.panels()}</Heading>
 			<ul aria-labelledby="panels">
-				{#each comic.panels as panel (panel)}
+				{#each comic.panels as panel, index (panel)}
 					<li>
 						<a href={resolve(`/comic/${comic.id}/${panel.id}`)}>
 							<PanelThumbnail {panel} alt={panel.id} />
@@ -38,6 +29,17 @@
 					</li>
 				{/each}
 			</ul>
+
+			{#if comic.characters}
+				<Heading id="characters">{m.characters()}</Heading>
+				<ul aria-labelledby="characters">
+					{#each comic.characters as character (character)}
+						<li>
+							<Character {character} />
+						</li>
+					{/each}
+				</ul>
+			{/if}
 
 			{#if comic.setting}
 				<Heading>{m.setting()}</Heading>

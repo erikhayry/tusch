@@ -2,9 +2,15 @@ import { type Comic } from '$lib/types';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 
 const DB: Map<string, Comic> = new Map();
-ComicsMock.forEach((comic) => {
-	addComic(comic);
-});
+
+seedDB();
+
+export function seedDB(): void {
+	clearComics();
+	ComicsMock.forEach((comic) => {
+		addComic(comic);
+	});
+}
 
 export function getComic(id: string): Comic | undefined {
 	return DB.get(id);

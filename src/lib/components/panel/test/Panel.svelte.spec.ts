@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 describe('Panel', () => {
 	it('should render title', () => {
-		const { getId } = renderPanel();
+		const { getTitle } = renderPanel();
 
-		expect(getId()).toBeInTheDocument();
+		expect(getTitle()).toBeInTheDocument();
 	});
 });

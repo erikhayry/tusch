@@ -14,16 +14,16 @@ describe('Comic', () => {
 		expect(getSource()).toBeInTheDocument();
 	});
 
+	it('should render panels thumbnails', () => {
+		const { getPanel, props } = renderComic();
+
+		expect(getPanel()).toHaveLength(props.comic.panels.length);
+	});
+
 	it('should render charachters', () => {
 		const { getCharacters, props } = renderComic();
 
 		expect(getCharacters()).toHaveLength(props.comic.characters!.length);
-	});
-
-	it('should render panels thumbnails', () => {
-		const { getPanelThumbnails, props } = renderComic();
-
-		expect(getPanelThumbnails()).toHaveLength(props.comic.panels.length);
 	});
 
 	it('should render setting', () => {

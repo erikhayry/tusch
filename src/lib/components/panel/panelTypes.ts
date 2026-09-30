@@ -6,6 +6,8 @@ export const PanelPropsSchema = z.object({
 		id: true,
 		image: true,
 	}),
+	number: z.int(),
+	totalNumberOfPanels: z.int(),
 });
 
 export const PanelThumbnailPropsSchema = z.object({
