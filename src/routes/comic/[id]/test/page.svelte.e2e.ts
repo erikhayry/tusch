@@ -1,3 +1,4 @@
+import { m } from '$lib/paraglide/messages';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import { expect, test } from '@playwright/test';
 
@@ -19,4 +20,12 @@ test('shows error when comic not found', async ({ page }) => {
 	await page.goto(`/comic/XXX/`);
 
 	await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
+});
+
+test('deletes image', async ({ page }) => {
+	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
+
+	await page.getByRole('button', { name: m.removeImage() }).click();
+
+	await expect(page.getByRole('img', { name: ComicsMock[0].panels[0].image?.alt })).toBeHidden();
 });

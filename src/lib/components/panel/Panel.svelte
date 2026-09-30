@@ -7,7 +7,7 @@
 	let currentCaption = $state<number | null>(null);
 	let currentDialogue = $state<number | null>(null);
 
-	let { number, totalNumberOfPanels, panel }: PanelProps = $props();
+	let { number, totalNumberOfPanels, panel, comicId }: PanelProps = $props();
 
 	function startEditingCaption(index: number) {
 		currentCaption = index;
@@ -25,8 +25,10 @@
 		<button type="button" onclick={() => {}}>{m.addImage()}</button>
 	{:else}
 		<img src={panel.image.wide.src} alt={panel.image.alt} />
-		<form>
-			<button type="button">{m.removeImage()}</button>
+		<form method="POST" action="?/deleteImage">
+			<input type="hidden" name="comicId" value={comicId} />
+			<input type="hidden" name="panelId" value={panel.id} />
+			<button type="submit">{m.removeImage()}</button>
 		</form>
 	{/if}
 

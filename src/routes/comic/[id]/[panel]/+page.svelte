@@ -8,5 +8,10 @@
 </script>
 
 <Page title="Panel">
-	<Panel panel={data.panel} number={data.number} totalNumberOfPanels={data.totalNumberOfPanels} />
+	<Panel
+		panel={data.panel}
+		number={data.number}
+		totalNumberOfPanels={data.totalNumberOfPanels}
+		comicId={data.comicId}
+	/>
 </Page>

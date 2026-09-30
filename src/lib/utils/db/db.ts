@@ -35,3 +35,20 @@ export function removeComic(id: string): Comic[] {
 export function clearComics(): void {
 	DB.clear();
 }
+
+export function updateComic(comic: Comic): Comic[] {
+	DB.set(comic.id, comic);
+
+	return getComics();
+}
+
+export function removeImage(comicId: string, panelId: string): Comic[] {
+	const comic = getComic(comicId);
+	const panel = comic?.panels.find((panel) => panel.id === panelId);
+
+	if (comic && panel) {
+		panel.image = undefined;
+	}
+
+	return getComics();
+}

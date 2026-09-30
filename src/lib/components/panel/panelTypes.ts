@@ -10,6 +10,7 @@ export const PanelPropsSchema = z.object({
 	}),
 	number: z.int(),
 	totalNumberOfPanels: z.int(),
+	comicId: z.string(),
 });
 
 export const PanelThumbnailPropsSchema = z.object({

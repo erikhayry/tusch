@@ -1,11 +1,12 @@
 import type { Panel } from '$lib/types/index';
-import { getComic } from '$lib/utils/db/db';
+import { getComic, removeImage } from '$lib/utils/db/db';
 import { error } from '@sveltejs/kit';
 
 export interface Data {
 	panel: Panel;
 	totalNumberOfPanels: number;
 	number: number;
+	comicId: string;
 }
 
 export function load({ params }): Data {
@@ -20,5 +21,18 @@ export function load({ params }): Data {
 		panel: comic.panels[panelIndex],
 		number: panelIndex + 1,
 		totalNumberOfPanels: comic.panels.length,
+		comicId: params.id,
 	};
 }
+
+export const actions = {
+	deleteImage: async ({ request }) => {
+		const formData = await request.formData();
+		const comicId = formData.get('comicId');
+		const panelId = formData.get('panelId');
+
+		if (comicId && panelId) {
+			removeImage(comicId.toString(), panelId.toString());
+		}
+	},
+};

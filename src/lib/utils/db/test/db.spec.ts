@@ -1,5 +1,5 @@
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
-import { addComic, clearComics, getComic, removeComic } from '$lib/utils/db/db';
+import { addComic, clearComics, getComic, removeComic, removeImage } from '$lib/utils/db/db';
 import { describe, expect, it } from 'vitest';
 
 const [Comic1, Comic2] = ComicsMock;
@@ -26,6 +26,19 @@ describe('Db', () => {
 			addComic(Comic2);
 
 			expect(removeComic(Comic1.id)).toEqual([Comic2]);
+		});
+	});
+
+	describe('remove image', () => {
+		it('should remove image', () => {
+			clearComics();
+			addComic(Comic1);
+
+			expect(getComic(Comic1.id)?.panels[0].image).toBeDefined();
+
+			removeImage(Comic1.id, Comic1.panels[0].id);
+
+			expect(getComic(Comic1.id)?.panels[0].image).toBeUndefined();
 		});
 	});
 });
