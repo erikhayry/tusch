@@ -30,6 +30,14 @@ describe('Panel', () => {
 
 			expect(getEditCaptionField(1)).toBeInTheDocument();
 		});
+
+		it('should show save caption button on edit caption click', async () => {
+			const { getSaveCaptionButton, getEditCaptionsButton } = renderPanel();
+
+			await fireEvent.click(getEditCaptionsButton(1));
+
+			expect(getSaveCaptionButton()).toBeInTheDocument();
+		});
 	});
 
 	describe('dialogues', () => {

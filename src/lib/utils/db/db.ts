@@ -1,4 +1,4 @@
-import { type Comic } from '$lib/types';
+import { type Comic, type Panel } from '$lib/types';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 
 const DB: Map<string, Comic> = new Map();
@@ -42,12 +42,30 @@ export function updateComic(comic: Comic): Comic[] {
 	return getComics();
 }
 
-export function removeImage(comicId: string, panelId: string): Comic[] {
-	const comic = getComic(comicId);
-	const panel = comic?.panels.find((panel) => panel.id === panelId);
+function findPanel(comicId: string, panelId: string): Panel | undefined {
+	return getComic(comicId)?.panels.find((panel) => panel.id === panelId);
+}
 
-	if (comic && panel) {
+export function removeImage(comicId: string, panelId: string): Comic[] {
+	const panel = findPanel(comicId, panelId);
+
+	if (panel) {
 		panel.image = undefined;
+	}
+
+	return getComics();
+}
+
+export function updatePanelCaptions(
+	comicId: string,
+	panelId: string,
+	captionIndex: number,
+	text: string,
+): Comic[] {
+	const panel = findPanel(comicId, panelId);
+
+	if (panel) {
+		panel.captions[captionIndex] = text;
 	}
 
 	return getComics();

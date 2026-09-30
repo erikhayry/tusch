@@ -29,3 +29,20 @@ test('deletes image', async ({ page }) => {
 
 	await expect(page.getByRole('img', { name: ComicsMock[0].panels[0].image?.alt })).toBeHidden();
 });
+
+test('update caption', async ({ page }) => {
+	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
+
+	await page
+		.getByRole('button', {
+			name: m.editCaption({
+				number: 1,
+			}),
+		})
+		.click();
+
+	await page.getByRole('textbox', { name: m.editCaption({ number: 1 }) }).fill('NEW CAPTION');
+	await page.getByRole('button', { name: m.saveCaption() }).click();
+
+	await expect(page.getByText('NEW CAPTION')).toBeVisible();
+});

@@ -1,5 +1,5 @@
 import type { Panel } from '$lib/types/index';
-import { getComic, removeImage } from '$lib/utils/db/db';
+import { getComic, removeImage, updatePanelCaptions } from '$lib/utils/db/db';
 import { error } from '@sveltejs/kit';
 
 export interface Data {
@@ -33,6 +33,22 @@ export const actions = {
 
 		if (comicId && panelId) {
 			removeImage(comicId.toString(), panelId.toString());
+		}
+	},
+	editCaption: async ({ request }) => {
+		const formData = await request.formData();
+		const comicId = formData.get('comicId');
+		const panelId = formData.get('panelId');
+		const captionIndex = formData.get('captionIndex');
+		const caption = formData.get('caption');
+
+		if (comicId && panelId && caption && captionIndex) {
+			updatePanelCaptions(
+				comicId.toString(),
+				panelId.toString(),
+				Number.parseInt(captionIndex?.toString()),
+				caption.toString(),
+			);
 		}
 	},
 };

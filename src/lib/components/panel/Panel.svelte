@@ -38,14 +38,18 @@
 			{#each panel.captions as caption, index (caption)}
 				<li>
 					{#if currentCaption === index}
-						<form>
+						<form method="POST" action="?/editCaption">
+							<input type="hidden" name="comicId" value={comicId} />
+							<input type="hidden" name="panelId" value={panel.id} />
+							<input type="hidden" name="captionIndex" value={index} />
 							<label>
 								<span>{m.editCaption({ number: index + 1 })}</span>
-								<input type="text" value={caption} />
+								<input type="text" name="caption" value={caption} />
 							</label>
+							<button type="submit">{m.saveCaption()}</button>
 						</form>
 					{:else}
-						{caption}
+						<p>{caption}</p>
 						<button type="button" onclick={() => startEditingCaption(index)}>
 							{m.editCaption({ number: index + 1 })}
 						</button>

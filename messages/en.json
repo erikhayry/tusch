@@ -18,5 +18,6 @@
 	"captions": "Captions",
 	"editCaption": "Edit Caption {number}",
 	"dialogues": "Dialogues",
-	"editDialogue": "Edit Dialogue {number}"
+	"editDialogue": "Edit Dialogue {number}",
+	"saveCaption": "Save Caption"
 }

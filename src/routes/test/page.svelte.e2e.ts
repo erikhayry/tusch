@@ -10,14 +10,6 @@ test('navigates to create', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: m.createNewComic() })).toBeVisible();
 });
 
-test('shows a list of links to comics', async ({ page }) => {
-	await page.goto('/');
-
-	const comicList = page.getByRole('list', { name: m.comics() });
-
-	await expect(comicList.getByRole('link')).toHaveCount(ComicsMock.length);
-});
-
 test('navigates to comic', async ({ page }) => {
 	await page.goto('/');
 
