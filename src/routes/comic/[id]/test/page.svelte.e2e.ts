@@ -1,10 +1,6 @@
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import { expect, test } from '@playwright/test';
 
-test.beforeEach(async ({ request }) => {
-	await request.post('/api/test/seed');
-});
-
 test('has expected title', async ({ page }) => {
 	await page.goto(`/comic/${ComicsMock[0].id}`);
 

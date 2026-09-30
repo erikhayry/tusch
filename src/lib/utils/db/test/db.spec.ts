@@ -1,5 +1,5 @@
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
-import { addComic, getComic, removeComic } from '$lib/utils/db/db';
+import { addComic, clearComics, getComic, removeComic } from '$lib/utils/db/db';
 import { describe, expect, it } from 'vitest';
 
 const [Comic1, Comic2] = ComicsMock;
@@ -21,6 +21,7 @@ describe('Db', () => {
 
 	describe('removeComic', () => {
 		it('should remove comic', () => {
+			clearComics();
 			addComic(Comic1);
 			addComic(Comic2);
 
