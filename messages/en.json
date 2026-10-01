@@ -18,6 +18,7 @@
 	"captions": "Captions",
 	"editCaption": "Edit Caption {number}",
 	"removeCaption": "Remove Caption {number}",
+	"removeDialogue": "Remove Dialogue {number}",
 	"dialogues": "Dialogues",
 	"editDialogue": "Edit Dialogue {number}",
 	"saveCaption": "Save Caption",

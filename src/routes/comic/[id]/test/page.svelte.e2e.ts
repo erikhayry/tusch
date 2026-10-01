@@ -80,3 +80,20 @@ test('update dialogue', async ({ page }) => {
 
 	await expect(page.getByText('NEW DIALOGUE')).toBeVisible();
 });
+
+test('remove dialogue', async ({ page }) => {
+	//TODO: re-seed
+	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[1].id}`);
+
+	await expect(page.getByText(ComicsMock[0].panels[1].dialogue[0])).toBeVisible();
+
+	await page
+		.getByRole('button', {
+			name: m.removeDialogue({
+				number: 1,
+			}),
+		})
+		.click();
+
+	await expect(page.getByText(ComicsMock[0].panels[1].dialogue[0])).toBeHidden();
+});

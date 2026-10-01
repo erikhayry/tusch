@@ -3,6 +3,7 @@
 	import { FIELD } from '$lib/utils/db/dbTypes';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
+	import RemoveFieldItemForm from '../removeFieldItemForm/RemoveFieldItemForm.svelte';
 	import TextFieldForm from '../textFieldForm/TextFieldForm.svelte';
 	import { type PanelProps } from './panelTypes';
 	import { ACTION } from './utils/actions';
@@ -42,13 +43,16 @@
 						saveActionLabel={m.saveCaption()}
 						editActionLabel={m.editCaption({ number: index + 1 })}
 					/>
-					<form method="POST" action={`?/${ACTION.DELETE_FIELD_ITEM}`}>
-						<input type="hidden" name="comicId" value={comicId} />
-						<input type="hidden" name="panelId" value={panel.id} />
-						<input type="hidden" name="index" value={index} />
-						<input type="hidden" name="field" value={FIELD.enum.captions} />
-						<button type="submit">{m.removeCaption({ number: index + 1 })}</button>
-					</form>
+					<RemoveFieldItemForm
+						action={ACTION.DELETE_FIELD_ITEM}
+						values={[
+							{ name: 'comicId', value: comicId },
+							{ name: 'panelId', value: panel.id },
+							{ name: 'index', value: index },
+							{ name: 'field', value: FIELD.enum.captions },
+						]}
+						label={m.removeCaption({ number: index + 1 })}
+					/>
 				</li>
 			{/each}
 		</ul>
@@ -69,6 +73,16 @@
 						]}
 						saveActionLabel={m.saveDialogue()}
 						editActionLabel={m.editDialogue({ number: index + 1 })}
+					/>
+					<RemoveFieldItemForm
+						action={ACTION.DELETE_FIELD_ITEM}
+						values={[
+							{ name: 'comicId', value: comicId },
+							{ name: 'panelId', value: panel.id },
+							{ name: 'index', value: index },
+							{ name: 'field', value: FIELD.enum.dialogue },
+						]}
+						label={m.removeDialogue({ number: index + 1 })}
 					/>
 				</li>
 			{/each}
