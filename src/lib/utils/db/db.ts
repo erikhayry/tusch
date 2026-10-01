@@ -70,3 +70,18 @@ export function updatePanelCaptions(
 
 	return getComics();
 }
+
+export function updatePanelDialogue(
+	comicId: string,
+	panelId: string,
+	dialogueIndex: number,
+	text: string,
+): Comic[] {
+	const panel = findPanel(comicId, panelId);
+
+	if (panel) {
+		panel.dialogue[dialogueIndex] = text;
+	}
+
+	return getComics();
+}

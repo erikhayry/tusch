@@ -46,3 +46,20 @@ test('update caption', async ({ page }) => {
 
 	await expect(page.getByText('NEW CAPTION')).toBeVisible();
 });
+
+test('update dialogue', async ({ page }) => {
+	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
+
+	await page
+		.getByRole('button', {
+			name: m.editDialogue({
+				number: 1,
+			}),
+		})
+		.click();
+
+	await page.getByRole('textbox', { name: m.editDialogue({ number: 1 }) }).fill('NEW DIALOGUE');
+	await page.getByRole('button', { name: m.saveDialogue() }).click();
+
+	await expect(page.getByText('NEW DIALOGUE')).toBeVisible();
+});

@@ -68,14 +68,18 @@
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
 					{#if currentEditable?.type === EDITABLE_TYPE.DIALOGUE && currentEditable?.index === index}
-						<form>
+						<form method="POST" action={`?/${ACTION.EDIT_DIALOGUE}`}>
+							<input type="hidden" name="comicId" value={comicId} />
+							<input type="hidden" name="panelId" value={panel.id} />
+							<input type="hidden" name="dialogueIndex" value={index} />
 							<label>
 								<span>{m.editDialogue({ number: index + 1 })}</span>
-								<input type="text" value={dialogue} />
+								<input type="text" name="dialogue" value={dialogue} />
 							</label>
+							<button type="submit">{m.saveDialogue()}</button>
 						</form>
 					{:else}
-						{dialogue}
+						<p>{dialogue}</p>
 						<button type="button" onclick={() => startEditing(index, EDITABLE_TYPE.DIALOGUE)}>
 							{m.editDialogue({ number: index + 1 })}
 						</button>
