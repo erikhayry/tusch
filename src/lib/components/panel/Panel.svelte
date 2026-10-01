@@ -3,8 +3,7 @@
 	import { FIELD } from '$lib/utils/db/dbTypes';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
-	import RemoveFieldItemForm from '../removeFieldItemForm/RemoveFieldItemForm.svelte';
-	import TextFieldForm from '../textFieldForm/TextFieldForm.svelte';
+	import FieldActions from './components/fieldActions/FieldActions.svelte';
 	import { type PanelProps } from './panelTypes';
 	import { ACTION } from './utils/actions';
 
@@ -30,28 +29,15 @@
 		<ul aria-labelledby="panel-caption">
 			{#each panel.captions as caption, index (caption)}
 				<li>
-					<TextFieldForm
-						action={ACTION.EDIT_FIELD_ITEM}
-						field={{ value: caption, name: 'value' }}
-						label={m.editCaption({ number: index + 1 })}
-						values={[
-							{ name: 'comicId', value: comicId },
-							{ name: 'panelId', value: panel.id },
-							{ name: 'index', value: index },
-							{ name: 'field', value: FIELD.enum.captions },
-						]}
-						saveActionLabel={m.saveCaption()}
-						editActionLabel={m.editCaption({ number: index + 1 })}
-					/>
-					<RemoveFieldItemForm
-						action={ACTION.DELETE_FIELD_ITEM}
-						values={[
-							{ name: 'comicId', value: comicId },
-							{ name: 'panelId', value: panel.id },
-							{ name: 'index', value: index },
-							{ name: 'field', value: FIELD.enum.captions },
-						]}
-						label={m.removeCaption({ number: index + 1 })}
+					<FieldActions
+						field={FIELD.enum.captions}
+						{comicId}
+						panelId={panel.id}
+						{index}
+						value={caption}
+						editActionLabel={m.editCaption}
+						removeActionLabel={m.removeCaption}
+						saveActionLabel={m.saveCaption}
 					/>
 				</li>
 			{/each}
@@ -61,28 +47,15 @@
 		<ul aria-labelledby="panel-dialogue">
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
-					<TextFieldForm
-						action={ACTION.EDIT_FIELD_ITEM}
-						field={{ value: dialogue, name: 'value' }}
-						label={m.editDialogue({ number: index + 1 })}
-						values={[
-							{ name: 'comicId', value: comicId },
-							{ name: 'panelId', value: panel.id },
-							{ name: 'index', value: index },
-							{ name: 'field', value: FIELD.enum.dialogue },
-						]}
-						saveActionLabel={m.saveDialogue()}
-						editActionLabel={m.editDialogue({ number: index + 1 })}
-					/>
-					<RemoveFieldItemForm
-						action={ACTION.DELETE_FIELD_ITEM}
-						values={[
-							{ name: 'comicId', value: comicId },
-							{ name: 'panelId', value: panel.id },
-							{ name: 'index', value: index },
-							{ name: 'field', value: FIELD.enum.dialogue },
-						]}
-						label={m.removeDialogue({ number: index + 1 })}
+					<FieldActions
+						field={FIELD.enum.dialogue}
+						{comicId}
+						panelId={panel.id}
+						{index}
+						value={dialogue}
+						editActionLabel={m.editDialogue}
+						removeActionLabel={m.removeDialogue}
+						saveActionLabel={m.saveDialogue}
 					/>
 				</li>
 			{/each}

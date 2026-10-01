@@ -16,7 +16,8 @@ export function renderPanel(props = PanelPropsMock[0]) {
 				name: m.editCaption({ number }),
 			}),
 		getCaptions: () => within(getByRole('list', { name: m.captions() })).getAllByRole('listitem'),
-		getSaveCaptionButton: () => getByRole('button', { name: m.saveCaption() }),
+		getSaveCaptionButton: (number: number) =>
+			getByRole('button', { name: m.saveCaption({ number }) }),
 
 		getEditDialoguesField: (number: number) =>
 			within(getByRole('list', { name: m.dialogues() })).getByRole('textbox', {

@@ -36,7 +36,7 @@ describe('Panel', () => {
 
 			await fireEvent.click(getEditCaptionsButton(1));
 
-			expect(getSaveCaptionButton()).toBeInTheDocument();
+			expect(getSaveCaptionButton(1)).toBeInTheDocument();
 		});
 	});
 

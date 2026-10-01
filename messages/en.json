@@ -21,7 +21,7 @@
 	"removeDialogue": "Remove Dialogue {number}",
 	"dialogues": "Dialogues",
 	"editDialogue": "Edit Dialogue {number}",
-	"saveCaption": "Save Caption",
-	"saveDialogue": "Save Dialogue",
+	"saveCaption": "Save Caption {number}",
+	"saveDialogue": "Save Dialogue {number}",
 	"cancel": "Cancel"
 }

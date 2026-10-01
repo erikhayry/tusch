@@ -42,7 +42,7 @@ test('update caption', async ({ page }) => {
 		.click();
 
 	await page.getByRole('textbox', { name: m.editCaption({ number: 1 }) }).fill('NEW CAPTION');
-	await page.getByRole('button', { name: m.saveCaption() }).click();
+	await page.getByRole('button', { name: m.saveCaption({ number: 1 }) }).click();
 
 	await expect(page.getByText('NEW CAPTION')).toBeVisible();
 });
@@ -76,7 +76,7 @@ test('update dialogue', async ({ page }) => {
 		.click();
 
 	await page.getByRole('textbox', { name: m.editDialogue({ number: 1 }) }).fill('NEW DIALOGUE');
-	await page.getByRole('button', { name: m.saveDialogue() }).click();
+	await page.getByRole('button', { name: m.saveDialogue({ number: 1 }) }).click();
 
 	await expect(page.getByText('NEW DIALOGUE')).toBeVisible();
 });
