@@ -1,9 +1,9 @@
-import { removeImage, updatePanelCaptions, updatePanelDialogue } from '$lib/utils/db/db';
+import { removeImage, updateField } from '$lib/utils/db/db';
+import { FIELD } from '$lib/utils/db/dbTypes';
 
 export const ACTION = {
 	DELETE_IMAGE: 'deleteImage',
-	EDIT_CAPTION: 'editCaption',
-	EDIT_DIALOGUE: 'editDialogue',
+	EDIT: 'edit',
 } as const;
 
 export const panelActions = {
@@ -16,37 +16,22 @@ export const panelActions = {
 			removeImage(comicId.toString(), panelId.toString());
 		}
 	},
-	[ACTION.EDIT_CAPTION]: async ({ request }: { request: Request }) => {
-		console.log('edit');
+
+	[ACTION.EDIT]: async ({ request }: { request: Request }) => {
 		const formData = await request.formData();
 		const comicId = formData.get('comicId');
 		const panelId = formData.get('panelId');
-		const captionIndex = formData.get('captionIndex');
-		const caption = formData.get('caption');
-		console.log(comicId, panelId, captionIndex, caption);
+		const index = formData.get('index');
+		const field = FIELD.parse(formData.get('field'));
+		const value = formData.get('value');
 
-		if (comicId && panelId && caption && captionIndex) {
-			updatePanelCaptions(
+		if (comicId && panelId && field && value && index) {
+			updateField(
 				comicId.toString(),
 				panelId.toString(),
-				Number.parseInt(captionIndex?.toString()),
-				caption.toString(),
-			);
-		}
-	},
-	[ACTION.EDIT_DIALOGUE]: async ({ request }: { request: Request }) => {
-		const formData = await request.formData();
-		const comicId = formData.get('comicId');
-		const panelId = formData.get('panelId');
-		const dialogueIndex = formData.get('dialogueIndex');
-		const dialogue = formData.get('dialogue');
-
-		if (comicId && panelId && dialogue && dialogueIndex) {
-			updatePanelDialogue(
-				comicId.toString(),
-				panelId.toString(),
-				Number.parseInt(dialogueIndex?.toString()),
-				dialogue.toString(),
+				field,
+				Number.parseInt(index.toString()),
+				value.toString(),
 			);
 		}
 	},

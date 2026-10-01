@@ -6,7 +6,8 @@ import { chat } from './sdk/openRouter';
 import { buildInitialMessages } from './utils/messages';
 
 function getPanels(response: ChatResult): InitialPanels {
-	return JSON.parse(response.choices[0].message.content).data;
+	//TODO: validate
+	return JSON.parse(response.choices[0].message.content as string).data;
 }
 
 export async function init(source: Url): Promise<Comic> {

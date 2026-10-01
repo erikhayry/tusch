@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
+	import { FIELD } from '$lib/utils/db/dbTypes';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
 	import TextFieldForm from '../textFieldForm/TextFieldForm.svelte';
@@ -29,13 +30,14 @@
 			{#each panel.captions as caption, index (caption)}
 				<li>
 					<TextFieldForm
-						action={ACTION.EDIT_CAPTION}
-						field={{ value: caption, name: 'caption' }}
+						action={ACTION.EDIT}
+						field={{ value: caption, name: 'value' }}
 						label={m.editCaption({ number: index + 1 })}
 						values={[
 							{ name: 'comicId', value: comicId },
 							{ name: 'panelId', value: panel.id },
-							{ name: 'captionIndex', value: index },
+							{ name: 'index', value: index },
+							{ name: 'field', value: FIELD.enum.captions },
 						]}
 						saveActionLabel={m.saveCaption()}
 						editActionLabel={m.editCaption({ number: index + 1 })}
@@ -49,13 +51,14 @@
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
 					<TextFieldForm
-						action={ACTION.EDIT_DIALOGUE}
-						field={{ value: dialogue, name: 'dialogue' }}
+						action={ACTION.EDIT}
+						field={{ value: dialogue, name: 'value' }}
 						label={m.editDialogue({ number: index + 1 })}
 						values={[
 							{ name: 'comicId', value: comicId },
 							{ name: 'panelId', value: panel.id },
-							{ name: 'dialogueIndex', value: index },
+							{ name: 'index', value: index },
+							{ name: 'field', value: FIELD.enum.dialogue },
 						]}
 						saveActionLabel={m.saveDialogue()}
 						editActionLabel={m.editDialogue({ number: index + 1 })}

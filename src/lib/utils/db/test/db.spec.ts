@@ -5,8 +5,7 @@ import {
 	getComic,
 	removeComic,
 	removeImage,
-	updatePanelCaptions,
-	updatePanelDialogue,
+	updateField,
 } from '$lib/utils/db/db';
 import { beforeEach, describe, expect, it } from 'vitest';
 
@@ -50,7 +49,7 @@ describe('Db', () => {
 
 	describe('captions', () => {
 		it('should update panel captions', () => {
-			updatePanelCaptions(Comic1.id, Comic1.panels[0].id, 0, 'NEW CAPTION');
+			updateField(Comic1.id, Comic1.panels[0].id, 'captions', 0, 'NEW CAPTION');
 
 			expect(getComic(Comic1.id)?.panels[0].captions[0]).toEqual('NEW CAPTION');
 		});
@@ -58,7 +57,7 @@ describe('Db', () => {
 
 	describe('dialogue', () => {
 		it('should update panel dialogue', () => {
-			updatePanelDialogue(Comic1.id, Comic1.panels[0].id, 0, 'NEW DIALOGUE');
+			updateField(Comic1.id, Comic1.panels[0].id, 'dialogue', 0, 'NEW DIALOGUE');
 
 			expect(getComic(Comic1.id)?.panels[0].dialogue[0]).toEqual('NEW DIALOGUE');
 		});
