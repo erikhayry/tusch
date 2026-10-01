@@ -1,4 +1,5 @@
 import type { Comic } from '$lib/types/index.js';
+import { globalActions } from '$lib/utils/actions';
 import { getComic, getComics } from '$lib/utils/db/db.js';
 import { error } from '@sveltejs/kit';
 
@@ -15,3 +16,5 @@ export function load({ params }) {
 
 	return { comic };
 }
+
+export const actions = globalActions;

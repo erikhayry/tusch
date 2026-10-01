@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { m } from '$lib/paraglide/messages';
+	import { ACTION } from '$lib/utils/actions';
+	import { FIELD } from '$lib/utils/db/dbTypes';
 	import Character from '../charachter/Character.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
+	import RemoveFieldItemForm from '../removeFieldItemForm/RemoveFieldItemForm.svelte';
 	import Setting from '../setting/Setting.svelte';
 	import { type ComicProps } from './comicTypes';
 
@@ -26,6 +29,16 @@
 						<a href={resolve(`/comic/${comic.id}/${panel.id}`)}>
 							<PanelThumbnail {panel} alt={panel.id} />
 						</a>
+						<RemoveFieldItemForm
+							action={ACTION.DELETE_FIELD_ITEM}
+							label={m.deletePanel({ number: index + 1 })}
+							values={[
+								{ name: 'comicId', value: comic.id },
+								{ name: 'panelId', value: panel.id },
+								{ name: 'index', value: index },
+								{ name: 'field', value: FIELD.enum.panels },
+							]}
+						/>
 					</li>
 				{/each}
 			</ul>

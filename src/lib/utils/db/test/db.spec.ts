@@ -49,6 +49,16 @@ describe('Db', () => {
 		});
 	});
 
+	it('should remove panel', () => {
+		const initialLength = getComic(Comic1.id)!.panels.length;
+
+		expect(getComic(Comic1.id)?.panels.length).toEqual(initialLength);
+
+		removeFieldItem(Comic1.id, Comic1.panels[0].id, FIELD.enum.panels, 0);
+
+		expect(getComic(Comic1.id)?.panels.length).toEqual(initialLength - 1);
+	});
+
 	describe('captions', () => {
 		it('should update panel captions', () => {
 			updateFieldItem(Comic1.id, Comic1.panels[0].id, FIELD.enum.captions, 0, 'NEW CAPTION');

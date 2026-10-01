@@ -1,7 +1,7 @@
 <script lang="ts">
 	import RemoveFieldItemForm from '$lib/components/removeFieldItemForm/RemoveFieldItemForm.svelte';
 	import TextFieldForm from '$lib/components/textFieldForm/TextFieldForm.svelte';
-	import { ACTION } from '../../utils/actions';
+	import { ACTION } from '$lib/utils/actions';
 	import { type FieldActionsProps } from './fieldActionsTypes';
 
 	let {

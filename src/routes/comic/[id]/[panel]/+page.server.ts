@@ -1,5 +1,5 @@
-import { panelActions } from '$lib/components/panel/utils/actions';
 import type { Panel } from '$lib/types/index';
+import { globalActions } from '$lib/utils/actions';
 import { getComic } from '$lib/utils/db/db';
 import { error } from '@sveltejs/kit';
 
@@ -26,4 +26,4 @@ export function load({ params }): Data {
 	};
 }
 
-export const actions = panelActions;
+export const actions = globalActions;

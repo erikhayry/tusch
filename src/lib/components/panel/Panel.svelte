@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
+	import { ACTION } from '$lib/utils/actions';
 	import { FIELD } from '$lib/utils/db/dbTypes';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
 	import FieldActions from './components/fieldActions/FieldActions.svelte';
 	import { type PanelProps } from './panelTypes';
-	import { ACTION } from './utils/actions';
 
 	let { number, totalNumberOfPanels, panel, comicId }: PanelProps = $props();
 </script>

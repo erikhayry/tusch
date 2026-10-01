@@ -18,6 +18,8 @@ export function renderComic(props = ComicPropsMock[0]) {
 		getPanel: () => within(getByRole('list', { name: m.panels() })).getAllByRole('listitem'),
 		getSetting: () => getByTestId(SettingTestId),
 		getSource: () => getByRole('link', { name: source }),
+		getDeletePanelButton: (number: number) =>
+			getByRole('button', { name: m.deletePanel({ number }) }),
 		props,
 	};
 }

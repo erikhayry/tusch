@@ -23,5 +23,6 @@
 	"editDialogue": "Edit Dialogue {number}",
 	"saveCaption": "Save Caption {number}",
 	"saveDialogue": "Save Dialogue {number}",
-	"cancel": "Cancel"
+	"cancel": "Cancel",
+	"deletePanel": "Delete Panel {number}"
 }

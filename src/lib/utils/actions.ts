@@ -18,7 +18,7 @@ async function getFieldValues(request: Request) {
 	return { comicId, panelId, index, field, value };
 }
 
-export const panelActions = {
+export const globalActions = {
 	[ACTION.DELETE_IMAGE]: async ({ request }: { request: Request }) => {
 		const { comicId, panelId } = await getFieldValues(request);
 

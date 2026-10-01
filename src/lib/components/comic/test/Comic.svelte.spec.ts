@@ -20,6 +20,12 @@ describe('Comic', () => {
 		expect(getPanel()).toHaveLength(props.comic.panels.length);
 	});
 
+	it('should show delete panel button', () => {
+		const { getDeletePanelButton } = renderComic();
+
+		expect(getDeletePanelButton(1)).toBeInTheDocument();
+	});
+
 	it('should render charachters', () => {
 		const { getCharacters, props } = renderComic();
 

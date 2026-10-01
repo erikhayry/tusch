@@ -1,6 +1,6 @@
 import { type Comic, type Panel } from '$lib/types';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
-import type { Field } from './dbTypes';
+import { FIELD, type Field } from './dbTypes';
 
 const DB: Map<string, Comic> = new Map();
 
@@ -63,10 +63,21 @@ export function removeFieldItem(
 	field: Field,
 	index: number,
 ): Comic[] {
-	const panel = findPanel(comicId, panelId);
-
-	if (panel) {
-		panel[field] = panel[field].filter((_, i) => i !== index);
+	switch (field) {
+		case FIELD.enum.panels: {
+			const comic = getComic(comicId);
+			if (comic) {
+				comic.panels = comic.panels.filter((_, i) => i !== index);
+			}
+			break;
+		}
+		case FIELD.enum.dialogue:
+		case FIELD.enum.captions: {
+			const panel = findPanel(comicId, panelId);
+			if (panel) {
+				panel[field] = panel[field].filter((_, i) => i !== index);
+			}
+		}
 	}
 
 	return getComics();
@@ -79,10 +90,15 @@ export function updateFieldItem(
 	index: number,
 	value: string,
 ): Comic[] {
-	const panel = findPanel(comicId, panelId);
-
-	if (panel) {
-		panel[field][index] = value;
+	switch (field) {
+		case FIELD.enum.dialogue:
+		case FIELD.enum.captions: {
+			const panel = findPanel(comicId, panelId);
+			if (panel) {
+				panel[field][index] = value;
+			}
+			break;
+		}
 	}
 
 	return getComics();
