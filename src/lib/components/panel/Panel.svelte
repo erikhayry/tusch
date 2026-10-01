@@ -2,25 +2,11 @@
 	import { m } from '$lib/paraglide/messages';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
+	import TextFieldForm from '../textFieldForm/TextFieldForm.svelte';
 	import { type PanelProps } from './panelTypes';
 	import { ACTION } from './utils/actions';
 
-	const EDITABLE_TYPE = {
-		CAPTION: 'caption',
-		DIALOGUE: 'dialogue',
-	} as const;
-	type EditableType = (typeof EDITABLE_TYPE)[keyof typeof EDITABLE_TYPE];
-
-	let currentEditable = $state<{
-		index: number;
-		type: EditableType;
-	} | null>(null);
-
 	let { number, totalNumberOfPanels, panel, comicId }: PanelProps = $props();
-
-	function startEditing(index: number, type: EditableType) {
-		currentEditable = { index, type };
-	}
 </script>
 
 <Section>
@@ -42,23 +28,18 @@
 		<ul aria-labelledby="panel-caption">
 			{#each panel.captions as caption, index (caption)}
 				<li>
-					{#if currentEditable?.type === EDITABLE_TYPE.CAPTION && currentEditable?.index === index}
-						<form method="POST" action={`?/${ACTION.EDIT_CAPTION}`}>
-							<input type="hidden" name="comicId" value={comicId} />
-							<input type="hidden" name="panelId" value={panel.id} />
-							<input type="hidden" name="captionIndex" value={index} />
-							<label>
-								<span>{m.editCaption({ number: index + 1 })}</span>
-								<input type="text" name="caption" value={caption} />
-							</label>
-							<button type="submit">{m.saveCaption()}</button>
-						</form>
-					{:else}
-						<p>{caption}</p>
-						<button type="button" onclick={() => startEditing(index, EDITABLE_TYPE.CAPTION)}>
-							{m.editCaption({ number: index + 1 })}
-						</button>
-					{/if}
+					<TextFieldForm
+						action={ACTION.EDIT_CAPTION}
+						field={{ value: caption, name: 'caption' }}
+						label={m.editCaption({ number: index + 1 })}
+						values={[
+							{ name: 'comicId', value: comicId },
+							{ name: 'panelId', value: panel.id },
+							{ name: 'captionIndex', value: index },
+						]}
+						saveActionLabel={m.saveCaption()}
+						editActionLabel={m.editCaption({ number: index + 1 })}
+					/>
 				</li>
 			{/each}
 		</ul>
@@ -67,23 +48,18 @@
 		<ul aria-labelledby="panel-dialogue">
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
-					{#if currentEditable?.type === EDITABLE_TYPE.DIALOGUE && currentEditable?.index === index}
-						<form method="POST" action={`?/${ACTION.EDIT_DIALOGUE}`}>
-							<input type="hidden" name="comicId" value={comicId} />
-							<input type="hidden" name="panelId" value={panel.id} />
-							<input type="hidden" name="dialogueIndex" value={index} />
-							<label>
-								<span>{m.editDialogue({ number: index + 1 })}</span>
-								<input type="text" name="dialogue" value={dialogue} />
-							</label>
-							<button type="submit">{m.saveDialogue()}</button>
-						</form>
-					{:else}
-						<p>{dialogue}</p>
-						<button type="button" onclick={() => startEditing(index, EDITABLE_TYPE.DIALOGUE)}>
-							{m.editDialogue({ number: index + 1 })}
-						</button>
-					{/if}
+					<TextFieldForm
+						action={ACTION.EDIT_DIALOGUE}
+						field={{ value: dialogue, name: 'dialogue' }}
+						label={m.editDialogue({ number: index + 1 })}
+						values={[
+							{ name: 'comicId', value: comicId },
+							{ name: 'panelId', value: panel.id },
+							{ name: 'dialogueIndex', value: index },
+						]}
+						saveActionLabel={m.saveDialogue()}
+						editActionLabel={m.editDialogue({ number: index + 1 })}
+					/>
 				</li>
 			{/each}
 		</ul>

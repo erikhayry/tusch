@@ -17,11 +17,13 @@ export const panelActions = {
 		}
 	},
 	[ACTION.EDIT_CAPTION]: async ({ request }: { request: Request }) => {
+		console.log('edit');
 		const formData = await request.formData();
 		const comicId = formData.get('comicId');
 		const panelId = formData.get('panelId');
 		const captionIndex = formData.get('captionIndex');
 		const caption = formData.get('caption');
+		console.log(comicId, panelId, captionIndex, caption);
 
 		if (comicId && panelId && caption && captionIndex) {
 			updatePanelCaptions(
