@@ -17,4 +17,15 @@ describe('TextFieldForm', () => {
 		expect(getInputField()).toHaveValue(props.field.value);
 		expect(getSaveButton()).toBeInTheDocument();
 	});
+
+	it('should hide text field on cancel', async () => {
+		const { getTextValue, getEditButton, queryInputField, getCancelButton, props } =
+			renderTextFieldForm();
+
+		await fireEvent.click(getEditButton());
+		await fireEvent.click(getCancelButton());
+
+		expect(getTextValue()).toHaveTextContent(props.field.value);
+		expect(queryInputField()).not.toBeInTheDocument();
+	});
 });

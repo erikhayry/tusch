@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { m } from '$lib/paraglide/messages';
 	import { type TextFieldFormProps } from './textFieldFormTypes';
 
 	let editable = $state(false);
@@ -6,8 +7,8 @@
 	let { action, values, field, label, saveActionLabel, editActionLabel }: TextFieldFormProps =
 		$props();
 
-	function startEditing() {
-		editable = true;
+	function toggleEditing() {
+		editable = !editable;
 	}
 </script>
 
@@ -22,10 +23,11 @@
 			<input type="text" name={field.name} value={field.value} />
 		</label>
 		<button type="submit">{saveActionLabel}</button>
+		<button type="button" onclick={toggleEditing}>{m.cancel()}</button>
 	</form>
 {:else}
 	<p>{field.value}</p>
-	<button type="button" onclick={startEditing}>
+	<button type="button" onclick={toggleEditing}>
 		{editActionLabel}
 	</button>
 {/if}
