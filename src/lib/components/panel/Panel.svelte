@@ -30,7 +30,7 @@
 			{#each panel.captions as caption, index (caption)}
 				<li>
 					<TextFieldForm
-						action={ACTION.EDIT}
+						action={ACTION.EDIT_FIELD_ITEM}
 						field={{ value: caption, name: 'value' }}
 						label={m.editCaption({ number: index + 1 })}
 						values={[
@@ -42,6 +42,13 @@
 						saveActionLabel={m.saveCaption()}
 						editActionLabel={m.editCaption({ number: index + 1 })}
 					/>
+					<form method="POST" action={`?/${ACTION.DELETE_FIELD_ITEM}`}>
+						<input type="hidden" name="comicId" value={comicId} />
+						<input type="hidden" name="panelId" value={panel.id} />
+						<input type="hidden" name="index" value={index} />
+						<input type="hidden" name="field" value={FIELD.enum.captions} />
+						<button type="submit">{m.removeCaption({ number: index + 1 })}</button>
+					</form>
 				</li>
 			{/each}
 		</ul>
@@ -51,7 +58,7 @@
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
 					<TextFieldForm
-						action={ACTION.EDIT}
+						action={ACTION.EDIT_FIELD_ITEM}
 						field={{ value: dialogue, name: 'value' }}
 						label={m.editDialogue({ number: index + 1 })}
 						values={[

@@ -47,6 +47,23 @@ test('update caption', async ({ page }) => {
 	await expect(page.getByText('NEW CAPTION')).toBeVisible();
 });
 
+test('remove caption', async ({ page }) => {
+	//TODO: re-seed
+	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[1].id}`);
+
+	await expect(page.getByText(ComicsMock[0].panels[1].captions[0])).toBeVisible();
+
+	await page
+		.getByRole('button', {
+			name: m.removeCaption({
+				number: 1,
+			}),
+		})
+		.click();
+
+	await expect(page.getByText(ComicsMock[0].panels[1].captions[0])).toBeHidden();
+});
+
 test('update dialogue', async ({ page }) => {
 	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
 

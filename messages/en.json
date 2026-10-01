@@ -17,6 +17,7 @@
 	"removeImage": "Remove Image",
 	"captions": "Captions",
 	"editCaption": "Edit Caption {number}",
+	"removeCaption": "Remove Caption {number}",
 	"dialogues": "Dialogues",
 	"editDialogue": "Edit Dialogue {number}",
 	"saveCaption": "Save Caption",

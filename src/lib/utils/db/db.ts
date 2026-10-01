@@ -57,7 +57,22 @@ export function removeImage(comicId: string, panelId: string): Comic[] {
 	return getComics();
 }
 
-export function updateField(
+export function removeFieldItem(
+	comicId: string,
+	panelId: string,
+	field: Field,
+	index: number,
+): Comic[] {
+	const panel = findPanel(comicId, panelId);
+
+	if (panel) {
+		panel[field] = panel[field].filter((_, i) => i !== index);
+	}
+
+	return getComics();
+}
+
+export function updateFieldItem(
 	comicId: string,
 	panelId: string,
 	field: Field,
@@ -65,8 +80,6 @@ export function updateField(
 	value: string,
 ): Comic[] {
 	const panel = findPanel(comicId, panelId);
-
-	console.log(panel, field, index, value);
 
 	if (panel) {
 		panel[field][index] = value;
