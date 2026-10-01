@@ -5,17 +5,21 @@
 	import { type PanelProps } from './panelTypes';
 	import { ACTION } from './utils/actions';
 
-	let currentCaption = $state<number | null>(null);
-	let currentDialogue = $state<number | null>(null);
+	const EDITABLE_TYPE = {
+		CAPTION: 'caption',
+		DIALOGUE: 'dialogue',
+	} as const;
+	type EditableType = (typeof EDITABLE_TYPE)[keyof typeof EDITABLE_TYPE];
+
+	let currentEditable = $state<{
+		index: number;
+		type: EditableType;
+	} | null>(null);
 
 	let { number, totalNumberOfPanels, panel, comicId }: PanelProps = $props();
 
-	function startEditingCaption(index: number) {
-		currentCaption = index;
-	}
-
-	function startEditingDialogue(index: number) {
-		currentDialogue = index;
+	function startEditing(index: number, type: EditableType) {
+		currentEditable = { index, type };
 	}
 </script>
 
@@ -38,7 +42,7 @@
 		<ul aria-labelledby="panel-caption">
 			{#each panel.captions as caption, index (caption)}
 				<li>
-					{#if currentCaption === index}
+					{#if currentEditable?.type === EDITABLE_TYPE.CAPTION && currentEditable?.index === index}
 						<form method="POST" action={`?/${ACTION.EDIT_CAPTION}`}>
 							<input type="hidden" name="comicId" value={comicId} />
 							<input type="hidden" name="panelId" value={panel.id} />
@@ -51,7 +55,7 @@
 						</form>
 					{:else}
 						<p>{caption}</p>
-						<button type="button" onclick={() => startEditingCaption(index)}>
+						<button type="button" onclick={() => startEditing(index, EDITABLE_TYPE.CAPTION)}>
 							{m.editCaption({ number: index + 1 })}
 						</button>
 					{/if}
@@ -63,7 +67,7 @@
 		<ul aria-labelledby="panel-dialogue">
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
-					{#if currentDialogue === index}
+					{#if currentEditable?.type === EDITABLE_TYPE.DIALOGUE && currentEditable?.index === index}
 						<form>
 							<label>
 								<span>{m.editDialogue({ number: index + 1 })}</span>
@@ -72,7 +76,7 @@
 						</form>
 					{:else}
 						{dialogue}
-						<button type="button" onclick={() => startEditingDialogue(index)}>
+						<button type="button" onclick={() => startEditing(index, EDITABLE_TYPE.DIALOGUE)}>
 							{m.editDialogue({ number: index + 1 })}
 						</button>
 					{/if}
