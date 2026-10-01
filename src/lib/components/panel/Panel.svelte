@@ -3,6 +3,7 @@
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
 	import { type PanelProps } from './panelTypes';
+	import { ACTION } from './utils/actions';
 
 	let currentCaption = $state<number | null>(null);
 	let currentDialogue = $state<number | null>(null);
@@ -25,7 +26,7 @@
 		<button type="button" onclick={() => {}}>{m.addImage()}</button>
 	{:else}
 		<img src={panel.image.wide.src} alt={panel.image.alt} />
-		<form method="POST" action="?/deleteImage">
+		<form method="POST" action={`?/${ACTION.DELETE_IMAGE}`}>
 			<input type="hidden" name="comicId" value={comicId} />
 			<input type="hidden" name="panelId" value={panel.id} />
 			<button type="submit">{m.removeImage()}</button>
@@ -38,7 +39,7 @@
 			{#each panel.captions as caption, index (caption)}
 				<li>
 					{#if currentCaption === index}
-						<form method="POST" action="?/editCaption">
+						<form method="POST" action={`?/${ACTION.EDIT_CAPTION}`}>
 							<input type="hidden" name="comicId" value={comicId} />
 							<input type="hidden" name="panelId" value={panel.id} />
 							<input type="hidden" name="captionIndex" value={index} />
