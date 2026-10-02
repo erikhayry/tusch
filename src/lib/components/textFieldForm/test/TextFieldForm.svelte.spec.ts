@@ -6,7 +6,7 @@ describe('TextFieldForm', () => {
 	it('should show value', () => {
 		const { getTextValue, props } = renderTextFieldForm();
 
-		expect(getTextValue()).toHaveTextContent(props.field.value);
+		expect(getTextValue()).toHaveTextContent(props.values.value);
 	});
 
 	it('should show text field', async () => {
@@ -14,7 +14,7 @@ describe('TextFieldForm', () => {
 
 		await fireEvent.click(getEditButton());
 
-		expect(getInputField()).toHaveValue(props.field.value);
+		expect(getInputField()).toHaveValue(props.values.value);
 		expect(getSaveButton()).toBeInTheDocument();
 	});
 
@@ -25,7 +25,7 @@ describe('TextFieldForm', () => {
 		await fireEvent.click(getEditButton());
 		await fireEvent.click(getCancelButton());
 
-		expect(getTextValue()).toHaveTextContent(props.field.value);
+		expect(getTextValue()).toHaveTextContent(props.values.value);
 		expect(queryInputField()).not.toBeInTheDocument();
 	});
 });

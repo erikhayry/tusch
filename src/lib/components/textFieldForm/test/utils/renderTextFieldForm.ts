@@ -4,7 +4,10 @@ import { m } from '$lib/paraglide/messages';
 import { render } from '@testing-library/svelte';
 
 export function renderTextFieldForm(
-	props = { ...TextFieldFormPropsMock[0], field: { value: 'VALUE', name: 'NAME' } },
+	props = {
+		...TextFieldFormPropsMock[0],
+		values: { ...TextFieldFormPropsMock[0].values, value: 'VALUE' },
+	},
 ) {
 	const { getByRole, queryByRole } = render(TextFieldForm, props);
 

@@ -29,11 +29,13 @@
 			{#each panel.captions as caption, index (caption)}
 				<li>
 					<FieldActions
-						field={DB_ITEM_TYPE.enum.captions}
-						{comicId}
-						panelId={panel.id}
-						{index}
-						value={caption}
+						values={{
+							type: DB_ITEM_TYPE.enum.captions,
+							comicId,
+							panelId: panel.id,
+							index,
+							value: caption,
+						}}
 						editActionLabel={m.editCaption}
 						removeActionLabel={m.deleteCaption}
 						saveActionLabel={m.saveCaption}
@@ -47,11 +49,13 @@
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
 					<FieldActions
-						field={DB_ITEM_TYPE.enum.dialogue}
-						{comicId}
-						panelId={panel.id}
-						{index}
-						value={dialogue}
+						values={{
+							type: DB_ITEM_TYPE.enum.dialogue,
+							comicId,
+							panelId: panel.id,
+							index,
+							value: dialogue,
+						}}
 						editActionLabel={m.editDialogue}
 						removeActionLabel={m.deleteDialogue}
 						saveActionLabel={m.saveDialogue}

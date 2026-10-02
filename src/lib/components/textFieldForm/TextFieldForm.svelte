@@ -4,8 +4,7 @@
 
 	let editable = $state(false);
 
-	let { action, values, field, label, saveActionLabel, editActionLabel }: TextFieldFormProps =
-		$props();
+	let { action, values, label, saveActionLabel, editActionLabel }: TextFieldFormProps = $props();
 
 	function toggleEditing() {
 		editable = !editable;
@@ -14,19 +13,22 @@
 
 {#if editable}
 	<form method="POST" action={`?/${action}`}>
-		{#each values as value (value.name)}
-			<input type="hidden" name={value.name} value={value.value} />
+		{#each Object.entries(values) as entry (entry[0])}
+			{#if entry[0] === 'value'}
+				<label>
+					<span>{label}</span>
+					<input type="text" name={entry[0]} value={entry[1]} />
+				</label>
+			{:else}
+				<input type="hidden" name={entry[0]} value={entry[1]} />
+			{/if}
 		{/each}
 
-		<label>
-			<span>{label}</span>
-			<input type="text" name={field.name} value={field.value} />
-		</label>
 		<button type="submit">{saveActionLabel}</button>
 		<button type="button" onclick={toggleEditing}>{m.cancel()}</button>
 	</form>
 {:else}
-	<p>{field.value}</p>
+	<p>{values.value}</p>
 	<button type="button" onclick={toggleEditing}>
 		{editActionLabel}
 	</button>

@@ -1,4 +1,4 @@
-import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
+import { EditValuesSchema } from '$lib/utils/db/dbTypes';
 import { z } from 'zod';
 
 const LabelSchema = z.function({
@@ -9,12 +9,9 @@ const LabelSchema = z.function({
 	],
 	output: z.string(),
 });
+
 export const FieldActionsPropsSchema = z.object({
-	field: DB_ITEM_TYPE,
-	comicId: z.string(),
-	panelId: z.string(),
-	index: z.number(),
-	value: z.string(),
+	values: EditValuesSchema,
 	editActionLabel: LabelSchema,
 	saveActionLabel: LabelSchema,
 	removeActionLabel: LabelSchema,
