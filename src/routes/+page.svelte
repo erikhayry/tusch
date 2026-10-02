@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import DeleteItemForm from '$lib/components/deleteItemForm/DeleteItemForm.svelte';
+	import DeleteItemForm from '$lib/components/forms/deleteItemForm/DeleteItemForm.svelte';
 	import Page from '$lib/components/page/Page.svelte';
 	import Heading from '$lib/components/relativeHeading/Heading.svelte';
 	import Section from '$lib/components/relativeHeading/Section.svelte';

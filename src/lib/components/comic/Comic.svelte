@@ -3,7 +3,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import Character from '../charachter/Character.svelte';
-	import DeleteItemForm from '../deleteItemForm/DeleteItemForm.svelte';
+	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';

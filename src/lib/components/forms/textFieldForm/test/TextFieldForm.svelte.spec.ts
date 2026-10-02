@@ -1,4 +1,4 @@
-import { renderTextFieldForm } from '$lib/components/textFieldForm/test/utils/renderTextFieldForm';
+import { renderTextFieldForm } from '$lib/components/forms/textFieldForm/test/utils/renderTextFieldForm';
 import { fireEvent } from '@testing-library/svelte';
 import { describe, expect, it } from 'vitest';
 

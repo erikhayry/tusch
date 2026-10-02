@@ -1,4 +1,4 @@
-import { RemoveFieldItemFormPropsMock } from '$lib/components/deleteItemForm/test/utils/mockDeleteItemForm';
+import { RemoveFieldItemFormPropsMock } from '$lib/components/forms/deleteItemForm/test/utils/mockDeleteItemForm';
 
 import { render } from '@testing-library/svelte';
 import DeleteItemForm from '../../DeleteItemForm.svelte';

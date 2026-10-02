@@ -1,5 +1,5 @@
-import TextFieldForm from '$lib/components/textFieldForm/TextFieldForm.svelte';
-import { TextFieldFormPropsMock } from '$lib/components/textFieldForm/test/utils/mocktextFieldForm';
+import { TextFieldFormPropsMock } from '$lib/components/forms/textFieldForm/test/utils/mocktextFieldForm';
+import TextFieldForm from '$lib/components/forms/textFieldForm/TextFieldForm.svelte';
 import { m } from '$lib/paraglide/messages';
 import { render } from '@testing-library/svelte';
 

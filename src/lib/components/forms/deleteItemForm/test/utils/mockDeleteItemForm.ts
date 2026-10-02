@@ -1,4 +1,4 @@
-import { DeleteItemFormPropsSchema } from '$lib/components/deleteItemForm/deleteItemFormTypes';
+import { DeleteItemFormPropsSchema } from '$lib/components/forms/deleteItemForm/deleteItemFormTypes';
 import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
 
 export function getRemoveFieldItemFormPropMock() {

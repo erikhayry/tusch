@@ -1,5 +1,5 @@
+import { TextFieldFormPropsSchema } from '$lib/components/forms/textFieldForm/textFieldFormTypes';
 import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
-import { TextFieldFormPropsSchema } from '$lib/components/textFieldForm/textFieldFormTypes';
 
 export function getTextFieldFormPropMock() {
 	return generateMock(TextFieldFormPropsSchema);
