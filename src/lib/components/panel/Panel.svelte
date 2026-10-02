@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
+	import DeleteItemForm from '../deleteItemForm/DeleteItemForm.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
-	import RemoveFieldItemForm from '../removeFieldItemForm/RemoveFieldItemForm.svelte';
 	import FieldActions from './components/fieldActions/FieldActions.svelte';
 	import { type PanelProps } from './panelTypes';
 
@@ -17,7 +17,7 @@
 		<button type="button" onclick={() => {}}>{m.addImage()}</button>
 	{:else}
 		<img src={panel.image.wide.src} alt={panel.image.alt} />
-		<RemoveFieldItemForm
+		<DeleteItemForm
 			label={m.removeImage()}
 			values={{ type: DB_ITEM_TYPE.enum.image, comicId, panelId: panel.id }}
 		/>
@@ -35,7 +35,7 @@
 						{index}
 						value={caption}
 						editActionLabel={m.editCaption}
-						removeActionLabel={m.removeCaption}
+						removeActionLabel={m.deleteCaption}
 						saveActionLabel={m.saveCaption}
 					/>
 				</li>
@@ -53,7 +53,7 @@
 						{index}
 						value={dialogue}
 						editActionLabel={m.editDialogue}
-						removeActionLabel={m.removeDialogue}
+						removeActionLabel={m.deleteDialogue}
 						saveActionLabel={m.saveDialogue}
 					/>
 				</li>

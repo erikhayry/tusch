@@ -1,5 +1,5 @@
 <script lang="ts">
-	import RemoveFieldItemForm from '$lib/components/removeFieldItemForm/RemoveFieldItemForm.svelte';
+	import DeleteItemForm from '$lib/components/deleteItemForm/DeleteItemForm.svelte';
 	import TextFieldForm from '$lib/components/textFieldForm/TextFieldForm.svelte';
 	import { ACTION } from '$lib/utils/actions';
 	import { type FieldActionsProps } from './fieldActionsTypes';
@@ -31,7 +31,7 @@
 	editActionLabel={editActionLabel({ number })}
 />
 
-<RemoveFieldItemForm
+<DeleteItemForm
 	label={removeActionLabel({ number })}
 	values={{
 		comicId,

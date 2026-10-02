@@ -38,7 +38,7 @@ test('remove caption', async ({ page }) => {
 
 	await page
 		.getByRole('button', {
-			name: m.removeCaption({
+			name: m.deleteCaption({
 				number: 1,
 			}),
 		})
@@ -71,7 +71,7 @@ test('remove dialogue', async ({ page }) => {
 
 	await page
 		.getByRole('button', {
-			name: m.removeDialogue({
+			name: m.deleteDialogue({
 				number: 1,
 			}),
 		})

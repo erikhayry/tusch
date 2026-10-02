@@ -3,10 +3,10 @@
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import Character from '../charachter/Character.svelte';
+	import DeleteItemForm from '../deleteItemForm/DeleteItemForm.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
-	import RemoveFieldItemForm from '../removeFieldItemForm/RemoveFieldItemForm.svelte';
 	import Setting from '../setting/Setting.svelte';
 	import { type ComicProps } from './comicTypes';
 
@@ -28,7 +28,7 @@
 						<a href={resolve(`/comic/${comic.id}/${panel.id}`)}>
 							<PanelThumbnail {panel} alt={panel.id} />
 						</a>
-						<RemoveFieldItemForm
+						<DeleteItemForm
 							label={m.deletePanel({ number: index + 1 })}
 							values={{
 								comicId: comic.id,
