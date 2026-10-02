@@ -1,6 +1,6 @@
 import { type Comic, type Panel } from '$lib/types';
-import { ComicsMock } from '$lib/types/test/utils/mockTypes';
-import { FIELD, type Field } from './dbTypes';
+import { getComicsMock } from '$lib/types/test/utils/mockTypes';
+import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from './dbTypes';
 
 const DB: Map<string, Comic> = new Map();
 
@@ -8,7 +8,7 @@ seedDB();
 
 export function seedDB(): void {
 	clearComics();
-	ComicsMock.forEach((comic) => {
+	getComicsMock().forEach((comic) => {
 		addComic(comic);
 	});
 }
@@ -27,7 +27,7 @@ export function addComic(comic: Comic): Comic[] {
 	return getComics();
 }
 
-export function removeComic(id: string): Comic[] {
+export function deleteComic(id: string): Comic[] {
 	DB.delete(id);
 
 	return getComics();
@@ -47,7 +47,7 @@ function findPanel(comicId: string, panelId: string): Panel | undefined {
 	return getComic(comicId)?.panels.find((panel) => panel.id === panelId);
 }
 
-export function removeImage(comicId: string, panelId: string): Comic[] {
+export function deleteImage(comicId: string, panelId: string): Comic[] {
 	const panel = findPanel(comicId, panelId);
 
 	if (panel) {
@@ -57,25 +57,31 @@ export function removeImage(comicId: string, panelId: string): Comic[] {
 	return getComics();
 }
 
-export function removeFieldItem(
-	comicId: string,
-	panelId: string,
-	field: Field,
-	index: number,
-): Comic[] {
-	switch (field) {
-		case FIELD.enum.panels: {
-			const comic = getComic(comicId);
+export function deleteType(values: DeleteValues): Comic[] {
+	switch (values.type) {
+		case DB_ITEM_TYPE.enum.image: {
+			deleteImage(values.comicId, values.panelId);
+			break;
+		}
+
+		case DB_ITEM_TYPE.enum.comics: {
+			deleteComic(values.comicId);
+			break;
+		}
+
+		case DB_ITEM_TYPE.enum.panels: {
+			const comic = getComic(values.comicId);
 			if (comic) {
-				comic.panels = comic.panels.filter((_, i) => i !== index);
+				comic.panels = comic.panels.filter((panel) => panel.id !== values.panelId);
 			}
 			break;
 		}
-		case FIELD.enum.dialogue:
-		case FIELD.enum.captions: {
-			const panel = findPanel(comicId, panelId);
+
+		case DB_ITEM_TYPE.enum.dialogue:
+		case DB_ITEM_TYPE.enum.captions: {
+			const panel = findPanel(values.comicId, values.panelId);
 			if (panel) {
-				panel[field] = panel[field].filter((_, i) => i !== index);
+				panel[values.type] = panel[values.type].filter((_, index) => index !== values.index);
 			}
 		}
 	}
@@ -83,19 +89,13 @@ export function removeFieldItem(
 	return getComics();
 }
 
-export function updateFieldItem(
-	comicId: string,
-	panelId: string,
-	field: Field,
-	index: number,
-	value: string,
-): Comic[] {
-	switch (field) {
-		case FIELD.enum.dialogue:
-		case FIELD.enum.captions: {
-			const panel = findPanel(comicId, panelId);
+export function editType(values: EditValues): Comic[] {
+	switch (values.type) {
+		case DB_ITEM_TYPE.enum.dialogue:
+		case DB_ITEM_TYPE.enum.captions: {
+			const panel = findPanel(values.comicId, values.panelId);
 			if (panel) {
-				panel[field][index] = value;
+				panel[values.type][values.index] = values.value;
 			}
 			break;
 		}

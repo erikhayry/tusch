@@ -2,14 +2,14 @@ import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import {
 	addComic,
 	clearComics,
+	deleteComic,
+	deleteImage,
+	deleteType,
+	editType,
 	getComic,
-	removeComic,
-	removeFieldItem,
-	removeImage,
-	updateFieldItem,
 } from '$lib/utils/db/db';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { FIELD } from '../dbTypes';
+import { DB_ITEM_TYPE } from '../dbTypes';
 
 const [Comic1, Comic2] = ComicsMock;
 
@@ -35,7 +35,7 @@ describe('Db', () => {
 		it('should remove comic', () => {
 			addComic(Comic2);
 
-			expect(removeComic(Comic1.id)).toEqual([Comic2]);
+			expect(deleteComic(Comic1.id)).toEqual([Comic2]);
 		});
 	});
 
@@ -43,7 +43,7 @@ describe('Db', () => {
 		it('should remove image', () => {
 			expect(getComic(Comic1.id)?.panels[0].image).toBeDefined();
 
-			removeImage(Comic1.id, Comic1.panels[0].id);
+			deleteImage(Comic1.id, Comic1.panels[0].id);
 
 			expect(getComic(Comic1.id)?.panels[0].image).toBeUndefined();
 		});
@@ -54,14 +54,24 @@ describe('Db', () => {
 
 		expect(getComic(Comic1.id)?.panels.length).toEqual(initialLength);
 
-		removeFieldItem(Comic1.id, Comic1.panels[0].id, FIELD.enum.panels, 0);
+		deleteType({
+			type: DB_ITEM_TYPE.enum.panels,
+			comicId: Comic1.id,
+			panelId: Comic1.panels[0].id,
+		});
 
 		expect(getComic(Comic1.id)?.panels.length).toEqual(initialLength - 1);
 	});
 
 	describe('captions', () => {
 		it('should update panel captions', () => {
-			updateFieldItem(Comic1.id, Comic1.panels[0].id, FIELD.enum.captions, 0, 'NEW CAPTION');
+			editType({
+				comicId: Comic1.id,
+				panelId: Comic1.panels[0].id,
+				type: DB_ITEM_TYPE.enum.captions,
+				index: 0,
+				value: 'NEW CAPTION',
+			});
 
 			expect(getComic(Comic1.id)?.panels[0].captions[0]).toEqual('NEW CAPTION');
 		});
@@ -69,7 +79,12 @@ describe('Db', () => {
 		it('should remove field item', () => {
 			const numberOfItems = getComic(Comic1.id)!.panels[0].captions.length;
 
-			removeFieldItem(Comic1.id, Comic1.panels[0].id, FIELD.enum.captions, 0);
+			deleteType({
+				type: DB_ITEM_TYPE.enum.captions,
+				comicId: Comic1.id,
+				panelId: Comic1.panels[0].id,
+				index: 0,
+			});
 
 			expect(getComic(Comic1.id)?.panels[0].captions).toHaveLength(numberOfItems - 1);
 		});
@@ -77,7 +92,13 @@ describe('Db', () => {
 
 	describe('dialogue', () => {
 		it('should update panel dialogue', () => {
-			updateFieldItem(Comic1.id, Comic1.panels[0].id, FIELD.enum.dialogue, 0, 'NEW DIALOGUE');
+			editType({
+				comicId: Comic1.id,
+				panelId: Comic1.panels[0].id,
+				type: DB_ITEM_TYPE.enum.dialogue,
+				index: 0,
+				value: 'NEW DIALOGUE',
+			});
 
 			expect(getComic(Comic1.id)?.panels[0].dialogue[0]).toEqual('NEW DIALOGUE');
 		});

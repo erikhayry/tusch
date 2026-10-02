@@ -2,7 +2,11 @@ import { m } from '$lib/paraglide/messages';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import { expect, test } from '@playwright/test';
 
-test('deletes image', async ({ page }) => {
+test.beforeEach(async ({ request }) => {
+	await request.post('/api/test/seed');
+});
+
+test('removes image', async ({ page }) => {
 	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
 
 	await page.getByRole('button', { name: m.removeImage() }).click();
@@ -28,7 +32,6 @@ test('update caption', async ({ page }) => {
 });
 
 test('remove caption', async ({ page }) => {
-	//TODO: re-seed
 	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[1].id}`);
 
 	await expect(page.getByText(ComicsMock[0].panels[1].captions[0])).toBeVisible();
@@ -62,7 +65,6 @@ test('update dialogue', async ({ page }) => {
 });
 
 test('remove dialogue', async ({ page }) => {
-	//TODO: re-seed
 	await page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[1].id}`);
 
 	await expect(page.getByText(ComicsMock[0].panels[1].dialogue[0])).toBeVisible();

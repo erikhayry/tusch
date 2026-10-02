@@ -24,5 +24,6 @@
 	"saveCaption": "Save Caption {number}",
 	"saveDialogue": "Save Dialogue {number}",
 	"cancel": "Cancel",
-	"deletePanel": "Delete Panel {number}"
+	"deletePanel": "Delete Panel {number}",
+	"deleteComic": "Delete Comic {title}"
 }

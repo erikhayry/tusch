@@ -1,11 +1,25 @@
-import { removeFieldItem, removeImage, updateFieldItem } from '$lib/utils/db/db';
-import { FIELD } from '$lib/utils/db/dbTypes';
+import { deleteType, editType } from '$lib/utils/db/db';
+import { DB_ITEM_TYPE, DeleteValuesSchema, type DeleteValues } from '$lib/utils/db/dbTypes';
 
 export const ACTION = {
-	DELETE_IMAGE: 'deleteImage',
-	DELETE_FIELD_ITEM: 'deleteFieldItem',
-	EDIT_FIELD_ITEM: 'editFieldItem',
+	DELETE: 'delete',
+	EDIT: 'edit',
 } as const;
+
+function getIndex(formData: FormData): number {
+	return Number.parseInt(formData.get('index')?.toString() ?? '');
+}
+
+async function getDeleteValues(request: Request): Promise<DeleteValues> {
+	const formData = await request.formData();
+
+	return DeleteValuesSchema.parse({
+		comicId: formData.get('comicId'),
+		panelId: formData.get('panelId'),
+		index: getIndex(formData),
+		type: formData.get('type'),
+	});
+}
 
 async function getFieldValues(request: Request) {
 	const formData = await request.formData();
@@ -13,44 +27,27 @@ async function getFieldValues(request: Request) {
 	const panelId = formData.get('panelId');
 	const index = formData.get('index');
 	const value = formData.get('value');
-	const field = FIELD.safeParse(formData.get('field')).data;
+	const type = DB_ITEM_TYPE.safeParse(formData.get('field')).data;
 
-	return { comicId, panelId, index, field, value };
+	return { comicId, panelId, index, type, value };
 }
 
 export const globalActions = {
-	[ACTION.DELETE_IMAGE]: async ({ request }: { request: Request }) => {
-		const { comicId, panelId } = await getFieldValues(request);
-
-		if (comicId && panelId) {
-			removeImage(comicId.toString(), panelId.toString());
-		}
+	[ACTION.DELETE]: async ({ request }: { request: Request }) => {
+		deleteType(await getDeleteValues(request));
 	},
 
-	[ACTION.DELETE_FIELD_ITEM]: async ({ request }: { request: Request }) => {
-		const { comicId, panelId, index, field } = await getFieldValues(request);
+	[ACTION.EDIT]: async ({ request }: { request: Request }) => {
+		const { comicId, panelId, index, type, value } = await getFieldValues(request);
 
-		if (comicId && panelId && index && field) {
-			removeFieldItem(
-				comicId.toString(),
-				panelId.toString(),
-				field,
-				Number.parseInt(index.toString()),
-			);
-		}
-	},
-
-	[ACTION.EDIT_FIELD_ITEM]: async ({ request }: { request: Request }) => {
-		const { comicId, panelId, index, field, value } = await getFieldValues(request);
-
-		if (comicId && panelId && field && value && index) {
-			updateFieldItem(
-				comicId.toString(),
-				panelId.toString(),
-				field,
-				Number.parseInt(index.toString()),
-				value.toString(),
-			);
+		if (comicId && panelId && type && value && index) {
+			editType({
+				comicId: comicId.toString(),
+				panelId: panelId.toString(),
+				type,
+				index: Number.parseInt(index.toString()),
+				value: value.toString(),
+			});
 		}
 	},
 };

@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions';
-	import { FIELD } from '$lib/utils/db/dbTypes';
+	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import Character from '../charachter/Character.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
@@ -30,14 +29,12 @@
 							<PanelThumbnail {panel} alt={panel.id} />
 						</a>
 						<RemoveFieldItemForm
-							action={ACTION.DELETE_FIELD_ITEM}
 							label={m.deletePanel({ number: index + 1 })}
-							values={[
-								{ name: 'comicId', value: comic.id },
-								{ name: 'panelId', value: panel.id },
-								{ name: 'index', value: index },
-								{ name: 'field', value: FIELD.enum.panels },
-							]}
+							values={{
+								comicId: comic.id,
+								panelId: panel.id,
+								type: DB_ITEM_TYPE.enum.panels,
+							}}
 						/>
 					</li>
 				{/each}

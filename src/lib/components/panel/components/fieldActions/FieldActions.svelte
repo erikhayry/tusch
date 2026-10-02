@@ -18,7 +18,7 @@
 </script>
 
 <TextFieldForm
-	action={ACTION.EDIT_FIELD_ITEM}
+	action={ACTION.EDIT}
 	field={{ value, name: 'value' }}
 	label={editActionLabel({ number })}
 	values={[
@@ -32,12 +32,11 @@
 />
 
 <RemoveFieldItemForm
-	action={ACTION.DELETE_FIELD_ITEM}
-	values={[
-		{ name: 'comicId', value: comicId },
-		{ name: 'panelId', value: panelId },
-		{ name: 'index', value: index },
-		{ name: 'field', value: field },
-	]}
 	label={removeActionLabel({ number })}
+	values={{
+		comicId,
+		panelId,
+		index,
+		type: field,
+	}}
 />

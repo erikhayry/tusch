@@ -6,5 +6,6 @@ export default defineConfig({
 		port: 4173,
 		reuseExistingServer: true,
 	},
+	timeout: 10000,
 	testMatch: '**/*.e2e.{ts,js}',
 });

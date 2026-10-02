@@ -2,6 +2,10 @@ import { m } from '$lib/paraglide/messages';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import { expect, test } from '@playwright/test';
 
+test.beforeEach(async ({ request }) => {
+	await request.post('/api/test/seed');
+});
+
 test('has expected title', async ({ page }) => {
 	await page.goto(`/comic/${ComicsMock[0].id}`);
 
@@ -22,7 +26,7 @@ test('shows error when comic not found', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
 });
 
-test('remove panel', async ({ page }) => {
+test('delete panel', async ({ page }) => {
 	await page.goto(`/comic/${ComicsMock[0].id}`);
 
 	const numberOfPanels = ComicsMock[0].panels.length;

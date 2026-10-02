@@ -1,4 +1,4 @@
-import { FIELD } from '$lib/utils/db/dbTypes';
+import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 import { z } from 'zod';
 
 const LabelSchema = z.function({
@@ -10,7 +10,7 @@ const LabelSchema = z.function({
 	output: z.string(),
 });
 export const FieldActionsPropsSchema = z.object({
-	field: FIELD,
+	field: DB_ITEM_TYPE,
 	comicId: z.string(),
 	panelId: z.string(),
 	index: z.number(),

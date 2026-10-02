@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions';
-	import { FIELD } from '$lib/utils/db/dbTypes';
+	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
+	import RemoveFieldItemForm from '../removeFieldItemForm/RemoveFieldItemForm.svelte';
 	import FieldActions from './components/fieldActions/FieldActions.svelte';
 	import { type PanelProps } from './panelTypes';
 
@@ -17,11 +17,10 @@
 		<button type="button" onclick={() => {}}>{m.addImage()}</button>
 	{:else}
 		<img src={panel.image.wide.src} alt={panel.image.alt} />
-		<form method="POST" action={`?/${ACTION.DELETE_IMAGE}`}>
-			<input type="hidden" name="comicId" value={comicId} />
-			<input type="hidden" name="panelId" value={panel.id} />
-			<button type="submit">{m.removeImage()}</button>
-		</form>
+		<RemoveFieldItemForm
+			label={m.removeImage()}
+			values={{ type: DB_ITEM_TYPE.enum.image, comicId, panelId: panel.id }}
+		/>
 	{/if}
 
 	<Section>
@@ -30,7 +29,7 @@
 			{#each panel.captions as caption, index (caption)}
 				<li>
 					<FieldActions
-						field={FIELD.enum.captions}
+						field={DB_ITEM_TYPE.enum.captions}
 						{comicId}
 						panelId={panel.id}
 						{index}
@@ -48,7 +47,7 @@
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
 					<FieldActions
-						field={FIELD.enum.dialogue}
+						field={DB_ITEM_TYPE.enum.dialogue}
 						{comicId}
 						panelId={panel.id}
 						{index}

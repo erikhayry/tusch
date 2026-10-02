@@ -3,6 +3,10 @@ import { ComicSchema, type Comic } from '$lib/types';
 
 export const ComicsMock = generateMocks(ComicSchema, 3);
 
+export function getComicsMock() {
+	return generateMocks(ComicSchema, 3);
+}
+
 export const ComicMock = ComicsMock.at(0) as Comic;
 
 export const CharactersMock = ComicMock.characters;
