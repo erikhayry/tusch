@@ -1,15 +1,14 @@
 import { m } from '$lib/paraglide/messages';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import { expect, test } from '@playwright/test';
-import { LandingPage } from './utils/page';
+import { LandingPage } from './utils/landingPage';
 
 test.beforeEach(async ({ request }) => {
 	await request.post('/api/test/seed');
 });
 
 test('navigates to create', async ({ page }) => {
-	const landingPage = new LandingPage(page);
-	await landingPage.goto();
+	const landingPage = await new LandingPage(page).goto();
 
 	await landingPage.createComicButton.click();
 
@@ -17,8 +16,7 @@ test('navigates to create', async ({ page }) => {
 });
 
 test('navigates to comic', async ({ page }) => {
-	const landingPage = new LandingPage(page);
-	await landingPage.goto();
+	const landingPage = await new LandingPage(page).goto();
 
 	await landingPage.comicLink.click();
 
@@ -26,8 +24,7 @@ test('navigates to comic', async ({ page }) => {
 });
 
 test('removes comic', async ({ page }) => {
-	const landingPage = new LandingPage(page);
-	await landingPage.goto();
+	const landingPage = await new LandingPage(page).goto();
 
 	await expect(landingPage.comicLink).toBeVisible();
 

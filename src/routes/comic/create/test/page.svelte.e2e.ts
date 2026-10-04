@@ -1,16 +1,17 @@
-import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
+import { CreatePage } from './utils/createPage';
 
 test('has expected title', async ({ page }) => {
-	await page.goto(`/comic/create`);
+	const createPage = await new CreatePage(page).goto();
 
-	await expect(page.getByRole('heading', { name: m.createNewComic(), level: 1 })).toBeVisible();
+	await expect(createPage.heading).toBeVisible();
 });
 
 test('is redirected after submit', async ({ page }) => {
-	await page.goto(`/comic/create`);
-	await page.fill('input[name="url"]', 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna');
-	await page.click('button[type="submit"]');
+	const createPage = await new CreatePage(page).goto();
+
+	await createPage.fillUrl('https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna');
+	await createPage.submit();
 
 	await expect(page.getByRole('heading', { name: 'Comic', level: 1 })).toBeVisible();
 });

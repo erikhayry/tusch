@@ -19,5 +19,7 @@ export class LandingPage {
 
 	async goto() {
 		await this.page.goto('/');
+
+		return this;
 	}
 }

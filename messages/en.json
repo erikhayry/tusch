@@ -25,5 +25,7 @@
 	"saveDialogue": "Save Dialogue {number}",
 	"cancel": "Cancel",
 	"deletePanel": "Delete Panel {number}",
-	"deleteComic": "Delete Comic {title}"
+	"deleteComic": "Delete Comic {title}",
+	"url": "URL",
+	"submit": "Submit"
 }

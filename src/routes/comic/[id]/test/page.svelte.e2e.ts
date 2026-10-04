@@ -1,40 +1,37 @@
-import { m } from '$lib/paraglide/messages';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import { expect, test } from '@playwright/test';
+import { ComicPage } from './utils/comicPage';
 
 test.beforeEach(async ({ request }) => {
 	await request.post('/api/test/seed');
 });
 
 test('has expected title', async ({ page }) => {
-	await page.goto(`/comic/${ComicsMock[0].id}`);
+	const comicPage = await new ComicPage(page, ComicsMock[0]).goto();
 
-	await expect(page.getByRole('heading', { name: ComicsMock[0].title, level: 2 })).toBeVisible();
+	await expect(comicPage.heading).toBeVisible();
 });
 
 test('opens panel view', async ({ page }) => {
-	await page.goto(`/comic/${ComicsMock[0].id}`);
+	const comicPage = await new ComicPage(page, ComicsMock[0]).goto();
 
-	await page.getByRole('link', { name: ComicsMock[0].panels[0].id }).click();
+	await comicPage.link.click();
 
 	await page.waitForURL(`**/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
 });
 
 test('shows error when comic not found', async ({ page }) => {
-	await page.goto(`/comic/XXX/`);
+	const comicPage = await new ComicPage(page, ComicsMock[0]).gotoUnknownComic();
 
-	await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
+	await expect(comicPage.notFound).toBeVisible();
 });
 
 test('delete panel', async ({ page }) => {
-	await page.goto(`/comic/${ComicsMock[0].id}`);
+	const comicPage = await new ComicPage(page, ComicsMock[0]).goto();
 
-	const numberOfPanels = ComicsMock[0].panels.length;
-	const listItems = page.getByRole('list', { name: m.panels() }).getByRole('listitem');
+	await expect(comicPage.listItems).toHaveCount(comicPage.initialNumberOfListItems);
 
-	await expect(listItems).toHaveCount(numberOfPanels);
+	await comicPage.deletePanelButton.click();
 
-	await page.getByRole('button', { name: m.deletePanel({ number: 3 }) }).click();
-
-	await expect(listItems).toHaveCount(numberOfPanels - 1);
+	await expect(comicPage.listItems).toHaveCount(comicPage.initialNumberOfListItems - 1);
 });
