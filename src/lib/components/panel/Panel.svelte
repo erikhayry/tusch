@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
+	import CreateImageForm from '../forms/createImageForm/CreateImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
 	import FieldActions from './components/fieldActions/FieldActions.svelte';
 	import { type PanelProps } from './panelTypes';
+	import { getImageSrc } from './utils/image';
 
 	let { number, totalNumberOfPanels, panel, comicId }: PanelProps = $props();
 </script>
@@ -14,9 +16,12 @@
 	<Heading>{m.panelTitle({ number, total: totalNumberOfPanels })}</Heading>
 
 	{#if panel.image === undefined}
-		<button type="button" onclick={() => {}}>{m.addImage()}</button>
+		<CreateImageForm
+			label={m.addImage()}
+			values={{ scene: 'Workers standing in a group', comicId, panelId: panel.id }}
+		/>
 	{:else}
-		<img src={panel.image.wide.src} alt={panel.image.alt} />
+		<img src={getImageSrc(panel.image)} alt={panel.image.alt} />
 		<DeleteItemForm
 			label={m.removeImage()}
 			values={{ type: DB_ITEM_TYPE.enum.image, comicId, panelId: panel.id }}

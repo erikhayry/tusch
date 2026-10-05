@@ -6,6 +6,15 @@ test.beforeEach(async ({ request }) => {
 	await request.post('/api/test/seed');
 });
 
+test('creates image', async ({ page }) => {
+	const panelPage = new PanelPage(page).goto();
+
+	await panelPage.deleteImageButton.click();
+	await panelPage.createImageButton.click();
+
+	await expect(panelPage.mockedImage).toBeVisible();
+});
+
 test('removes image', async ({ page }) => {
 	const panelPage = new PanelPage(page).goto();
 

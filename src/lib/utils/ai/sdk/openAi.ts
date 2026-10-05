@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod.mjs';
+import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
 import z from 'zod';
 
 const client = new OpenAI({
@@ -27,4 +28,32 @@ export async function chat<T>(messages: string[], responseFormat: z.ZodType<T>):
 			format: getResponseFormat(responseFormat),
 		},
 	});
+}
+
+export async function chatWithImage<T>(
+	messages: string[],
+	responseFormat: z.ZodType<T>,
+): Promise<unknown> {
+	const req: ResponseCreateParamsWithTools = {
+		model: 'gpt-6-luna',
+		input: getChatMessages(messages),
+		tools: [
+			{
+				type: 'image_generation',
+				model: 'gpt-image-2.5-flare',
+				size: '1024x1536',
+				quality: 'low',
+				output_format: 'webp',
+				background: 'opaque',
+				moderation: 'auto',
+			},
+		],
+		store: true,
+		include: ['reasoning.encrypted_content', 'web_search_call.action.sources'],
+		text: {
+			format: getResponseFormat(responseFormat),
+		},
+	};
+
+	return client.responses.parse(req);
 }

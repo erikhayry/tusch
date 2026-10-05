@@ -65,12 +65,15 @@ describe('Panel', () => {
 
 	describe('image', () => {
 		it('should show image', () => {
-			const { getImage } = renderPanel();
+			const { getImage, props } = renderPanel();
 
-			expect(getImage()).toBeInTheDocument();
+			expect(getImage()).toHaveAttribute(
+				'src',
+				`data:image/webp;base64, ${props.panel.image?.wide?.src}`,
+			);
 		});
 
-		it('should  show remove image button', () => {
+		it('should show remove image button', () => {
 			const { getRemoveImageButton } = renderPanel();
 
 			expect(getRemoveImageButton()).toBeInTheDocument();

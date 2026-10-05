@@ -1,6 +1,7 @@
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import {
 	addComic,
+	addImage,
 	clearComics,
 	deleteComic,
 	deleteImage,
@@ -36,6 +37,34 @@ describe('Db', () => {
 			addComic(Comic2);
 
 			expect(deleteComic(Comic1.id)).toEqual([Comic2]);
+		});
+	});
+
+	describe('addImage image', () => {
+		it('should add image', () => {
+			Comic1.panels[0].image = undefined;
+
+			const image = {
+				wide: { src: 'https://example.com/wide.jpg', width: 100, height: 100 },
+				narrow: { src: 'https://example.com/narrow.jpg', width: 100, height: 100 },
+				alt: '',
+			};
+
+			addImage(Comic1.id, Comic1.panels[0].id, image);
+
+			expect(getComic(Comic1.id)?.panels[0].image).toEqual(image);
+		});
+
+		it('should replace image', () => {
+			const image = {
+				wide: { src: 'https://example.com/wide.jpg', width: 100, height: 100 },
+				narrow: { src: 'https://example.com/narrow.jpg', width: 100, height: 100 },
+				alt: '',
+			};
+
+			addImage(Comic1.id, Comic1.panels[0].id, image);
+
+			expect(getComic(Comic1.id)?.panels[0].image).toEqual(image);
 		});
 	});
 

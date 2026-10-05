@@ -1,4 +1,4 @@
-import { type Comic, type Panel } from '$lib/types';
+import { type Comic, type Panel, type ResponsiveImage } from '$lib/types';
 import { getComicsMock } from '$lib/types/test/utils/mockTypes';
 import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from './dbTypes';
 
@@ -43,7 +43,7 @@ export function updateComic(comic: Comic): Comic[] {
 	return getComics();
 }
 
-function findPanel(comicId: string, panelId: string): Panel | undefined {
+export function findPanel(comicId: string, panelId: string): Panel | undefined {
 	return getComic(comicId)?.panels.find((panel) => panel.id === panelId);
 }
 
@@ -98,6 +98,18 @@ export function editType(values: EditValues): Comic[] {
 				panel[values.type][values.index] = values.value;
 			}
 			break;
+		}
+	}
+
+	return getComics();
+}
+
+export function addImage(comicId: string, panelId: string, image: ResponsiveImage): Comic[] {
+	const comic = getComic(comicId);
+	if (comic) {
+		const panel = findPanel(comicId, panelId);
+		if (panel) {
+			panel.image = image;
 		}
 	}
 

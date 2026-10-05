@@ -1,10 +1,11 @@
-import { type Comic, type Url } from '$lib/types';
+import { type Comic, type Panel, type Url } from '$lib/types';
 import type { ChatResult } from '@openrouter/sdk/models';
 import { randomUUID } from 'crypto';
-import { InitialPanelsSchema, type InitialPanels } from './aiTypes';
-import { chat as openAiChat } from './sdk/openAi';
+import type { CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
+import { CreateImageSchema, InitialPanelsSchema, type InitialPanels } from './aiTypes';
+import { chatWithImage, chat as openAiChat } from './sdk/openAi';
 import { chat as openRouterChat } from './sdk/openRouter';
-import { buildInitialMessages } from './utils/messages';
+import { buildImageMessages, buildInitialMessages } from './utils/messages';
 
 function getPanelsFromOpenAiResponse(response: unknown): InitialPanels {
 	//TODO: validate
@@ -25,6 +26,23 @@ export async function initOpenAi(source: Url): Promise<Comic> {
 			...initialPanel,
 		})),
 	};
+}
+
+function getImageFromOpenAiResponse(response: unknown): CreateImageResponse {
+	const image = response.output.find((item: any) => item.type === 'image_generation_call').result;
+	const text = response.output
+		.find((item: any) => item.type === 'message')
+		.content.find(({ type }: any) => type === 'output_text').text;
+
+	return { src: image, ...JSON.parse(text).data };
+}
+
+export async function createImage(scene: string, panel: Panel): Promise<CreateImageResponse> {
+	const response = await chatWithImage(buildImageMessages(scene, panel), CreateImageSchema);
+
+	const result = getImageFromOpenAiResponse(response);
+
+	return result;
 }
 
 function getPanelsFromOpenRouterResponse(response: ChatResult): InitialPanels {

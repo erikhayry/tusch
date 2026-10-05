@@ -1,11 +1,13 @@
 import { m } from '$lib/paraglide/messages';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import type { Locator, Page } from '@playwright/test';
+import { mockImageResponse } from '../../../../../api/chat/image/utils/mock';
 
 export class PanelPage {
 	readonly page: Page;
 	readonly deleteImageButton: Locator;
 	readonly image: Locator;
+	readonly mockedImage: Locator;
 	readonly editCaptionButton: Locator;
 	readonly editCaptionInput: Locator;
 	readonly saveCaptionButton: Locator;
@@ -14,11 +16,14 @@ export class PanelPage {
 	readonly editDialogueButton: Locator;
 	readonly saveDialogueButton: Locator;
 	readonly deleteDialogueButton: Locator;
+	readonly createImageButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
+		this.createImageButton = page.getByRole('button', { name: m.addImage() });
 		this.deleteImageButton = page.getByRole('button', { name: m.removeImage() });
 		this.image = page.getByRole('img', { name: ComicsMock[0].panels[0].image?.alt });
+		this.mockedImage = page.getByRole('img', { name: mockImageResponse.alt });
 
 		this.editCaptionButton = page.getByRole('button', { name: m.editCaption({ number: 1 }) });
 		this.editCaptionInput = page.getByRole('textbox', { name: m.editCaption({ number: 1 }) });
