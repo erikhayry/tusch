@@ -54,3 +54,32 @@ export const mockOpenRouterResponse = {
 		},
 	],
 };
+
+export const mockOpenAiResponse = {
+	id: 'mock-gen-123',
+	model: 'gpt-6-luna',
+	output: [
+		{
+			id: 'rs_0486fa8154366c44006ac38066d99887d2badf9c0dbfba75d7',
+			type: 'reasoning',
+			content: [],
+			encrypted_content: '',
+			summary: [],
+		},
+		{
+			id: 'msg_0486fa8154366c44006ac3806c5e5c87d2a1f2e51a9f4abb88',
+			type: 'message',
+			status: 'completed',
+			content: [
+				{
+					type: 'output_text',
+					annotations: [],
+					logprobs: [],
+					text: JSON.stringify(ContentJSONMock),
+				},
+			],
+			phase: 'final_answer',
+			role: 'assistant',
+		},
+	],
+};

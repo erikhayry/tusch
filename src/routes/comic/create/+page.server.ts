@@ -6,6 +6,7 @@ export const actions = {
 	default: async ({ request, fetch }) => {
 		const data = await request.formData();
 		const url = data.get('url');
+
 		const comicResponse = await fetch('/api/chat/init', {
 			method: 'POST',
 			body: JSON.stringify({ url: url?.toString() }),

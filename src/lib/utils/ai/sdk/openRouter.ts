@@ -2,12 +2,17 @@ import { OpenRouter } from '@openrouter/sdk';
 import type { ChatFormatJsonSchemaConfig, ChatMessages, ChatResult } from '@openrouter/sdk/models';
 import z from 'zod';
 
+export const OPEN_ROUTER_ROLE = {
+	USER: 'user',
+	ASSISTANT: 'assistant',
+} as const;
+
 const client = new OpenRouter({
 	apiKey: import.meta.env.VITE_OPENROUTER_API_KEY,
 });
 
 function getChatMessages(messages: string[]): ChatMessages[] {
-	return messages.map((message) => ({ role: 'user', content: message }));
+	return messages.map((message) => ({ role: OPEN_ROUTER_ROLE.USER, content: message }));
 }
 
 function getResponseFormat<T>(responseFormat: z.ZodType<T>): ChatFormatJsonSchemaConfig {

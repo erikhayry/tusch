@@ -1,7 +1,7 @@
 import { building } from '$app/env';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
-import { mockOpenRouterResponse } from '$lib/utils/ai/test/mockAiResponse';
+import { ComicMock } from '$lib/types/test/utils/mockTypes';
 import type { Handle, HandleFetch } from '@sveltejs/kit';
 
 const handleParaglide: Handle = ({ event, resolve }) =>
@@ -23,7 +23,7 @@ function isPlaywrightTestRequest(): boolean {
 }
 
 const MOCK: Record<string, string> = {
-	'/api/chat/init': JSON.stringify(mockOpenRouterResponse),
+	'/api/chat/init': JSON.stringify(ComicMock),
 };
 
 function getMockResponse(mock: string) {

@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { init } from '../ai';
+import { initOpenAi, initOpenRouter } from '../ai';
 import { InitialPanelsSchema } from '../aiTypes';
-import { INIT, ROLE } from '../utils/messages';
-import { ContentJSONMock, mockOpenRouterResponse } from './mockAiResponse';
+import { OPEN_AI_ROLE } from '../sdk/openAi';
+import { OPEN_ROUTER_ROLE } from '../sdk/openRouter';
+import { INIT } from '../utils/messages';
+import { ContentJSONMock, mockOpenAiResponse, mockOpenRouterResponse } from './mockAiResponse';
 
 describe('ai', () => {
 	beforeEach(() => {
@@ -10,45 +12,74 @@ describe('ai', () => {
 	});
 
 	describe('init', () => {
-		it('should call openRouter sdk with message', async () => {
+		it('should call openAi sdk with message', async () => {
 			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
-			mockSend.mockResolvedValueOnce(mockOpenRouterResponse);
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiResponse);
 
-			await init(source);
+			await initOpenAi(source);
 
-			expect(mockSend.mock.calls[0][0].chatRequest.messages).toEqual([
+			expect(mockSendOpenAi.mock.calls[0][0].input).toEqual([
 				{
 					content: INIT.WHAT,
-					role: ROLE.USER,
+					role: OPEN_AI_ROLE.SYSTEM,
 				},
 				{
 					content: source,
-					role: ROLE.USER,
+					role: OPEN_AI_ROLE.SYSTEM,
 				},
 				{
 					content: INIT.HOW,
-					role: ROLE.USER,
+					role: OPEN_AI_ROLE.SYSTEM,
+				},
+			]);
+		});
+
+		it('should call openRouter sdk with message', async () => {
+			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
+			mockSendOpenRouter.mockResolvedValueOnce(mockOpenRouterResponse);
+
+			await initOpenRouter(source);
+
+			expect(mockSendOpenRouter.mock.calls[0][0].chatRequest.messages).toEqual([
+				{
+					content: INIT.WHAT,
+					role: OPEN_ROUTER_ROLE.USER,
+				},
+				{
+					content: source,
+					role: OPEN_ROUTER_ROLE.USER,
+				},
+				{
+					content: INIT.HOW,
+					role: OPEN_ROUTER_ROLE.USER,
 				},
 			]);
 		});
 
 		it('should call openRouter sdk with response format', async () => {
 			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
-			mockSend.mockResolvedValueOnce(mockOpenRouterResponse);
+			mockSendOpenRouter.mockResolvedValueOnce(mockOpenRouterResponse);
 
-			await init(source);
+			await initOpenRouter(source);
 			const schema =
-				mockSend.mock.calls[0][0].chatRequest.responseFormat.jsonSchema.schema.properties.data
-					.items;
+				mockSendOpenRouter.mock.calls[0][0].chatRequest.responseFormat.jsonSchema.schema.properties
+					.data.items;
 
 			expect(schema).toEqual(InitialPanelsSchema.toJSONSchema().items);
 		});
 
 		it('should return comic', async () => {
 			const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
-			mockSend.mockResolvedValueOnce(mockOpenRouterResponse);
+			mockSendOpenRouter.mockResolvedValueOnce(mockOpenRouterResponse);
 
-			const { panels, id, source: returnedSource, title, setting, characters } = await init(source);
+			const {
+				panels,
+				id,
+				source: returnedSource,
+				title,
+				setting,
+				characters,
+			} = await initOpenRouter(source);
 
 			expect(panels).toHaveLength(ContentJSONMock.data.length);
 			expect(id).toBeDefined();
@@ -60,14 +91,31 @@ describe('ai', () => {
 	});
 });
 
-const { mockSend } = vi.hoisted(() => ({
-	mockSend: vi.fn(),
+const { mockSendOpenRouter } = vi.hoisted(() => ({
+	mockSendOpenRouter: vi.fn(),
 }));
 
 vi.mock('@openrouter/sdk', () => ({
 	OpenRouter: class {
 		chat = {
-			send: mockSend,
+			send: mockSendOpenRouter,
 		};
 	},
 }));
+
+const { mockSendOpenAi } = vi.hoisted(() => ({
+	mockSendOpenAi: vi.fn(),
+}));
+
+vi.mock('openai', () => {
+	class MockOpenAI {
+		responses = {
+			parse: mockSendOpenAi,
+		};
+	}
+
+	return {
+		default: MockOpenAI,
+		OpenAI: MockOpenAI,
+	};
+});
