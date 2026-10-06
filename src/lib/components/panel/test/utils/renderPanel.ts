@@ -4,7 +4,7 @@ import { m } from '$lib/paraglide/messages';
 import { render, within } from '@testing-library/svelte';
 
 export function renderPanel(props = PanelPropsMock[0]) {
-	const { getByRole } = render(Panel, props);
+	const { getByRole, getByText } = render(Panel, props);
 
 	return {
 		getEditCaptionField: (number: number) =>
@@ -38,6 +38,7 @@ export function renderPanel(props = PanelPropsMock[0]) {
 				name: `${m.panelTitle({ number: props.number, total: props.totalNumberOfPanels })}`,
 				level: 2,
 			}),
+		getVisualDescription: () => getByText(props.panel.visualDescription),
 		props,
 	};
 }

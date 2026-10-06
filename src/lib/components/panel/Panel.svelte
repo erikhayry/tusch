@@ -14,12 +14,10 @@
 
 <Section>
 	<Heading>{m.panelTitle({ number, total: totalNumberOfPanels })}</Heading>
+	<p>{panel.visualDescription}</p>
 
 	{#if panel.image === undefined}
-		<CreateImageForm
-			label={m.addImage()}
-			values={{ scene: 'Workers standing in a group', comicId, panelId: panel.id }}
-		/>
+		<CreateImageForm label={m.addImage()} values={{ comicId, panelId: panel.id }} />
 	{:else}
 		<img src={getImageSrc(panel.image)} alt={panel.image.alt} />
 		<DeleteItemForm

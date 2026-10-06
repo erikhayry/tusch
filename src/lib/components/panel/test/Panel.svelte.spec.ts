@@ -10,6 +10,12 @@ describe('Panel', () => {
 		expect(getTitle()).toBeInTheDocument();
 	});
 
+	it('should render visual description', () => {
+		const { getVisualDescription } = renderPanel();
+
+		expect(getVisualDescription()).toBeInTheDocument();
+	});
+
 	describe('captions', () => {
 		it('render captions', () => {
 			const { getCaptions, props } = renderPanel();

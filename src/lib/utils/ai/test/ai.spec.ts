@@ -76,7 +76,7 @@ describe('ai', () => {
 		it('should call sdk with correct messages', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage('scene', PanelsMock[0]);
+			await createImage(PanelsMock[0]);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input).toEqual([
 				{
@@ -84,17 +84,17 @@ describe('ai', () => {
 					role: OPEN_AI_ROLE.SYSTEM,
 				},
 				{
-					content: 'scene: scene',
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				/*{
-					content: `dialogue: ${PanelsMock[0].dialogue.join(' ')}`,
+					content: `visualDescription: ${PanelsMock[0].visualDescription}`,
 					role: OPEN_AI_ROLE.SYSTEM,
 				},
 				{
-					content: `captions: ${PanelsMock[0].captions.join(' ')}`,
+					content: `dialogue: ${PanelsMock[0].dialogue.join('. ')}`,
 					role: OPEN_AI_ROLE.SYSTEM,
-					},*/
+				},
+				{
+					content: `captions: ${PanelsMock[0].captions.join('. ')}`,
+					role: OPEN_AI_ROLE.SYSTEM,
+				},
 				...IMAGE.HOWS.map((how) => ({
 					content: how,
 					role: OPEN_AI_ROLE.SYSTEM,
@@ -105,7 +105,7 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage('scene', PanelsMock[0]);
+			await createImage(PanelsMock[0]);
 
 			expect(getFromatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.createImage,
@@ -115,7 +115,7 @@ describe('ai', () => {
 		it('should return image', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			const { src, alt, width, height } = await createImage('scene', PanelsMock[0]);
+			const { src, alt, width, height } = await createImage(PanelsMock[0]);
 
 			expect(src).toEqual(imageResulSrcMock);
 			expect(alt).toEqual(imageDataMock.alt);

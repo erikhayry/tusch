@@ -9,6 +9,7 @@ export const INIT = {
 export const IMAGE = {
 	WHAT: 'Create a comic panel image.',
 	HOWS: [
+		'use visualDescription to create the image',
 		'Do not include any text in the image.',
 		'Do not add any borders to the image.',
 		'alt field should only describe what is in the image',
@@ -19,12 +20,12 @@ export function buildInitialMessages(url: string): string[] {
 	return [INIT.WHAT, url, INIT.HOW];
 }
 
-export function buildImageMessages(scene: string, panel: Panel): string[] {
+export function buildImageMessages(panel: Panel): string[] {
 	return [
 		IMAGE.WHAT,
-		`scene: ${scene}`,
-		//`dialogue: ${panel.dialogue.join(' ')}`,
-		//`captions: ${panel.captions.join(' ')}`,
+		`visualDescription: ${panel.visualDescription}`,
+		`dialogue: ${panel.dialogue.join('. ')}`,
+		`captions: ${panel.captions.join('. ')}`,
 		...IMAGE.HOWS,
 	];
 }

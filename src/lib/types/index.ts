@@ -49,6 +49,7 @@ export type Dialogue = z.infer<typeof DialogueSchema>;
 
 export const PanelSchema = z.object({
 	id: z.uuid(),
+	visualDescription: z.string(),
 	captions: z.array(z.string()),
 	dialogue: z.array(z.string()),
 	year: z.optional(YearSchema),

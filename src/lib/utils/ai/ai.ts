@@ -59,8 +59,8 @@ function getImageFromOpenAiResponse(response: OpenAiImageOutput): CreateImageRes
 	return CreateImageResponseSchema.parse({ src, ...getImageData(response) });
 }
 
-export async function createImage(scene: string, panel: Panel): Promise<CreateImageResponse> {
-	const response = await image(buildImageMessages(scene, panel), SchemaName.enum.createImage);
+export async function createImage(panel: Panel): Promise<CreateImageResponse> {
+	const response = await image(buildImageMessages(panel), SchemaName.enum.createImage);
 
 	const result = getImageFromOpenAiResponse(response);
 

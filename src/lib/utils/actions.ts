@@ -48,7 +48,6 @@ async function getCreateImageValues(request: Request): Promise<CreateImageValues
 	return CreateImageValuesSchema.parse({
 		comicId: formData.get('comicId'),
 		panelId: formData.get('panelId'),
-		scene: formData.get('scene'),
 	});
 }
 
@@ -68,11 +67,11 @@ export const globalActions = {
 		request: Request;
 		fetch: typeof globalThis.fetch;
 	}) => {
-		const { comicId, panelId, scene } = await getCreateImageValues(request);
+		const { comicId, panelId } = await getCreateImageValues(request);
 
 		const imageResponse = await fetch('/api/chat/image', {
 			method: 'POST',
-			body: JSON.stringify({ scene, panelId, comicId }),
+			body: JSON.stringify({ panelId, comicId }),
 			headers: {
 				'Content-Type': 'application/json',
 			},

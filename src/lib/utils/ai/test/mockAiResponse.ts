@@ -8,26 +8,32 @@ export const ContentJSONMock = {
 		{
 			dialogue: ['Arbetare: Vi kräver bättre villkor och rätten att organisera oss.'],
 			captions: ['Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.'],
+			visualDescription: 'visual mock',
 		},
 		{
 			dialogue: ['Ordförande: Låt våra röster höras!', 'Arbetare: Vi står enade!'],
 			captions: ['Demonstrationen närmar sig platsen längs dalgångens väg.'],
+			visualDescription: 'visual mock',
 		},
 		{
 			dialogue: ['Officer: Håll avstånd, inga konfrontationer.', 'Soldat: Vi följer order.'],
 			captions: ['Militär och polis står vid vägen; spänningen byggs upp.'],
+			visualDescription: 'visual mock',
 		},
 		{
 			dialogue: ['Arbetare: Skott!', 'En åskådare: Hjälp!'],
 			captions: ['Skott hörs; panik och rädsla sprider sig bland åskådarna.'],
+			visualDescription: 'visual mock',
 		},
 		{
 			dialogue: ['Reporter: Fem döda och många skadade.', 'En överlevande: Varför sköts vi?'],
 			captions: ['Fem människor dödas och flera skadas i tumultet.'],
+			visualDescription: 'visual mock',
 		},
 		{
 			dialogue: ['Domare: Utredningen fortsätter.', 'Advokat: Ansvar måste utkrävas.'],
 			captions: ['Rättsliga utredningar och en nationell debatt följer.'],
+			visualDescription: 'visual mock',
 		},
 		{
 			dialogue: [
@@ -37,6 +43,7 @@ export const ContentJSONMock = {
 			captions: [
 				'Ådalen blir en vändpunkt i den svenska arbetarrörelsen – arbetsrätt och facklig organisering stärks.',
 			],
+			visualDescription: 'visual mock',
 		},
 	],
 	title: 'Ådals händelserna – serietecknad lösning (fiktiv tolkning)',
@@ -89,7 +96,7 @@ export const imageResulSrcMock =
 	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 
 export const imageDataMock = {
-	alt: 'A diverse group of construction workers wearing hard hats and reflective vests stand together at a building site.',
+	alt: 'En mångsidig grupp byggarbetare i skyddshjälmar och reflexvästar står tillsammans på en byggarbetsplats.',
 	width: 1024,
 	height: 1536,
 };

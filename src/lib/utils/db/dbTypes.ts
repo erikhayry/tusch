@@ -46,7 +46,6 @@ export type EditValues = z.infer<typeof EditValuesSchema>;
 export const CreateImageValuesSchema = z.object({
 	comicId: z.string(),
 	panelId: z.string(),
-	scene: z.string(),
 });
 
 export type CreateImageValues = z.infer<typeof CreateImageValuesSchema>;
