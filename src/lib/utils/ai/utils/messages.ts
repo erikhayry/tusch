@@ -1,13 +1,16 @@
 import type { Panel } from '$lib/types';
 import { OPEN_AI_ROLE } from './settings';
 
-export const INIT = {
-	WHAT: 'create a comic script from attached url and instructions',
-	HOWS: [
+const GLOBAL_HOWS = {
+	PANEL: [
 		'language should be same as source',
-		'number of panels should be 5 to 10',
 		'the year field in the response should be included and match the year of the panel (e.g. 2023 if the panel is situated in 2023)', //not followed
 	],
+};
+
+export const INIT = {
+	WHAT: 'create a comic script from attached url and instructions',
+	HOWS: [...GLOBAL_HOWS.PANEL, 'number of panels should be 5 to 10'],
 };
 
 export const IMAGE = {
@@ -17,6 +20,15 @@ export const IMAGE = {
 		'do not include any text in the image',
 		'do not add any borders to the image',
 		'alt field should only describe what is in the image',
+	],
+};
+
+export const PANEL = {
+	WHAT: 'add a comic panel script',
+	HOWS: [
+		'use index where the panel should be added. The index pushes the panels towards the end of the array',
+		'use the other panels as a reference to create the a panel that fits the other panels',
+		...GLOBAL_HOWS.PANEL,
 	],
 };
 
@@ -35,6 +47,10 @@ export function buildImageMessages(panel: Panel): string[] {
 		`time of day: ${panel.timeOfDay}`,
 		...IMAGE.HOWS,
 	];
+}
+
+export function buildPanelMessages(index: number, panels: Panel[]): string[] {
+	return [PANEL.WHAT, `index: ${index}`, `panels: ${JSON.stringify(panels)}`, ...PANEL.HOWS];
 }
 
 export function getChatMessages(messages: string[]) {

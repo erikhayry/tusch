@@ -25,4 +25,16 @@ describe('Panels', () => {
 
 		expect(getPanelLink(props.current.index)).toHaveAttribute('aria-current', 'page');
 	});
+
+	it('should show add panel after button', () => {
+		const { getAddPanelAfterButton } = renderPanels();
+
+		expect(getAddPanelAfterButton('2')).toBeInTheDocument();
+	});
+
+	it('should show add panel before button', () => {
+		const { getAddPanelBeforeButton } = renderPanels();
+
+		expect(getAddPanelBeforeButton('1')).toBeInTheDocument();
+	});
 });

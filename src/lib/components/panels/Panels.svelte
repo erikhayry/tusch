@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import Section from '$lib/components/relativeHeading/Section.svelte';
 	import { m } from '$lib/paraglide/messages';
+	import CreatePanelForm from '../forms/createPanelForm/CreatePanelForm.svelte';
 	import Panel from '../panel/Panel.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import { type PanelsProps } from './panelsTypes';
@@ -15,11 +16,19 @@
 		<ol aria-labelledby="panels-heading">
 			{#each panels as panel, index (panel.id)}
 				<li>
+					<CreatePanelForm
+						values={{ comicId, index: index }}
+						label={m.addPanelBefore({ number: index + 1 })}
+					/>
 					<a
 						href={resolve(`/comic/${comicId}/${panel.id}`)}
 						aria-current={index === current.index ? 'page' : undefined}
-						>{m.panel({ number: index + 1 })}</a
-					>
+						>{m.panel({ number: index + 1 })}
+					</a>
+					<CreatePanelForm
+						values={{ comicId, index: index }}
+						label={m.addPanelAfter({ number: index + 1 })}
+					/>
 				</li>
 			{/each}
 		</ol>

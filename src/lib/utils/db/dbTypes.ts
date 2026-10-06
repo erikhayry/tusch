@@ -30,7 +30,6 @@ export const DeleteValuesSchema = z
 			type: z.enum([DB_ITEM_TYPE.enum.image]),
 		}),
 	);
-
 export type DeleteValues = z.infer<typeof DeleteValuesSchema>;
 
 export const EditValuesSchema = z.object({
@@ -40,12 +39,16 @@ export const EditValuesSchema = z.object({
 	value: z.string(),
 	type: z.enum([DB_ITEM_TYPE.enum.captions, DB_ITEM_TYPE.enum.dialogue]),
 });
-
 export type EditValues = z.infer<typeof EditValuesSchema>;
 
 export const CreateImageValuesSchema = z.object({
 	comicId: z.string(),
 	panelId: z.string(),
 });
-
 export type CreateImageValues = z.infer<typeof CreateImageValuesSchema>;
+
+export const CreatePanelValuesSchema = z.object({
+	comicId: z.string(),
+	index: z.number(),
+});
+export type CreatePanelValues = z.infer<typeof CreatePanelValuesSchema>;

@@ -13,6 +13,10 @@ export function renderPanels(
 		getPanels: () => within(getByRole('list', { name: m.panels() })).getAllByRole('link'),
 		getPanel: () => getByTestId(PanelTestId),
 		getComicLink: () => getByRole('link', { name: m.backToComic() }),
+		getAddPanelAfterButton: (number: string) =>
+			getByRole('button', { name: m.addPanelAfter({ number }) }),
+		getAddPanelBeforeButton: (number: string) =>
+			getByRole('button', { name: m.addPanelBefore({ number }) }),
 		getPanelLink: (index: number) =>
 			within(getByRole('list', { name: m.panels() }))
 				.getAllByRole('link')

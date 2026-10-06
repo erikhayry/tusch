@@ -1,5 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"addPanelAfter": "Add Panel after panel {number}",
+	"addPanelBefore": "Add Panel before panel {number}",
 	"addImage": "Add Image",
 	"backToComic": "Back to Comic",
 	"cancel": "Cancel",

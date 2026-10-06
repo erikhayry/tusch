@@ -18,6 +18,9 @@ export class PanelPage {
 	readonly deleteDialogueButton: Locator;
 	readonly createImageButton: Locator;
 	readonly replaceImageButton: Locator;
+	readonly initialNumberOfPanels: number;
+	readonly numberOfPanels: () => Promise<number>;
+	readonly addPanelBeforeButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -26,6 +29,10 @@ export class PanelPage {
 		this.replaceImageButton = page.getByRole('button', { name: m.generateNewImage() });
 		this.image = page.getByRole('img', { name: ComicsMock[0].panels[0].image?.alt });
 		this.mockedImage = page.getByRole('img', { name: mockImageResponse.alt });
+		this.addPanelBeforeButton = page.getByRole('button', { name: m.addPanelBefore({ number: 2 }) });
+		this.initialNumberOfPanels = ComicsMock[0].panels.length;
+		this.numberOfPanels = async () =>
+			page.getByRole('list', { name: m.panels() }).getByRole('listitem').count();
 
 		this.editCaptionButton = page.getByRole('button', { name: m.editCaption({ number: 1 }) });
 		this.editCaptionInput = page.getByRole('textbox', { name: m.editCaption({ number: 1 }) });
@@ -56,6 +63,10 @@ export class PanelPage {
 		await this.editDialogueButton.click();
 		await this.editDialogueInput.fill(newDialogue);
 		await this.saveDialogueButton.click();
+	}
+
+	async addPanelBefore() {
+		await this.addPanelBeforeButton.click();
 	}
 
 	goto() {

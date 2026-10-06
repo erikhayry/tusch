@@ -4,8 +4,10 @@ import {
 	CreateImageResponseSchema,
 	type CreateImageResponse,
 } from '../../../routes/api/chat/image/createImageApiTypes';
+import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
 import {
 	CreateImageSchema,
+	CreatePanelSchema,
 	InitialComicSchema,
 	SchemaName,
 	type CreateImage,
@@ -13,7 +15,7 @@ import {
 	type OpenAiImageOutput,
 } from './aiTypes';
 import { image, text } from './sdk/openAi';
-import { buildImageMessages, buildInitialMessages } from './utils/messages';
+import { buildImageMessages, buildInitialMessages, buildPanelMessages } from './utils/messages';
 
 function getOutputText(response: OpenAiImageOutput): string | undefined {
 	const content = response.output.find((item) => item.type === 'message')?.content;
@@ -64,6 +66,20 @@ export async function createImage(panel: Panel): Promise<CreateImageResponse> {
 	const response = await image(buildImageMessages(panel), SchemaName.enum.createImage);
 
 	const result = getImageFromOpenAiResponse(response);
+
+	return result;
+}
+
+function getPanelFromOpenAiResponse(response: OpenAiImageOutput): CreatePanelResponse {
+	const output = parseOutputText(response);
+
+	return CreatePanelSchema.parse(output);
+}
+
+export async function createPanel(index: number, panels: Panel[]): Promise<CreatePanelResponse> {
+	const response = await text(buildPanelMessages(index, panels), SchemaName.enum.createPanel);
+
+	const result = getPanelFromOpenAiResponse(response);
 
 	return result;
 }

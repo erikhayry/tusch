@@ -62,3 +62,11 @@ test('remove dialogue', async ({ page }) => {
 
 	await expect(page.getByText(ComicsMock[0].panels[1].dialogue[0])).toBeHidden();
 });
+
+test('add panel before', async ({ page }) => {
+	const panelPage = new PanelPage(page).goto();
+
+	await panelPage.addPanelBefore();
+
+	expect(await panelPage.numberOfPanels()).toBe(panelPage.initialNumberOfPanels + 1);
+});

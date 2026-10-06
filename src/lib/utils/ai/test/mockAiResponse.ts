@@ -4,7 +4,7 @@ import { InitialComicSchema } from '../aiTypes';
 
 export const aiInitialResponse = generateMocks(InitialComicSchema, 3);
 
-export const ContentJSONMock = {
+export const InitialComicContentMock = {
 	data: {
 		panels: [
 			{
@@ -30,48 +30,51 @@ export const ContentJSONMock = {
 	},
 };
 
-export const mockOpenRouterResponse = {
-	id: 'mock-gen-123',
-	model: 'openai/gpt-5.2',
-	choices: [
-		{
-			message: {
-				role: 'assistant',
-				content: JSON.stringify(ContentJSONMock),
-			},
-			finish_reason: 'stop',
-		},
-	],
+export const CreatePanelContentMock = {
+	data: {
+		dialogue: ['Arbetare: Vi kräver bättre villkor och rätten att organisera oss.'],
+		captions: ['Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.'],
+		visualDescription: 'visual mock',
+		year: 1931,
+		place: 'Ådalen',
+		timeOfDay: TimeOfDayEnum.enum.afternoon,
+		season: SeasonEnum.enum.summer,
+	},
 };
 
-export const mockOpenAiInitResponse = {
-	id: 'mock-gen-123',
-	model: 'gpt-6-luna',
-	output: [
-		{
-			id: 'rs_0486fa8154366c44006ac38066d99887d2badf9c0dbfba75d7',
-			type: 'reasoning',
-			content: [],
-			encrypted_content: '',
-			summary: [],
-		},
-		{
-			id: 'msg_0486fa8154366c44006ac3806c5e5c87d2a1f2e51a9f4abb88',
-			type: 'message',
-			status: 'completed',
-			content: [
-				{
-					type: 'output_text',
-					annotations: [],
-					logprobs: [],
-					text: JSON.stringify(ContentJSONMock),
-				},
-			],
-			phase: 'final_answer',
-			role: 'assistant',
-		},
-	],
-};
+function createMessageResponse(content: unknown) {
+	return {
+		id: 'mock-gen-123',
+		model: 'gpt-6-luna',
+		output: [
+			{
+				id: 'rs_0486fa8154366c44006ac38066d99887d2badf9c0dbfba75d7',
+				type: 'reasoning',
+				content: [],
+				encrypted_content: '',
+				summary: [],
+			},
+			{
+				id: 'msg_0486fa8154366c44006ac3806c5e5c87d2a1f2e51a9f4abb88',
+				type: 'message',
+				status: 'completed',
+				content: [
+					{
+						type: 'output_text',
+						annotations: [],
+						logprobs: [],
+						text: JSON.stringify(content),
+					},
+				],
+				phase: 'final_answer',
+				role: 'assistant',
+			},
+		],
+	};
+}
+
+export const mockOpenAiInitComicResponse = createMessageResponse(InitialComicContentMock);
+export const mockOpenAiCreatePanelResponse = createMessageResponse(CreatePanelContentMock);
 
 export const imageResulSrcMock =
 	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';

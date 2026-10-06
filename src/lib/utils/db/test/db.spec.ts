@@ -1,7 +1,10 @@
+import { generateMock } from '$lib/test/utils/generateMock';
+import { PanelSchema } from '$lib/types';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import {
 	addComic,
 	addImage,
+	addPanel,
 	clearComics,
 	deleteComic,
 	deleteImage,
@@ -75,6 +78,22 @@ describe('Db', () => {
 			deleteImage(Comic1.id, Comic1.panels[0].id);
 
 			expect(getComic(Comic1.id)?.panels[0].image).toBeUndefined();
+		});
+	});
+
+	describe('add panel', () => {
+		it('should add panel before', async () => {
+			const newPanel = generateMock(PanelSchema);
+			const initialLength = getComic(Comic1.id)!.panels.length;
+			const panelBefore = getComic(Comic1.id)!.panels[0];
+			const panelAfter = getComic(Comic1.id)!.panels[1];
+
+			addPanel(Comic1.id, newPanel, 1);
+
+			expect(getComic(Comic1.id)?.panels.length).toEqual(initialLength + 1);
+			expect(getComic(Comic1.id)?.panels[0]).toEqual(panelBefore);
+			expect(getComic(Comic1.id)?.panels[1]).toEqual(newPanel);
+			expect(getComic(Comic1.id)?.panels[2]).toEqual(panelAfter);
 		});
 	});
 

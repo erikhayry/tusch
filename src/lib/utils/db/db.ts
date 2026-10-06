@@ -115,3 +115,12 @@ export function addImage(comicId: string, panelId: string, image: ResponsiveImag
 
 	return getComics();
 }
+
+export function addPanel(comicId: string, panel: Panel, index: number): Comic[] {
+	const comic = getComic(comicId);
+	if (comic) {
+		comic.panels.splice(index, 0, panel);
+	}
+
+	return getComics();
+}

@@ -1,15 +1,17 @@
 import { PanelsMock } from '$lib/types/test/utils/mockTypes';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createImage, initComic } from '../ai';
+import { createImage, createPanel, initComic } from '../ai';
 import { SchemaName } from '../aiTypes';
-import { IMAGE, INIT } from '../utils/messages';
+import { IMAGE, INIT, PANEL } from '../utils/messages';
 import { OPEN_AI_ROLE } from '../utils/settings';
 import {
-	ContentJSONMock,
+	CreatePanelContentMock,
+	InitialComicContentMock,
 	imageDataMock,
 	imageResulSrcMock,
+	mockOpenAiCreatePanelResponse,
 	mockOpenAiImageResponse,
-	mockOpenAiInitResponse,
+	mockOpenAiInitComicResponse,
 } from './mockAiResponse';
 
 const SOURCE = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
@@ -21,7 +23,7 @@ describe('ai', () => {
 
 	describe('init', () => {
 		it('should call sdk with message', async () => {
-			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitComicResponse);
 
 			await initComic(SOURCE);
 
@@ -42,17 +44,17 @@ describe('ai', () => {
 		});
 
 		it('should call sdk with text format', async () => {
-			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitComicResponse);
 
 			await initComic(SOURCE);
 
-			expect(getFromatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
+			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.initComic,
 			);
 		});
 
 		it('should return comic', async () => {
-			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitComicResponse);
 
 			const {
 				panels,
@@ -63,10 +65,10 @@ describe('ai', () => {
 				characters,
 			} = await initComic(SOURCE);
 
-			expect(panels).toHaveLength(ContentJSONMock.data.panels.length);
+			expect(panels).toHaveLength(InitialComicContentMock.data.panels.length);
 			expect(id).toBeDefined();
 			expect(returnedSource).toEqual(SOURCE);
-			expect(title).toEqual(ContentJSONMock.data.title);
+			expect(title).toEqual(InitialComicContentMock.data.title);
 			expect(setting).toBeUndefined();
 			expect(characters).toBeUndefined();
 		});
@@ -119,7 +121,7 @@ describe('ai', () => {
 
 			await createImage(PanelsMock[0]);
 
-			expect(getFromatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
+			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.createImage,
 			);
 		});
@@ -135,9 +137,37 @@ describe('ai', () => {
 			expect(height).toEqual(imageDataMock.height);
 		});
 	});
+
+	describe('create panel', () => {
+		it('should call sdk with correct messages', async () => {
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiCreatePanelResponse);
+
+			await createPanel(1, PanelsMock);
+
+			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(PANEL.WHAT);
+		});
+
+		it('should call sdk with text format', async () => {
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiCreatePanelResponse);
+
+			await createPanel(1, PanelsMock);
+
+			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
+				SchemaName.enum.createPanel,
+			);
+		});
+
+		it('should return panel', async () => {
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiCreatePanelResponse);
+
+			const panel = await createPanel(1, PanelsMock);
+
+			expect(panel).toEqual(CreatePanelContentMock.data);
+		});
+	});
 });
 
-function getFromatNameFromCall(call: Parameters<typeof mockSendOpenAi>[0]) {
+function getFormatNameFromCall(call: Parameters<typeof mockSendOpenAi>[0]) {
 	return call.text.format.name;
 }
 
