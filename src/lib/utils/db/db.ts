@@ -43,12 +43,12 @@ export function updateComic(comic: Comic): Comic[] {
 	return getComics();
 }
 
-export function findPanel(comicId: string, panelId: string): Panel | undefined {
+export function getPanel(comicId: string, panelId: string): Panel | undefined {
 	return getComic(comicId)?.panels.find((panel) => panel.id === panelId);
 }
 
 export function deleteImage(comicId: string, panelId: string): Comic[] {
-	const panel = findPanel(comicId, panelId);
+	const panel = getPanel(comicId, panelId);
 
 	if (panel) {
 		panel.image = undefined;
@@ -79,7 +79,7 @@ export function deleteType(values: DeleteValues): Comic[] {
 
 		case DB_ITEM_TYPE.enum.dialogue:
 		case DB_ITEM_TYPE.enum.captions: {
-			const panel = findPanel(values.comicId, values.panelId);
+			const panel = getPanel(values.comicId, values.panelId);
 			if (panel) {
 				panel[values.type] = panel[values.type].filter((_, index) => index !== values.index);
 			}
@@ -93,7 +93,7 @@ export function editType(values: EditValues): Comic[] {
 	switch (values.type) {
 		case DB_ITEM_TYPE.enum.dialogue:
 		case DB_ITEM_TYPE.enum.captions: {
-			const panel = findPanel(values.comicId, values.panelId);
+			const panel = getPanel(values.comicId, values.panelId);
 			if (panel) {
 				panel[values.type][values.index] = values.value;
 			}
@@ -107,7 +107,7 @@ export function editType(values: EditValues): Comic[] {
 export function addImage(comicId: string, panelId: string, image: ResponsiveImage): Comic[] {
 	const comic = getComic(comicId);
 	if (comic) {
-		const panel = findPanel(comicId, panelId);
+		const panel = getPanel(comicId, panelId);
 		if (panel) {
 			panel.image = image;
 		}

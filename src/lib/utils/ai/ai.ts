@@ -1,10 +1,8 @@
 import { type Comic, type Panel, type Url } from '$lib/types';
-import type { ChatResult } from '@openrouter/sdk/models';
 import { randomUUID } from 'crypto';
 import type { CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
-import { CreateImageSchema, InitialPanelsSchema, type InitialPanels } from './aiTypes';
-import { chatWithImage, chat as openAiChat } from './sdk/openAi';
-import { chat as openRouterChat } from './sdk/openRouter';
+import { SchemaName, type InitialPanels } from './aiTypes';
+import { image, text } from './sdk/openAi';
 import { buildImageMessages, buildInitialMessages } from './utils/messages';
 
 function getPanelsFromOpenAiResponse(response: unknown): InitialPanels {
@@ -14,8 +12,8 @@ function getPanelsFromOpenAiResponse(response: unknown): InitialPanels {
 	return JSON.parse(response.output[1].content[0].text as string).data;
 }
 
-export async function initOpenAi(source: Url): Promise<Comic> {
-	const response = await openAiChat(buildInitialMessages(source), InitialPanelsSchema);
+export async function init(source: Url): Promise<Comic> {
+	const response = await text(buildInitialMessages(source), SchemaName.enum.initComic);
 
 	return {
 		id: randomUUID(),
@@ -38,28 +36,9 @@ function getImageFromOpenAiResponse(response: unknown): CreateImageResponse {
 }
 
 export async function createImage(scene: string, panel: Panel): Promise<CreateImageResponse> {
-	const response = await chatWithImage(buildImageMessages(scene, panel), CreateImageSchema);
+	const response = await image(buildImageMessages(scene, panel), SchemaName.enum.createImage);
 
 	const result = getImageFromOpenAiResponse(response);
 
 	return result;
-}
-
-function getPanelsFromOpenRouterResponse(response: ChatResult): InitialPanels {
-	//TODO: validate
-	return JSON.parse(response.choices[0].message.content as string).data;
-}
-
-export async function initOpenRouter(source: Url): Promise<Comic> {
-	const response = await openRouterChat(buildInitialMessages(source), InitialPanelsSchema);
-
-	return {
-		id: randomUUID(),
-		source,
-		title: '',
-		panels: getPanelsFromOpenRouterResponse(response).map((initialPanel) => ({
-			id: randomUUID(),
-			...initialPanel,
-		})),
-	};
 }

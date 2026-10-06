@@ -1,16 +1,18 @@
 import { PanelsMock } from '$lib/types/test/utils/mockTypes';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createImage, initOpenAi, initOpenRouter } from '../ai';
-import { InitialPanelsSchema } from '../aiTypes';
-import { OPEN_AI_ROLE } from '../sdk/openAi';
-import { OPEN_ROUTER_ROLE } from '../sdk/openRouter';
+import { createImage, init } from '../ai';
+import { SchemaName } from '../aiTypes';
 import { IMAGE, INIT } from '../utils/messages';
+import { OPEN_AI_ROLE } from '../utils/settings';
 import {
 	ContentJSONMock,
+	imageDataMock,
+	imageResulSrcMock,
 	mockOpenAiImageResponse,
 	mockOpenAiInitResponse,
-	mockOpenRouterResponse,
 } from './mockAiResponse';
+
+const SOURCE = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
 
 describe('ai', () => {
 	beforeEach(() => {
@@ -18,90 +20,53 @@ describe('ai', () => {
 	});
 
 	describe('init', () => {
-		describe('openAi', () => {
-			it('should call openAi sdk with message', async () => {
-				const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
-				mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
+		it('should call sdk with message', async () => {
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
 
-				await initOpenAi(source);
+			await init(SOURCE);
 
-				expect(mockSendOpenAi.mock.calls[0][0].input).toEqual([
-					{
-						content: INIT.WHAT,
-						role: OPEN_AI_ROLE.SYSTEM,
-					},
-					{
-						content: source,
-						role: OPEN_AI_ROLE.SYSTEM,
-					},
-					{
-						content: INIT.HOW,
-						role: OPEN_AI_ROLE.SYSTEM,
-					},
-				]);
-			});
+			expect(mockSendOpenAi.mock.calls[0][0].input).toEqual([
+				{
+					content: INIT.WHAT,
+					role: OPEN_AI_ROLE.SYSTEM,
+				},
+				{
+					content: SOURCE,
+					role: OPEN_AI_ROLE.SYSTEM,
+				},
+				{
+					content: INIT.HOW,
+					role: OPEN_AI_ROLE.SYSTEM,
+				},
+			]);
 		});
 
-		describe('openRouter', () => {
-			it('should call openRouter sdk with message', async () => {
-				const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
-				mockSendOpenRouter.mockResolvedValueOnce(mockOpenRouterResponse);
+		it('should call sdk with text format', async () => {
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
 
-				await initOpenRouter(source);
+			await init(SOURCE);
 
-				expect(mockSendOpenRouter.mock.calls[0][0].chatRequest.messages).toEqual([
-					{
-						content: INIT.WHAT,
-						role: OPEN_ROUTER_ROLE.USER,
-					},
-					{
-						content: source,
-						role: OPEN_ROUTER_ROLE.USER,
-					},
-					{
-						content: INIT.HOW,
-						role: OPEN_ROUTER_ROLE.USER,
-					},
-				]);
-			});
+			expect(getFromatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
+				SchemaName.enum.initComic,
+			);
+		});
 
-			it('should call openRouter sdk with response format', async () => {
-				const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
-				mockSendOpenRouter.mockResolvedValueOnce(mockOpenRouterResponse);
+		it('should return comic', async () => {
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
 
-				await initOpenRouter(source);
-				const schema =
-					mockSendOpenRouter.mock.calls[0][0].chatRequest.responseFormat.jsonSchema.schema
-						.properties.data.items;
+			const { panels, id, source: returnedSource, title, setting, characters } = await init(SOURCE);
 
-				expect(schema).toEqual(InitialPanelsSchema.toJSONSchema().items);
-			});
-
-			it('should return comic', async () => {
-				const source = 'https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna';
-				mockSendOpenRouter.mockResolvedValueOnce(mockOpenRouterResponse);
-
-				const {
-					panels,
-					id,
-					source: returnedSource,
-					title,
-					setting,
-					characters,
-				} = await initOpenRouter(source);
-
-				expect(panels).toHaveLength(ContentJSONMock.data.length);
-				expect(id).toBeDefined();
-				expect(returnedSource).toEqual(source);
-				expect(title).toEqual('');
-				expect(setting).toBeUndefined();
-				expect(characters).toBeUndefined();
-			});
+			expect(panels).toHaveLength(ContentJSONMock.data.length);
+			expect(id).toBeDefined();
+			expect(returnedSource).toEqual(SOURCE);
+			expect(title).toEqual('');
+			expect(setting).toBeUndefined();
+			expect(characters).toBeUndefined();
 		});
 	});
 
 	describe('create image', () => {
-		it('should call openAi with correct messages', async () => {
+		it('should call sdk with correct messages', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
 			await createImage('scene', PanelsMock[0]);
@@ -129,20 +94,33 @@ describe('ai', () => {
 				})),
 			]);
 		});
+
+		it('should call sdk with text format', async () => {
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
+
+			await createImage('scene', PanelsMock[0]);
+
+			expect(getFromatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
+				SchemaName.enum.createImage,
+			);
+		});
+
+		it('should return image', async () => {
+			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
+
+			const { src, alt, widht, height } = await createImage('scene', PanelsMock[0]);
+
+			expect(src).toEqual(imageResulSrcMock);
+			expect(alt).toEqual(imageDataMock.alt);
+			expect(widht).toEqual(imageDataMock.widht);
+			expect(height).toEqual(imageDataMock.height);
+		});
 	});
 });
 
-const { mockSendOpenRouter } = vi.hoisted(() => ({
-	mockSendOpenRouter: vi.fn(),
-}));
-
-vi.mock('@openrouter/sdk', () => ({
-	OpenRouter: class {
-		chat = {
-			send: mockSendOpenRouter,
-		};
-	},
-}));
+function getFromatNameFromCall(call: Parameters<typeof mockSendOpenAi>[0]) {
+	return call.text.format.name;
+}
 
 const { mockSendOpenAi } = vi.hoisted(() => ({
 	mockSendOpenAi: vi.fn(),

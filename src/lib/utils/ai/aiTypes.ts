@@ -10,3 +10,11 @@ export const CreateImageSchema = z.object({
 	height: z.number(),
 });
 export type CreateImage = z.infer<typeof CreateImageSchema>;
+
+export const SchemaName = z.enum(['initComic', 'createImage']);
+export type SchemaName = z.infer<typeof SchemaName>;
+
+export const SCHEMA: Record<SchemaName, z.ZodType> = {
+	initComic: InitialPanelsSchema,
+	createImage: CreateImageSchema,
+} as const;

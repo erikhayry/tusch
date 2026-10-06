@@ -84,6 +84,15 @@ export const mockOpenAiInitResponse = {
 	],
 };
 
+export const imageResulSrcMock =
+	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+export const imageDataMock = {
+	alt: 'A diverse group of construction workers wearing hard hats and reflective vests stand together at a building site.',
+	widht: 1024,
+	height: 1536,
+};
+
 export const mockOpenAiImageResponse = {
 	id: 'resp_07184e8e23181516006ac3bc3d134887d2bc925e022278d08d',
 	object: 'response',
@@ -120,7 +129,7 @@ export const mockOpenAiImageResponse = {
 			background: 'opaque',
 			output_format: 'webp',
 			quality: 'low',
-			result: 'encoded image data',
+			result: imageResulSrcMock,
 			revised_prompt:
 				'A single comic-book panel showing a diverse group of workers standing together in a loose cluster, wearing practical work clothes and safety gear such as hard hats, reflective vests, and tool belts. Friendly determined expressions, varied ages and appearances. Bold clean ink outlines, expressive faces, vivid flat colors, subtle halftone shading, dynamic but readable composition. Simple workplace background, no speech bubbles, no lettering, no text, no logos.',
 			size: '1024x1536',
@@ -142,7 +151,7 @@ export const mockOpenAiImageResponse = {
 					type: 'output_text',
 					annotations: [],
 					logprobs: [],
-					text: '{"data":{"alt":"A diverse group of construction workers wearing hard hats and reflective vests stand together at a building site.","widht":1024,"height":1536}}',
+					text: `{"data":${JSON.stringify(imageDataMock)}}`,
 				},
 			],
 			phase: 'final_answer',

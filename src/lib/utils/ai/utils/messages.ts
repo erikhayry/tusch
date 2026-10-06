@@ -1,4 +1,5 @@
 import type { Panel } from '$lib/types';
+import { OPEN_AI_ROLE } from './settings';
 
 export const INIT = {
 	WHAT: 'Create a comic script from attached url and instructions',
@@ -26,4 +27,8 @@ export function buildImageMessages(scene: string, panel: Panel): string[] {
 		//`captions: ${panel.captions.join(' ')}`,
 		...IMAGE.HOWS,
 	];
+}
+
+export function getChatMessages(messages: string[]) {
+	return messages.map((message) => ({ content: message, role: OPEN_AI_ROLE.SYSTEM }));
 }
