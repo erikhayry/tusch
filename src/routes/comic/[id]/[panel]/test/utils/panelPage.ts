@@ -17,11 +17,13 @@ export class PanelPage {
 	readonly saveDialogueButton: Locator;
 	readonly deleteDialogueButton: Locator;
 	readonly createImageButton: Locator;
+	readonly replaceImageButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.createImageButton = page.getByRole('button', { name: m.addImage() });
 		this.deleteImageButton = page.getByRole('button', { name: m.removeImage() });
+		this.replaceImageButton = page.getByRole('button', { name: m.generateNewImage() });
 		this.image = page.getByRole('img', { name: ComicsMock[0].panels[0].image?.alt });
 		this.mockedImage = page.getByRole('img', { name: mockImageResponse.alt });
 

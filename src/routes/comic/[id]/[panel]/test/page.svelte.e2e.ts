@@ -15,6 +15,14 @@ test('creates image', async ({ page }) => {
 	await expect(panelPage.mockedImage).toBeVisible();
 });
 
+test('replace image', async ({ page }) => {
+	const panelPage = new PanelPage(page).goto();
+
+	await panelPage.replaceImageButton.click();
+
+	await expect(panelPage.mockedImage).toBeVisible();
+});
+
 test('removes image', async ({ page }) => {
 	const panelPage = new PanelPage(page).goto();
 

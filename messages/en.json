@@ -29,5 +29,6 @@
 	"timeOfDay": "Time of Day",
 	"tusch": "Tusch",
 	"url": "URL",
-	"years": "Years"
+	"years": "Years",
+	"generateNewImage": "Generate new image"
 }

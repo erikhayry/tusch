@@ -85,6 +85,12 @@ describe('Panel', () => {
 			expect(getRemoveImageButton()).toBeInTheDocument();
 		});
 
+		it('should show generate new image button', () => {
+			const { getGenerateNewImageButton } = renderPanel();
+
+			expect(getGenerateNewImageButton()).toBeInTheDocument();
+		});
+
 		it('should show add image button if no image', () => {
 			const { getAddImageButton } = renderPanel(PanelPropsWithoutImage[0]);
 

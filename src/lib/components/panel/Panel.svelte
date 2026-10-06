@@ -24,6 +24,7 @@
 		<CreateImageForm label={m.addImage()} values={{ comicId, panelId: panel.id }} />
 	{:else}
 		<img src={getImageSrc(panel.image)} alt={panel.image.alt} />
+		<CreateImageForm label={m.generateNewImage()} values={{ comicId, panelId: panel.id }} />
 		<DeleteItemForm
 			label={m.removeImage()}
 			values={{ type: DB_ITEM_TYPE.enum.image, comicId, panelId: panel.id }}

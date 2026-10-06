@@ -39,6 +39,7 @@ export function renderPanel(props = PanelPropsMock[0]) {
 				level: 2,
 			}),
 		getVisualDescription: () => getByText(props.panel.visualDescription),
+		getGenerateNewImageButton: () => getByRole('button', { name: m.generateNewImage() }),
 		props,
 	};
 }
