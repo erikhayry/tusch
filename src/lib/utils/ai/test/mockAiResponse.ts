@@ -1,52 +1,33 @@
 import { generateMocks } from '$lib/test/utils/generateMock';
+import { SeasonEnum, TimeOfDayEnum } from '$lib/types';
 import { InitialComicSchema } from '../aiTypes';
 
 export const aiInitialResponse = generateMocks(InitialComicSchema, 3);
 
 export const ContentJSONMock = {
-	data: [
-		{
-			dialogue: ['Arbetare: Vi kräver bättre villkor och rätten att organisera oss.'],
-			captions: ['Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.'],
-			visualDescription: 'visual mock',
-		},
-		{
-			dialogue: ['Ordförande: Låt våra röster höras!', 'Arbetare: Vi står enade!'],
-			captions: ['Demonstrationen närmar sig platsen längs dalgångens väg.'],
-			visualDescription: 'visual mock',
-		},
-		{
-			dialogue: ['Officer: Håll avstånd, inga konfrontationer.', 'Soldat: Vi följer order.'],
-			captions: ['Militär och polis står vid vägen; spänningen byggs upp.'],
-			visualDescription: 'visual mock',
-		},
-		{
-			dialogue: ['Arbetare: Skott!', 'En åskådare: Hjälp!'],
-			captions: ['Skott hörs; panik och rädsla sprider sig bland åskådarna.'],
-			visualDescription: 'visual mock',
-		},
-		{
-			dialogue: ['Reporter: Fem döda och många skadade.', 'En överlevande: Varför sköts vi?'],
-			captions: ['Fem människor dödas och flera skadas i tumultet.'],
-			visualDescription: 'visual mock',
-		},
-		{
-			dialogue: ['Domare: Utredningen fortsätter.', 'Advokat: Ansvar måste utkrävas.'],
-			captions: ['Rättsliga utredningar och en nationell debatt följer.'],
-			visualDescription: 'visual mock',
-		},
-		{
-			dialogue: [
-				'Arbetare: Minnet av dem som föll måste leva vidare.',
-				'Politiker: Vi bygger ett bättre samhälle genom rättvisa och jämlikhet.',
-			],
-			captions: [
-				'Ådalen blir en vändpunkt i den svenska arbetarrörelsen – arbetsrätt och facklig organisering stärks.',
-			],
-			visualDescription: 'visual mock',
-		},
-	],
-	title: 'Ådals händelserna – serietecknad lösning (fiktiv tolkning)',
+	data: {
+		panels: [
+			{
+				dialogue: ['Arbetare: Vi kräver bättre villkor och rätten att organisera oss.'],
+				captions: ['Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.'],
+				visualDescription: 'visual mock',
+				year: 1931,
+				place: 'Ådalen',
+				timeOfDay: TimeOfDayEnum.enum.afternoon,
+				season: SeasonEnum.enum.summer,
+			},
+			{
+				dialogue: ['Ordförande: Låt våra röster höras!', 'Arbetare: Vi står enade!'],
+				captions: ['Demonstrationen närmar sig platsen längs dalgångens väg.'],
+				visualDescription: 'visual mock',
+				year: 1931,
+				place: 'Ådalen',
+				timeOfDay: TimeOfDayEnum.enum.afternoon,
+				season: SeasonEnum.enum.summer,
+			},
+		],
+		title: 'Ådals händelserna – serietecknad lösning (fiktiv tolkning)',
+	},
 };
 
 export const mockOpenRouterResponse = {

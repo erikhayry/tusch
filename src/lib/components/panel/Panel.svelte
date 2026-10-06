@@ -31,6 +31,10 @@
 		/>
 	{/if}
 
+	<p>{m.timeOfDay()}: {panel.timeOfDay}</p>
+	<p>{m.season()}: {panel.season}</p>
+	<p>{m.year()}: {panel.year}</p>
+
 	<Section>
 		<Heading id="panel-caption">{m.captions()}</Heading>
 		<ul aria-labelledby="panel-caption">

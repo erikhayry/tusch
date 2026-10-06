@@ -40,6 +40,9 @@ export function renderPanel(props = PanelPropsMock[0]) {
 			}),
 		getVisualDescription: () => getByText(props.panel.visualDescription),
 		getGenerateNewImageButton: () => getByRole('button', { name: m.generateNewImage() }),
+		getTimeOfDay: () => getByText(`${m.timeOfDay()}: ${props.panel.timeOfDay}`),
+		getSeason: () => getByText(`${m.season()}: ${props.panel.season}`),
+		getYear: () => getByText(`${m.year()}: ${props.panel.year}`),
 		props,
 	};
 }

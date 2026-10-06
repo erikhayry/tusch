@@ -1,9 +1,20 @@
-import { PanelSchema } from '$lib/types';
+import { ComicSchema, PanelSchema } from '$lib/types';
 import z from 'zod';
 
-export const InitialComicSchema = z.array(
-	PanelSchema.pick({ captions: true, dialogue: true, visualDescription: true }),
-);
+export const InitialComicSchema = z.object({
+	title: ComicSchema.shape.title,
+	panels: z.array(
+		PanelSchema.pick({
+			captions: true,
+			dialogue: true,
+			visualDescription: true,
+			place: true,
+			season: true,
+			timeOfDay: true,
+			year: true,
+		}),
+	),
+});
 export type InitialComic = z.infer<typeof InitialComicSchema>;
 
 export const CreateImageSchema = z.object({

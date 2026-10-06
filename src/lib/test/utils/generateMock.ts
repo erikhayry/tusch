@@ -1,4 +1,4 @@
-import { PanelSchema } from '$lib/types';
+import { PanelSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
 import { vi } from 'vitest';
 import { zocker } from 'zocker';
 import z from 'zod';
@@ -24,6 +24,10 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 			PanelSchema.shape.visualDescription,
 			'En mångsidig grupp byggarbetare i skyddshjälmar och reflexvästar står tillsammans på en byggarbetsplats.',
 		)
+		.supply(PanelSchema.shape.place, 'Ådalen')
+		.supply(PanelSchema.shape.season, SeasonEnum.enum.summer)
+		.supply(PanelSchema.shape.timeOfDay, TimeOfDayEnum.enum.afternoon)
+		.supply(PanelSchema.shape.year, 1931)
 		.array({
 			min: 3,
 			max: 4,

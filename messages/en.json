@@ -30,5 +30,7 @@
 	"tusch": "Tusch",
 	"url": "URL",
 	"years": "Years",
-	"generateNewImage": "Generate new image"
+	"generateNewImage": "Generate new image",
+	"year": "Year",
+	"season": "Season"
 }

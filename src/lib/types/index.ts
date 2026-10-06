@@ -52,10 +52,10 @@ export const PanelSchema = z.object({
 	visualDescription: z.string(),
 	captions: z.array(z.string()),
 	dialogue: z.array(z.string()),
-	year: z.optional(YearSchema),
-	season: z.optional(SeasonEnum),
-	place: z.optional(z.string()),
-	timeOfDay: z.optional(TimeOfDayEnum),
+	year: YearSchema,
+	place: z.string(),
+	timeOfDay: TimeOfDayEnum,
+	season: SeasonEnum,
 	image: z.optional(ResponsiveImageSchema),
 });
 export type Panel = z.infer<typeof PanelSchema>;

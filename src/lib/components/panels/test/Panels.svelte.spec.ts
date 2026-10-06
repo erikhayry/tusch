@@ -19,4 +19,10 @@ describe('Panels', () => {
 
 		expect(getComicLink()).toHaveAttribute('href', `/comic/${props.comicId}`);
 	});
+
+	it('should show current panel link', () => {
+		const { getPanelLink, props } = renderPanels();
+
+		expect(getPanelLink(props.current.index)).toHaveAttribute('aria-current', 'page');
+	});
 });

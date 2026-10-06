@@ -27,7 +27,7 @@ function parseOutputText(response: OpenAiImageOutput): unknown | undefined {
 	return text ? JSON.parse(text).data : undefined;
 }
 
-function getPanelsFromOpenAiResponse(response: OpenAiImageOutput): InitialComic {
+function getComicFromOpenAiResponse(response: OpenAiImageOutput): InitialComic {
 	const output = parseOutputText(response);
 
 	return InitialComicSchema.parse(output);
@@ -35,12 +35,13 @@ function getPanelsFromOpenAiResponse(response: OpenAiImageOutput): InitialComic 
 
 export async function initComic(source: Url): Promise<Comic> {
 	const response = await text(buildInitialMessages(source), SchemaName.enum.initComic);
+	const comic = getComicFromOpenAiResponse(response);
 
 	return {
 		id: randomUUID(),
 		source,
-		title: '',
-		panels: getPanelsFromOpenAiResponse(response).map((initialPanel) => ({
+		title: comic.title,
+		panels: comic.panels.map((initialPanel) => ({
 			id: randomUUID(),
 			...initialPanel,
 		})),

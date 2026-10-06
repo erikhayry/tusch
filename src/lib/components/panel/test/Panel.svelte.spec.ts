@@ -16,6 +16,24 @@ describe('Panel', () => {
 		expect(getVisualDescription()).toBeInTheDocument();
 	});
 
+	it('should show time of day', () => {
+		const { getTimeOfDay } = renderPanel();
+
+		expect(getTimeOfDay()).toBeInTheDocument();
+	});
+
+	it('should show season', () => {
+		const { getSeason } = renderPanel();
+
+		expect(getSeason()).toBeInTheDocument();
+	});
+
+	it('should show year', () => {
+		const { getYear } = renderPanel();
+
+		expect(getYear()).toBeInTheDocument();
+	});
+
 	describe('captions', () => {
 		it('render captions', () => {
 			const { getCaptions, props } = renderPanel();

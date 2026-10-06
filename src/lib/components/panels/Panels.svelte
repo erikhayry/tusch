@@ -15,7 +15,11 @@
 		<ol aria-labelledby="panels-heading">
 			{#each panels as panel, index (panel.id)}
 				<li>
-					<a href={resolve(`/comic/${comicId}/${panel.id}`)}>{m.panel({ number: index + 1 })}</a>
+					<a
+						href={resolve(`/comic/${comicId}/${panel.id}`)}
+						aria-current={index === current.index ? 'page' : undefined}
+						>{m.panel({ number: index + 1 })}</a
+					>
 				</li>
 			{/each}
 		</ol>

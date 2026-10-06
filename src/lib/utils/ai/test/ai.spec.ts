@@ -34,10 +34,10 @@ describe('ai', () => {
 					content: SOURCE,
 					role: OPEN_AI_ROLE.SYSTEM,
 				},
-				{
-					content: INIT.HOW,
+				...INIT.HOWS.map((how) => ({
+					content: how,
 					role: OPEN_AI_ROLE.SYSTEM,
-				},
+				})),
 			]);
 		});
 
@@ -63,10 +63,10 @@ describe('ai', () => {
 				characters,
 			} = await initComic(SOURCE);
 
-			expect(panels).toHaveLength(ContentJSONMock.data.length);
+			expect(panels).toHaveLength(ContentJSONMock.data.panels.length);
 			expect(id).toBeDefined();
 			expect(returnedSource).toEqual(SOURCE);
-			expect(title).toEqual('');
+			expect(title).toEqual(ContentJSONMock.data.title);
 			expect(setting).toBeUndefined();
 			expect(characters).toBeUndefined();
 		});
@@ -93,6 +93,18 @@ describe('ai', () => {
 				},
 				{
 					content: `captions: ${PanelsMock[0].captions.join('. ')}`,
+					role: OPEN_AI_ROLE.SYSTEM,
+				},
+				{
+					content: `season: ${PanelsMock[0].season}`,
+					role: OPEN_AI_ROLE.SYSTEM,
+				},
+				{
+					content: `year: ${PanelsMock[0].year}`,
+					role: OPEN_AI_ROLE.SYSTEM,
+				},
+				{
+					content: `time of day: ${PanelsMock[0].timeOfDay}`,
 					role: OPEN_AI_ROLE.SYSTEM,
 				},
 				...IMAGE.HOWS.map((how) => ({
