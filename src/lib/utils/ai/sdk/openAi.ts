@@ -29,7 +29,7 @@ export async function text(messages: string[], schema: SchemaName): Promise<Open
 
 export async function image(messages: string[], schema: SchemaName): Promise<OpenAiImageOutput> {
 	const req: ResponseCreateParamsWithTools = {
-		model: MODEL.IMAGE,
+		model: MODEL.TEXT,
 		input: getChatMessages(messages),
 		tools: [TOOLS.IMAGE],
 		store: true,
