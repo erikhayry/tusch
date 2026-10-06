@@ -1,3 +1,7 @@
+<script lang="ts" module>
+	export const PanelTestId = 'panel-test-id';
+</script>
+
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
@@ -12,7 +16,7 @@
 	let { number, totalNumberOfPanels, panel, comicId }: PanelProps = $props();
 </script>
 
-<Section>
+<Section data-testId={PanelTestId}>
 	<Heading>{m.panelTitle({ number, total: totalNumberOfPanels })}</Heading>
 	<p>{panel.visualDescription}</p>
 

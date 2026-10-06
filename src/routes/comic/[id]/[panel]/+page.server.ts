@@ -5,7 +5,9 @@ import { error } from '@sveltejs/kit';
 
 export interface Data {
 	panel: Panel;
+	panels: Panel[];
 	totalNumberOfPanels: number;
+	index: number;
 	number: number;
 	comicId: string;
 }
@@ -19,8 +21,10 @@ export function load({ params }): Data {
 	}
 
 	return {
+		panels: comic.panels,
 		panel: comic.panels[panelIndex],
 		number: panelIndex + 1,
+		index: panelIndex,
 		totalNumberOfPanels: comic.panels.length,
 		comicId: params.id,
 	};

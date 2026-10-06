@@ -1,13 +1,17 @@
 <script lang="ts">
-  import { type Snippet } from 'svelte';
-  import { setLevel } from './utils/headinLevel';
+	import type { Snippet } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import { setLevel } from './utils/headinLevel';
 
-  let { children }: { children: Snippet } = $props();
+	interface Props extends HTMLAttributes<HTMLElement> {
+		children: Snippet;
+	}
 
+	let { children, ...props }: Props = $props();
 
-  setLevel();
+	setLevel();
 </script>
 
-<section>
-  {@render children()}
+<section {...props}>
+	{@render children()}
 </section>
