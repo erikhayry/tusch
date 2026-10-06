@@ -29,7 +29,6 @@ export const CharacterSchema = z.object({
 	id: z.uuid(),
 	name: z.string(),
 	description: z.string(),
-	images: z.array(z.url()),
 });
 export type Character = z.infer<typeof CharacterSchema>;
 
@@ -51,7 +50,7 @@ export const PanelSchema = z.object({
 	id: z.uuid(),
 	visualDescription: z.string(),
 	captions: z.array(z.string()),
-	dialogue: z.array(z.string()),
+	dialogue: z.array(DialogueSchema),
 	year: YearSchema,
 	place: z.string(),
 	timeOfDay: TimeOfDayEnum,
@@ -66,6 +65,6 @@ export const ComicSchema = z.object({
 	source: z.url(),
 	panels: z.array(PanelSchema),
 	setting: z.optional(SettingSchema),
-	characters: z.optional(z.array(CharacterSchema)),
+	characters: z.array(CharacterSchema),
 });
 export type Comic = z.infer<typeof ComicSchema>;

@@ -5,7 +5,9 @@ const GLOBAL_HOWS = {
 	PANEL: [
 		'language should be same as source',
 		'the year field in the response should be included and match the year of the panel (e.g. 2023 if the panel is situated in 2023)', //not followed
+		'if a main charachter has a dialogue, reference the id from the comic charachters list',
 	],
+	COMIC: ['add 1-3 main charachters. Add each charachter to the comics charachter array'],
 };
 
 export const INIT = {
@@ -40,7 +42,7 @@ export function buildImageMessages(panel: Panel): string[] {
 	return [
 		IMAGE.WHAT,
 		`visualDescription: ${panel.visualDescription}`,
-		`dialogue: ${panel.dialogue.join('. ')}`,
+		`dialogue: ${panel.dialogue.map(({ text }) => text).join('. ')}`,
 		`captions: ${panel.captions.join('. ')}`,
 		`season: ${panel.season}`,
 		`year: ${panel.year}`,

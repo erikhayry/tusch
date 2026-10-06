@@ -15,6 +15,7 @@ export const FieldActionsPropsSchema = z.object({
 	editActionLabel: LabelSchema,
 	saveActionLabel: LabelSchema,
 	removeActionLabel: LabelSchema,
+	visibleText: z.string(),
 });
 
 export type FieldActionsProps = z.infer<typeof FieldActionsPropsSchema>;

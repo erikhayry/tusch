@@ -9,10 +9,12 @@ const INITAL_PANEL_SCHEMA = PanelSchema.pick({
 	season: true,
 	timeOfDay: true,
 	year: true,
+	id: true,
 });
 
 export const InitialComicSchema = z.object({
 	title: ComicSchema.shape.title,
+	characters: ComicSchema.shape.characters,
 	panels: z.array(INITAL_PANEL_SCHEMA),
 });
 export type InitialComic = z.infer<typeof InitialComicSchema>;

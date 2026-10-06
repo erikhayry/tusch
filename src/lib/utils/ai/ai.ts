@@ -42,7 +42,7 @@ export async function initComic(source: Url): Promise<Comic> {
 	return {
 		id: randomUUID(),
 		source,
-		title: comic.title,
+		...comic,
 		panels: comic.panels.map((initialPanel) => ({
 			id: randomUUID(),
 			...initialPanel,

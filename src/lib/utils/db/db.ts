@@ -77,12 +77,20 @@ export function deleteType(values: DeleteValues): Comic[] {
 			break;
 		}
 
-		case DB_ITEM_TYPE.enum.dialogue:
+		case DB_ITEM_TYPE.enum.dialogue: {
+			const panel = getPanel(values.comicId, values.panelId);
+			if (panel) {
+				panel[values.type] = panel[values.type].filter((_, index) => index !== values.index);
+			}
+			break;
+		}
+
 		case DB_ITEM_TYPE.enum.captions: {
 			const panel = getPanel(values.comicId, values.panelId);
 			if (panel) {
 				panel[values.type] = panel[values.type].filter((_, index) => index !== values.index);
 			}
+			break;
 		}
 	}
 
@@ -91,7 +99,13 @@ export function deleteType(values: DeleteValues): Comic[] {
 
 export function editType(values: EditValues): Comic[] {
 	switch (values.type) {
-		case DB_ITEM_TYPE.enum.dialogue:
+		case DB_ITEM_TYPE.enum.dialogue: {
+			const panel = getPanel(values.comicId, values.panelId);
+			if (panel) {
+				panel[values.type][values.index].text = values.value;
+			}
+			break;
+		}
 		case DB_ITEM_TYPE.enum.captions: {
 			const panel = getPanel(values.comicId, values.panelId);
 			if (panel) {

@@ -148,7 +148,7 @@ describe('Db', () => {
 				value: 'NEW DIALOGUE',
 			});
 
-			expect(getComic(Comic1.id)?.panels[0].dialogue[0]).toEqual('NEW DIALOGUE');
+			expect(getComic(Comic1.id)?.panels[0].dialogue[0].text).toEqual('NEW DIALOGUE');
 		});
 	});
 });

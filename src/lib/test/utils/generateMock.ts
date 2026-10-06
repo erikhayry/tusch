@@ -15,7 +15,10 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 		.setSeed(1)
 		.optional({ undefined_chance: 0 })
 		.supply(PanelSchema.shape.dialogue, [
-			'Arbetare: Vi kräver bättre villkor och rätten att organisera oss.',
+			{
+				text: 'Arbetare: Vi kräver bättre villkor och rätten att organisera oss.',
+				characterId: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+			},
 		])
 		.supply(PanelSchema.shape.captions, [
 			'Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.',

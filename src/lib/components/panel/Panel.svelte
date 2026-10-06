@@ -48,6 +48,7 @@
 							index,
 							value: caption,
 						}}
+						visibleText={caption}
 						editActionLabel={m.editCaption}
 						removeActionLabel={m.deleteCaption}
 						saveActionLabel={m.saveCaption}
@@ -66,8 +67,9 @@
 							comicId,
 							panelId: panel.id,
 							index,
-							value: dialogue,
+							value: dialogue.text,
 						}}
+						visibleText={dialogue.text}
 						editActionLabel={m.editDialogue}
 						removeActionLabel={m.deleteDialogue}
 						saveActionLabel={m.saveDialogue}

@@ -4,12 +4,19 @@
 	import { ACTION } from '$lib/utils/actions';
 	import { type FieldActionsProps } from './fieldActionsTypes';
 
-	let { values, editActionLabel, saveActionLabel, removeActionLabel }: FieldActionsProps = $props();
+	let {
+		values,
+		editActionLabel,
+		saveActionLabel,
+		removeActionLabel,
+		visibleText,
+	}: FieldActionsProps = $props();
 	let number = $derived(values.index + 1);
 </script>
 
 <TextFieldForm
 	action={ACTION.EDIT}
+	{visibleText}
 	label={editActionLabel({ number })}
 	{values}
 	saveActionLabel={saveActionLabel({ number })}

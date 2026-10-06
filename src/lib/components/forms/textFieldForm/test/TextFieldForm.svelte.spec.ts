@@ -6,7 +6,7 @@ describe('TextFieldForm', () => {
 	it('should show value', () => {
 		const { getTextValue, props } = renderTextFieldForm();
 
-		expect(getTextValue()).toHaveTextContent(props.values.value);
+		expect(getTextValue()).toHaveTextContent(props.visibleText);
 	});
 
 	it('should show text field', async () => {
@@ -25,7 +25,7 @@ describe('TextFieldForm', () => {
 		await fireEvent.click(getEditButton());
 		await fireEvent.click(getCancelButton());
 
-		expect(getTextValue()).toHaveTextContent(props.values.value);
+		expect(getTextValue()).toHaveTextContent(props.visibleText);
 		expect(queryInputField()).not.toBeInTheDocument();
 	});
 });

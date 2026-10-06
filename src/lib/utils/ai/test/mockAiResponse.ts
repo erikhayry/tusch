@@ -6,9 +6,27 @@ export const aiInitialResponse = generateMocks(InitialComicSchema, 3);
 
 export const InitialComicContentMock = {
 	data: {
+		characters: [
+			{
+				id: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+				name: 'Arbetare',
+				description: 'Man',
+			},
+			{
+				id: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+				name: 'Ordförande',
+				description: 'Old Man',
+			},
+		],
 		panels: [
 			{
-				dialogue: ['Arbetare: Vi kräver bättre villkor och rätten att organisera oss.'],
+				id: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+				dialogue: [
+					{
+						text: 'Arbetare: Vi kräver bättre villkor och rätten att organisera oss.',
+						characterId: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+					},
+				],
 				captions: ['Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.'],
 				visualDescription: 'visual mock',
 				year: 1931,
@@ -17,7 +35,17 @@ export const InitialComicContentMock = {
 				season: SeasonEnum.enum.summer,
 			},
 			{
-				dialogue: ['Ordförande: Låt våra röster höras!', 'Arbetare: Vi står enade!'],
+				id: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+				dialogue: [
+					{
+						text: 'Ordförande: Låt våra röster höras!',
+						characterId: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+					},
+					{
+						text: 'Arbetare: Vi står enade!',
+						characterId: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+					},
+				],
 				captions: ['Demonstrationen närmar sig platsen längs dalgångens väg.'],
 				visualDescription: 'visual mock',
 				year: 1931,
@@ -32,7 +60,13 @@ export const InitialComicContentMock = {
 
 export const CreatePanelContentMock = {
 	data: {
-		dialogue: ['Arbetare: Vi kräver bättre villkor och rätten att organisera oss.'],
+		id: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+		dialogue: [
+			{
+				text: 'Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.',
+				characterId: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
+			},
+		],
 		captions: ['Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.'],
 		visualDescription: 'visual mock',
 		year: 1931,

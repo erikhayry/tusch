@@ -70,7 +70,7 @@ describe('ai', () => {
 			expect(returnedSource).toEqual(SOURCE);
 			expect(title).toEqual(InitialComicContentMock.data.title);
 			expect(setting).toBeUndefined();
-			expect(characters).toBeUndefined();
+			expect(characters[0]).toEqual(InitialComicContentMock.data.characters[0]);
 		});
 	});
 
@@ -90,7 +90,7 @@ describe('ai', () => {
 					role: OPEN_AI_ROLE.SYSTEM,
 				},
 				{
-					content: `dialogue: ${PanelsMock[0].dialogue.join('. ')}`,
+					content: `dialogue: ${PanelsMock[0].dialogue.map(({ text }) => text).join('. ')}`,
 					role: OPEN_AI_ROLE.SYSTEM,
 				},
 				{

@@ -91,7 +91,7 @@ export const globalActions = {
 		});
 		const panel: CreatePanelResponse = await panelResponse.json();
 
-		addPanel(comicId, { ...panel, id: Math.floor(Math.random() * 1000000).toString() }, index);
+		addPanel(comicId, panel, index);
 	},
 
 	[ACTION.CREATE_IMAGE]: async ({

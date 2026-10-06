@@ -4,7 +4,8 @@
 
 	let editable = $state(false);
 
-	let { action, values, label, saveActionLabel, editActionLabel }: TextFieldFormProps = $props();
+	let { action, values, label, saveActionLabel, editActionLabel, visibleText }: TextFieldFormProps =
+		$props();
 
 	function toggleEditing() {
 		editable = !editable;
@@ -28,7 +29,7 @@
 		<button type="button" onclick={toggleEditing}>{m.cancel()}</button>
 	</form>
 {:else}
-	<p>{values.value}</p>
+	<p>{visibleText}</p>
 	<button type="button" onclick={toggleEditing}>
 		{editActionLabel}
 	</button>
