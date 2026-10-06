@@ -1,6 +1,6 @@
 import { PanelsMock } from '$lib/types/test/utils/mockTypes';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createImage, init } from '../ai';
+import { createImage, initComic } from '../ai';
 import { SchemaName } from '../aiTypes';
 import { IMAGE, INIT } from '../utils/messages';
 import { OPEN_AI_ROLE } from '../utils/settings';
@@ -23,7 +23,7 @@ describe('ai', () => {
 		it('should call sdk with message', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
 
-			await init(SOURCE);
+			await initComic(SOURCE);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input).toEqual([
 				{
@@ -44,7 +44,7 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
 
-			await init(SOURCE);
+			await initComic(SOURCE);
 
 			expect(getFromatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.initComic,
@@ -54,7 +54,14 @@ describe('ai', () => {
 		it('should return comic', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitResponse);
 
-			const { panels, id, source: returnedSource, title, setting, characters } = await init(SOURCE);
+			const {
+				panels,
+				id,
+				source: returnedSource,
+				title,
+				setting,
+				characters,
+			} = await initComic(SOURCE);
 
 			expect(panels).toHaveLength(ContentJSONMock.data.length);
 			expect(id).toBeDefined();
@@ -108,11 +115,11 @@ describe('ai', () => {
 		it('should return image', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			const { src, alt, widht, height } = await createImage('scene', PanelsMock[0]);
+			const { src, alt, width, height } = await createImage('scene', PanelsMock[0]);
 
 			expect(src).toEqual(imageResulSrcMock);
 			expect(alt).toEqual(imageDataMock.alt);
-			expect(widht).toEqual(imageDataMock.widht);
+			expect(width).toEqual(imageDataMock.width);
 			expect(height).toEqual(imageDataMock.height);
 		});
 	});

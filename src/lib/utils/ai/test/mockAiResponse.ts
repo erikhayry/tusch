@@ -1,41 +1,42 @@
 import { generateMocks } from '$lib/test/utils/generateMock';
-import { InitialPanelsSchema } from '../aiTypes';
+import { InitialComicSchema } from '../aiTypes';
 
-export const aiInitialResponse = generateMocks(InitialPanelsSchema, 3);
+export const aiInitialResponse = generateMocks(InitialComicSchema, 3);
 
 export const ContentJSONMock = {
 	data: [
 		{
 			dialogue: ['Arbetare: Vi kräver bättre villkor och rätten att organisera oss.'],
-			caption: 'Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.',
+			captions: ['Ådalen, Sverige – den 14 maj 1931. En vårdag som snart blir historisk.'],
 		},
 		{
 			dialogue: ['Ordförande: Låt våra röster höras!', 'Arbetare: Vi står enade!'],
-			caption: 'Demonstrationen närmar sig platsen längs dalgångens väg.',
+			captions: ['Demonstrationen närmar sig platsen längs dalgångens väg.'],
 		},
 		{
 			dialogue: ['Officer: Håll avstånd, inga konfrontationer.', 'Soldat: Vi följer order.'],
-			caption: 'Militär och polis står vid vägen; spänningen byggs upp.',
+			captions: ['Militär och polis står vid vägen; spänningen byggs upp.'],
 		},
 		{
 			dialogue: ['Arbetare: Skott!', 'En åskådare: Hjälp!'],
-			caption: 'Skott hörs; panik och rädsla sprider sig bland åskådarna.',
+			captions: ['Skott hörs; panik och rädsla sprider sig bland åskådarna.'],
 		},
 		{
 			dialogue: ['Reporter: Fem döda och många skadade.', 'En överlevande: Varför sköts vi?'],
-			caption: 'Fem människor dödas och flera skadas i tumultet.',
+			captions: ['Fem människor dödas och flera skadas i tumultet.'],
 		},
 		{
 			dialogue: ['Domare: Utredningen fortsätter.', 'Advokat: Ansvar måste utkrävas.'],
-			caption: 'Rättsliga utredningar och en nationell debatt följer.',
+			captions: ['Rättsliga utredningar och en nationell debatt följer.'],
 		},
 		{
 			dialogue: [
 				'Arbetare: Minnet av dem som föll måste leva vidare.',
 				'Politiker: Vi bygger ett bättre samhälle genom rättvisa och jämlikhet.',
 			],
-			caption:
+			captions: [
 				'Ådalen blir en vändpunkt i den svenska arbetarrörelsen – arbetsrätt och facklig organisering stärks.',
+			],
 		},
 	],
 	title: 'Ådals händelserna – serietecknad lösning (fiktiv tolkning)',
@@ -89,7 +90,7 @@ export const imageResulSrcMock =
 
 export const imageDataMock = {
 	alt: 'A diverse group of construction workers wearing hard hats and reflective vests stand together at a building site.',
-	widht: 1024,
+	width: 1024,
 	height: 1536,
 };
 
@@ -190,14 +191,14 @@ export const mockOpenAiImageResponse = {
 							alt: {
 								type: 'string',
 							},
-							widht: {
+							width: {
 								type: 'number',
 							},
 							height: {
 								type: 'number',
 							},
 						},
-						required: ['src', 'alt', 'widht', 'height'],
+						required: ['src', 'alt', 'width', 'height'],
 						additionalProperties: false,
 					},
 				},

@@ -1,18 +1,39 @@
 import { type Comic, type Panel, type Url } from '$lib/types';
 import { randomUUID } from 'crypto';
-import type { CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
-import { SchemaName, type InitialPanels } from './aiTypes';
+import {
+	CreateImageResponseSchema,
+	type CreateImageResponse,
+} from '../../../routes/api/chat/image/createImageApiTypes';
+import {
+	CreateImageSchema,
+	InitialComicSchema,
+	SchemaName,
+	type CreateImage,
+	type InitialComic,
+	type OpenAiImageOutput,
+} from './aiTypes';
 import { image, text } from './sdk/openAi';
 import { buildImageMessages, buildInitialMessages } from './utils/messages';
 
-function getPanelsFromOpenAiResponse(response: unknown): InitialPanels {
-	//TODO: validate
-	// TODO: use find instead of hardcoded index
+function getOutputText(response: OpenAiImageOutput): string | undefined {
+	const content = response.output.find((item) => item.type === 'message')?.content;
 
-	return JSON.parse(response.output[1].content[0].text as string).data;
+	return content?.find(({ type }) => type === 'output_text')?.text;
 }
 
-export async function init(source: Url): Promise<Comic> {
+function parseOutputText(response: OpenAiImageOutput): unknown | undefined {
+	const text = getOutputText(response);
+
+	return text ? JSON.parse(text).data : undefined;
+}
+
+function getPanelsFromOpenAiResponse(response: OpenAiImageOutput): InitialComic {
+	const output = parseOutputText(response);
+
+	return InitialComicSchema.parse(output);
+}
+
+export async function initComic(source: Url): Promise<Comic> {
 	const response = await text(buildInitialMessages(source), SchemaName.enum.initComic);
 
 	return {
@@ -26,13 +47,16 @@ export async function init(source: Url): Promise<Comic> {
 	};
 }
 
-function getImageFromOpenAiResponse(response: unknown): CreateImageResponse {
-	const image = response.output.find((item: any) => item.type === 'image_generation_call').result;
-	const text = response.output
-		.find((item: any) => item.type === 'message')
-		.content.find(({ type }: any) => type === 'output_text').text;
+function getImageData(response: OpenAiImageOutput): CreateImage {
+	const output = parseOutputText(response);
 
-	return { src: image, ...JSON.parse(text).data };
+	return CreateImageSchema.parse(output);
+}
+
+function getImageFromOpenAiResponse(response: OpenAiImageOutput): CreateImageResponse {
+	const src = response.output.find((item) => item.type === 'image_generation_call')?.result;
+
+	return CreateImageResponseSchema.parse({ src, ...getImageData(response) });
 }
 
 export async function createImage(scene: string, panel: Panel): Promise<CreateImageResponse> {

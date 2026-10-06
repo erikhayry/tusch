@@ -81,8 +81,8 @@ export const globalActions = {
 		const image: CreateImageResponse = await imageResponse.json();
 
 		addImage(comicId, panelId, {
-			wide: { src: image.src, width: image.widht, height: image.height },
-			narrow: { src: image.src, width: image.widht, height: image.height },
+			wide: { src: image.src, width: image.width, height: image.height },
+			narrow: { src: image.src, width: image.width, height: image.height },
 			alt: image.alt,
 		});
 	},

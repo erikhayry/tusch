@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
-import type { SchemaName } from '../aiTypes';
+import { OpenAiImageOutputSchema, type OpenAiImageOutput, type SchemaName } from '../aiTypes';
 import { getSchemaAsTextFormat } from '../utils/format';
 import { getChatMessages } from '../utils/messages';
 import { MODEL, TOOLS } from '../utils/settings';
@@ -9,7 +9,13 @@ const client = new OpenAI({
 	apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 });
 
-export async function text(messages: string[], schema: SchemaName): Promise<unknown> {
+async function parse(req: ResponseCreateParamsWithTools): Promise<OpenAiImageOutput> {
+	const response = await client.responses.parse(req);
+
+	return OpenAiImageOutputSchema.parse(response);
+}
+
+export async function text(messages: string[], schema: SchemaName): Promise<OpenAiImageOutput> {
 	const req: ResponseCreateParamsWithTools = {
 		model: MODEL.TEXT,
 		input: getChatMessages(messages),
@@ -18,10 +24,10 @@ export async function text(messages: string[], schema: SchemaName): Promise<unkn
 		},
 	};
 
-	return client.responses.parse(req);
+	return parse(req);
 }
 
-export async function image(messages: string[], schema: SchemaName): Promise<unknown> {
+export async function image(messages: string[], schema: SchemaName): Promise<OpenAiImageOutput> {
 	const req: ResponseCreateParamsWithTools = {
 		model: MODEL.IMAGE,
 		input: getChatMessages(messages),
@@ -33,5 +39,5 @@ export async function image(messages: string[], schema: SchemaName): Promise<unk
 		},
 	};
 
-	return client.responses.parse(req);
+	return parse(req);
 }
