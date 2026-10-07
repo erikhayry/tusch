@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { mockImageResponse } from '../../../../../api/chat/image/utils/mock';
 
 export class PanelPage {
@@ -67,6 +67,7 @@ export class PanelPage {
 
 	async addPanelBefore() {
 		await this.addPanelBeforeButton.click();
+		await expect(this.page.getByText('Is loading...')).toBeHidden();
 	}
 
 	goto() {

@@ -91,10 +91,7 @@ describe('Panel', () => {
 		it('should show image', () => {
 			const { getImage, props } = renderPanel();
 
-			expect(getImage()).toHaveAttribute(
-				'src',
-				`data:image/webp;base64, ${props.panel.image?.wide?.src}`,
-			);
+			expect(getImage()).toHaveAttribute('src', props.panel.image?.wide?.src);
 		});
 
 		it('should show remove image button', () => {

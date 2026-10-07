@@ -1,16 +1,54 @@
+import { browser } from '$app/environment';
 import { type Comic, type Panel, type ResponsiveImage } from '$lib/types';
 import { getComicsMock } from '$lib/types/test/utils/mockTypes';
+import { SvelteMap } from 'svelte/reactivity';
 import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from './dbTypes';
 
-const DB: Map<string, Comic> = new Map();
+const STORAGE_KEY = 'comics_db';
 
-seedDB();
+// Safely load initial entries from localStorage during browser initialization
+function loadInitialData(): [string, Comic][] {
+	if (!browser) return [];
+	try {
+		const stored = localStorage.getItem(STORAGE_KEY);
+		if (stored) {
+			const parsed = JSON.parse(stored);
+			if (Array.isArray(parsed) && parsed.length > 0) {
+				return parsed;
+			}
+		}
+	} catch (err) {
+		console.error('Failed to load DB from localStorage:', err);
+	}
+	return [];
+}
+
+export const DB = new SvelteMap<string, Comic>(loadInitialData());
+
+// Automatically seed with mock data if localStorage was empty on initial startup
+if (browser && DB.size === 0) {
+	seedDB();
+}
+
+/**
+ * Syncs the current state of SvelteMap to localStorage
+ */
+export function saveDB(): void {
+	if (!browser) return;
+	try {
+		const entries = Array.from(DB.entries());
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+	} catch (err) {
+		console.error('Failed to save DB to localStorage:', err);
+	}
+}
 
 export function seedDB(): void {
 	clearComics();
 	getComicsMock().forEach((comic) => {
-		addComic(comic);
+		DB.set(comic.id, comic);
 	});
+	saveDB();
 }
 
 export function getComic(id: string): Comic | undefined {
@@ -23,23 +61,24 @@ export function getComics(): Comic[] {
 
 export function addComic(comic: Comic): Comic[] {
 	DB.set(comic.id, comic);
-
+	saveDB();
 	return getComics();
 }
 
 export function deleteComic(id: string): Comic[] {
 	DB.delete(id);
-
+	saveDB();
 	return getComics();
 }
 
 export function clearComics(): void {
 	DB.clear();
+	saveDB();
 }
 
 export function updateComic(comic: Comic): Comic[] {
 	DB.set(comic.id, comic);
-
+	saveDB();
 	return getComics();
 }
 
@@ -48,10 +87,14 @@ export function getPanel(comicId: string, panelId: string): Panel | undefined {
 }
 
 export function deleteImage(comicId: string, panelId: string): Comic[] {
-	const panel = getPanel(comicId, panelId);
-
-	if (panel) {
-		panel.image = undefined;
+	const comic = DB.get(comicId);
+	if (comic) {
+		const panel = comic.panels.find((p) => p.id === panelId);
+		if (panel) {
+			panel.image = undefined;
+			DB.set(comicId, comic);
+			saveDB();
+		}
 	}
 
 	return getComics();
@@ -61,12 +104,12 @@ export function deleteType(values: DeleteValues): Comic[] {
 	switch (values.type) {
 		case DB_ITEM_TYPE.enum.image: {
 			deleteImage(values.comicId, values.panelId);
-			break;
+			return getComics();
 		}
 
 		case DB_ITEM_TYPE.enum.comics: {
 			deleteComic(values.comicId);
-			break;
+			return getComics();
 		}
 
 		case DB_ITEM_TYPE.enum.panels: {
@@ -94,6 +137,7 @@ export function deleteType(values: DeleteValues): Comic[] {
 		}
 	}
 
+	saveDB();
 	return getComics();
 }
 
@@ -115,15 +159,18 @@ export function editType(values: EditValues): Comic[] {
 		}
 	}
 
+	saveDB();
 	return getComics();
 }
 
 export function addImage(comicId: string, panelId: string, image: ResponsiveImage): Comic[] {
-	const comic = getComic(comicId);
+	const comic = DB.get(comicId);
 	if (comic) {
-		const panel = getPanel(comicId, panelId);
+		const panel = comic.panels.find((p) => p.id === panelId);
 		if (panel) {
 			panel.image = image;
+			DB.set(comicId, comic);
+			saveDB();
 		}
 	}
 
@@ -134,6 +181,7 @@ export function addPanel(comicId: string, panel: Panel, index: number): Comic[] 
 	const comic = getComic(comicId);
 	if (comic) {
 		comic.panels.splice(index, 0, panel);
+		saveDB();
 	}
 
 	return getComics();

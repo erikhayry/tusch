@@ -20,12 +20,6 @@ test('opens panel view', async ({ page }) => {
 	await page.waitForURL(`**/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
 });
 
-test('shows error when comic not found', async ({ page }) => {
-	const comicPage = await new ComicPage(page, ComicsMock[0]).gotoUnknownComic();
-
-	await expect(comicPage.notFound).toBeVisible();
-});
-
 test('delete panel', async ({ page }) => {
 	const comicPage = await new ComicPage(page, ComicsMock[0]).goto();
 

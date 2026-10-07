@@ -10,6 +10,8 @@ test('creates image', async ({ page }) => {
 	const panelPage = new PanelPage(page).goto();
 
 	await panelPage.deleteImageButton.click();
+
+	await panelPage.createImageButton.waitFor({ state: 'visible' });
 	await panelPage.createImageButton.click();
 
 	await expect(panelPage.mockedImage).toBeVisible();
@@ -60,7 +62,7 @@ test('remove dialogue', async ({ page }) => {
 
 	await panelPage.removeDialogue();
 
-	await expect(page.getByText(ComicsMock[0].panels[1].dialogue[0])).toBeHidden();
+	await expect(page.getByText(ComicsMock[0].panels[1].dialogue[0].text)).toBeHidden();
 });
 
 test('add panel before', async ({ page }) => {

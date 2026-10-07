@@ -1,5 +1,5 @@
-import { generateMocks } from '$lib/test/utils/generateMock';
-import { SeasonEnum, TimeOfDayEnum } from '$lib/types';
+import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
+import { CharacterDescriptionSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
 import { InitialComicSchema } from '../aiTypes';
 
 export const aiInitialResponse = generateMocks(InitialComicSchema, 3);
@@ -10,12 +10,12 @@ export const InitialComicContentMock = {
 			{
 				id: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
 				name: 'Arbetare',
-				description: 'Man',
+				description: generateMock(CharacterDescriptionSchema),
 			},
 			{
 				id: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',
 				name: 'Ordförande',
-				description: 'Old Man',
+				description: generateMock(CharacterDescriptionSchema),
 			},
 		],
 		panels: [

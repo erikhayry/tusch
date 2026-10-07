@@ -1,0 +1,52 @@
+<script lang="ts" module>
+	export const createComicFormTestId = 'createcomicform-test-id';
+</script>
+
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+
+	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import { m } from '$lib/paraglide/messages';
+	import { ACTION } from '$lib/utils/actions';
+	import { addComic } from '$lib/utils/db/db';
+	import { type SubmitFunction } from '@sveltejs/kit';
+
+	let isLoading = $state(false);
+
+	const handleSubmit: SubmitFunction = async () => {
+		isLoading = true;
+
+		return async ({ result }) => {
+			try {
+				if (result.type === 'success' && result.data) {
+					const { comic } = result.data;
+					addComic(comic);
+
+					await goto(resolve(`/comic/${comic.id}`));
+				}
+			} finally {
+				isLoading = false;
+			}
+		};
+	};
+</script>
+
+<Section data-testId={createComicFormTestId}>
+	{#if isLoading}
+		<p>Is loading...</p>
+	{/if}
+
+	<form method="post" action={`?/${ACTION.CREATE_COMIC}`} use:enhance={handleSubmit}>
+		<label>
+			Url to source
+			<input
+				type="text"
+				name="url"
+				placeholder="https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna"
+			/>
+		</label>
+		<button type="submit">{m.submit()}</button>
+	</form>
+</Section>

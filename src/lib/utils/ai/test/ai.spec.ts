@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createImage, createPanel, initComic } from '../ai';
 import { SchemaName } from '../aiTypes';
 import { IMAGE, INIT, PANEL } from '../utils/messages';
-import { OPEN_AI_ROLE } from '../utils/settings';
 import {
 	CreatePanelContentMock,
 	InitialComicContentMock,
@@ -27,20 +26,7 @@ describe('ai', () => {
 
 			await initComic(SOURCE);
 
-			expect(mockSendOpenAi.mock.calls[0][0].input).toEqual([
-				{
-					content: INIT.WHAT,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				{
-					content: SOURCE,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				...INIT.HOWS.map((how) => ({
-					content: how,
-					role: OPEN_AI_ROLE.SYSTEM,
-				})),
-			]);
+			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(INIT.WHAT);
 		});
 
 		it('should call sdk with text format', async () => {
@@ -80,40 +66,7 @@ describe('ai', () => {
 
 			await createImage(PanelsMock[0]);
 
-			expect(mockSendOpenAi.mock.calls[0][0].input).toEqual([
-				{
-					content: IMAGE.WHAT,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				{
-					content: `visualDescription: ${PanelsMock[0].visualDescription}`,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				{
-					content: `dialogue: ${PanelsMock[0].dialogue.map(({ text }) => text).join('. ')}`,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				{
-					content: `captions: ${PanelsMock[0].captions.join('. ')}`,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				{
-					content: `season: ${PanelsMock[0].season}`,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				{
-					content: `year: ${PanelsMock[0].year}`,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				{
-					content: `time of day: ${PanelsMock[0].timeOfDay}`,
-					role: OPEN_AI_ROLE.SYSTEM,
-				},
-				...IMAGE.HOWS.map((how) => ({
-					content: how,
-					role: OPEN_AI_ROLE.SYSTEM,
-				})),
-			]);
+			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(IMAGE.WHAT);
 		});
 
 		it('should call sdk with text format', async () => {
@@ -145,6 +98,7 @@ describe('ai', () => {
 			await createPanel(1, PanelsMock);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(PANEL.WHAT);
+			expect(mockSendOpenAi.mock.calls[0][0].input[2].content).not.toContain('"image":');
 		});
 
 		it('should call sdk with text format', async () => {

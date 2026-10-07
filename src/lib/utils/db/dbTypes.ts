@@ -52,3 +52,8 @@ export const CreatePanelValuesSchema = z.object({
 	index: z.number(),
 });
 export type CreatePanelValues = z.infer<typeof CreatePanelValuesSchema>;
+
+export const CreateComicValuesSchema = z.object({
+	url: z.string(),
+});
+export type CreateComicValues = z.infer<typeof CreateComicValuesSchema>;

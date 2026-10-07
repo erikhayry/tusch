@@ -19,7 +19,6 @@
 <Section data-testId={PanelTestId}>
 	<Heading>{m.panelTitle({ number, total: totalNumberOfPanels })}</Heading>
 	<p>{panel.visualDescription}</p>
-
 	{#if panel.image === undefined}
 		<CreateImageForm label={m.addImage()} values={{ comicId, panelId: panel.id }} />
 	{:else}
