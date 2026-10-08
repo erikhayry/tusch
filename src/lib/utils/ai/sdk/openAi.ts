@@ -1,3 +1,5 @@
+import { COOKIE_NAME } from '$lib/utils/key';
+import type { Cookies } from '@sveltejs/kit';
 import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
 import { OpenAiImageOutputSchema, type OpenAiImageOutput, type SchemaName } from '../aiTypes';
@@ -5,17 +7,31 @@ import { getSchemaAsTextFormat } from '../utils/format';
 import { getChatMessages } from '../utils/messages';
 import { MODEL, TOOLS } from '../utils/settings';
 
-const client = new OpenAI({
-	apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-});
+function getClient(cookies: Cookies): OpenAI {
+	const apiKey = cookies.get(COOKIE_NAME);
 
-async function parse(req: ResponseCreateParamsWithTools): Promise<OpenAiImageOutput> {
+	if (!apiKey) {
+		throw new Error('Missing OpenAI API key in cookies');
+	}
+
+	return new OpenAI({ apiKey });
+}
+
+async function parse(
+	client: OpenAI,
+	req: ResponseCreateParamsWithTools,
+): Promise<OpenAiImageOutput> {
 	const response = await client.responses.parse(req);
 
 	return OpenAiImageOutputSchema.parse(response);
 }
 
-export async function text(messages: string[], schema: SchemaName): Promise<OpenAiImageOutput> {
+export async function text(
+	cookies: Cookies,
+	messages: string[],
+	schema: SchemaName,
+): Promise<OpenAiImageOutput> {
+	const client = getClient(cookies);
 	const req: ResponseCreateParamsWithTools = {
 		model: MODEL.TEXT,
 		input: getChatMessages(messages),
@@ -24,10 +40,15 @@ export async function text(messages: string[], schema: SchemaName): Promise<Open
 		},
 	};
 
-	return parse(req);
+	return parse(client, req);
 }
 
-export async function image(messages: string[], schema: SchemaName): Promise<OpenAiImageOutput> {
+export async function image(
+	cookies: Cookies,
+	messages: string[],
+	schema: SchemaName,
+): Promise<OpenAiImageOutput> {
+	const client = getClient(cookies);
 	const req: ResponseCreateParamsWithTools = {
 		model: MODEL.TEXT,
 		input: getChatMessages(messages),
@@ -39,5 +60,5 @@ export async function image(messages: string[], schema: SchemaName): Promise<Ope
 		},
 	};
 
-	return parse(req);
+	return parse(client, req);
 }

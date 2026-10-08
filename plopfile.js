@@ -1,5 +1,5 @@
 export default function (plop) {
-	plop.setGenerator('entity', {
+	plop.setGenerator('component', {
 		description: 'Generates a new Svelte entity component (like Character, Monster, etc.)',
 		prompts: [
 			{
@@ -33,6 +33,38 @@ export default function (plop) {
 				type: 'add',
 				path: 'src/lib/components/{{camelCase name}}/test/utils/render{{pascalCase name}}.ts',
 				templateFile: 'plop-templates/component/render.ts.hbs',
+			},
+		],
+	});
+	plop.setGenerator('page', {
+		description: 'Generates a new Svelte page',
+		prompts: [
+			{
+				type: 'input',
+				name: 'name',
+				message: 'What is the name of the page',
+			},
+		],
+		actions: [
+			{
+				type: 'add',
+				path: 'src/routes/{{camelCase name}}/+page.svelte',
+				templateFile: 'plop-templates/page/+page.svelte.hbs',
+			},
+			{
+				type: 'add',
+				path: 'src/routes/{{camelCase name}}/+page.server.ts',
+				templateFile: 'plop-templates/page/+page.server.ts.hbs',
+			},
+			{
+				type: 'add',
+				path: 'src/routes/{{camelCase name}}/test/page.svelte.e2e.ts',
+				templateFile: 'plop-templates/page/page.svelte.e2e.ts.hbs',
+			},
+			{
+				type: 'add',
+				path: 'src/routes/{{camelCase name}}/test/utils/createPage.ts',
+				templateFile: 'plop-templates/page/createPage.ts.hbs',
 			},
 		],
 	});

@@ -1,0 +1,17 @@
+import type { Locator, Page } from '@playwright/test';
+
+export class CreatePage {
+	readonly page: Page;
+	readonly heading: Locator;
+
+	constructor(page: Page) {
+		this.page = page;
+		this.heading = page.getByRole('heading', { name: 'TODO', level: 1 });
+	}
+
+	async goto() {
+		await this.page.goto(`/{{camelCase name}}`);
+
+		return this;
+	}
+}

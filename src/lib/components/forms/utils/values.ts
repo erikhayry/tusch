@@ -1,4 +1,6 @@
 import {
+	type ByokValues,
+	ByokValuesSchema,
 	type CreateComicValues,
 	CreateComicValuesSchema,
 	type CreateImageValues,
@@ -51,5 +53,12 @@ export async function getCreateImageValues(formData: FormData): Promise<CreateIm
 	return CreateImageValuesSchema.parse({
 		comicId: formData.get('comicId'),
 		panelJsonString: formData.get('panelJsonString'),
+	});
+}
+
+export async function getByokValues(formData: FormData): Promise<ByokValues> {
+	console.log(formData);
+	return ByokValuesSchema.parse({
+		key: formData.get('key'),
 	});
 }

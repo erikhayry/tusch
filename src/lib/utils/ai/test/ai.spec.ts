@@ -1,4 +1,5 @@
 import { PanelsMock } from '$lib/types/test/utils/mockTypes';
+import type { Cookies } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createImage, createPanel, initComic } from '../ai';
 import { SchemaName } from '../aiTypes';
@@ -24,7 +25,7 @@ describe('ai', () => {
 		it('should call sdk with message', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitComicResponse);
 
-			await initComic(SOURCE);
+			await initComic(SOURCE, CookiesMock);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(INIT.WHAT);
 		});
@@ -32,7 +33,7 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitComicResponse);
 
-			await initComic(SOURCE);
+			await initComic(SOURCE, CookiesMock);
 
 			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.initComic,
@@ -49,7 +50,7 @@ describe('ai', () => {
 				title,
 				setting,
 				characters,
-			} = await initComic(SOURCE);
+			} = await initComic(SOURCE, CookiesMock);
 
 			expect(panels).toHaveLength(InitialComicContentMock.data.panels.length);
 			expect(id).toBeDefined();
@@ -64,7 +65,7 @@ describe('ai', () => {
 		it('should call sdk with correct messages', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage(PanelsMock[0]);
+			await createImage(PanelsMock[0], CookiesMock);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(IMAGE.WHAT);
 		});
@@ -72,7 +73,7 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage(PanelsMock[0]);
+			await createImage(PanelsMock[0], CookiesMock);
 
 			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.createImage,
@@ -85,7 +86,7 @@ describe('ai', () => {
 			const {
 				image: { src, alt, width, height },
 				panelId,
-			} = await createImage(PanelsMock[0]);
+			} = await createImage(PanelsMock[0], CookiesMock);
 
 			expect(src).toEqual(imageResulSrcMock);
 			expect(alt).toEqual(imageDataMock.alt);
@@ -99,7 +100,7 @@ describe('ai', () => {
 		it('should call sdk with correct messages', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiCreatePanelResponse);
 
-			await createPanel(1, PanelsMock);
+			await createPanel(1, PanelsMock, CookiesMock);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(PANEL.WHAT);
 			expect(mockSendOpenAi.mock.calls[0][0].input[2].content).not.toContain('"image":');
@@ -108,7 +109,7 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiCreatePanelResponse);
 
-			await createPanel(1, PanelsMock);
+			await createPanel(1, PanelsMock, CookiesMock);
 
 			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.createPanel,
@@ -118,7 +119,7 @@ describe('ai', () => {
 		it('should return panel', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiCreatePanelResponse);
 
-			const panel = await createPanel(1, PanelsMock);
+			const panel = await createPanel(1, PanelsMock, CookiesMock);
 
 			expect(panel).toEqual(CreatePanelContentMock.data);
 		});
@@ -145,3 +146,7 @@ vi.mock('openai', () => {
 		OpenAI: MockOpenAI,
 	};
 });
+
+const CookiesMock = {
+	get: () => 'mock key',
+} as unknown as Cookies;

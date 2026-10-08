@@ -1,7 +1,7 @@
 import { EditValuesSchema } from '$lib/utils/db/dbTypes';
 import { z } from 'zod';
 
-export const TextFieldFormPropsSchema = z.object({
+export const EditTextFieldFormPropsSchema = z.object({
 	values: EditValuesSchema,
 	label: z.string(),
 	saveActionLabel: z.string(),
@@ -9,4 +9,4 @@ export const TextFieldFormPropsSchema = z.object({
 	visibleText: z.string(),
 });
 
-export type TextFieldFormProps = z.infer<typeof TextFieldFormPropsSchema>;
+export type EditTextFieldFormProps = z.infer<typeof EditTextFieldFormPropsSchema>;

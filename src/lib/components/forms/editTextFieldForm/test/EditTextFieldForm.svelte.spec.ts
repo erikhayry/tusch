@@ -1,16 +1,16 @@
-import { renderTextFieldForm } from '$lib/components/forms/textFieldForm/test/utils/renderTextFieldForm';
 import { fireEvent } from '@testing-library/svelte';
 import { describe, expect, it } from 'vitest';
+import { renderEditTextFieldForm } from './utils/renderEditTextFieldForm';
 
 describe('TextFieldForm', () => {
 	it('should show value', () => {
-		const { getTextValue, props } = renderTextFieldForm();
+		const { getTextValue, props } = renderEditTextFieldForm();
 
 		expect(getTextValue()).toHaveTextContent(props.visibleText);
 	});
 
 	it('should show text field', async () => {
-		const { getInputField, getEditButton, getSaveButton, props } = renderTextFieldForm();
+		const { getInputField, getEditButton, getSaveButton, props } = renderEditTextFieldForm();
 
 		await fireEvent.click(getEditButton());
 
@@ -20,7 +20,7 @@ describe('TextFieldForm', () => {
 
 	it('should hide text field on cancel', async () => {
 		const { getTextValue, getEditButton, queryInputField, getCancelButton, props } =
-			renderTextFieldForm();
+			renderEditTextFieldForm();
 
 		await fireEvent.click(getEditButton());
 		await fireEvent.click(getCancelButton());

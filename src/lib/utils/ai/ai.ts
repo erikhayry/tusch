@@ -1,4 +1,5 @@
 import { type Comic, type Panel, type Url } from '$lib/types';
+import type { Cookies } from '@sveltejs/kit';
 import { type CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
 import { generateId } from '../id';
@@ -34,8 +35,8 @@ function getComicFromOpenAiResponse(response: OpenAiImageOutput): InitialComic {
 	return InitialComicSchema.parse(output);
 }
 
-export async function initComic(source: Url): Promise<Comic> {
-	const response = await text(buildInitialMessages(source), SchemaName.enum.initComic);
+export async function initComic(source: Url, cookies: Cookies): Promise<Comic> {
+	const response = await text(cookies, buildInitialMessages(source), SchemaName.enum.initComic);
 	const comic = getComicFromOpenAiResponse(response);
 
 	return {
@@ -61,8 +62,8 @@ function getImageFromOpenAiResponse(response: OpenAiImageOutput): CreatedImage {
 	return CreatedImageSchema.parse({ src, ...getImageData(response) });
 }
 
-export async function createImage(panel: Panel): Promise<CreateImageResponse> {
-	const response = await image(buildImageMessages(panel), SchemaName.enum.createImage);
+export async function createImage(panel: Panel, cookies: Cookies): Promise<CreateImageResponse> {
+	const response = await image(cookies, buildImageMessages(panel), SchemaName.enum.createImage);
 	const createdImage = getImageFromOpenAiResponse(response);
 
 	return {
@@ -77,8 +78,16 @@ function getPanelFromOpenAiResponse(response: OpenAiImageOutput): CreatePanelRes
 	return CreatePanelSchema.parse(output);
 }
 
-export async function createPanel(index: number, panels: Panel[]): Promise<CreatePanelResponse> {
-	const response = await text(buildPanelMessages(index, panels), SchemaName.enum.createPanel);
+export async function createPanel(
+	index: number,
+	panels: Panel[],
+	cookies: Cookies,
+): Promise<CreatePanelResponse> {
+	const response = await text(
+		cookies,
+		buildPanelMessages(index, panels),
+		SchemaName.enum.createPanel,
+	);
 
 	const result = getPanelFromOpenAiResponse(response);
 

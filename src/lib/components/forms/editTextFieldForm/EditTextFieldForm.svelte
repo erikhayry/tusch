@@ -6,7 +6,7 @@
 	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { getEditValues } from '../utils/values';
-	import { type TextFieldFormProps } from './textFieldFormTypes';
+	import { type EditTextFieldFormProps } from './editTextFieldFormTypes';
 
 	//TODO a11y
 	let editable = $state(false);
@@ -28,7 +28,7 @@
 		editable = !editable;
 	}
 
-	let { values, label, saveActionLabel, editActionLabel, visibleText }: TextFieldFormProps =
+	let { values, label, saveActionLabel, editActionLabel, visibleText }: EditTextFieldFormProps =
 		$props();
 </script>
 

@@ -57,3 +57,8 @@ export const CreateComicValuesSchema = z.object({
 	url: z.string(),
 });
 export type CreateComicValues = z.infer<typeof CreateComicValuesSchema>;
+
+export const ByokValuesSchema = z.object({
+	key: z.string(),
+});
+export type ByokValues = z.infer<typeof ByokValuesSchema>;

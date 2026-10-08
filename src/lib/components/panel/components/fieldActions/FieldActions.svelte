@@ -1,7 +1,6 @@
 <script lang="ts">
 	import DeleteItemForm from '$lib/components/forms/deleteItemForm/DeleteItemForm.svelte';
-	import TextFieldForm from '$lib/components/forms/textFieldForm/TextFieldForm.svelte';
-	import { ACTION } from '$lib/utils/actions';
+	import EditTextFieldForm from '$lib/components/forms/editTextFieldForm/EditTextFieldForm.svelte';
 	import { type FieldActionsProps } from './fieldActionsTypes';
 
 	let {
@@ -14,8 +13,7 @@
 	let number = $derived(values.index + 1);
 </script>
 
-<TextFieldForm
-	action={ACTION.EDIT}
+<EditTextFieldForm
 	{visibleText}
 	label={editActionLabel({ number })}
 	{values}

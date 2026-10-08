@@ -1,15 +1,15 @@
-import { TextFieldFormPropsMock } from '$lib/components/forms/textFieldForm/test/utils/mocktextFieldForm';
-import TextFieldForm from '$lib/components/forms/textFieldForm/TextFieldForm.svelte';
 import { m } from '$lib/paraglide/messages';
 import { render } from '@testing-library/svelte';
+import EditTextFieldForm from '../../EditTextFieldForm.svelte';
+import { EditTextFieldFormPropsMock } from './mockEditTextFieldForm';
 
-export function renderTextFieldForm(
+export function renderEditTextFieldForm(
 	props = {
-		...TextFieldFormPropsMock[0],
-		values: { ...TextFieldFormPropsMock[0].values, value: 'VALUE' },
+		...EditTextFieldFormPropsMock[0],
+		values: { ...EditTextFieldFormPropsMock[0].values, value: 'VALUE' },
 	},
 ) {
-	const { getByRole, queryByRole } = render(TextFieldForm, props);
+	const { getByRole, queryByRole } = render(EditTextFieldForm, props);
 
 	return {
 		getInputField: () => getByRole('textbox', { name: props.label }),
