@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
 import { type Comic, type Panel, type ResponsiveImage } from '$lib/types';
-import { getComicsMock } from '$lib/types/test/utils/mockTypes';
+//import { getComicsMock } from '$lib/types/test/utils/mockTypes';
 import { SvelteMap } from 'svelte/reactivity';
 import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from './dbTypes';
 
@@ -33,6 +33,7 @@ export function saveDB(): void {
 		console.error('Failed to save DB to localStorage:', err);
 	}
 }
+/*
 
 export function seedDB(): void {
 	clearComics();
@@ -41,7 +42,7 @@ export function seedDB(): void {
 	});
 	saveDB();
 }
-
+*/
 export function getComic(id: string): Comic | undefined {
 	return DB.get(id);
 }
