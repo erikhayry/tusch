@@ -6,7 +6,6 @@ import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from './dbTypes';
 
 const STORAGE_KEY = 'comics_db';
 
-// Safely load initial entries from localStorage during browser initialization
 function loadInitialData(): [string, Comic][] {
 	if (!browser) return [];
 	try {
@@ -25,14 +24,6 @@ function loadInitialData(): [string, Comic][] {
 
 export const DB = new SvelteMap<string, Comic>(loadInitialData());
 
-// Automatically seed with mock data if localStorage was empty on initial startup
-if (browser && DB.size === 0) {
-	seedDB();
-}
-
-/**
- * Syncs the current state of SvelteMap to localStorage
- */
 export function saveDB(): void {
 	if (!browser) return;
 	try {
