@@ -1,9 +1,9 @@
 import { building } from '$app/env';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
-import { ComicMock, PanelsMock } from '$lib/types/test/utils/mockTypes';
+//import { ComicMock, PanelsMock } from '$lib/types/test/utils/mockTypes';
 import type { Handle, HandleFetch } from '@sveltejs/kit';
-import { mockImageResponse } from './routes/api/chat/image/utils/mock';
+//import { mockImageResponse } from './routes/api/chat/image/utils/mock';
 
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
@@ -26,10 +26,10 @@ function isPlaywrightTestRequest(): boolean {
 const MOCK: Record<string, string> = {
 	'/api/chat/panel': JSON.stringify({
 		index: 1,
-		panel: PanelsMock[0],
+		panel: {},
 	}),
-	'/api/chat/init': JSON.stringify(ComicMock),
-	'/api/chat/image': JSON.stringify(mockImageResponse),
+	'/api/chat/init': JSON.stringify({}),
+	'/api/chat/image': JSON.stringify({}),
 };
 
 function getMockResponse(mock: string) {
