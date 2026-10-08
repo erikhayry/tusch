@@ -1,8 +1,8 @@
 import { PanelSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
 import { CreatedImageSchema } from '$lib/utils/ai/aiTypes';
 import { vi } from 'vitest';
-import { zocker } from 'zocker';
 import z from 'zod';
+const { zocker } = await import('zocker');
 
 export function generateMock<T extends z.ZodType>(schema: T): z.infer<T> {
 	return zocker(schema)
