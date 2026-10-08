@@ -32,7 +32,7 @@
 	>
 		<label>
 			<span>{m.byok()}</span>
-			<input type="text" name="key" />
+			<input type="text" name="key" autocomplete="off" />
 		</label>
 
 		<button type="submit">{m.add()}</button>
