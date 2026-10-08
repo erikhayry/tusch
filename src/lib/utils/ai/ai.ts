@@ -1,15 +1,14 @@
 import { type Comic, type Panel, type Url } from '$lib/types';
-import { randomUUID } from 'crypto';
-import {
-	CreateImageResponseSchema,
-	type CreateImageResponse,
-} from '../../../routes/api/chat/image/createImageApiTypes';
+import { type CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
+import { generateId } from '../id';
 import {
+	CreatedImageSchema,
 	CreateImageSchema,
 	CreatePanelSchema,
 	InitialComicSchema,
 	SchemaName,
+	type CreatedImage,
 	type CreateImage,
 	type InitialComic,
 	type OpenAiImageOutput,
@@ -40,12 +39,12 @@ export async function initComic(source: Url): Promise<Comic> {
 	const comic = getComicFromOpenAiResponse(response);
 
 	return {
-		id: randomUUID(),
+		id: generateId(),
 		source,
 		...comic,
 		panels: comic.panels.map((initialPanel) => ({
-			id: randomUUID(),
 			...initialPanel,
+			id: generateId(),
 		})),
 	};
 }
@@ -56,18 +55,20 @@ function getImageData(response: OpenAiImageOutput): CreateImage {
 	return CreateImageSchema.parse(output);
 }
 
-function getImageFromOpenAiResponse(response: OpenAiImageOutput): CreateImageResponse {
+function getImageFromOpenAiResponse(response: OpenAiImageOutput): CreatedImage {
 	const src = response.output.find((item) => item.type === 'image_generation_call')?.result;
 
-	return CreateImageResponseSchema.parse({ src, ...getImageData(response) });
+	return CreatedImageSchema.parse({ src, ...getImageData(response) });
 }
 
 export async function createImage(panel: Panel): Promise<CreateImageResponse> {
 	const response = await image(buildImageMessages(panel), SchemaName.enum.createImage);
+	const createdImage = getImageFromOpenAiResponse(response);
 
-	const result = getImageFromOpenAiResponse(response);
-
-	return result;
+	return {
+		image: createdImage,
+		panelId: panel.id,
+	};
 }
 
 function getPanelFromOpenAiResponse(response: OpenAiImageOutput): CreatePanelResponse {

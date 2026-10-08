@@ -2,13 +2,12 @@
 	import { enhance } from '$app/forms';
 	import { ACTION } from '$lib/utils/actions';
 	import { addPanel } from '$lib/utils/db/db';
+	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { type CreatePanelFormProps } from './createPanelFormTypes';
 
-	let isLoading = $state(false);
-
 	const handleSubmit: SubmitFunction = async () => {
-		isLoading = true;
+		globalLoading.start();
 
 		return async ({ update, result }) => {
 			try {
@@ -18,17 +17,13 @@
 				}
 				await update();
 			} finally {
-				isLoading = false;
+				globalLoading.stop();
 			}
 		};
 	};
 
 	let { label, values }: CreatePanelFormProps = $props();
 </script>
-
-{#if isLoading}
-	<p>Is loading...</p>
-{/if}
 
 <form method="POST" action={`?/${ACTION.CREATE_PANEL}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}

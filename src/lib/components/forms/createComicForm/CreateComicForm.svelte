@@ -11,12 +11,11 @@
 	import { m } from '$lib/paraglide/messages';
 	import { ACTION } from '$lib/utils/actions';
 	import { addComic } from '$lib/utils/db/db';
+	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import { type SubmitFunction } from '@sveltejs/kit';
 
-	let isLoading = $state(false);
-
 	const handleSubmit: SubmitFunction = async () => {
-		isLoading = true;
+		globalLoading.start();
 
 		return async ({ result }) => {
 			try {
@@ -27,17 +26,13 @@
 					await goto(resolve(`/comic/${comic.id}`));
 				}
 			} finally {
-				isLoading = false;
+				globalLoading.stop();
 			}
 		};
 	};
 </script>
 
 <Section data-testId={createComicFormTestId}>
-	{#if isLoading}
-		<p>Is loading...</p>
-	{/if}
-
 	<form method="post" action={`?/${ACTION.CREATE_COMIC}`} use:enhance={handleSubmit}>
 		<label>
 			Url to source

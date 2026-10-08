@@ -12,6 +12,7 @@ test('creates image', async ({ page }) => {
 	await panelPage.deleteImageButton.click();
 
 	await panelPage.createImageButton.waitFor({ state: 'visible' });
+
 	await panelPage.createImageButton.click();
 
 	await expect(panelPage.mockedImage).toBeVisible();
@@ -26,7 +27,7 @@ test('replace image', async ({ page }) => {
 });
 
 test('removes image', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = new PanelPage(page).goto(1);
 
 	await panelPage.deleteImageButton.click();
 
@@ -42,7 +43,7 @@ test('edit caption', async ({ page }) => {
 });
 
 test('remove caption', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = new PanelPage(page).goto(1);
 
 	await panelPage.removeCaption();
 
@@ -58,7 +59,7 @@ test('edit dialogue', async ({ page }) => {
 });
 
 test('remove dialogue', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = new PanelPage(page).goto(1);
 
 	await panelPage.removeDialogue();
 

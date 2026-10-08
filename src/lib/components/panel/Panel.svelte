@@ -20,10 +20,16 @@
 	<Heading>{m.panelTitle({ number, total: totalNumberOfPanels })}</Heading>
 	<p>{panel.visualDescription}</p>
 	{#if panel.image === undefined}
-		<CreateImageForm label={m.addImage()} values={{ comicId, panelId: panel.id }} />
+		<CreateImageForm
+			label={m.addImage()}
+			values={{ comicId, panelJsonString: JSON.stringify(panel) }}
+		/>
 	{:else}
 		<img src={getImageSrc(panel.image)} alt={panel.image.alt} />
-		<CreateImageForm label={m.generateNewImage()} values={{ comicId, panelId: panel.id }} />
+		<CreateImageForm
+			label={m.generateNewImage()}
+			values={{ comicId, panelJsonString: JSON.stringify(panel) }}
+		/>
 		<DeleteItemForm
 			label={m.removeImage()}
 			values={{ type: DB_ITEM_TYPE.enum.image, comicId, panelId: panel.id }}

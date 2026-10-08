@@ -2,16 +2,7 @@ import { PanelSchema } from '$lib/types';
 import { z } from 'zod';
 
 export const PanelPropsSchema = z.object({
-	panel: PanelSchema.pick({
-		id: true,
-		image: true,
-		captions: true,
-		dialogue: true,
-		visualDescription: true,
-		timeOfDay: true,
-		season: true,
-		year: true,
-	}),
+	panel: PanelSchema,
 	number: z.int(),
 	totalNumberOfPanels: z.int(),
 	comicId: z.string(),

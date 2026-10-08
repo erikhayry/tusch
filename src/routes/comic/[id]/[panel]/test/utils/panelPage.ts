@@ -28,7 +28,7 @@ export class PanelPage {
 		this.deleteImageButton = page.getByRole('button', { name: m.removeImage() });
 		this.replaceImageButton = page.getByRole('button', { name: m.generateNewImage() });
 		this.image = page.getByRole('img', { name: ComicsMock[0].panels[0].image?.alt });
-		this.mockedImage = page.getByRole('img', { name: mockImageResponse.alt });
+		this.mockedImage = page.getByRole('img', { name: mockImageResponse.image.alt });
 		this.addPanelBeforeButton = page.getByRole('button', { name: m.addPanelBefore({ number: 2 }) });
 		this.initialNumberOfPanels = ComicsMock[0].panels.length;
 		this.numberOfPanels = async () =>
@@ -67,11 +67,11 @@ export class PanelPage {
 
 	async addPanelBefore() {
 		await this.addPanelBeforeButton.click();
-		await expect(this.page.getByText('Is loading...')).toBeHidden();
+		await expect(this.page.getByText(m.loading())).toBeHidden();
 	}
 
-	goto() {
-		this.page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[0].id}`);
+	goto(panel = 0) {
+		this.page.goto(`/comic/${ComicsMock[0].id}/${ComicsMock[0].panels[panel].id}`);
 
 		return this;
 	}

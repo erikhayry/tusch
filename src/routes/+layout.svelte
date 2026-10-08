@@ -3,12 +3,15 @@
 	import { page } from '$app/state';
 	import type { Pathname } from '$app/types';
 	import favicon from '$lib/assets/favicon.svg';
+	import Loader from '$lib/components/loader/Loader.svelte';
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 
 	let { children } = $props();
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
+
+<Loader />
 {@render children()}
 
 <div style="display:none">

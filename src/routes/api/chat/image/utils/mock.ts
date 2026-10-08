@@ -1,8 +1,8 @@
 import { generateMock } from '$lib/test/utils/generateMock';
-import { CreateImageResponseSchema } from '../createImageApiTypes';
+import { PanelsMock } from '$lib/types/test/utils/mockTypes';
+import { CreateImageResponseSchema, type CreateImageResponse } from '../createImageApiTypes';
 
-export const mockImageResponse = {
+export const mockImageResponse: CreateImageResponse = {
 	...generateMock(CreateImageResponseSchema),
-	src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
-	alt: 'mock alt text',
+	panelId: PanelsMock[0].id,
 };

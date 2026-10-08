@@ -3,23 +3,24 @@
 	import { ACTION } from '$lib/utils/actions';
 	import { addImage } from '$lib/utils/db/db';
 	import { generateId } from '$lib/utils/id';
+	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import { saveImage } from '$lib/utils/storage/storage';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import type { CreateImageFormProps } from './createImageFormTypes';
 
-	let isLoading = $state(false);
-
 	const handleSubmit: SubmitFunction = async () => {
-		isLoading = true;
+		globalLoading.start();
 
 		return async ({ update, result }) => {
 			try {
 				if (result.type === 'success' && result.data?.image) {
 					const { comicId, panelId, image } = result.data;
+					console.log(result.data);
 					const fileUrl = await saveImage(
 						`${generateId()}.png`,
 						`data:image/png;base64,${image.src}`,
 					);
+					console.log('fileUrl', fileUrl);
 
 					addImage(comicId, panelId, {
 						wide: { src: fileUrl, width: image.width, height: image.height },
@@ -29,7 +30,7 @@
 				}
 				await update();
 			} finally {
-				isLoading = false;
+				globalLoading.stop();
 			}
 		};
 	};
@@ -42,9 +43,5 @@
 		<input type="hidden" name={entry[0]} value={entry[1]} />
 	{/each}
 
-	{#if isLoading}
-		<p>is loading...</p>
-	{/if}
-
-	<button type="submit" disabled={isLoading}>{label}</button>
+	<button type="submit">{label}</button>
 </form>

@@ -3,21 +3,21 @@
 	import { m } from '$lib/paraglide/messages';
 	import { ACTION } from '$lib/utils/actions';
 	import { editType } from '$lib/utils/db/db';
+	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { getEditValues } from '../utils/values';
 	import { type TextFieldFormProps } from './textFieldFormTypes';
 
 	//TODO a11y
 	let editable = $state(false);
-	let isLoading = $state(false);
 
 	const handleSubmit: SubmitFunction = async ({ formData }) => {
-		isLoading = true;
+		globalLoading.start();
 
 		editType(await getEditValues(formData));
 
 		return async ({ update }) => {
-			isLoading = false;
+			globalLoading.stop();
 			editable = false;
 
 			await update();
@@ -31,10 +31,6 @@
 	let { values, label, saveActionLabel, editActionLabel, visibleText }: TextFieldFormProps =
 		$props();
 </script>
-
-{#if isLoading}
-	<p>is loading...</p>
-{/if}
 
 {#if editable}
 	<form method="POST" action={`?/${ACTION.CLIENT}`} use:enhance={handleSubmit}>

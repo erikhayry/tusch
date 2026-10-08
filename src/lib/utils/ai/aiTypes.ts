@@ -26,6 +26,9 @@ export const CreateImageSchema = z.object({
 });
 export type CreateImage = z.infer<typeof CreateImageSchema>;
 
+export const CreatedImageSchema = CreateImageSchema.merge(z.object({ src: z.string() }));
+export type CreatedImage = z.infer<typeof CreatedImageSchema>;
+
 export const CreatePanelSchema = INITAL_PANEL_SCHEMA;
 export type CreatePanel = z.infer<typeof CreatePanelSchema>;
 

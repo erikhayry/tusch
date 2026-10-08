@@ -82,12 +82,16 @@ describe('ai', () => {
 		it('should return image', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			const { src, alt, width, height } = await createImage(PanelsMock[0]);
+			const {
+				image: { src, alt, width, height },
+				panelId,
+			} = await createImage(PanelsMock[0]);
 
 			expect(src).toEqual(imageResulSrcMock);
 			expect(alt).toEqual(imageDataMock.alt);
 			expect(width).toEqual(imageDataMock.width);
 			expect(height).toEqual(imageDataMock.height);
+			expect(panelId).toEqual(PanelsMock[0].id);
 		});
 	});
 

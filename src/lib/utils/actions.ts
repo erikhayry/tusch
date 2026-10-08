@@ -74,15 +74,16 @@ export const globalActions = {
 		request: Request;
 		fetch: typeof globalThis.fetch;
 	}) => {
-		const { comicId, panelId } = await getCreateImageValues(await request.formData());
+		const { panelJsonString, comicId } = await getCreateImageValues(await request.formData());
+
 		const response = await fetch('/api/chat/image', {
 			method: 'POST',
-			body: JSON.stringify({ panelId, comicId }),
+			body: panelJsonString,
 			headers: {
 				'Content-Type': 'application/json',
 			},
 		});
-		const image: CreateImageResponse = await response.json();
+		const { image, panelId }: CreateImageResponse = await response.json();
 
 		return {
 			comicId,

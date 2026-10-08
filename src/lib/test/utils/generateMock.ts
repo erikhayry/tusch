@@ -1,4 +1,5 @@
 import { PanelSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
+import { CreatedImageSchema } from '$lib/utils/ai/aiTypes';
 import { vi } from 'vitest';
 import { zocker } from 'zocker';
 import z from 'zod';
@@ -7,6 +8,12 @@ export function generateMock<T extends z.ZodType>(schema: T): z.infer<T> {
 	return zocker(schema)
 		.setSeed(1)
 		.override(z.ZodFunction, () => vi.fn())
+		.supply(CreatedImageSchema, {
+			width: 800,
+			height: 600,
+			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+			alt: 'mock alt text',
+		})
 		.generate() as z.infer<T>;
 }
 
@@ -31,6 +38,12 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 		.supply(PanelSchema.shape.season, SeasonEnum.enum.summer)
 		.supply(PanelSchema.shape.timeOfDay, TimeOfDayEnum.enum.afternoon)
 		.supply(PanelSchema.shape.year, 1931)
+		.supply(CreatedImageSchema, {
+			width: 800,
+			height: 600,
+			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+			alt: 'mock alt text',
+		})
 		.array({
 			min: 3,
 			max: 4,

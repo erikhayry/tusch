@@ -17,6 +17,7 @@
 	"dialogues": "Dialogues",
 	"editCaption": "Edit Caption {number}",
 	"editDialogue": "Edit Dialogue {number}",
+	"loading": "Loading...",
 	"locations": "Locations",
 	"panel": "Panel {number}",
 	"panelTitle": "Panel: {number} of {total}",

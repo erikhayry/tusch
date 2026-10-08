@@ -1,18 +1,16 @@
+import { PanelSchema } from '$lib/types/index.js';
 import { createImage } from '$lib/utils/ai/ai';
-import { getPanel } from '$lib/utils/db/db.js';
 import { json } from '@sveltejs/kit';
 import type { CreateImageResponse } from './createImageApiTypes.js';
 
 export async function POST({ request }) {
-	const data = await request.json();
-	const { panelId, comicId } = data;
-	const panel = getPanel(comicId, panelId);
+	const panelJsonString = await request.json();
 
-	if (!panel) {
+	if (!panelJsonString) {
 		return new Response(JSON.stringify({ error: 'Panel not found' }), { status: 404 });
 	}
 
-	const response: CreateImageResponse = await createImage(panel);
+	const response: CreateImageResponse = await createImage(PanelSchema.parse(panelJsonString));
 
 	return json(response);
 }

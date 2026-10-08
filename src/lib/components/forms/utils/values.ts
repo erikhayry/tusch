@@ -50,6 +50,6 @@ export async function getDeleteValues(formData: FormData): Promise<DeleteValues>
 export async function getCreateImageValues(formData: FormData): Promise<CreateImageValues> {
 	return CreateImageValuesSchema.parse({
 		comicId: formData.get('comicId'),
-		panelId: formData.get('panelId'),
+		panelJsonString: formData.get('panelJsonString'),
 	});
 }
