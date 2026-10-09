@@ -13,6 +13,7 @@ const INITAL_PANEL_SCHEMA = PanelSchema.pick({
 });
 
 export const InitialComicSchema = z.object({
+	style: ComicSchema.shape.style,
 	title: ComicSchema.shape.title,
 	characters: ComicSchema.shape.characters,
 	panels: z.array(INITAL_PANEL_SCHEMA),

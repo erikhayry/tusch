@@ -6,6 +6,30 @@ export type Season = z.infer<typeof SeasonEnum>;
 export const TimeOfDayEnum = z.enum(['dawn', 'morning', 'noon', 'afternoon', 'dusk', 'night']);
 export type TimeOfDay = z.infer<typeof TimeOfDayEnum>;
 
+export const ComicStyleEnum = z.enum(['anime', 'classic-marvel', 'franco-belgian']);
+export type ComicStyle = z.infer<typeof ComicStyleEnum>;
+export const ComicStyleDescriptionSchema = z.object({
+	id: ComicStyleEnum,
+	linework: z
+		.string()
+		.describe("e.g. 'bold black ink outlines, variable line weights', 'delicate fine lines'"),
+	coloringStyle: z
+		.string()
+		.describe("e.g. 'flat cel shading with soft gradients', 'ben-day dots halftone process color'"),
+	shadingAndLighting: z
+		.string()
+		.describe("e.g. 'dramatic chiaroscuro high contrast shadows', 'soft muted ambient lighting'"),
+	palette: z
+		.array(z.string())
+		.describe("e.g. ['vibrant primary colors', 'desaturated earth tones', 'monochrome']"),
+	masterStylePrompt: z
+		.string()
+		.describe(
+			"A concatenated prompt modifier string for image generation (e.g., '1980s Marvel comic art style, bold ink lineart, halftone dot shading, vintage paper texture')",
+		),
+});
+export type ComicStyleDescription = z.infer<typeof ComicStyleDescriptionSchema>;
+
 export const UrlValue = z.url();
 export type Url = z.infer<typeof UrlValue>;
 
@@ -93,6 +117,7 @@ export const PanelSchema = z.object({
 	place: z.string(),
 	timeOfDay: TimeOfDayEnum,
 	season: SeasonEnum,
+	style: z.optional(ComicStyleDescriptionSchema),
 	image: z.optional(ResponsiveImageSchema),
 });
 export type Panel = z.infer<typeof PanelSchema>;
@@ -104,6 +129,7 @@ export const ComicSchema = z.object({
 	id: z.uuid(),
 	title: z.string(),
 	source: z.url(),
+	style: ComicStyleEnum,
 	panels: PanelArraySchema,
 	setting: z.optional(SettingSchema),
 	characters: z.array(CharacterSchema),

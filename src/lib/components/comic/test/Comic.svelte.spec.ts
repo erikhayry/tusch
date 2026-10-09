@@ -37,4 +37,10 @@ describe('Comic', () => {
 
 		expect(getSetting()).toBeInTheDocument();
 	});
+
+	it('should render style', () => {
+		const { getStyle } = renderComic();
+
+		expect(getStyle()).toBeInTheDocument();
+	});
 });

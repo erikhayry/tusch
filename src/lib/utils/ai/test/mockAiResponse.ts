@@ -1,11 +1,12 @@
 import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
-import { CharacterDescriptionSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
+import { CharacterDescriptionSchema, ComicStyleEnum, SeasonEnum, TimeOfDayEnum } from '$lib/types';
 import { InitialComicSchema } from '../aiTypes';
 
 export const aiInitialResponse = generateMocks(InitialComicSchema, 3);
 
 export const InitialComicContentMock = {
 	data: {
+		style: ComicStyleEnum.enum.anime,
 		characters: [
 			{
 				id: 'cfb4c17e-4420-4a34-a709-29b16b608a8f',

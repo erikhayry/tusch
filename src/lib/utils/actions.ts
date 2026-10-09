@@ -46,8 +46,9 @@ export const globalActions = {
 	},
 
 	[ACTION.CREATE_COMIC]: async ({ request, fetch }: RequestEvent) => {
-		const { url } = await getCreateComicValues(await request.formData());
-		const response = await fetch('/api/chat/init', getPostRequestInit({ url }));
+		const { url, style } = await getCreateComicValues(await request.formData());
+
+		const response = await fetch('/api/chat/init', getPostRequestInit({ url, style }));
 		const comic: Comic = await response.json();
 
 		return {

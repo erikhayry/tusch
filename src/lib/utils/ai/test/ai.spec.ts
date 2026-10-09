@@ -1,3 +1,4 @@
+import { ComicStyleEnum } from '$lib/types';
 import { PanelsMock } from '$lib/types/test/utils/mockTypes';
 import type { Cookies } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -25,15 +26,18 @@ describe('ai', () => {
 		it('should call sdk with message', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitComicResponse);
 
-			await initComic(SOURCE, CookiesMock);
+			await initComic(SOURCE, ComicStyleEnum.enum.anime, CookiesMock);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(INIT.WHAT);
+			expect(mockSendOpenAi.mock.calls[0][0].input.at(-1).content).toEqual(
+				`STYLE: ${ComicStyleEnum.enum.anime}`,
+			);
 		});
 
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitComicResponse);
 
-			await initComic(SOURCE, CookiesMock);
+			await initComic(SOURCE, ComicStyleEnum.enum.anime, CookiesMock);
 
 			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.initComic,
@@ -50,7 +54,7 @@ describe('ai', () => {
 				title,
 				setting,
 				characters,
-			} = await initComic(SOURCE, CookiesMock);
+			} = await initComic(SOURCE, ComicStyleEnum.enum.anime, CookiesMock);
 
 			expect(panels).toHaveLength(InitialComicContentMock.data.panels.length);
 			expect(id).toBeDefined();
@@ -74,7 +78,7 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage(PanelsMock[0], CookiesMock);
+			await createImage(PanelsMock[0], 'USER INSTRUCTIONS', CookiesMock);
 
 			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.createImage,
@@ -87,7 +91,7 @@ describe('ai', () => {
 			const {
 				image: { src, alt, width, height },
 				panelId,
-			} = await createImage(PanelsMock[0], CookiesMock);
+			} = await createImage(PanelsMock[0], 'USER INSTRUCTIONS', CookiesMock);
 
 			expect(src).toEqual(imageResulSrcMock);
 			expect(alt).toEqual(imageDataMock.alt);

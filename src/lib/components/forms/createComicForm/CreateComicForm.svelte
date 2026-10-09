@@ -10,6 +10,7 @@
 	import Section from '$lib/components/relativeHeading/Section.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { ACTION } from '$lib/utils/actions';
+	import { STYLES } from '$lib/utils/comicStyles';
 	import { addComic } from '$lib/utils/db/db';
 	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import { type SubmitFunction } from '@sveltejs/kit';
@@ -38,9 +39,18 @@
 			Url to source
 			<input
 				type="text"
+				required
 				name="url"
 				placeholder="https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna"
 			/>
+		</label>
+		<label>
+			{m.comicStyles()}
+			<select name="style" required>
+				{#each Object.values(STYLES) as style (style.id)}
+					<option value={style.id}>{style.id}</option>
+				{/each}
+			</select>
 		</label>
 		<button type="submit">{m.submit()}</button>
 	</form>

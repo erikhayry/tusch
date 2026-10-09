@@ -18,6 +18,9 @@
 	<Section>
 		<Heading>{m.settings()}</Heading>
 		<Section>
+			<Heading>{m.comicStyle()}</Heading>
+			<p>{comic.style}</p>
+
 			<Heading>Source</Heading>
 			<a target="_blank" rel="external" href={comic.source}>{comic.source}</a>
 

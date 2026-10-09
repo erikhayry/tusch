@@ -31,6 +31,7 @@ export async function getEditValues(formData: FormData): Promise<EditValues> {
 export async function getCreateComicValues(formData: FormData): Promise<CreateComicValues> {
 	return CreateComicValuesSchema.parse({
 		url: formData.get('url'),
+		style: formData.get('style'),
 	});
 }
 

@@ -1,4 +1,4 @@
-import type { Panel } from '$lib/types';
+import type { ComicStyle, Panel } from '$lib/types';
 import { OPEN_AI_ROLE } from './settings';
 
 const GLOBAL_HOWS = {
@@ -8,6 +8,7 @@ const GLOBAL_HOWS = {
 		'CHARACTER LINKING: Whenever a main character speaks or acts in dialogue, set "characterId" to their exact matching UUID from the comic\'s "characters" array. Do NOT invent new IDs or leave it null if the speaker exists in the characters list.',
 	],
 	COMIC: [
+		'STYLE: The comic style must match the style: value.',
 		'CHARACTERS: Define 1 to 3 primary characters with detailed visual traits (facial features, hair, signature clothing) and add them to the comic\'s "characters" array.',
 	],
 };
@@ -39,8 +40,8 @@ export const PANEL = {
 	],
 };
 
-export function buildInitialMessages(url: string): string[] {
-	return [INIT.WHAT, `Source URL: ${url}`, ...INIT.HOWS];
+export function buildInitialMessages(url: string, style: ComicStyle): string[] {
+	return [INIT.WHAT, `Source URL: ${url}`, ...INIT.HOWS, `STYLE: ${style}`];
 }
 
 export function buildImageMessages(panel: Panel, instruction: string): string[] {

@@ -8,6 +8,7 @@ export function renderCreateComicForm(props = CreateComicFormPropsMock[0]) {
 
 	return {
 		getButton: () => getByRole('button', { name: m.submit() }),
+		getComicStylesSelect: () => getByRole('combobox', { name: m.comicStyles() }),
 		props,
 	};
 }

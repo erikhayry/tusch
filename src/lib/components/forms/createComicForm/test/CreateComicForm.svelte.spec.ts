@@ -7,4 +7,10 @@ describe('CreateComicForm', () => {
 
 		expect(getButton()).toBeInTheDocument();
 	});
+
+	it('should render comic styles', () => {
+		const { getComicStylesSelect } = renderCreateComicForm();
+
+		expect(getComicStylesSelect()).toBeInTheDocument();
+	});
 });

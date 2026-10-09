@@ -1,4 +1,4 @@
-import { type Comic, type Panel, type Url } from '$lib/types';
+import { type Comic, type ComicStyle, type Panel, type Url } from '$lib/types';
 import type { Cookies } from '@sveltejs/kit';
 import { type CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
@@ -35,8 +35,12 @@ function getComicFromOpenAiResponse(response: OpenAiImageOutput): InitialComic {
 	return InitialComicSchema.parse(output);
 }
 
-export async function initComic(source: Url, cookies: Cookies): Promise<Comic> {
-	const response = await text(cookies, buildInitialMessages(source), SchemaName.enum.initComic);
+export async function initComic(source: Url, style: ComicStyle, cookies: Cookies): Promise<Comic> {
+	const response = await text(
+		cookies,
+		buildInitialMessages(source, style),
+		SchemaName.enum.initComic,
+	);
 	const comic = getComicFromOpenAiResponse(response);
 
 	return {

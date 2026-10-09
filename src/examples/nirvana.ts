@@ -1,7 +1,8 @@
-import type { Comic } from '$lib/types';
+import { ComicStyleEnum, type Comic } from '$lib/types';
 
 export const NIRVANA: Comic = {
 	id: '6dcbdd2b-a490-473f-bb50-fe7c894b8533',
+	style: ComicStyleEnum.enum.anime,
 	source: 'https://sv.wikipedia.org/wiki/Nirvana_(musikgrupp)',
 	title: 'EXMPALE: Nirvana: från Aberdeen till världsscenen',
 	characters: [
