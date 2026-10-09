@@ -48,7 +48,7 @@ function getMockResponse(mock: string) {
 }
 
 export const handleFetch: HandleFetch = async ({ request, fetch }) => {
-	if (true) {
+	if (isPlaywrightTestRequest()) {
 		const url = new URL(request.url);
 		const mock = MOCK[url.pathname];
 
