@@ -5,16 +5,17 @@ import { EXAMPLES } from '../../../examples/examples';
 export class LandingPage {
 	readonly page: Page;
 	readonly createComicButton: Locator;
-	readonly comicLink: Locator;
-	readonly deleteComicButton: Locator;
+	readonly comicLink: (number: number) => Locator;
+	readonly deleteComicButton: (title: string) => Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.createComicButton = page.getByRole('link', { name: 'Create' });
-		this.comicLink = page.getByRole('link', { name: EXAMPLES[0].title });
-		this.deleteComicButton = page.getByRole('button', {
-			name: m.deleteComic({ title: EXAMPLES[0].title }),
-		});
+		this.comicLink = (number: number) => page.getByRole('link', { name: EXAMPLES[number].title });
+		this.deleteComicButton = (title: string) =>
+			page.getByRole('button', {
+				name: m.deleteComic({ title }),
+			});
 	}
 
 	async goto() {

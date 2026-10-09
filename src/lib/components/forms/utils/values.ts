@@ -13,6 +13,7 @@ import {
 	EditValuesSchema,
 	INSTRUCTIONS_VALUE_KEY,
 } from '$lib/utils/db/dbTypes';
+import type { ZodSafeParseResult } from 'zod';
 
 function getIndex(formData: FormData): number {
 	return Number.parseInt(formData.get('index')?.toString() ?? '');
@@ -28,8 +29,10 @@ export async function getEditValues(formData: FormData): Promise<EditValues> {
 	});
 }
 
-export async function getCreateComicValues(formData: FormData): Promise<CreateComicValues> {
-	return CreateComicValuesSchema.parse({
+export async function getCreateComicValues(
+	formData: FormData,
+): Promise<ZodSafeParseResult<CreateComicValues>> {
+	return CreateComicValuesSchema.safeParse({
 		url: formData.get('url'),
 		style: formData.get('style'),
 	});

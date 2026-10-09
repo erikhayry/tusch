@@ -10,9 +10,9 @@
 	import Section from '$lib/components/relativeHeading/Section.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
-	import type { Data } from './+page.server';
+	import type { Props } from './+page.ts';
 
-	let { data }: { data: Data } = $props();
+	let { data }: { data: Props } = $props();
 </script>
 
 <Page title={m.tusch()}>

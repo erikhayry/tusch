@@ -19,12 +19,15 @@
 		globalLoading.start();
 
 		return async ({ result }) => {
+			console.log(result);
 			try {
 				if (result.type === 'success' && result.data) {
 					const { comic } = result.data;
 					addComic(comic);
 
 					await goto(resolve(`/comic/${comic.id}`));
+				} else if (result.type === 'error') {
+					alert(result.error);
 				}
 			} finally {
 				globalLoading.stop();
