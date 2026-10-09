@@ -10,6 +10,16 @@ import type { CreateImageResponse } from '../../routes/api/chat/image/createImag
 import type { CreatePanelResponse } from '../../routes/api/chat/panel/createPanelApiTypes';
 import { getCookieArgs } from './key';
 
+function getPostRequestInit(body: unknown) {
+	return {
+		method: 'POST',
+		body: JSON.stringify(body),
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	};
+}
+
 export const ACTION = {
 	CLIENT: 'client',
 	CREATE_IMAGE: 'create-image',
@@ -37,13 +47,7 @@ export const globalActions = {
 
 	[ACTION.CREATE_COMIC]: async ({ request, fetch }: RequestEvent) => {
 		const { url } = await getCreateComicValues(await request.formData());
-		const response = await fetch('/api/chat/init', {
-			method: 'POST',
-			body: JSON.stringify({ url }),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
+		const response = await fetch('/api/chat/init', getPostRequestInit({ url }));
 		const comic: Comic = await response.json();
 
 		return {
@@ -55,13 +59,10 @@ export const globalActions = {
 		const { comicId, panelsJsonString, index } = await getCreatePanelValues(
 			await request.formData(),
 		);
-		const response = await fetch('/api/chat/panel', {
-			method: 'POST',
-			body: JSON.stringify({ panelsJsonString, index }),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
+		const response = await fetch(
+			'/api/chat/panel',
+			getPostRequestInit({ panelsJsonString, index }),
+		);
 		const panel: CreatePanelResponse = await response.json();
 
 		return {
@@ -72,15 +73,8 @@ export const globalActions = {
 	},
 
 	[ACTION.CREATE_IMAGE]: async ({ request, fetch }: RequestEvent) => {
-		const { panelJsonString, comicId } = await getCreateImageValues(await request.formData());
-
-		const response = await fetch('/api/chat/image', {
-			method: 'POST',
-			body: panelJsonString,
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
+		const { comicId, panelJsonString } = await getCreateImageValues(await request.formData());
+		const response = await fetch('/api/chat/image', getPostRequestInit({ panelJsonString }));
 		const { image, panelId }: CreateImageResponse = await response.json();
 
 		return {

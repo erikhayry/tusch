@@ -4,16 +4,17 @@ import { json } from '@sveltejs/kit';
 import type { CreateImageResponse } from './createImageApiTypes.js';
 
 export async function POST({ request, cookies }) {
-	const panelJsonString = await request.json();
+	try {
+		const data = await request.json();
+		const { panelJsonString } = data;
 
-	if (!panelJsonString) {
-		return new Response(JSON.stringify({ error: 'Panel not found' }), { status: 404 });
+		const response: CreateImageResponse = await createImage(
+			PanelSchema.parse(panelJsonString),
+			cookies,
+		);
+
+		return json(response);
+	} catch (error) {
+		console.error(error);
 	}
-
-	const response: CreateImageResponse = await createImage(
-		PanelSchema.parse(panelJsonString),
-		cookies,
-	);
-
-	return json(response);
 }
