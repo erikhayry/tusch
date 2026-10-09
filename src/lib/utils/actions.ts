@@ -73,8 +73,13 @@ export const globalActions = {
 	},
 
 	[ACTION.CREATE_IMAGE]: async ({ request, fetch }: RequestEvent) => {
-		const { comicId, panelJsonString } = await getCreateImageValues(await request.formData());
-		const response = await fetch('/api/chat/image', getPostRequestInit({ panelJsonString }));
+		const { comicId, panelJsonString, instructions } = await getCreateImageValues(
+			await request.formData(),
+		);
+		const response = await fetch(
+			'/api/chat/image',
+			getPostRequestInit({ panelJsonString, instructions }),
+		);
 		const { image, panelId }: CreateImageResponse = await response.json();
 
 		return {

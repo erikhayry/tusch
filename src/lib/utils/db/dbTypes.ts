@@ -41,9 +41,12 @@ export const EditValuesSchema = z.object({
 });
 export type EditValues = z.infer<typeof EditValuesSchema>;
 
+export const INSTRUCTIONS_VALUE_KEY = 'instructions';
+
 export const CreateImageValuesSchema = z.object({
 	panelJsonString: z.string(),
 	comicId: z.string(),
+	[INSTRUCTIONS_VALUE_KEY]: z.string(),
 });
 export type CreateImageValues = z.infer<typeof CreateImageValuesSchema>;
 

@@ -7,4 +7,10 @@ describe('CreateImageForm', () => {
 
 		expect(getButton()).toBeInTheDocument();
 	});
+
+	it('should render prompt', () => {
+		const { getPrompt } = renderCreateImageForm();
+
+		expect(getPrompt()).toBeInTheDocument();
+	});
 });

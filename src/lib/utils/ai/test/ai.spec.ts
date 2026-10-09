@@ -65,9 +65,10 @@ describe('ai', () => {
 		it('should call sdk with correct messages', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage(PanelsMock[0], CookiesMock);
+			await createImage(PanelsMock[0], 'USER INSTRUCTIONS', CookiesMock);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(IMAGE.WHAT);
+			expect(mockSendOpenAi.mock.calls[0][0].input.at(-1).content).toEqual('USER INSTRUCTIONS');
 		});
 
 		it('should call sdk with text format', async () => {

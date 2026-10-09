@@ -11,6 +11,7 @@ import {
 	DeleteValuesSchema,
 	type EditValues,
 	EditValuesSchema,
+	INSTRUCTIONS_VALUE_KEY,
 } from '$lib/utils/db/dbTypes';
 
 function getIndex(formData: FormData): number {
@@ -54,6 +55,7 @@ export async function getCreateImageValues(formData: FormData): Promise<CreateIm
 	return CreateImageValuesSchema.parse({
 		comicId: formData.get('comicId'),
 		panelJsonString: formData.get('panelJsonString'),
+		[INSTRUCTIONS_VALUE_KEY]: formData.get(INSTRUCTIONS_VALUE_KEY),
 	});
 }
 

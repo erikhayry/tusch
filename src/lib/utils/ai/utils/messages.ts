@@ -43,7 +43,7 @@ export function buildInitialMessages(url: string): string[] {
 	return [INIT.WHAT, `Source URL: ${url}`, ...INIT.HOWS];
 }
 
-export function buildImageMessages(panel: Panel): string[] {
+export function buildImageMessages(panel: Panel, instruction: string): string[] {
 	const meta: string[] = [];
 
 	if (panel.visualDescription) meta.push(`Visual Description: ${panel.visualDescription}`);
@@ -57,7 +57,7 @@ export function buildImageMessages(panel: Panel): string[] {
 	if (panel.season) meta.push(`Season: ${panel.season}`);
 	if (panel.timeOfDay) meta.push(`Time of day: ${panel.timeOfDay}`);
 
-	return [IMAGE.WHAT, ...meta, ...IMAGE.HOWS];
+	return [IMAGE.WHAT, ...meta, ...IMAGE.HOWS, instruction];
 }
 
 function removeImage(panels: Panel[]) {
