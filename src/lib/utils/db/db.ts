@@ -2,7 +2,6 @@ import { browser } from '$app/environment';
 import { type Comic, type Panel, type ResponsiveImage } from '$lib/types';
 import { SvelteMap } from 'svelte/reactivity';
 import { EXAMPLES } from '../../../examples/examples';
-import { generateId } from '../id';
 import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from './dbTypes';
 
 const STORAGE_KEY = 'comics_db';
@@ -25,8 +24,8 @@ function loadInitialData(): [string, Comic][] {
 
 export const DB = new SvelteMap<string, Comic>(loadInitialData());
 addComic(EXAMPLES[0]);
-addComic({ ...EXAMPLES[0], id: generateId(), title: 'NIRVANA 2' });
-addComic({ ...EXAMPLES[0], id: generateId(), title: 'NIRVANA 3' });
+addComic({ ...EXAMPLES[0], id: '6dcbdd2b-a490-473f-bb50-fe7c894b8534', title: 'NIRVANA 2' });
+addComic({ ...EXAMPLES[0], id: '6dcbdd2b-a490-473f-bb50-fe7c894b8535', title: 'NIRVANA 3' });
 
 export function saveDB(): void {
 	if (!browser) return;
