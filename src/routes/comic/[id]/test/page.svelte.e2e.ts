@@ -2,10 +2,6 @@ import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../examples/examples';
 import { ComicPage } from './utils/comicPage';
 
-test.beforeEach(async ({ request }) => {
-	await request.post('/api/test/seed');
-});
-
 test('has expected title', async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 

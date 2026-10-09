@@ -2,10 +2,6 @@ import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../../examples/examples';
 import { PanelPage } from './utils/panelPage';
 
-test.beforeEach(async ({ request }) => {
-	await request.post('/api/test/seed');
-});
-
 test('creates image', async ({ page }) => {
 	const panelPage = new PanelPage(page).goto();
 

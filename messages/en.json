@@ -4,6 +4,7 @@
 	"addPanelBefore": "Add Panel before panel {number}",
 	"addImage": "Add Image",
 	"add": "Add",
+	"back": "Back",
 	"keyAdded": "Key added successfully",
 	"keyFailed": "Adding key failed",
 	"backToComic": "Back to Comic",

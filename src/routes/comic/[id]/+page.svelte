@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import Comic from '$lib/components/comic/Comic.svelte';
 	import Page from '$lib/components/page/Page.svelte';
 	import { m } from '$lib/paraglide/messages';
@@ -7,8 +8,9 @@
 	let { data }: { data: Data } = $props();
 </script>
 
-{#if data.comic}
-	<Page title={m.comicTitle({ title: data.comic.title })}>
+<Page title={m.comicTitle({ title: data.comic.title })}>
+	{#if data.comic}
 		<Comic comic={data.comic} />
-	</Page>
-{/if}
+	{/if}
+	<a href={resolve('/')}>{m.back()}</a>
+</Page>

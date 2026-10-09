@@ -3,10 +3,6 @@ import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../examples/examples';
 import { LandingPage } from './utils/landingPage';
 
-test.beforeEach(async ({ request }) => {
-	await request.post('/api/test/seed');
-});
-
 test('navigates to create', async ({ page }) => {
 	const landingPage = await new LandingPage(page).goto();
 
