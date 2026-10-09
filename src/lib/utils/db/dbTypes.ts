@@ -49,6 +49,7 @@ export type CreateImageValues = z.infer<typeof CreateImageValuesSchema>;
 
 export const CreatePanelValuesSchema = z.object({
 	comicId: z.string(),
+	panelsJsonString: z.string(),
 	index: z.number(),
 });
 export type CreatePanelValues = z.infer<typeof CreatePanelValuesSchema>;

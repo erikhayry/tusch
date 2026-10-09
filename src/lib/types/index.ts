@@ -12,7 +12,7 @@ export type Url = z.infer<typeof UrlValue>;
 export const YearSchema = z.number().int();
 
 export const ImageAssetSchema = z.object({
-	src: z.url(),
+	src: z.string(),
 	width: z.number().int().positive(),
 	height: z.number().int().positive(),
 });
@@ -97,11 +97,14 @@ export const PanelSchema = z.object({
 });
 export type Panel = z.infer<typeof PanelSchema>;
 
+export const PanelArraySchema = z.array(PanelSchema);
+export type PanelArray = z.infer<typeof PanelArraySchema>;
+
 export const ComicSchema = z.object({
 	id: z.uuid(),
 	title: z.string(),
 	source: z.url(),
-	panels: z.array(PanelSchema),
+	panels: PanelArraySchema,
 	setting: z.optional(SettingSchema),
 	characters: z.array(CharacterSchema),
 });

@@ -1,5 +1,5 @@
-import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import { expect, test } from '@playwright/test';
+import { EXAMPLES } from '../../../../../examples/examples';
 import { PanelPage } from './utils/panelPage';
 
 test.beforeEach(async ({ request }) => {
@@ -47,7 +47,7 @@ test('remove caption', async ({ page }) => {
 
 	await panelPage.removeCaption();
 
-	await expect(page.getByText(ComicsMock[0].panels[1].captions[0])).toBeHidden();
+	await expect(page.getByText(EXAMPLES[0].panels[1].captions[0])).toBeHidden();
 });
 
 test('edit dialogue', async ({ page }) => {
@@ -63,7 +63,7 @@ test('remove dialogue', async ({ page }) => {
 
 	await panelPage.removeDialogue();
 
-	await expect(page.getByText(ComicsMock[0].panels[1].dialogue[0].text)).toBeHidden();
+	await expect(page.getByText(EXAMPLES[0].panels[1].dialogue[0].text)).toBeHidden();
 });
 
 test('add panel before', async ({ page }) => {

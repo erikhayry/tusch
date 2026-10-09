@@ -36,6 +36,7 @@ export async function getCreateComicValues(formData: FormData): Promise<CreateCo
 export async function getCreatePanelValues(formData: FormData): Promise<CreatePanelValues> {
 	return CreatePanelValuesSchema.parse({
 		comicId: formData.get('comicId'),
+		panelsJsonString: formData.get('panelsJsonString'),
 		index: Number.parseInt(formData.get('index')!.toString()),
 	});
 }

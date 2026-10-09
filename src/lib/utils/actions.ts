@@ -52,10 +52,12 @@ export const globalActions = {
 	},
 
 	[ACTION.CREATE_PANEL]: async ({ request, fetch }: RequestEvent) => {
-		const { comicId, index } = await getCreatePanelValues(await request.formData());
+		const { comicId, panelsJsonString, index } = await getCreatePanelValues(
+			await request.formData(),
+		);
 		const response = await fetch('/api/chat/panel', {
 			method: 'POST',
-			body: JSON.stringify({ comicId, index }),
+			body: JSON.stringify({ panelsJsonString, index }),
 			headers: {
 				'Content-Type': 'application/json',
 			},

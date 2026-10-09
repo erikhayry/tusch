@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
-import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import { expect, test } from '@playwright/test';
+import { EXAMPLES } from '../../examples/examples';
 import { LandingPage } from './utils/landingPage';
 
 test.beforeEach(async ({ request }) => {
@@ -20,7 +20,7 @@ test('navigates to comic', async ({ page }) => {
 
 	await landingPage.comicLink.click();
 
-	await expect(page.getByRole('heading', { name: ComicsMock[0].title, level: 2 })).toBeVisible();
+	await expect(page.getByRole('heading', { name: EXAMPLES[0].title, level: 2 })).toBeVisible();
 });
 
 test('removes comic', async ({ page }) => {

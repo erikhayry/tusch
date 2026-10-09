@@ -1,20 +1,18 @@
 import { createPanel } from '$lib/utils/ai/ai';
-import { getComic } from '$lib/utils/db/db.js';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, cookies }) {
 	const data = await request.json();
-	const { comicId, index } = data;
-	const panels = getComic(comicId)?.panels;
+	const { panelsJsonString, index } = data;
 
-	if (!panels) {
-		return new Response(JSON.stringify({ error: 'Panel not found' }), { status: 404 });
+	try {
+		const panel = await createPanel(index, JSON.parse(panelsJsonString), cookies);
+
+		return json({
+			...panel,
+			index,
+		});
+	} catch (e) {
+		console.error(e);
 	}
-
-	const panel = await createPanel(index, panels, cookies);
-
-	return json({
-		...panel,
-		index,
-	});
 }

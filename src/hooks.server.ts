@@ -1,9 +1,9 @@
 import { building } from '$app/env';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
-//import { ComicMock, PanelsMock } from '$lib/types/test/utils/mockTypes';
+import { generateId } from '$lib/utils/id';
 import type { Handle, HandleFetch } from '@sveltejs/kit';
-//import { mockImageResponse } from './routes/api/chat/image/utils/mock';
+import { EXAMPLES } from './examples/examples';
 
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
@@ -25,11 +25,19 @@ function isPlaywrightTestRequest(): boolean {
 
 const MOCK: Record<string, string> = {
 	'/api/chat/panel': JSON.stringify({
-		index: 1,
-		panel: {},
+		...EXAMPLES[0].panels[0],
+		id: generateId(),
 	}),
-	'/api/chat/init': JSON.stringify({}),
-	'/api/chat/image': JSON.stringify({}),
+	'/api/chat/init': JSON.stringify(EXAMPLES[0]),
+	'/api/chat/image': JSON.stringify({
+		panelId: EXAMPLES[0].panels[0].id,
+		image: {
+			alt: 'mock alt text',
+			width: EXAMPLES[0].panels[0].image?.wide.width,
+			height: EXAMPLES[0].panels[0].image?.wide.height,
+			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+		},
+	}),
 };
 
 function getMockResponse(mock: string) {
@@ -40,7 +48,7 @@ function getMockResponse(mock: string) {
 }
 
 export const handleFetch: HandleFetch = async ({ request, fetch }) => {
-	if (isPlaywrightTestRequest()) {
+	if (true) {
 		const url = new URL(request.url);
 		const mock = MOCK[url.pathname];
 

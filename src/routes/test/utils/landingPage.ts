@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
-import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import type { Locator, Page } from '@playwright/test';
+import { EXAMPLES } from '../../../examples/examples';
 
 export class LandingPage {
 	readonly page: Page;
@@ -11,9 +11,9 @@ export class LandingPage {
 	constructor(page: Page) {
 		this.page = page;
 		this.createComicButton = page.getByRole('link', { name: 'Create' });
-		this.comicLink = page.getByRole('link', { name: ComicsMock[0].title });
+		this.comicLink = page.getByRole('link', { name: EXAMPLES[0].title });
 		this.deleteComicButton = page.getByRole('button', {
-			name: m.deleteComic({ title: ComicsMock[0].title }),
+			name: m.deleteComic({ title: EXAMPLES[0].title }),
 		});
 	}
 
