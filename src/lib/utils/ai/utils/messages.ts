@@ -50,7 +50,7 @@ function buildStyleInstruction(styleKey: ComicStyle): string[] {
 	}
 
 	return [
-		`STRICT STYLE LOCK PRESET: ${styleDef.preset.toUpperCase()}`,
+		`STRICT STYLE LOCK PRESET: ${styleDef.id.toUpperCase()}`,
 		`MANDATORY MASTER PROMPT PREFIX: "${styleDef.masterStylePrompt}"`,
 		`LINEWORK RULE: ${styleDef.linework}`,
 		`COLORING RULE: ${styleDef.coloringStyle}`,
