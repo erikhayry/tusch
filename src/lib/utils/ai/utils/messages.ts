@@ -1,4 +1,5 @@
 import type { ComicStyle, Panel } from '$lib/types';
+import { STYLES } from '$lib/utils/comicStyles';
 import { OPEN_AI_ROLE } from './settings';
 
 const GLOBAL_HOWS = {
@@ -8,8 +9,14 @@ const GLOBAL_HOWS = {
 		'CHARACTER LINKING: Whenever a main character speaks or acts in dialogue, set "characterId" to their exact matching UUID from the comic\'s "characters" array. Do NOT invent new IDs or leave it null if the speaker exists in the characters list.',
 	],
 	COMIC: [
-		'STYLE: The comic style must match the style: value.',
+		'NO ART STYLE IN DESCRIPTIONS: Visual descriptions ("visualDescription") and alt text MUST NEVER include art style terminology, medium references, rendering techniques, or preset names (e.g., DO NOT write "in anime style", "cel-shaded", "comic book art", "watercolor", "inked lines"). Describe ONLY pure scene content: subject matter, actions, spatial layout, lighting conditions, character expressions, and physical props.',
 		'CHARACTERS: Define 1 to 3 primary characters with detailed visual traits (facial features, hair, signature clothing) and add them to the comic\'s "characters" array.',
+	],
+	IMAGE: [
+		'STRICT ART STYLE SEPARATION: Keep art style instructions completely separate from scene descriptions. The "visualDescription" / "alt" text is used directly for screen reader alt text and must remain 100% style-agnostic.',
+		'PURE ALT TEXT / DESCRIPTION: The "alt" field and "visualDescription" MUST contain ONLY subject matter, character poses, facial expressions, camera composition, environment layout, and lighting. NEVER mention style presets, rendering engines, ink styles, or medium names in alt text.',
+		'NO TEXT IN IMAGE: Do NOT include any speech bubbles, dialogue, captions, logos, or written text inside the rendered visual output.',
+		'NO BORDERS: Do NOT render outer panel frames, gutter borders, or multi-panel splits. Output a clean, single-frame scene.',
 	],
 };
 
@@ -24,11 +31,7 @@ export const INIT = {
 
 export const IMAGE = {
 	WHAT: 'Generate a detailed visual prompt and metadata for rendering a single comic panel image.',
-	HOWS: [
-		'NO TEXT IN IMAGE: Do NOT include any speech bubbles, dialogue, captions, logos, or written text inside the rendered visual output.',
-		'NO BORDERS: Do NOT render outer panel frames, gutter borders, or multi-panel splits. Output a clean, single-frame scene.',
-		'ALT TEXT: The "alt" field MUST strictly contain a pure visual description of the scene layout, characters, action, and lighting for screen readers.',
-	],
+	HOWS: [...GLOBAL_HOWS.IMAGE],
 };
 
 export const PANEL = {
@@ -40,11 +43,36 @@ export const PANEL = {
 	],
 };
 
-export function buildInitialMessages(url: string, style: ComicStyle): string[] {
-	return [INIT.WHAT, `Source URL: ${url}`, ...INIT.HOWS, `STYLE: ${style}`];
+function buildStyleInstruction(styleKey: ComicStyle): string[] {
+	const styleDef = STYLES[styleKey];
+	if (!styleDef) {
+		return [`STYLE PRESET: ${styleKey}`];
+	}
+
+	return [
+		`STRICT STYLE LOCK PRESET: ${styleDef.preset.toUpperCase()}`,
+		`MANDATORY MASTER PROMPT PREFIX: "${styleDef.masterStylePrompt}"`,
+		`LINEWORK RULE: ${styleDef.linework}`,
+		`COLORING RULE: ${styleDef.coloringStyle}`,
+		`SHADING & LIGHTING RULE: ${styleDef.shadingAndLighting}`,
+		`ALLOWED PALETTE: ${styleDef.palette.join(', ')}`,
+		'ENFORCEMENT: Apply these style rules strictly to the downstream image generator prompt string. DO NOT insert any of these style rules or keywords into "visualDescription" or "alt" fields.',
+	];
 }
 
-export function buildImageMessages(panel: Panel, instruction: string): string[] {
+export function buildInitialMessages(url: string, style: ComicStyle): string[] {
+	return [INIT.WHAT, `Source URL: ${url}`, ...INIT.HOWS, ...buildStyleInstruction(style)];
+}
+
+export function buildImageMessages({
+	panel,
+	instruction,
+	style,
+}: {
+	panel: Panel;
+	instruction: string;
+	style: ComicStyle;
+}): string[] {
 	const meta: string[] = [];
 
 	if (panel.visualDescription) meta.push(`Visual Description: ${panel.visualDescription}`);
@@ -58,7 +86,13 @@ export function buildImageMessages(panel: Panel, instruction: string): string[] 
 	if (panel.season) meta.push(`Season: ${panel.season}`);
 	if (panel.timeOfDay) meta.push(`Time of day: ${panel.timeOfDay}`);
 
-	return [IMAGE.WHAT, ...meta, ...IMAGE.HOWS, instruction];
+	return [
+		IMAGE.WHAT,
+		...meta,
+		...IMAGE.HOWS,
+		...buildStyleInstruction(style),
+		`USER INSTRUCTION: ${instruction}`,
+	];
 }
 
 function removeImage(panels: Panel[]) {

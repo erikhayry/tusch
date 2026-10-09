@@ -8,6 +8,7 @@ import type { Comic } from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { CreateImageResponse } from '../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../routes/api/chat/panel/createPanelApiTypes';
+import { getComic } from './db/db';
 import { getCookieArgs } from './key';
 
 function getPostRequestInit(body: unknown) {
@@ -77,9 +78,10 @@ export const globalActions = {
 		const { comicId, panelJsonString, instructions } = await getCreateImageValues(
 			await request.formData(),
 		);
+		const comic = getComic(comicId);
 		const response = await fetch(
 			'/api/chat/image',
-			getPostRequestInit({ panelJsonString, instructions }),
+			getPostRequestInit({ panelJsonString, instructions, style: comic?.style }),
 		);
 		const { image, panelId }: CreateImageResponse = await response.json();
 

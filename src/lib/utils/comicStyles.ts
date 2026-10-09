@@ -2,38 +2,48 @@ import { ComicStyleEnum, type ComicStyleDescription } from '$lib/types';
 import type z from 'zod';
 
 export const ANIME_STYLE: ComicStyleDescription = {
-	id: ComicStyleEnum.enum.anime,
-	linework: 'Crisp, fine-line ink contours with precise, clean strokes and smooth curves',
-	coloringStyle: 'Cel-shaded coloring with sharp contrast boundaries and soft gradient highlights',
+	id: 'anime',
+	linework:
+		'STRICT REQUIREMENT: ultra-sharp 1px ink vector outlines, uniform micro-linework, no sketchiness, no heavy brush weights',
+	coloringStyle:
+		'STRICT REQUIREMENT: 2-tone crisp cel shading, flat solid fill base, hard-edged shadow boundaries, zero blur gradients',
 	shadingAndLighting:
-		'High-contrast ambient lighting with distinct hard-edge shadows and hair highlights',
-	palette: ['saturated primary colors', 'vibrant pastels', 'soft ambient tones'],
+		'STRICT REQUIREMENT: rim lighting on hair, high-contrast ambient key light, hard specular white highlights',
+	palette: ['saturated primary colors', 'vibrant pastels', 'clean white'],
 	masterStylePrompt:
-		'Japanese anime aesthetic, clean sharp linework, high contrast cel shading, vivid color palette, expressive feature rendering, polished studio production style',
+		'STYLE LOCK: Modern Japanese TV anime production key visual, Kyoto Animation aesthetic, precise ultra-sharp 1px ink linework, 2-tone crisp cel-shading with hard shadow edges, clean solid color fills, hair rim lighting, vivid animation color palette, pristine digital anime art, absolute zero realistic photorealism, absolute zero oil paint texture',
 };
 
 export const CLASSIC_MARVEL_STYLE: ComicStyleDescription = {
-	id: ComicStyleEnum.enum['classic-marvel'],
+	id: 'classic-marvel',
 	linework:
-		'Dynamic variable-weight black ink lines, expressive cross-hatching, and muscular contouring',
-	coloringStyle: 'Vintage Ben-Day halftone dots with four-color process printing (CMYK)',
+		'STRICT REQUIREMENT: heavy black ink lineart, Jack Kirby bold contour lines, intense feathering and muscular cross-hatching',
+	coloringStyle:
+		'STRICT REQUIREMENT: 1960s 4-color CMYK process print, authentic visible Ben-Day halftone dot pattern, aged yellowed newsprint paper background',
 	shadingAndLighting:
-		'High-contrast chiaroscuro with heavy black ink shadows and dramatic spot blacks',
-	palette: ['primary red', 'bold blue', 'vibrant yellow', 'saturated secondary tones'],
+		'STRICT REQUIREMENT: extreme high-contrast chiaroscuro, heavy black ink shadow blocks, dramatic spot blacks',
+	palette: [
+		'vintage cyan',
+		'vintage magenta',
+		'vintage yellow',
+		'rich spot black',
+		'aged yellow paper tone',
+	],
 	masterStylePrompt:
-		'1960s-1970s Silver Age American comic book art style, Jack Kirby and Steve Ditko influence, dynamic black ink lines, visible Ben-Day halftone dots, vintage paper texture, dramatic chiaroscuro lighting, bold primary colors',
+		'STYLE LOCK: 1960s Silver Age American comic book panel art, Jack Kirby and Steve Ditko vintage art style, heavy dynamic black ink line work, visible micro Ben-Day halftone dot screen printing texture, aged yellowed comic paper background, 4-color CMYK process color printing, deep spot black shadows, absolute zero smooth digital gradients, absolute zero 3D render effects',
 };
 
 export const FRANCO_BELGIAN_STYLE: ComicStyleDescription = {
-	id: ComicStyleEnum.enum['franco-belgian'],
+	id: 'franco-belgian',
 	linework:
-		'Ligne claire (clear line) style with uniform, unvaried line weight and precise architectural contours',
-	coloringStyle: 'Flat, uniform color fills without gradients, maintaining absolute legibility',
+		'STRICT REQUIREMENT: Ligne claire (clear line) style, 100% uniform unvaried line weight, razor-sharp clean ink outlines for foreground and background equally',
+	coloringStyle:
+		'STRICT REQUIREMENT: completely flat matte color fills, zero shading, zero color gradients, zero texture noise',
 	shadingAndLighting:
-		'Minimal to no shadow modeling; relies on line geometry and color contrast for depth',
-	palette: ['warm earth tones', 'soft muted primaries', 'balanced naturalistic hues'],
+		'STRICT REQUIREMENT: flat ambient overhead daylight, zero heavy black shadows, depth achieved strictly through geometric perspective and line overlap',
+	palette: ['warm earth tones', 'muted primary blue', 'faded olive green', 'soft beige'],
 	masterStylePrompt:
-		'Franco-Belgian bande dessinée style, ligne claire, Hergé Tintin aesthetic, uniform ink line width, flat clean color fills, no heavy shadows, detailed architectural backgrounds, high narrative clarity',
+		'STYLE LOCK: Franco-Belgian bande dessinée style, strict Ligne Claire art style, Hergé Tintin aesthetic, completely uniform unvaried ink outline width across all objects, flat matte solid color fills, zero shading, zero shadows, zero gradients, crisp architectural background detail, maximum graphic legibility, absolute zero digital painterly effects',
 };
 
 export const STYLES: Record<z.infer<typeof ComicStyleEnum>, ComicStyleDescription> = {
