@@ -2,6 +2,7 @@ import { browser } from '$app/environment';
 import { type Comic, type Panel, type ResponsiveImage } from '$lib/types';
 //import { getComicsMock } from '$lib/types/test/utils/mockTypes';
 import { SvelteMap } from 'svelte/reactivity';
+import { NIRVANA } from '../../../examples/nirvana';
 import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from './dbTypes';
 
 const STORAGE_KEY = 'comics_db';
@@ -23,6 +24,7 @@ function loadInitialData(): [string, Comic][] {
 }
 
 export const DB = new SvelteMap<string, Comic>(loadInitialData());
+addComic(NIRVANA);
 
 export function saveDB(): void {
 	if (!browser) return;
@@ -33,16 +35,7 @@ export function saveDB(): void {
 		console.error('Failed to save DB to localStorage:', err);
 	}
 }
-/*
 
-export function seedDB(): void {
-	clearComics();
-	getComicsMock().forEach((comic) => {
-		DB.set(comic.id, comic);
-	});
-	saveDB();
-}
-*/
 export function getComic(id: string): Comic | undefined {
 	return DB.get(id);
 }

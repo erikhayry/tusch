@@ -15,20 +15,16 @@ export async function saveImage(fileName: string, base64Data: string) {
 	await writable.write(imageBlob);
 	await writable.close();
 
-	return getImageUrl(fileName);
+	return fileName;
 }
 
-async function getImageUrl(fileName: string) {
-	const root = await navigator.storage.getDirectory();
-	const fileHandle = await root.getFileHandle(fileName);
-
-	// Get File object
-	const file = await fileHandle.getFile();
-
-	// Create usable image URL
-	return URL.createObjectURL(file);
+export async function getImageUrl(fileName: string) {
+	try {
+		const root = await navigator.storage.getDirectory();
+		const fileHandle = await root.getFileHandle(fileName);
+		const file = await fileHandle.getFile();
+		return URL.createObjectURL(file);
+	} catch {
+		return '/fallback-placeholder.png'; // Fallback asset URL
+	}
 }
-
-// Usage in DOM:
-// const imgUrl = await getImageUrlFromOPFS('photo.png');
-// document.querySelector('img').src = imgUrl;

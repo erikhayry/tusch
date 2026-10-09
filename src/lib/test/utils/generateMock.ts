@@ -1,8 +1,8 @@
-import { PanelSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
+import { ImageAssetSchema, PanelSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
 import { CreatedImageSchema } from '$lib/utils/ai/aiTypes';
 import { vi } from 'vitest';
+import { zocker } from 'zocker';
 import z from 'zod';
-const { zocker } = await import('zocker');
 
 export function generateMock<T extends z.ZodType>(schema: T): z.infer<T> {
 	return zocker(schema)
@@ -43,6 +43,11 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 			height: 600,
 			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
 			alt: 'mock alt text',
+		})
+		.supply(ImageAssetSchema, {
+			width: 800,
+			height: 600,
+			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
 		})
 		.array({
 			min: 3,

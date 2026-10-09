@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { PanelThumbnailPropsMock } from './utils/mockPanel';
 
 describe('Panel Thumbnail', () => {
-	it('should render image if exists', () => {
-		const { getPanelImage } = renderPanelThumbnail();
+	it('should render image if exists', async () => {
+		const { findPanelImage } = renderPanelThumbnail();
 
-		expect(getPanelImage()).toBeInTheDocument();
+		expect(await findPanelImage()).toBeInTheDocument();
 	});
 
 	it('should render panel id if image does not exist', () => {

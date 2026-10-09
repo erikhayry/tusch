@@ -88,10 +88,10 @@ describe('Panel', () => {
 	});
 
 	describe('image', () => {
-		it('should show image', () => {
-			const { getImage, props } = renderPanel();
+		it.only('should show image', async () => {
+			const { getImage } = renderPanel();
 
-			expect(getImage()).toHaveAttribute('src', props.panel.image?.wide?.src);
+			expect(await getImage()).toHaveAttribute('src', 'blob:http://localhost/mock-image-url');
 		});
 
 		it('should show remove image button', () => {

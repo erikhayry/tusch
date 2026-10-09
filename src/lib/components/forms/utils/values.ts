@@ -57,7 +57,6 @@ export async function getCreateImageValues(formData: FormData): Promise<CreateIm
 }
 
 export async function getByokValues(formData: FormData): Promise<ByokValues> {
-	console.log(formData);
 	return ByokValuesSchema.parse({
 		key: formData.get('key'),
 	});

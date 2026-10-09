@@ -15,16 +15,14 @@
 			try {
 				if (result.type === 'success' && result.data?.image) {
 					const { comicId, panelId, image } = result.data;
-					console.log(result.data);
-					const fileUrl = await saveImage(
+					const fileName = await saveImage(
 						`${generateId()}.png`,
 						`data:image/png;base64,${image.src}`,
 					);
-					console.log('fileUrl', fileUrl);
 
 					addImage(comicId, panelId, {
-						wide: { src: fileUrl, width: image.width, height: image.height },
-						narrow: { src: fileUrl, width: image.width, height: image.height },
+						wide: { src: fileName, width: image.width, height: image.height },
+						narrow: { src: fileName, width: image.width, height: image.height },
 						alt: image.alt,
 					});
 				}

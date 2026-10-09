@@ -10,8 +10,8 @@
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
 	import FieldActions from './components/fieldActions/FieldActions.svelte';
+	import PanelImage from './components/panelImage/PanelImage.svelte';
 	import { type PanelProps } from './panelTypes';
-	import { getImageSrc } from './utils/image';
 
 	let { number, totalNumberOfPanels, panel, comicId }: PanelProps = $props();
 </script>
@@ -25,7 +25,7 @@
 			values={{ comicId, panelJsonString: JSON.stringify(panel) }}
 		/>
 	{:else}
-		<img src={getImageSrc(panel.image)} alt={panel.image.alt} />
+		<PanelImage {panel} />
 		<CreateImageForm
 			label={m.generateNewImage()}
 			values={{ comicId, panelJsonString: JSON.stringify(panel) }}

@@ -4,7 +4,7 @@ import { m } from '$lib/paraglide/messages';
 import { render, within } from '@testing-library/svelte';
 
 export function renderPanel(props = PanelPropsMock[0]) {
-	const { getByRole, getByText } = render(Panel, props);
+	const { findByRole, getByRole, getByText } = render(Panel, props);
 
 	return {
 		getEditCaptionField: (number: number) =>
@@ -32,7 +32,7 @@ export function renderPanel(props = PanelPropsMock[0]) {
 
 		getAddImageButton: () => getByRole('button', { name: m.addImage() }),
 		getRemoveImageButton: () => getByRole('button', { name: m.removeImage() }),
-		getImage: () => getByRole('img', { name: props.panel.image?.alt }),
+		getImage: () => findByRole('img', { name: props.panel.image?.alt }),
 		getTitle: () =>
 			getByRole('heading', {
 				name: `${m.panelTitle({ number: props.number, total: props.totalNumberOfPanels })}`,
