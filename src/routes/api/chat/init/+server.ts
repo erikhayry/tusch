@@ -1,8 +1,14 @@
 import { initComic } from '$lib/utils/ai/ai';
+import { json } from '@sveltejs/kit';
 
 export async function POST({ request, cookies }) {
-	const data = await request.json();
-	const comic = await initComic(data.url?.toString() ?? '', cookies);
+	try {
+		const data = await request.json();
+		const { url } = data;
+		const response = await initComic(url.toString(), cookies);
 
-	return new Response(JSON.stringify(comic), { status: 200 });
+		return json(response);
+	} catch (error) {
+		console.error(error);
+	}
 }
