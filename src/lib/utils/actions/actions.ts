@@ -31,7 +31,13 @@ export const ACTION = {
 
 export const globalActions = {
 	[ACTION.BYOK]: async ({ request, cookies }: RequestEvent) => {
-		const { key } = await getByokValues(await request.formData());
+		const result = await getByokValues(await request.formData());
+
+		if (!result.success) {
+			return error(500, result.error);
+		}
+
+		const { key } = result.data;
 
 		cookies.set(...getCookieArgs(key));
 
@@ -68,37 +74,58 @@ export const globalActions = {
 	},
 
 	[ACTION.CREATE_PANEL]: async ({ request, fetch }: RequestEvent) => {
-		const { comicId, panelsJsonString, index } = await getCreatePanelValues(
-			await request.formData(),
-		);
-		const response = await fetch(
-			'/api/chat/panel',
-			getPostRequestInit({ panelsJsonString, index }),
-		);
-		const panel: CreatePanelResponse = await response.json();
+		const result = await getCreatePanelValues(await request.formData());
 
-		return {
-			comicId,
-			index,
-			panel,
-		};
+		if (!result.success) {
+			return error(500, result.error);
+		}
+
+		try {
+			const { panelsJsonString, index, comicId } = result.data;
+			const response = await fetch(
+				'/api/chat/panel',
+				getPostRequestInit({ panelsJsonString, index }),
+			);
+			const panel: CreatePanelResponse = await response.json();
+
+			return {
+				comicId,
+				index,
+				panel,
+			};
+		} catch (e: unknown) {
+			return error(500, (e as Error).message);
+		}
 	},
 
 	[ACTION.CREATE_IMAGE]: async ({ request, fetch }: RequestEvent) => {
-		const { comicId, panelJsonString, instructions } = await getCreateImageValues(
-			await request.formData(),
-		);
-		const comic = getComic(comicId);
-		const response = await fetch(
-			'/api/chat/image',
-			getPostRequestInit({ panelJsonString, instructions, style: comic?.style }),
-		);
-		const { image, panelId }: CreateImageResponse = await response.json();
+		const result = await getCreateImageValues(await request.formData());
 
-		return {
-			comicId,
-			panelId,
-			image,
-		};
+		if (!result.success) {
+			return error(500, result.error);
+		}
+
+		const { comicId, panelJsonString, instructions } = result.data;
+		const comic = getComic(comicId);
+
+		if (!comic) {
+			return error(404, 'Comic not found');
+		}
+
+		try {
+			const response = await fetch(
+				'/api/chat/image',
+				getPostRequestInit({ panelJsonString, instructions, style: comic.style }),
+			);
+			const { image, panelId }: CreateImageResponse = await response.json();
+
+			return {
+				comicId,
+				panelId,
+				image,
+			};
+		} catch (e: unknown) {
+			return error(500, (e as Error).message);
+		}
 	},
 };

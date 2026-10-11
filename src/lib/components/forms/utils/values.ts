@@ -19,8 +19,8 @@ function getIndex(formData: FormData): number {
 	return Number.parseInt(formData.get('index')?.toString() ?? '');
 }
 
-export async function getEditValues(formData: FormData): Promise<EditValues> {
-	return EditValuesSchema.parse({
+export async function getEditValues(formData: FormData): Promise<ZodSafeParseResult<EditValues>> {
+	return EditValuesSchema.safeParse({
 		comicId: formData.get('comicId'),
 		panelId: formData.get('panelId'),
 		index: getIndex(formData),
@@ -38,16 +38,20 @@ export async function getCreateComicValues(
 	});
 }
 
-export async function getCreatePanelValues(formData: FormData): Promise<CreatePanelValues> {
-	return CreatePanelValuesSchema.parse({
+export async function getCreatePanelValues(
+	formData: FormData,
+): Promise<ZodSafeParseResult<CreatePanelValues>> {
+	return CreatePanelValuesSchema.safeParse({
 		comicId: formData.get('comicId'),
 		panelsJsonString: formData.get('panelsJsonString'),
 		index: Number.parseInt(formData.get('index')!.toString()),
 	});
 }
 
-export async function getDeleteValues(formData: FormData): Promise<DeleteValues> {
-	return DeleteValuesSchema.parse({
+export async function getDeleteValues(
+	formData: FormData,
+): Promise<ZodSafeParseResult<DeleteValues>> {
+	return DeleteValuesSchema.safeParse({
 		comicId: formData.get('comicId'),
 		panelId: formData.get('panelId'),
 		index: getIndex(formData),
@@ -55,16 +59,18 @@ export async function getDeleteValues(formData: FormData): Promise<DeleteValues>
 	});
 }
 
-export async function getCreateImageValues(formData: FormData): Promise<CreateImageValues> {
-	return CreateImageValuesSchema.parse({
+export async function getCreateImageValues(
+	formData: FormData,
+): Promise<ZodSafeParseResult<CreateImageValues>> {
+	return CreateImageValuesSchema.safeParse({
 		comicId: formData.get('comicId'),
 		panelJsonString: formData.get('panelJsonString'),
 		[INSTRUCTIONS_VALUE_KEY]: formData.get(INSTRUCTIONS_VALUE_KEY),
 	});
 }
 
-export async function getByokValues(formData: FormData): Promise<ByokValues> {
-	return ByokValuesSchema.parse({
+export async function getByokValues(formData: FormData): Promise<ZodSafeParseResult<ByokValues>> {
+	return ByokValuesSchema.safeParse({
 		key: formData.get('key'),
 	});
 }

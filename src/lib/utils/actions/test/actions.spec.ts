@@ -1,14 +1,56 @@
 import { generateMock } from '$lib/test/utils/generateMock';
 import { ComicSchema } from '$lib/types';
-import { CreateComicValuesSchema, CreatePanelValuesSchema } from '$lib/utils/db/dbTypes';
+import { addComic } from '$lib/utils/db/db';
+import {
+	ByokValuesSchema,
+	CreateComicValuesSchema,
+	CreateImageValuesSchema,
+	CreatePanelValuesSchema,
+} from '$lib/utils/db/dbTypes';
 import type { RequestEvent } from '@sveltejs/kit';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { CreateImageResponseSchema } from '../../../../routes/api/chat/image/createImageApiTypes';
 import { ACTION, globalActions } from '../actions';
 
-describe('onSubmit', () => {
+const cookesSetSpy = vi.fn();
+
+describe('actions', () => {
+	beforeEach(() => {
+		cookesSetSpy.mockClear();
+	});
+
 	describe('ACTION.CLIENT', () => {
 		it('should return a ok', async () => {
 			expect((await globalActions[ACTION.CLIENT]()).success).toEqual(true);
+		});
+	});
+
+	describe('ACTION.BYOK', () => {
+		it('should set the byok', async () => {
+			const values = generateMock(ByokValuesSchema);
+			const response = {};
+
+			const result = await globalActions[ACTION.BYOK](getMockRequestEvent(values, response));
+
+			expect(result.success).toEqual(true);
+			expect(cookesSetSpy.mock.calls[0][1]).toEqual(values.key);
+		});
+
+		it('should return error if invalid data is provided', async () => {
+			const values = {};
+			const response = generateMock(ComicSchema);
+
+			await expect(
+				globalActions[ACTION.BYOK](getMockRequestEvent(values, response)),
+			).rejects.toThrow();
+		});
+
+		it('should return error if response is invalid', async () => {
+			const values = generateMock(CreateComicValuesSchema);
+
+			await expect(
+				globalActions[ACTION.BYOK](getMockFailedRequestEvent(values, 'error')),
+			).rejects.toThrow();
 		});
 	});
 
@@ -71,6 +113,49 @@ describe('onSubmit', () => {
 			).rejects.toThrow();
 		});
 	});
+
+	describe('ACTION.CREATE_IMAGE', () => {
+		it('should return a image', async () => {
+			const comicMock = generateMock(ComicSchema);
+			const values = { ...generateMock(CreateImageValuesSchema), comicId: comicMock.id };
+			addComic(comicMock);
+
+			const response = generateMock(CreateImageResponseSchema);
+
+			const result = await globalActions[ACTION.CREATE_IMAGE](
+				getMockRequestEvent(values, response),
+			);
+
+			expect(result.comicId).toEqual(values.comicId);
+			expect(result.image).toEqual(response.image);
+		});
+
+		it('should return error if comic does not exist', async () => {
+			const values = { ...generateMock(CreateImageValuesSchema) };
+			const response = generateMock(CreateImageResponseSchema);
+
+			await expect(
+				globalActions[ACTION.CREATE_IMAGE](getMockRequestEvent(values, response)),
+			).rejects.toThrow();
+		});
+
+		it('should return error if invalid data is provided', async () => {
+			const values = {};
+			const response = generateMock(ComicSchema);
+
+			await expect(
+				globalActions[ACTION.CREATE_IMAGE](getMockRequestEvent(values, response)),
+			).rejects.toThrow();
+		});
+
+		it('should return error if response is invalid', async () => {
+			const values = generateMock(CreateComicValuesSchema);
+
+			await expect(
+				globalActions[ACTION.CREATE_IMAGE](getMockFailedRequestEvent(values, 'error')),
+			).rejects.toThrow();
+		});
+	});
 });
 
 function getFormData(values: Record<string, string | number>) {
@@ -92,6 +177,10 @@ function getMockRequestEvent(values: Record<string, string | number>, response: 
 			return {
 				json: vi.fn().mockResolvedValue(response),
 			};
+		},
+		cookies: {
+			get: vi.fn(),
+			set: cookesSetSpy,
 		},
 	} as unknown as RequestEvent;
 }
