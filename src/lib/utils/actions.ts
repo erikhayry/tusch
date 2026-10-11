@@ -5,11 +5,36 @@ import {
 	getCreatePanelValues,
 } from '$lib/components/forms/utils/values';
 import type { Comic } from '$lib/types';
-import type { RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent, type SubmitFunction } from '@sveltejs/kit';
 import type { CreateImageResponse } from '../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../routes/api/chat/panel/createPanelApiTypes';
 import { getComic } from './db/db';
 import { getCookieArgs } from './key';
+import { globalError } from './states/error.svelte';
+import { globalLoading } from './states/loading.svelte';
+
+export function onSubmit<T extends Record<string, unknown> | undefined>(
+	onSuccess: (data: T) => void,
+): SubmitFunction<T> {
+	return async () => {
+		globalError.reset();
+		globalLoading.start();
+
+		return async ({ result }) => {
+			try {
+				if (result.type === 'success' && result.data) {
+					onSuccess(result.data as T);
+				} else if (result.type === 'error') {
+					globalError.set(result.error.message);
+				} else if (result.type === 'failure' && result.data) {
+					globalError.set(result.data.message ?? 'Submission failed');
+				}
+			} finally {
+				globalLoading.stop();
+			}
+		};
+	};
+}
 
 function getPostRequestInit(body: unknown) {
 	return {
@@ -50,9 +75,7 @@ export const globalActions = {
 		const result = await getCreateComicValues(await request.formData());
 
 		if (!result.success) {
-			return {
-				error: result.error,
-			};
+			return error(500, result.error);
 		}
 
 		const { url, style } = result.data;

@@ -58,7 +58,7 @@ export const CreatePanelValuesSchema = z.object({
 export type CreatePanelValues = z.infer<typeof CreatePanelValuesSchema>;
 
 export const CreateComicValuesSchema = z.object({
-	url: z.string(),
+	url: z.url(),
 	style: z.string(),
 });
 export type CreateComicValues = z.infer<typeof CreateComicValuesSchema>;

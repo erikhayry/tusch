@@ -9,31 +9,17 @@
 
 	import Section from '$lib/components/relativeHeading/Section.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions';
+	import type { Comic } from '$lib/types';
+	import { ACTION, onSubmit } from '$lib/utils/actions';
 	import { STYLES } from '$lib/utils/comicStyles';
 	import { addComic } from '$lib/utils/db/db';
-	import { globalLoading } from '$lib/utils/states/loading.svelte';
-	import { type SubmitFunction } from '@sveltejs/kit';
 
-	const handleSubmit: SubmitFunction = async () => {
-		globalLoading.start();
-
-		return async ({ result }) => {
-			console.log(result);
-			try {
-				if (result.type === 'success' && result.data) {
-					const { comic } = result.data;
-					addComic(comic);
-
-					await goto(resolve(`/comic/${comic.id}`));
-				} else if (result.type === 'error') {
-					alert(result.error);
-				}
-			} finally {
-				globalLoading.stop();
-			}
-		};
-	};
+	const handleSubmit = onSubmit<Comic>(async (comic) => {
+		if (comic) {
+			addComic(comic);
+			await goto(resolve(`/comic/${comic.id}`));
+		}
+	});
 </script>
 
 <Section data-testId={createComicFormTestId}>
@@ -42,7 +28,6 @@
 			Url to source
 			<input
 				type="text"
-				required
 				name="url"
 				placeholder="https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna"
 			/>
