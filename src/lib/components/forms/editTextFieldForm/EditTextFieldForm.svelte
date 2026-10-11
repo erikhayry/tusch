@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions';
+	import { ACTION } from '$lib/utils/actions/actions';
 	import { editType } from '$lib/utils/db/db';
 	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';

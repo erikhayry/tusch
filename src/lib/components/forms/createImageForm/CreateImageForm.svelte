@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions';
+	import { ACTION } from '$lib/utils/actions/actions';
 	import { addImage } from '$lib/utils/db/db';
 	import { INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
 	import { generateId } from '$lib/utils/id';

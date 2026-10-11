@@ -7,7 +7,7 @@
 
 	import { m } from '$lib/paraglide/messages';
 
-	import { ACTION } from '$lib/utils/actions';
+	import { ACTION } from '$lib/utils/actions/actions';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
 	let success = $state<boolean | null>(null);

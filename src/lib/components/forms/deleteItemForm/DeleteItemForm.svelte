@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { ACTION } from '$lib/utils/actions';
+	import { ACTION } from '$lib/utils/actions/actions';
 	import { deleteType } from '$lib/utils/db/db';
 	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';

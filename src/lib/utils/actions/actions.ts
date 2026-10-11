@@ -5,36 +5,11 @@ import {
 	getCreatePanelValues,
 } from '$lib/components/forms/utils/values';
 import type { Comic } from '$lib/types';
-import { error, type RequestEvent, type SubmitFunction } from '@sveltejs/kit';
-import type { CreateImageResponse } from '../../routes/api/chat/image/createImageApiTypes';
-import type { CreatePanelResponse } from '../../routes/api/chat/panel/createPanelApiTypes';
-import { getComic } from './db/db';
-import { getCookieArgs } from './key';
-import { globalError } from './states/error.svelte';
-import { globalLoading } from './states/loading.svelte';
-
-export function onSubmit<T extends Record<string, unknown> | undefined>(
-	onSuccess: (data: T) => void,
-): SubmitFunction<T> {
-	return async () => {
-		globalError.reset();
-		globalLoading.start();
-
-		return async ({ result }) => {
-			try {
-				if (result.type === 'success' && result.data) {
-					onSuccess(result.data as T);
-				} else if (result.type === 'error') {
-					globalError.set(result.error.message);
-				} else if (result.type === 'failure' && result.data) {
-					globalError.set(result.data.message ?? 'Submission failed');
-				}
-			} finally {
-				globalLoading.stop();
-			}
-		};
-	};
-}
+import { error, type RequestEvent } from '@sveltejs/kit';
+import type { CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
+import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
+import { getComic } from '../db/db';
+import { getCookieArgs } from '../key';
 
 function getPostRequestInit(body: unknown) {
 	return {
@@ -79,12 +54,17 @@ export const globalActions = {
 		}
 
 		const { url, style } = result.data;
-		const response = await fetch('/api/chat/init', getPostRequestInit({ url, style }));
-		const comic: Comic = await response.json();
 
-		return {
-			comic,
-		};
+		try {
+			const response = await fetch('/api/chat/init', getPostRequestInit({ url, style }));
+			const comic: Comic = await response.json();
+
+			return {
+				comic,
+			};
+		} catch (e: unknown) {
+			return error(500, (e as Error).message);
+		}
 	},
 
 	[ACTION.CREATE_PANEL]: async ({ request, fetch }: RequestEvent) => {

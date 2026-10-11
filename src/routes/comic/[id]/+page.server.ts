@@ -1,3 +1,3 @@
-import { globalActions } from '$lib/utils/actions';
+import { globalActions } from '$lib/utils/actions/actions';
 
 export const actions = globalActions;
