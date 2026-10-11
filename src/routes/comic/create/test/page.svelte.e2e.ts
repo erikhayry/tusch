@@ -21,7 +21,7 @@ test('error message is displayed when submitting with invalid URL', async ({ pag
 	await createPage.fillUrl('INVALID_URL');
 	await createPage.submit();
 
-	await expect(page.getByTestId('error-test-id')).toBeVisible();
+	await expect(createPage.error).toBeVisible();
 });
 
 test('error message is removed when submitting with valid URL', async ({ page }) => {
@@ -32,5 +32,5 @@ test('error message is removed when submitting with valid URL', async ({ page })
 	await createPage.fillUrl('https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna');
 	await createPage.submit();
 
-	await expect(page.getByTestId('error-test-id')).toBeHidden();
+	await expect(createPage.error).toBeHidden();
 });
