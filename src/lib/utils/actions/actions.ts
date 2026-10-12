@@ -5,7 +5,7 @@ import {
 	getCreatePanelValues,
 } from '$lib/components/forms/utils/values';
 import type { Comic } from '$lib/types';
-import { error, type RequestEvent } from '@sveltejs/kit';
+import { error, fail, type Action, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
 import { getComic } from '../db/db';
@@ -28,6 +28,10 @@ export const ACTION = {
 	CREATE_COMIC: 'create-comic',
 	BYOK: 'byok',
 } as const;
+
+export type CreateComicResult = { comic: Comic };
+export type CreateImageResult = CreateImageResponse & { comicId: string };
+type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
 
 export const globalActions = {
 	[ACTION.BYOK]: async ({ request, cookies }: RequestEvent) => {
@@ -52,24 +56,33 @@ export const globalActions = {
 		};
 	},
 
-	[ACTION.CREATE_COMIC]: async ({ request, fetch }: RequestEvent) => {
+	[ACTION.CREATE_COMIC]: async ({
+		request,
+		fetch,
+	}: RequestEvent): ActionResult<CreateComicResult> => {
 		const result = await getCreateComicValues(await request.formData());
 
 		if (!result.success) {
-			return error(500, result.error);
+			return fail(500, { message: result.error.message });
 		}
 
 		const { url, style } = result.data;
 
 		try {
 			const response = await fetch('/api/chat/init', getPostRequestInit({ url, style }));
+
+			if (!response.ok) {
+				return fail(response.status, { message: 'Failed to initialize comic' });
+			}
+
 			const comic: Comic = await response.json();
 
 			return {
 				comic,
 			};
 		} catch (e: unknown) {
-			return error(500, (e as Error).message);
+			const message = e instanceof Error ? e.message : 'Unknown error occurred';
+			return fail(500, { message });
 		}
 	},
 
@@ -98,7 +111,10 @@ export const globalActions = {
 		}
 	},
 
-	[ACTION.CREATE_IMAGE]: async ({ request, fetch }: RequestEvent) => {
+	[ACTION.CREATE_IMAGE]: async ({
+		request,
+		fetch,
+	}: RequestEvent): ActionResult<CreateImageResult> => {
 		const result = await getCreateImageValues(await request.formData());
 
 		if (!result.success) {
@@ -128,4 +144,4 @@ export const globalActions = {
 			return error(500, (e as Error).message);
 		}
 	},
-};
+} satisfies Record<string, Action>;

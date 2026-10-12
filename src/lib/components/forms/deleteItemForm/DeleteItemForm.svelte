@@ -9,7 +9,11 @@
 
 	const handleSubmit: SubmitFunction = async ({ formData }) => {
 		globalLoading.start();
-		deleteType(await getDeleteValues(formData));
+		const result = await getDeleteValues(formData);
+
+		if (result.success) {
+			deleteType(result.data);
+		}
 
 		return async ({ update }) => {
 			globalLoading.stop();

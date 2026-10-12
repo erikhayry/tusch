@@ -13,8 +13,11 @@
 
 	const handleSubmit: SubmitFunction = async ({ formData }) => {
 		globalLoading.start();
+		const result = await getEditValues(formData);
 
-		editType(await getEditValues(formData));
+		if (result.success) {
+			editType(result.data);
+		}
 
 		return async ({ update }) => {
 			globalLoading.stop();
