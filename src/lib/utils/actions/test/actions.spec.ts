@@ -7,10 +7,10 @@ import {
 	CreateImageValuesSchema,
 	CreatePanelValuesSchema,
 } from '$lib/utils/db/dbTypes';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { ActionFailure, RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CreateImageResponseSchema } from '../../../../routes/api/chat/image/createImageApiTypes';
-import { ACTION, globalActions } from '../actions';
+import { ACTION, globalActions, type CreateImageResult } from '../actions';
 
 const cookesSetSpy = vi.fn();
 
@@ -64,21 +64,32 @@ describe('actions', () => {
 			).toEqual({ comic: response });
 		});
 
-		it('should return error if invalid data is provided', async () => {
+		it('should return error if no data is provided', async () => {
 			const values = {};
 			const response = generateMock(ComicSchema);
 
-			await expect(
-				globalActions[ACTION.CREATE_COMIC](getMockRequestEvent(values, response)),
-			).rejects.toThrow();
+			const result = (await globalActions[ACTION.CREATE_COMIC](
+				getMockRequestEvent(values, response),
+			)) as unknown as ActionFailure;
+
+			expect(result.status).toEqual(500);
 		});
 
 		it('should return error if response is invalid', async () => {
 			const values = generateMock(CreateComicValuesSchema);
 
-			await expect(
-				globalActions[ACTION.CREATE_COMIC](getMockFailedRequestEvent(values, 'error')),
-			).rejects.toThrow();
+			const result = await globalActions[ACTION.CREATE_COMIC](
+				getMockFailedRequestEvent(values, 'error'),
+			);
+
+			expect(result).toEqual(
+				expect.objectContaining({
+					status: 500,
+					data: {
+						message: 'Failed to initialize comic',
+					},
+				}),
+			);
 		});
 	});
 
@@ -122,9 +133,9 @@ describe('actions', () => {
 
 			const response = generateMock(CreateImageResponseSchema);
 
-			const result = await globalActions[ACTION.CREATE_IMAGE](
+			const result = (await globalActions[ACTION.CREATE_IMAGE](
 				getMockRequestEvent(values, response),
-			);
+			)) as CreateImageResult;
 
 			expect(result.comicId).toEqual(values.comicId);
 			expect(result.image).toEqual(response.image);
@@ -175,6 +186,7 @@ function getMockRequestEvent(values: Record<string, string | number>, response: 
 		},
 		fetch: async () => {
 			return {
+				ok: true,
 				json: vi.fn().mockResolvedValue(response),
 			};
 		},

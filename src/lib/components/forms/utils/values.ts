@@ -65,6 +65,7 @@ export async function getCreateImageValues(
 	return CreateImageValuesSchema.safeParse({
 		comicId: formData.get('comicId'),
 		panelJsonString: formData.get('panelJsonString'),
+		style: formData.get('style'),
 		[INSTRUCTIONS_VALUE_KEY]: formData.get(INSTRUCTIONS_VALUE_KEY),
 	});
 }

@@ -2,34 +2,24 @@
 	import { enhance } from '$app/forms';
 	import { m } from '$lib/paraglide/messages';
 	import { ACTION } from '$lib/utils/actions/actions';
+	import { onEdit, type SubmitCallback } from '$lib/utils/actions/onEdit';
 	import { editType } from '$lib/utils/db/db';
-	import { globalLoading } from '$lib/utils/states/loading.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
 	import { getEditValues } from '../utils/values';
 	import { type EditTextFieldFormProps } from './editTextFieldFormTypes';
 
 	//TODO a11y
 	let editable = $state(false);
 
-	const handleSubmit: SubmitFunction = async ({ formData }) => {
-		globalLoading.start();
-		const result = await getEditValues(formData);
-
-		if (result.success) {
-			editType(result.data);
-		}
-
-		return async ({ update }) => {
-			globalLoading.stop();
-			editable = false;
-
-			await update();
-		};
+	const onSuccess: SubmitCallback = async ({ update }) => {
+		editable = false;
+		await update();
 	};
 
-	function toggleEditing() {
+	const handleSubmit = onEdit(getEditValues, editType, onSuccess);
+
+	const toggleEditing = () => {
 		editable = !editable;
-	}
+	};
 
 	let { values, label, saveActionLabel, editActionLabel, visibleText }: EditTextFieldFormProps =
 		$props();

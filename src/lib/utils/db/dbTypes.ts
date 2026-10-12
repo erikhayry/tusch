@@ -1,3 +1,4 @@
+import { ComicStyleEnum } from '$lib/types';
 import z from 'zod';
 
 export const DB_ITEM_TYPE = z.enum(['dialogue', 'captions', 'panels', 'comics', 'image']);
@@ -46,6 +47,7 @@ export const INSTRUCTIONS_VALUE_KEY = 'instructions';
 export const CreateImageValuesSchema = z.object({
 	panelJsonString: z.string(),
 	comicId: z.string(),
+	style: ComicStyleEnum,
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
 });
 export type CreateImageValues = z.infer<typeof CreateImageValuesSchema>;
@@ -59,7 +61,7 @@ export type CreatePanelValues = z.infer<typeof CreatePanelValuesSchema>;
 
 export const CreateComicValuesSchema = z.object({
 	url: z.url(),
-	style: z.string(),
+	style: ComicStyleEnum,
 });
 export type CreateComicValues = z.infer<typeof CreateComicValuesSchema>;
 

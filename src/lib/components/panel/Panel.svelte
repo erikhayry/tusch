@@ -13,7 +13,7 @@
 	import PanelImage from './components/panelImage/PanelImage.svelte';
 	import { type PanelProps } from './panelTypes';
 
-	let { number, totalNumberOfPanels, panel, comicId }: PanelProps = $props();
+	let { number, totalNumberOfPanels, panel, comicId, style }: PanelProps = $props();
 </script>
 
 <Section data-testId={PanelTestId}>
@@ -22,13 +22,13 @@
 	{#if panel.image === undefined}
 		<CreateImageForm
 			label={m.addImage()}
-			values={{ comicId, panelJsonString: JSON.stringify(panel) }}
+			values={{ comicId, panelJsonString: JSON.stringify(panel), style }}
 		/>
 	{:else}
 		<PanelImage {panel} />
 		<CreateImageForm
 			label={m.generateNewImage()}
-			values={{ comicId, panelJsonString: JSON.stringify(panel) }}
+			values={{ comicId, panelJsonString: JSON.stringify(panel), style }}
 		/>
 		<DeleteItemForm
 			label={m.removeImage()}

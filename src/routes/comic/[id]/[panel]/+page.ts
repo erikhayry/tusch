@@ -1,16 +1,17 @@
-import type { Panel } from '$lib/types/index';
+import type { ComicStyle, Panel } from '$lib/types/index';
 import { getComic } from '$lib/utils/db/db';
 
-export interface Data {
+export interface Props {
 	panel: Panel;
 	panels: Panel[];
 	totalNumberOfPanels: number;
 	index: number;
 	number: number;
 	comicId: string;
+	style: ComicStyle;
 }
 
-export function load({ params }): Data {
+export function load({ params }): Props {
 	const comic = getComic(params.id);
 	if (!comic) {
 		return {};
@@ -24,5 +25,6 @@ export function load({ params }): Data {
 		index: panelIndex,
 		totalNumberOfPanels: comic.panels.length,
 		comicId: params.id,
+		style: comic.style,
 	};
 }

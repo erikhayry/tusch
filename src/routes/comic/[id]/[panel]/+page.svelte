@@ -2,9 +2,9 @@
 	import Page from '$lib/components/page/Page.svelte';
 	import Panels from '$lib/components/panels/Panels.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import type { Data } from './+page';
+	import type { Props } from './+page';
 
-	let { data }: { data: Data } = $props();
+	let { data }: { data: Props } = $props();
 </script>
 
 {#if data.panel}
@@ -13,6 +13,7 @@
 			panels={data.panels}
 			current={{ panel: data.panel, index: data.index }}
 			comicId={data.comicId}
+			style={data.style}
 		/>
 	</Page>
 {/if}

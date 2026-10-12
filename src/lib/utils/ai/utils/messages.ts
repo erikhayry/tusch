@@ -50,13 +50,13 @@ function buildStyleInstruction(styleKey: ComicStyle): string[] {
 	}
 
 	return [
-		`STRICT STYLE LOCK PRESET: ${styleDef.id.toUpperCase()}`,
 		`MANDATORY MASTER PROMPT PREFIX: "${styleDef.masterStylePrompt}"`,
 		`LINEWORK RULE: ${styleDef.linework}`,
 		`COLORING RULE: ${styleDef.coloringStyle}`,
 		`SHADING & LIGHTING RULE: ${styleDef.shadingAndLighting}`,
 		`ALLOWED PALETTE: ${styleDef.palette.join(', ')}`,
 		'ENFORCEMENT: Apply these style rules strictly to the downstream image generator prompt string. DO NOT insert any of these style rules or keywords into "visualDescription" or "alt" fields.',
+		`STRICT STYLE LOCK PRESET: ${JSON.stringify(STYLES[styleKey])}`,
 	];
 }
 

@@ -1,5 +1,6 @@
 import { ComicStyleEnum } from '$lib/types';
 import { PanelsMock } from '$lib/types/test/utils/mockTypes';
+import { STYLES } from '$lib/utils/comicStyles';
 import type { Cookies } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createImage, createPanel, initComic } from '../ai';
@@ -30,7 +31,7 @@ describe('ai', () => {
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(INIT.WHAT);
 			expect(mockSendOpenAi.mock.calls[0][0].input.at(-1).content).toEqual(
-				`STYLE: ${ComicStyleEnum.enum.anime}`,
+				`STRICT STYLE LOCK PRESET: ${JSON.stringify(STYLES[ComicStyleEnum.enum.anime])}`,
 			);
 		});
 
@@ -72,8 +73,12 @@ describe('ai', () => {
 			await createImage(PanelsMock[0], 'USER INSTRUCTIONS', ComicStyleEnum.enum.anime, CookiesMock);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(IMAGE.WHAT);
-			expect(mockSendOpenAi.mock.calls[0][0].input.at(-2).content).toContain('STYLE: ');
-			expect(mockSendOpenAi.mock.calls[0][0].input.at(-1).content).toEqual('USER INSTRUCTIONS');
+			expect(mockSendOpenAi.mock.calls[0][0].input.at(-2).content).toContain(
+				`STRICT STYLE LOCK PRESET: ${JSON.stringify(STYLES[ComicStyleEnum.enum.anime])}`,
+			);
+			expect(mockSendOpenAi.mock.calls[0][0].input.at(-1).content).toEqual(
+				`USER INSTRUCTION: ${'USER INSTRUCTIONS'}`,
+			);
 		});
 
 		it('should call sdk with text format', async () => {

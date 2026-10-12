@@ -8,7 +8,6 @@ import type { Comic } from '$lib/types';
 import { error, fail, type Action, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
-import { getComic } from '../db/db';
 import { getCookieArgs } from '../key';
 
 function getPostRequestInit(body: unknown) {
@@ -72,7 +71,7 @@ export const globalActions = {
 			const response = await fetch('/api/chat/init', getPostRequestInit({ url, style }));
 
 			if (!response.ok) {
-				return fail(response.status, { message: 'Failed to initialize comic' });
+				return fail(500, { message: 'Failed to initialize comic' });
 			}
 
 			const comic: Comic = await response.json();
@@ -121,17 +120,12 @@ export const globalActions = {
 			return error(500, result.error);
 		}
 
-		const { comicId, panelJsonString, instructions } = result.data;
-		const comic = getComic(comicId);
-
-		if (!comic) {
-			return error(404, 'Comic not found');
-		}
+		const { comicId, panelJsonString, instructions, style } = result.data;
 
 		try {
 			const response = await fetch(
 				'/api/chat/image',
-				getPostRequestInit({ panelJsonString, instructions, style: comic.style }),
+				getPostRequestInit({ panelJsonString, instructions, style }),
 			);
 			const { image, panelId }: CreateImageResponse = await response.json();
 

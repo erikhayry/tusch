@@ -1,25 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { ACTION } from '$lib/utils/actions/actions';
+	import { onEdit } from '$lib/utils/actions/onEdit';
 	import { deleteType } from '$lib/utils/db/db';
-	import { globalLoading } from '$lib/utils/states/loading.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
 	import { getDeleteValues } from '../utils/values';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
 
-	const handleSubmit: SubmitFunction = async ({ formData }) => {
-		globalLoading.start();
-		const result = await getDeleteValues(formData);
-
-		if (result.success) {
-			deleteType(result.data);
-		}
-
-		return async ({ update }) => {
-			globalLoading.stop();
-			await update();
-		};
-	};
+	const handleSubmit = onEdit(getDeleteValues, deleteType);
 
 	let { label, values }: DeleteItemFormProps = $props();
 </script>
