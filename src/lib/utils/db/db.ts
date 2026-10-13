@@ -172,3 +172,7 @@ export function addPanel(comicId: string, panel: Panel, index: number): Comic[] 
 
 	return getComics();
 }
+
+export function getCharacter(comicId: string, characterId: string): string | undefined {
+	return getComic(comicId)?.characters.find((charachter) => charachter.id === characterId)?.name;
+}

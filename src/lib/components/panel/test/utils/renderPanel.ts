@@ -27,8 +27,11 @@ export function renderPanel(props = PanelPropsMock[0]) {
 			within(getByRole('list', { name: m.dialogues() })).getByRole('button', {
 				name: m.editDialogue({ number }),
 			}),
-		getDialoguess: () =>
-			within(getByRole('list', { name: m.dialogues() })).getAllByRole('listitem'),
+		getDialogues: () => within(getByRole('list', { name: m.dialogues() })).getAllByRole('listitem'),
+		getDialogue: (index: number) =>
+			within(getByRole('list', { name: m.dialogues() }))
+				.getAllByRole('listitem')
+				.at(index),
 
 		getAddImageButton: () => getByRole('button', { name: m.addImage() }),
 		getRemoveImageButton: () => getByRole('button', { name: m.removeImage() }),

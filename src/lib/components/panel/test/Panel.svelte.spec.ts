@@ -1,6 +1,8 @@
 import { renderPanel } from '$lib/components/panel/test/utils/renderPanel';
+import { getComics } from '$lib/utils/db/db';
 import { fireEvent } from '@testing-library/svelte';
 import { describe, expect, it } from 'vitest';
+import type { PanelProps } from '../panelTypes';
 import { PanelPropsWithoutImage } from './utils/mockPanel';
 
 describe('Panel', () => {
@@ -66,9 +68,24 @@ describe('Panel', () => {
 
 	describe('dialogues', () => {
 		it('render dialogues', () => {
-			const { getDialoguess, props } = renderPanel();
+			const { getDialogues, props } = renderPanel();
 
-			expect(getDialoguess()).toHaveLength(props.panel.dialogue.length);
+			expect(getDialogues()).toHaveLength(props.panel.dialogue.length);
+		});
+
+		it('should show character next to dialogue', () => {
+			const comic = getComics()[0];
+			const panelProps: PanelProps = {
+				comicId: comic.id,
+				panel: comic.panels[0],
+				totalNumberOfPanels: comic.panels.length,
+				style: comic.style,
+				number: 1,
+			};
+
+			const { getDialogue } = renderPanel(panelProps);
+
+			expect(getDialogue(0)).toHaveTextContent(comic.characters[0].name);
 		});
 
 		it('should show edit button', () => {
@@ -88,7 +105,7 @@ describe('Panel', () => {
 	});
 
 	describe('image', () => {
-		it.only('should show image', async () => {
+		it('should show image', async () => {
 			const { getImage } = renderPanel();
 
 			expect(await getImage()).toHaveAttribute('src', 'blob:http://localhost/mock-image-url');

@@ -10,6 +10,7 @@ import {
 	deleteImage,
 	deleteType,
 	editType,
+	getCharacter,
 	getComic,
 } from '$lib/utils/db/db';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -149,6 +150,14 @@ describe('Db', () => {
 			});
 
 			expect(getComic(Comic1.id)?.panels[0].dialogue[0].text).toEqual('NEW DIALOGUE');
+		});
+	});
+
+	describe('get charachter name', () => {
+		it('should return character name', () => {
+			const characterName = getCharacter(Comic1.id, Comic1.characters[0].id);
+
+			expect(characterName).toEqual(Comic1.characters[0].name);
 		});
 	});
 });

@@ -4,6 +4,7 @@
 
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
+	import { getCharacter } from '$lib/utils/db/db';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import CreateImageForm from '../forms/createImageForm/CreateImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
@@ -66,6 +67,7 @@
 		<ul aria-labelledby="panel-dialogue">
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
+					<p>{getCharacter(comicId, dialogue.characterId)}</p>
 					<FieldActions
 						values={{
 							type: DB_ITEM_TYPE.enum.dialogue,
