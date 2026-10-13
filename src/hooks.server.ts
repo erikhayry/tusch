@@ -29,6 +29,7 @@ const MOCK: Record<string, string> = {
 		id: generateId(),
 	}),
 	'/api/chat/init': JSON.stringify(EXAMPLES[0]),
+	'/api/chat/ping': JSON.stringify({ success: true }),
 	'/api/chat/image': JSON.stringify({
 		panelId: EXAMPLES[0].panels[0].id,
 		image: {

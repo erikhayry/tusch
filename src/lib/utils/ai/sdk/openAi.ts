@@ -26,6 +26,41 @@ async function parse(
 	return OpenAiImageOutputSchema.parse(response);
 }
 
+export async function ping(cookies: Cookies): Promise<{
+	status: boolean;
+	message: string;
+}> {
+	const client = getClient(cookies);
+	try {
+		await client.models.list();
+		return { status: true, message: 'API key is valid' };
+	} catch (error) {
+		if (error instanceof OpenAI.AuthenticationError) {
+			return { status: false, message: 'API key is invalid or rejected (HTTP 401)' };
+		}
+
+		if (error instanceof OpenAI.PermissionDeniedError) {
+			return { status: false, message: 'API key lacks permission (HTTP 403)' };
+		}
+
+		if (error instanceof OpenAI.APIConnectionError) {
+			return { status: false, message: 'Could not connect to the API endpoint' };
+		}
+
+		if (error instanceof OpenAI.APIError) {
+			return {
+				status: false,
+				message: `API request failed (HTTP ${error.status}): ${error.message}`,
+			};
+		}
+
+		return {
+			status: false,
+			message: `Unexpected error: ${error instanceof Error ? error.message : String(error)}`,
+		};
+	}
+}
+
 export async function text(
 	cookies: Cookies,
 	messages: string[],

@@ -33,7 +33,11 @@ export type CreateImageResult = CreateImageResponse & { comicId: string };
 type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
 
 export const globalActions = {
-	[ACTION.BYOK]: async ({ request, cookies }: RequestEvent) => {
+	[ACTION.BYOK]: async ({
+		request,
+		cookies,
+		fetch,
+	}: RequestEvent): ActionResult<{ success: boolean }> => {
 		const result = await getByokValues(await request.formData());
 
 		if (!result.success) {
@@ -44,8 +48,11 @@ export const globalActions = {
 
 		cookies.set(...getCookieArgs(key));
 
+		const response = await fetch('/api/chat/ping');
+		const data: { success: boolean } = await response.json();
+
 		return {
-			success: true,
+			success: data.success,
 		};
 	},
 

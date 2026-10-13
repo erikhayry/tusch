@@ -14,7 +14,7 @@ import {
 	type InitialComic,
 	type OpenAiImageOutput,
 } from './aiTypes';
-import { image, text } from './sdk/openAi';
+import { image, ping, text } from './sdk/openAi';
 import { buildImageMessages, buildInitialMessages, buildPanelMessages } from './utils/messages';
 
 function getOutputText(response: OpenAiImageOutput): string | undefined {
@@ -109,4 +109,10 @@ export async function createPanel(
 	const result = getPanelFromOpenAiResponse(response);
 
 	return result;
+}
+
+export async function test(cookies: Cookies): Promise<boolean> {
+	const result = await ping(cookies);
+
+	return result.status;
 }

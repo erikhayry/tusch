@@ -6,12 +6,14 @@ export class CreatePage {
 	readonly heading: Locator;
 	readonly keyInput: Locator;
 	readonly successMessage: Locator;
+	readonly invalidKeyMessage: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.heading = page.getByRole('heading', { name: 'TODO', level: 1 });
 		this.keyInput = page.getByRole('textbox', { name: m.byok() });
 		this.successMessage = page.getByText(m.keyAdded());
+		this.invalidKeyMessage = page.getByText(m.invalidKey());
 	}
 
 	async submit() {
@@ -19,8 +21,8 @@ export class CreatePage {
 		await this.keyInput.press('Enter');
 	}
 
-	async goto() {
-		await this.page.goto(`/settings`);
+	async goto(query?: string) {
+		await this.page.goto(`/settings${query ? `?${query}` : ''}`);
 
 		return this;
 	}
