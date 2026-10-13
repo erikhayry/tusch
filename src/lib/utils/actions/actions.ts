@@ -30,14 +30,11 @@ export const ACTION = {
 
 export type CreateComicResult = { comic: Comic };
 export type CreateImageResult = CreateImageResponse & { comicId: string };
+export type ByokResult = { success: boolean };
 type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
 
 export const globalActions = {
-	[ACTION.BYOK]: async ({
-		request,
-		cookies,
-		fetch,
-	}: RequestEvent): ActionResult<{ success: boolean }> => {
+	[ACTION.BYOK]: async ({ request, cookies, fetch }: RequestEvent): ActionResult<ByokResult> => {
 		const result = await getByokValues(await request.formData());
 
 		if (!result.success) {
@@ -48,12 +45,16 @@ export const globalActions = {
 
 		cookies.set(...getCookieArgs(key));
 
-		const response = await fetch('/api/chat/ping');
-		const data: { success: boolean } = await response.json();
+		try {
+			const response = await fetch('/api/chat/ping');
+			const data: { success: boolean } = await response.json();
 
-		return {
-			success: data.success,
-		};
+			return {
+				success: data.success,
+			};
+		} catch {
+			return fail(500, { message: 'Failed to set byok cookie' });
+		}
 	},
 
 	[ACTION.CLIENT]: async () => {

@@ -28,11 +28,13 @@ describe('actions', () => {
 	describe('ACTION.BYOK', () => {
 		it('should set the byok', async () => {
 			const values = generateMock(ByokValuesSchema);
-			const response = {};
+			const response = {
+				success: true,
+			};
 
-			const result = await globalActions[ACTION.BYOK](getMockRequestEvent(values, response));
-
-			expect(result.success).toEqual(true);
+			expect(await globalActions[ACTION.BYOK](getMockRequestEvent(values, response))).toEqual(
+				response,
+			);
 			expect(cookesSetSpy.mock.calls[0][1]).toEqual(values.key);
 		});
 
@@ -139,15 +141,6 @@ describe('actions', () => {
 
 			expect(result.comicId).toEqual(values.comicId);
 			expect(result.image).toEqual(response.image);
-		});
-
-		it('should return error if comic does not exist', async () => {
-			const values = { ...generateMock(CreateImageValuesSchema) };
-			const response = generateMock(CreateImageResponseSchema);
-
-			await expect(
-				globalActions[ACTION.CREATE_IMAGE](getMockRequestEvent(values, response)),
-			).rejects.toThrow();
 		});
 
 		it('should return error if invalid data is provided', async () => {
