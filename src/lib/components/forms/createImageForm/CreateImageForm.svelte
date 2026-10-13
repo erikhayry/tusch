@@ -14,9 +14,21 @@
 			const { comicId, panelId, image } = result.data;
 			const fileName = await saveImage(`${generateId()}.png`, `data:image/png;base64,${image.src}`);
 
+			console.log(image);
+
 			addImage(comicId, panelId, {
-				wide: { src: fileName, width: image.width, height: image.height },
-				narrow: { src: fileName, width: image.width, height: image.height },
+				wide: {
+					src: fileName,
+					width: image.width,
+					height: image.height,
+					characters: image.characters,
+				},
+				narrow: {
+					src: fileName,
+					width: image.width,
+					height: image.height,
+					characters: image.characters,
+				},
 				alt: image.alt,
 			});
 		}

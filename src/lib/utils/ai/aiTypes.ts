@@ -1,4 +1,4 @@
-import { ComicSchema, PanelSchema } from '$lib/types';
+import { CharachterPositionsSchema, ComicSchema, PanelSchema } from '$lib/types';
 import z from 'zod';
 
 const INITAL_PANEL_SCHEMA = PanelSchema.pick({
@@ -24,6 +24,7 @@ export const CreateImageSchema = z.object({
 	alt: z.string(),
 	width: z.number(),
 	height: z.number(),
+	characters: z.array(CharachterPositionsSchema),
 });
 export type CreateImage = z.infer<typeof CreateImageSchema>;
 

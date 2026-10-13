@@ -14,6 +14,7 @@
 			current={{ panel: data.panel, index: data.index }}
 			comicId={data.comicId}
 			style={data.style}
+			characters={data.characters}
 		/>
 	</Page>
 {/if}

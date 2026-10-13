@@ -1,6 +1,6 @@
 import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
 import { CharacterDescriptionSchema, ComicStyleEnum, SeasonEnum, TimeOfDayEnum } from '$lib/types';
-import { InitialComicSchema } from '../aiTypes';
+import { InitialComicSchema, type CreateImage } from '../aiTypes';
 
 export const aiInitialResponse = generateMocks(InitialComicSchema, 3);
 
@@ -114,10 +114,11 @@ export const mockOpenAiCreatePanelResponse = createMessageResponse(CreatePanelCo
 export const imageResulSrcMock =
 	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 
-export const imageDataMock = {
+export const imageDataMock: CreateImage = {
 	alt: 'En mångsidig grupp byggarbetare i skyddshjälmar och reflexvästar står tillsammans på en byggarbetsplats.',
 	width: 1024,
 	height: 1536,
+	characters: [],
 };
 
 export const mockOpenAiImageResponse = {

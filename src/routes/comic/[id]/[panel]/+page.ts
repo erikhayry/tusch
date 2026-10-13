@@ -1,4 +1,4 @@
-import type { ComicStyle, Panel } from '$lib/types/index';
+import type { Character, ComicStyle, Panel } from '$lib/types/index';
 import { getComic } from '$lib/utils/db/db';
 
 export interface Props {
@@ -9,6 +9,7 @@ export interface Props {
 	number: number;
 	comicId: string;
 	style: ComicStyle;
+	characters: Character[];
 }
 
 export function load({ params }): Props {
@@ -26,5 +27,6 @@ export function load({ params }): Props {
 		totalNumberOfPanels: comic.panels.length,
 		comicId: params.id,
 		style: comic.style,
+		characters: comic.characters,
 	};
 }

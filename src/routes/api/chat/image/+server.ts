@@ -6,12 +6,13 @@ import type { CreateImageResponse } from './createImageApiTypes.js';
 export async function POST({ request, cookies }) {
 	try {
 		const data = await request.json();
-		const { panelJsonString, instructions, style } = data;
+		const { panelJsonString, instructions, style, charactersJsonString } = data;
 
 		const response: CreateImageResponse = await createImage(
 			PanelSchemaJson.parse(panelJsonString),
 			instructions,
 			style,
+			charactersJsonString,
 			cookies,
 		);
 

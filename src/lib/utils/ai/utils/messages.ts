@@ -67,10 +67,12 @@ export function buildInitialMessages(url: string, style: ComicStyle): string[] {
 export function buildImageMessages({
 	panel,
 	instruction,
+	charactersJson,
 	style,
 }: {
 	panel: Panel;
 	instruction: string;
+	charactersJson: string;
 	style: ComicStyle;
 }): string[] {
 	const meta: string[] = [];
@@ -85,6 +87,8 @@ export function buildImageMessages({
 	if (panel.year) meta.push(`Year/Era setting: ${panel.year}`);
 	if (panel.season) meta.push(`Season: ${panel.season}`);
 	if (panel.timeOfDay) meta.push(`Time of day: ${panel.timeOfDay}`);
+
+	meta.push(`Characters in comic: ${charactersJson}`);
 
 	return [
 		IMAGE.WHAT,

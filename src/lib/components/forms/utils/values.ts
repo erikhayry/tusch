@@ -66,6 +66,7 @@ export async function getCreateImageValues(
 		comicId: formData.get('comicId'),
 		panelJsonString: formData.get('panelJsonString'),
 		style: formData.get('style'),
+		charactersJsonString: formData.get('charactersJsonString'),
 		[INSTRUCTIONS_VALUE_KEY]: formData.get(INSTRUCTIONS_VALUE_KEY),
 	});
 }

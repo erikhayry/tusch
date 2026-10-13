@@ -128,12 +128,12 @@ export const globalActions = {
 			return error(500, result.error);
 		}
 
-		const { comicId, panelJsonString, instructions, style } = result.data;
+		const { comicId, panelJsonString, instructions, style, charactersJsonString } = result.data;
 
 		try {
 			const response = await fetch(
 				'/api/chat/image',
-				getPostRequestInit({ panelJsonString, instructions, style }),
+				getPostRequestInit({ panelJsonString, instructions, style, charactersJsonString }),
 			);
 			const { image, panelId }: CreateImageResponse = await response.json();
 

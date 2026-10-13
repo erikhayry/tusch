@@ -48,6 +48,7 @@ export const CreateImageValuesSchema = z.object({
 	panelJsonString: z.string(),
 	comicId: z.string(),
 	style: ComicStyleEnum,
+	charactersJsonString: z.string(),
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
 });
 export type CreateImageValues = z.infer<typeof CreateImageValuesSchema>;

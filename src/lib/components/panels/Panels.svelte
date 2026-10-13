@@ -7,7 +7,7 @@
 	import Heading from '../relativeHeading/Heading.svelte';
 	import { type PanelsProps } from './panelsTypes';
 
-	let { panels, comicId, current, style }: PanelsProps = $props();
+	let { panels, comicId, current, style, characters }: PanelsProps = $props();
 </script>
 
 <Section>
@@ -39,6 +39,7 @@
 		totalNumberOfPanels={panels.length}
 		number={current.index + 1}
 		{style}
+		{characters}
 	/>
 	<a href={resolve(`/comic/${comicId}`)}>{m.backToComic()}</a>
 </Section>

@@ -35,10 +35,24 @@ export type Url = z.infer<typeof UrlValue>;
 
 export const YearSchema = z.number().int();
 
+export const CharachterPositionSchema = z.object({
+	x: z.number(),
+	y: z.number(),
+	width: z.number(),
+	height: z.number(),
+});
+
+export const CharachterPositionsSchema = z.object({
+	id: z.string(),
+	head: CharachterPositionSchema,
+	full: CharachterPositionSchema,
+});
+
 export const ImageAssetSchema = z.object({
 	src: z.string(),
 	width: z.number().int().positive(),
 	height: z.number().int().positive(),
+	characters: z.optional(z.array(CharachterPositionsSchema)),
 });
 export type ImageAsset = z.infer<typeof ImageAssetSchema>;
 

@@ -70,7 +70,13 @@ describe('ai', () => {
 		it('should call sdk with correct messages', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage(PanelsMock[0], 'USER INSTRUCTIONS', ComicStyleEnum.enum.anime, CookiesMock);
+			await createImage(
+				PanelsMock[0],
+				'USER INSTRUCTIONS',
+				ComicStyleEnum.enum.anime,
+				'characters',
+				CookiesMock,
+			);
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(IMAGE.WHAT);
 			expect(mockSendOpenAi.mock.calls[0][0].input.at(-2).content).toContain(
@@ -84,7 +90,13 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage(PanelsMock[0], 'USER INSTRUCTIONS', ComicStyleEnum.enum.anime, CookiesMock);
+			await createImage(
+				PanelsMock[0],
+				'USER INSTRUCTIONS',
+				ComicStyleEnum.enum.anime,
+				'characters',
+				CookiesMock,
+			);
 
 			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.createImage,
@@ -101,6 +113,7 @@ describe('ai', () => {
 				PanelsMock[0],
 				'USER INSTRUCTIONS',
 				ComicStyleEnum.enum.anime,
+				'characters',
 				CookiesMock,
 			);
 

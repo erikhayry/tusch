@@ -1,4 +1,4 @@
-import { ComicStyleEnum, PanelSchema } from '$lib/types';
+import { CharacterSchema, ComicStyleEnum, PanelSchema } from '$lib/types';
 import { z } from 'zod';
 import { PanelPropsSchema } from '../panel/panelTypes';
 
@@ -11,6 +11,7 @@ export const PanelsPropsSchema = z.object({
 		}),
 	),
 	style: ComicStyleEnum,
+	characters: z.array(CharacterSchema),
 });
 
 export type PanelsProps = z.infer<typeof PanelsPropsSchema>;

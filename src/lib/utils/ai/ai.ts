@@ -70,12 +70,14 @@ export async function createImage(
 	panel: Panel,
 	instruction: string,
 	style: ComicStyle,
+	charactersJson: string,
 	cookies: Cookies,
 ): Promise<CreateImageResponse> {
 	const response = await image(
 		cookies,
 		buildImageMessages({
 			panel,
+			charactersJson,
 			instruction,
 			style,
 		}),

@@ -1,8 +1,8 @@
-import { ComicStyleEnum, type Comic } from '$lib/types';
+import { type Comic } from '$lib/types';
 
 export const NIRVANA: Comic = {
 	id: '6dcbdd2b-a490-473f-bb50-fe7c894b8533',
-	style: ComicStyleEnum.enum.anime,
+	style: 'anime',
 	source: 'https://sv.wikipedia.org/wiki/Nirvana_(musikgrupp)',
 	title: 'EXMPALE: Nirvana: från Aberdeen till världsscenen',
 	characters: [
@@ -112,13 +112,77 @@ export const NIRVANA: Comic = {
 					src: '/examples/nirvana/1.png',
 					width: 1024,
 					height: 1536,
+					characters: [
+						{
+							id: 'a13f10d2-7b86-4b5d-9b3e-42b2c9f865a1',
+							head: {
+								x: 194,
+								y: 227,
+								width: 145,
+								height: 165,
+							},
+							full: {
+								x: 65,
+								y: 225,
+								width: 560,
+								height: 1090,
+							},
+						},
+						{
+							id: 'b79d4e36-2837-4f4a-9b9f-25d95cde6253',
+							head: {
+								x: 662,
+								y: 92,
+								width: 177,
+								height: 203,
+							},
+							full: {
+								x: 594,
+								y: 92,
+								width: 430,
+								height: 1325,
+							},
+						},
+					],
 				},
 				narrow: {
 					src: '/examples/nirvana/1.png',
 					width: 1024,
 					height: 1536,
+					characters: [
+						{
+							id: 'a13f10d2-7b86-4b5d-9b3e-42b2c9f865a1',
+							head: {
+								x: 194,
+								y: 227,
+								width: 145,
+								height: 165,
+							},
+							full: {
+								x: 65,
+								y: 225,
+								width: 560,
+								height: 1090,
+							},
+						},
+						{
+							id: 'b79d4e36-2837-4f4a-9b9f-25d95cde6253',
+							head: {
+								x: 662,
+								y: 92,
+								width: 177,
+								height: 203,
+							},
+							full: {
+								x: 594,
+								y: 92,
+								width: 430,
+								height: 1325,
+							},
+						},
+					],
 				},
-				alt: 'I ett trångt, dunkelt övningsrum står en långhårig blond gitarrist till vänster och en mörkhårig basist till höger, båda böjda koncentrerat över sina instrument. Ett trumset, förstärkare och slingrande kablar fyller rummet. Regn rinner längs fönstret bakom dem; kallt grått dagsljus blandas med varmt sken från en ensam glödlampa.',
+				alt: 'I ett trångt övningsrum står två unga män och spelar elgitarr och bas. Den blonda mannen till vänster lutar sig fram över gitarren med blicken fäst på strängarna och ett koncentrerat uttryck. Den mycket långa, mörkhåriga mannen till höger spelar bas och ser uppmärksamt mot sin medspelare. Förstärkare, instrumentfodral och slingrande sladdar fyller rummet kring dem. Regn rinner över fönstret bakom dem; kallt dagsljus från fönstret blandas med varmt ljus från en taklampa. Bilden visar båda musikerna i helfigur i en medelvid komposition.',
 			},
 		},
 		{
@@ -147,13 +211,77 @@ export const NIRVANA: Comic = {
 					src: '/examples/nirvana/2.png',
 					width: 1024,
 					height: 1536,
+					characters: [
+						{
+							id: 'a13f10d2-7b86-4b5d-9b3e-42b2c9f865a1',
+							head: {
+								x: 287,
+								y: 105,
+								width: 181,
+								height: 220,
+							},
+							full: {
+								x: 115,
+								y: 95,
+								width: 438,
+								height: 1415,
+							},
+						},
+						{
+							id: 'b79d4e36-2837-4f4a-9b9f-25d95cde6253',
+							head: {
+								x: 597,
+								y: 30,
+								width: 241,
+								height: 260,
+							},
+							full: {
+								x: 507,
+								y: 25,
+								width: 517,
+								height: 1485,
+							},
+						},
+					],
 				},
 				narrow: {
 					src: '/examples/nirvana/2.png',
 					width: 1024,
 					height: 1536,
+					characters: [
+						{
+							id: 'a13f10d2-7b86-4b5d-9b3e-42b2c9f865a1',
+							head: {
+								x: 287,
+								y: 105,
+								width: 181,
+								height: 220,
+							},
+							full: {
+								x: 115,
+								y: 95,
+								width: 438,
+								height: 1415,
+							},
+						},
+						{
+							id: 'b79d4e36-2837-4f4a-9b9f-25d95cde6253',
+							head: {
+								x: 597,
+								y: 30,
+								width: 241,
+								height: 260,
+							},
+							full: {
+								x: 507,
+								y: 25,
+								width: 517,
+								height: 1485,
+							},
+						},
+					],
 				},
-				alt: 'I ett trångt skivbolagsrum står en blond, långhårig musiker längst fram och håller upp ett svartvitt skivomslag utan text. En långhårig basist står tätt intill med basen över axeln, medan en tredje musiker syns bakom dem. Kartonger, vinylskivor och skivhyllor fyller rummet. Varmt eftermiddagsljus faller in genom fönstret och lyser upp scenen med en dämpad, jordnära ton.',
+				alt: 'I ett litet skivbolagsrum i Seattle står Kurt Cobain till vänster och håller en svartvit skivomslagsbild framför sig. Han tittar ned på den med ett lugnt, nöjt uttryck. Krist Novoselic står bredvid honom till höger, mycket längre, med en basgitarr över axeln och ett stilla leende riktat mot Kurt och omslaget. Kartonger, vinylskivor, skivbackar och ett skrivbord fyller rummet. Genom fönstret syns Seattles skyline i varmt eftermiddagsljus; ljuset faller in över personerna och rummet. Bildutsnittet visar dem från ungefär mitten av låren och uppåt, i en nära, ögonhöjdskomposition.',
 			},
 		},
 		{
@@ -182,13 +310,107 @@ export const NIRVANA: Comic = {
 					src: '/examples/nirvana/3.png',
 					width: 1024,
 					height: 1536,
+					characters: [
+						{
+							id: 'a13f10d2-7b86-4b5d-9b3e-42b2c9f865a1',
+							head: {
+								x: 76,
+								y: 231,
+								width: 115,
+								height: 135,
+							},
+							full: {
+								x: 0,
+								y: 211,
+								width: 493,
+								height: 1055,
+							},
+						},
+						{
+							id: 'b79d4e36-2837-4f4a-9b9f-25d95cde6253',
+							head: {
+								x: 777,
+								y: 65,
+								width: 145,
+								height: 160,
+							},
+							full: {
+								x: 621,
+								y: 59,
+								width: 403,
+								height: 1375,
+							},
+						},
+						{
+							id: 'c6e3a1f8-5d92-4d20-8e76-1a04a70b3f42',
+							head: {
+								x: 462,
+								y: 333,
+								width: 112,
+								height: 122,
+							},
+							full: {
+								x: 355,
+								y: 329,
+								width: 302,
+								height: 432,
+							},
+						},
+					],
 				},
 				narrow: {
 					src: '/examples/nirvana/3.png',
 					width: 1024,
 					height: 1536,
+					characters: [
+						{
+							id: 'a13f10d2-7b86-4b5d-9b3e-42b2c9f865a1',
+							head: {
+								x: 76,
+								y: 231,
+								width: 115,
+								height: 135,
+							},
+							full: {
+								x: 0,
+								y: 211,
+								width: 493,
+								height: 1055,
+							},
+						},
+						{
+							id: 'b79d4e36-2837-4f4a-9b9f-25d95cde6253',
+							head: {
+								x: 777,
+								y: 65,
+								width: 145,
+								height: 160,
+							},
+							full: {
+								x: 621,
+								y: 59,
+								width: 403,
+								height: 1375,
+							},
+						},
+						{
+							id: 'c6e3a1f8-5d92-4d20-8e76-1a04a70b3f42',
+							head: {
+								x: 462,
+								y: 333,
+								width: 112,
+								height: 122,
+							},
+							full: {
+								x: 355,
+								y: 329,
+								width: 302,
+								height: 432,
+							},
+						},
+					],
 				},
-				alt: 'I en mörk, sliten replokal står en långhårig gitarrist till vänster och en lång basist till höger, vända mot varandra medan de spelar. Bakom dem sitter en mörkhårig trummis vid ett stort trumset, med trumpinnarna i rörelse. Kablar och förstärkare fyller rummet; genom ett fönster syns nattligt regn. Ett varmt naket glödljus lyser över musikerna och kontrasterar mot rummets blå skuggor.',
+				alt: 'I en sliten övningslokal i Seattle en höstnatt 1990 sitter Dave bakom trumsetet längst bak i mitten, med trumstockarna lyfta och ett fokuserat, förväntansfullt uttryck. Kurt står till vänster i förgrunden med elgitarr, vänd mot Dave, medan Krist står till höger med basgitarr och lutar sig in i det intensiva kompet. Cymbalerna darrar och kablar och förstärkare ligger kring musikerna på trägolvet. Ett fönster bakom dem visar den mörka natten; varmt takljus blandas med kallt blått ljus från fönstret och framhäver deras silhuetter.',
 			},
 		},
 	],
