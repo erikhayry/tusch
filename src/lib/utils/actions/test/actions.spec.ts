@@ -162,7 +162,7 @@ describe('actions', () => {
 	});
 });
 
-function getFormData(values: Record<string, string | number>) {
+function getFormData(values: Record<string, string | number | boolean>) {
 	const formData = new FormData();
 	Object.entries(values).forEach(([key, value]) => {
 		formData.set(key, value.toString());
@@ -170,7 +170,7 @@ function getFormData(values: Record<string, string | number>) {
 	return formData;
 }
 
-function getMockRequestEvent(values: Record<string, string | number>, response: unknown) {
+function getMockRequestEvent(values: Record<string, string | number | boolean>, response: unknown) {
 	return {
 		request: {
 			formData: async () => {

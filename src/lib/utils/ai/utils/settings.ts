@@ -14,18 +14,23 @@ export const MODEL = {
 } as const;
 
 export const IMAGE_SIZE = {
-	WIDE: '1024x1536',
-	NARROW: '1536x1024',
-};
+	NARROW: '1024x1536',
+	WIDE: '1536x1024',
+} as const;
+export type ImageSizeValue = (typeof IMAGE_SIZE)[keyof typeof IMAGE_SIZE];
+
+const IMAGE_SETTINGS = {
+	type: 'image_generation',
+	model: MODEL.IMAGE,
+	quality: 'low',
+	output_format: 'webp',
+	background: 'opaque',
+	moderation: 'auto',
+} as const;
 
 export const TOOLS = {
-	IMAGE: {
-		type: 'image_generation',
-		model: MODEL.IMAGE,
-		size: IMAGE_SIZE.WIDE,
-		quality: 'low',
-		output_format: 'webp',
-		background: 'opaque',
-		moderation: 'auto',
-	},
-} as const;
+	image: (size: ImageSizeValue) => ({
+		...IMAGE_SETTINGS,
+		size,
+	}),
+};

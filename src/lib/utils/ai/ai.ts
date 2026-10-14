@@ -16,6 +16,7 @@ import {
 } from './aiTypes';
 import { image, ping, text } from './sdk/openAi';
 import { buildImageMessages, buildInitialMessages, buildPanelMessages } from './utils/messages';
+import { IMAGE_SIZE } from './utils/settings';
 
 function getOutputText(response: OpenAiImageOutput): string | undefined {
 	const content = response.output.find((item) => item.type === 'message')?.content;
@@ -81,21 +82,22 @@ export async function createImage({
 	cookies: Cookies;
 	imageUrl?: string;
 }): Promise<CreateImageResponse> {
-	const response = await image(
+	const response = await image({
 		cookies,
-		buildImageMessages({
+		messages: buildImageMessages({
 			panel,
 			charactersJson,
 			instruction,
 			style,
 		}),
-		SchemaName.enum.createImage,
+		schema: SchemaName.enum.createImage,
 		imageUrl,
-	);
+		size: IMAGE_SIZE.NARROW,
+	});
 	const createdImage = getImageFromOpenAiResponse(response);
 
 	return {
-		image: createdImage,
+		image: { landscape: createdImage, portrait: createdImage },
 		panelId: panel.id,
 	};
 }

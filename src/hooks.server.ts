@@ -33,10 +33,18 @@ const MOCK: Record<string, string> = {
 	'/api/chat/image': JSON.stringify({
 		panelId: EXAMPLES[0].panels[0].id,
 		image: {
-			alt: 'mock alt text',
-			width: EXAMPLES[0].panels[0].image?.wide.width,
-			height: EXAMPLES[0].panels[0].image?.wide.height,
-			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+			landscape: {
+				alt: 'mock alt text',
+				width: EXAMPLES[0].panels[0].image?.wide.width,
+				height: EXAMPLES[0].panels[0].image?.wide.height,
+				src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+			},
+			portrait: {
+				alt: 'mock alt text',
+				width: EXAMPLES[0].panels[0].image?.narrow.width,
+				height: EXAMPLES[0].panels[0].image?.narrow.height,
+				src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+			},
 		},
 	}),
 };

@@ -16,22 +16,25 @@
 	const handleSubmit = onSubmit<CreateImageResult>(async ({ update, result }) => {
 		if (result.data?.image) {
 			const { comicId, panelId, image } = result.data;
-			const fileName = await saveImage(`${generateId()}.png`, `data:image/png;base64,${image.src}`);
+			const fileName = await saveImage(
+				`${generateId()}.png`,
+				`data:image/png;base64,${image.landscape.src}`,
+			);
 
 			addImage(comicId, panelId, {
 				wide: {
 					src: fileName,
-					width: image.width,
-					height: image.height,
-					characters: image.characters,
+					width: image.landscape.width,
+					height: image.landscape.height,
+					characters: image.landscape.characters,
 				},
 				narrow: {
 					src: fileName,
-					width: image.width,
-					height: image.height,
-					characters: image.characters,
+					width: image.landscape.width,
+					height: image.landscape.height,
+					characters: image.landscape.characters,
 				},
-				alt: image.alt,
+				alt: image.landscape.alt,
 			});
 		}
 		await update();

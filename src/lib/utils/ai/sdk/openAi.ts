@@ -5,7 +5,7 @@ import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.m
 import { OpenAiImageOutputSchema, type OpenAiImageOutput, type SchemaName } from '../aiTypes';
 import { getSchemaAsTextFormat } from '../utils/format';
 import { getChatMessages, getImageMessages } from '../utils/messages';
-import { MODEL, TOOLS } from '../utils/settings';
+import { IMAGE_SIZE, MODEL, TOOLS, type ImageSizeValue } from '../utils/settings';
 
 function getClient(cookies: Cookies): OpenAI {
 	const apiKey = cookies.get(COOKIE_NAME);
@@ -78,17 +78,24 @@ export async function text(
 	return parse(client, req);
 }
 
-export async function image(
-	cookies: Cookies,
-	messages: string[],
-	schema: SchemaName,
-	imageUrl?: string,
-): Promise<OpenAiImageOutput> {
+export async function image({
+	cookies,
+	messages,
+	schema,
+	imageUrl,
+	size = IMAGE_SIZE.NARROW,
+}: {
+	cookies: Cookies;
+	messages: string[];
+	schema: SchemaName;
+	imageUrl?: string;
+	size: ImageSizeValue;
+}): Promise<OpenAiImageOutput> {
 	const client = getClient(cookies);
 	const req: ResponseCreateParamsWithTools = {
 		model: MODEL.TEXT,
 		input: [...getChatMessages(messages), ...getImageMessages(imageUrl)],
-		tools: [TOOLS.IMAGE],
+		tools: [TOOLS.image(size)],
 		store: true,
 		include: [],
 		text: {

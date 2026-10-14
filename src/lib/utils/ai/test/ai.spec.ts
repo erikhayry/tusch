@@ -107,7 +107,9 @@ describe('ai', () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
 			const {
-				image: { src, alt, width, height },
+				image: {
+					landscape: { src, alt, width, height },
+				},
 				panelId,
 			} = await createImage({
 				panel: PanelsMock[0],

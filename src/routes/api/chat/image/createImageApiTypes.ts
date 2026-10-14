@@ -3,6 +3,9 @@ import { z } from 'zod';
 
 export const CreateImageResponseSchema = z.object({
 	panelId: z.string(),
-	image: CreatedImageSchema,
+	image: z.object({
+		landscape: CreatedImageSchema,
+		portrait: CreatedImageSchema,
+	}),
 });
 export type CreateImageResponse = z.infer<typeof CreateImageResponseSchema>;
