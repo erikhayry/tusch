@@ -71,7 +71,7 @@ export async function getCreateImageValues(
 		charactersJsonString: formData.get('charactersJsonString'),
 		[INSTRUCTIONS_VALUE_KEY]: formData.get(INSTRUCTIONS_VALUE_KEY),
 		[INCLUDE_IMAGE_VALUE_KEY]: Boolean(formData.get(INCLUDE_IMAGE_VALUE_KEY)),
-		[IMAGE_VALUE_KEY]: formData.get(IMAGE_VALUE_KEY),
+		[IMAGE_VALUE_KEY]: formData.get(IMAGE_VALUE_KEY) || undefined,
 	});
 }
 
