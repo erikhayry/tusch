@@ -4,13 +4,13 @@ import { addComic } from '$lib/utils/db/db';
 import {
 	ByokValuesSchema,
 	CreateComicValuesSchema,
-	CreateImageValuesSchema,
+	CreatePanelImageValuesSchema,
 	CreatePanelValuesSchema,
 } from '$lib/utils/db/dbTypes';
 import type { ActionFailure, RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CreatePanelImageResponseSchema } from '../../../../routes/api/chat/image/createImageApiTypes';
-import { ACTION, globalActions, type CreateImageResult } from '../actions';
+import { ACTION, globalActions, type CreatePanelImageResult } from '../actions';
 
 const cookesSetSpy = vi.fn();
 
@@ -130,14 +130,14 @@ describe('actions', () => {
 	describe('ACTION.CREATE_IMAGE', () => {
 		it('should return a image', async () => {
 			const comicMock = generateMock(ComicSchema);
-			const values = { ...generateMock(CreateImageValuesSchema), comicId: comicMock.id };
+			const values = { ...generateMock(CreatePanelImageValuesSchema), comicId: comicMock.id };
 			addComic(comicMock);
 
 			const response = generateMock(CreatePanelImageResponseSchema);
 
-			const result = (await globalActions[ACTION.CREATE_IMAGE](
+			const result = (await globalActions[ACTION.CREATE_PANEL_IMAGE](
 				getMockRequestEvent(values, response),
-			)) as CreateImageResult;
+			)) as CreatePanelImageResult;
 
 			expect(result.comicId).toEqual(values.comicId);
 			expect(result.image).toEqual(response.image);
@@ -148,7 +148,7 @@ describe('actions', () => {
 			const response = generateMock(ComicSchema);
 
 			await expect(
-				globalActions[ACTION.CREATE_IMAGE](getMockRequestEvent(values, response)),
+				globalActions[ACTION.CREATE_PANEL_IMAGE](getMockRequestEvent(values, response)),
 			).rejects.toThrow();
 		});
 
@@ -156,7 +156,7 @@ describe('actions', () => {
 			const values = generateMock(CreateComicValuesSchema);
 
 			await expect(
-				globalActions[ACTION.CREATE_IMAGE](getMockFailedRequestEvent(values, 'error')),
+				globalActions[ACTION.CREATE_PANEL_IMAGE](getMockFailedRequestEvent(values, 'error')),
 			).rejects.toThrow();
 		});
 	});

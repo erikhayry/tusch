@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION, type CreateImageResult } from '$lib/utils/actions/actions';
+	import { ACTION, type CreatePanelImageResult } from '$lib/utils/actions/actions';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { addImage } from '$lib/utils/db/db';
 	import {
@@ -13,7 +13,7 @@
 	import { getImage, saveImage } from '$lib/utils/storage/storage';
 	import type { CreateImageFormProps } from './createImageFormTypes';
 
-	const handleSubmit = onSubmit<CreateImageResult>(async ({ update, result }) => {
+	const handleSubmit = onSubmit<CreatePanelImageResult>(async ({ update, result }) => {
 		if (result.data?.image) {
 			const { comicId, panelId, image } = result.data;
 			const fileName = await saveImage(
@@ -53,7 +53,7 @@
 	});
 </script>
 
-<form method="POST" action={`?/${ACTION.CREATE_IMAGE}`} use:enhance={handleSubmit}>
+<form method="POST" action={`?/${ACTION.CREATE_PANEL_IMAGE}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
 		<input type="hidden" name={entry[0]} value={entry[1]} />
 	{/each}

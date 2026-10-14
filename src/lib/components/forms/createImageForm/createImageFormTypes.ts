@@ -1,5 +1,5 @@
 import {
-	CreateImageValuesSchema,
+	CreatePanelImageValuesSchema,
 	INCLUDE_IMAGE_VALUE_KEY,
 	INSTRUCTIONS_VALUE_KEY,
 } from '$lib/utils/db/dbTypes';
@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 export const CreateImageFormPropsSchema = z.object({
 	label: z.string(),
-	values: CreateImageValuesSchema.omit({
+	values: CreatePanelImageValuesSchema.omit({
 		[INSTRUCTIONS_VALUE_KEY]: true,
 		[INCLUDE_IMAGE_VALUE_KEY]: true,
 	}),

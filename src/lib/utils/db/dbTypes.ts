@@ -59,7 +59,7 @@ export const INSTRUCTIONS_VALUE_KEY = 'instructions';
 export const INCLUDE_IMAGE_VALUE_KEY = 'includeImage';
 export const IMAGE_VALUE_KEY = 'imageUrl';
 
-export const CreateImageValuesSchema = z.object({
+export const CreatePanelImageValuesSchema = z.object({
 	panelJsonString: z.string(),
 	comicId: z.string(),
 	style: ComicStyleEnum,
@@ -68,7 +68,16 @@ export const CreateImageValuesSchema = z.object({
 	imageUrl: z.string().optional(),
 	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean(),
 });
-export type CreateImageValues = z.infer<typeof CreateImageValuesSchema>;
+export type CreatePanelImageValues = z.infer<typeof CreatePanelImageValuesSchema>;
+
+export const CreateCoverImageValuesSchema = z.object({
+	comicJsonString: z.string(),
+	style: ComicStyleEnum,
+	[INSTRUCTIONS_VALUE_KEY]: z.string(),
+	imageUrl: z.string().optional(),
+	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean(),
+});
+export type CreateCoverImageValues = z.infer<typeof CreateCoverImageValuesSchema>;
 
 export const CreatePanelValuesSchema = z.object({
 	comicId: z.string(),

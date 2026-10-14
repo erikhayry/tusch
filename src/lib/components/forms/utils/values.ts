@@ -3,8 +3,8 @@ import {
 	ByokValuesSchema,
 	type CreateComicValues,
 	CreateComicValuesSchema,
-	type CreateImageValues,
-	CreateImageValuesSchema,
+	type CreatePanelImageValues,
+	CreatePanelImageValuesSchema,
 	type CreatePanelValues,
 	CreatePanelValuesSchema,
 	type DeleteValues,
@@ -61,10 +61,10 @@ export async function getDeleteValues(
 	});
 }
 
-export async function getCreateImageValues(
+export async function getCreatePanelImageValues(
 	formData: FormData,
-): Promise<ZodSafeParseResult<CreateImageValues>> {
-	return CreateImageValuesSchema.safeParse({
+): Promise<ZodSafeParseResult<CreatePanelImageValues>> {
+	return CreatePanelImageValuesSchema.safeParse({
 		comicId: formData.get('comicId'),
 		panelJsonString: formData.get('panelJsonString'),
 		style: formData.get('style'),

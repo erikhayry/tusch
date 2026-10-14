@@ -1,7 +1,7 @@
 import {
 	getByokValues,
 	getCreateComicValues,
-	getCreateImageValues,
+	getCreatePanelImageValues,
 	getCreatePanelValues,
 } from '$lib/components/forms/utils/values';
 import type { Comic } from '$lib/types';
@@ -22,14 +22,15 @@ function getPostRequestInit(body: unknown) {
 
 export const ACTION = {
 	CLIENT: 'client',
-	CREATE_IMAGE: 'create-image',
+	CREATE_PANEL_IMAGE: 'create-panel-image',
+	CREATE_COVER_IMAGE: 'create-cover-image',
 	CREATE_PANEL: 'create-panel',
 	CREATE_COMIC: 'create-comic',
 	BYOK: 'byok',
 } as const;
 
 export type CreateComicResult = { comic: Comic };
-export type CreateImageResult = CreatePanelImageResponse & { comicId: string };
+export type CreatePanelImageResult = CreatePanelImageResponse & { comicId: string };
 export type ByokResult = { success: boolean };
 type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
 
@@ -118,11 +119,11 @@ export const globalActions = {
 		}
 	},
 
-	[ACTION.CREATE_IMAGE]: async ({
+	[ACTION.CREATE_PANEL_IMAGE]: async ({
 		request,
 		fetch,
-	}: RequestEvent): ActionResult<CreateImageResult> => {
-		const result = await getCreateImageValues(await request.formData());
+	}: RequestEvent): ActionResult<CreatePanelImageResult> => {
+		const result = await getCreatePanelImageValues(await request.formData());
 
 		if (!result.success) {
 			return error(500, result.error);
