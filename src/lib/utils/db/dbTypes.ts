@@ -72,7 +72,6 @@ export type CreatePanelImageValues = z.infer<typeof CreatePanelImageValuesSchema
 
 export const CreateCoverImageValuesSchema = z.object({
 	comicJsonString: z.string(),
-	style: ComicStyleEnum,
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
 	imageUrl: z.string().optional(),
 	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean(),

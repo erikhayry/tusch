@@ -3,6 +3,8 @@ import {
 	ByokValuesSchema,
 	type CreateComicValues,
 	CreateComicValuesSchema,
+	type CreateCoverImageValues,
+	CreateCoverImageValuesSchema,
 	type CreatePanelImageValues,
 	CreatePanelImageValuesSchema,
 	type CreatePanelValues,
@@ -58,6 +60,18 @@ export async function getDeleteValues(
 		panelId: formData.get('panelId'),
 		index: getIndex(formData),
 		type: formData.get('type'),
+	});
+}
+
+export async function getCreateCoverImageValues(
+	formData: FormData,
+): Promise<ZodSafeParseResult<CreateCoverImageValues>> {
+	return CreateCoverImageValuesSchema.safeParse({
+		comicJsonString: formData.get('comicJsonString'),
+		style: formData.get('style'),
+		[INSTRUCTIONS_VALUE_KEY]: formData.get(INSTRUCTIONS_VALUE_KEY),
+		[INCLUDE_IMAGE_VALUE_KEY]: Boolean(formData.get(INCLUDE_IMAGE_VALUE_KEY)),
+		[IMAGE_VALUE_KEY]: formData.get(IMAGE_VALUE_KEY) || undefined,
 	});
 }
 

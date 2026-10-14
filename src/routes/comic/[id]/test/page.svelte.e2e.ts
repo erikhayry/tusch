@@ -26,6 +26,15 @@ test('delete cover', async ({ page }) => {
 	await expect(comicPage.coverImage).not.toBeVisible();
 });
 
+test('create cover', async ({ page }) => {
+	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
+
+	await comicPage.deleteCoverButton.click();
+	await comicPage.addCoverButton.click();
+
+	await expect(comicPage.newCoverImage).toBeVisible();
+});
+
 test('delete panel', async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 

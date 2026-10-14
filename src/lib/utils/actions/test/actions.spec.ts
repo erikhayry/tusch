@@ -9,7 +9,7 @@ import {
 } from '$lib/utils/db/dbTypes';
 import type { ActionFailure, RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { CreatePanelImageResponseSchema } from '../../../../routes/api/chat/image/createImageApiTypes';
+import { CreatePanelImageResponseSchema } from '../../../../routes/api/chat/panel-image/createPanelImageApiTypes';
 import { ACTION, globalActions, type CreatePanelImageResult } from '../actions';
 
 const cookesSetSpy = vi.fn();

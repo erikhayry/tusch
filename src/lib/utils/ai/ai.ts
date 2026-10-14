@@ -1,6 +1,7 @@
 import { type Comic, type ComicStyle, type Panel, type Url } from '$lib/types';
 import type { Cookies } from '@sveltejs/kit';
-import { type CreatePanelImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
+import type { CreateCoverImageResponse } from '../../../routes/api/chat/cover-image/createCoverImageApiTypes';
+import { type CreatePanelImageResponse } from '../../../routes/api/chat/panel-image/createPanelImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
 import { generateId } from '../id';
 import {
@@ -9,7 +10,6 @@ import {
 	CreatePanelSchema,
 	InitialComicSchema,
 	SchemaName,
-	type CreateCoverImageResponse,
 	type CreatedImage,
 	type CreateImage,
 	type InitialComic,
@@ -91,8 +91,11 @@ export async function createCoverImage({
 	const createdImage = getImageFromOpenAiResponse(response);
 
 	return {
-		landscape: createdImage,
-		portrait: createdImage,
+		comicId: comic.id,
+		image: {
+			landscape: createdImage,
+			portrait: createdImage,
+		},
 	};
 }
 

@@ -74,7 +74,7 @@ export function getPanel(comicId: string, panelId: string): Panel | undefined {
 	return getComic(comicId)?.panels.find((panel) => panel.id === panelId);
 }
 
-export function deleteImage(comicId: string, panelId: string): Comic[] {
+export function deletePanelImage(comicId: string, panelId: string): Comic[] {
 	const comic = DB.get(comicId);
 	if (comic) {
 		const panel = comic.panels.find((p) => p.id === panelId);
@@ -91,12 +91,12 @@ export function deleteImage(comicId: string, panelId: string): Comic[] {
 export function deleteType(values: DeleteValues): Comic[] {
 	switch (values.type) {
 		case DB_ITEM_TYPE.enum.coverImage: {
-			deleteCover(values.comicId);
+			deleteCoverImage(values.comicId);
 			return getComics();
 		}
 
 		case DB_ITEM_TYPE.enum.panelImage: {
-			deleteImage(values.comicId, values.panelId);
+			deletePanelImage(values.comicId, values.panelId);
 			return getComics();
 		}
 
@@ -156,7 +156,7 @@ export function editType(values: EditValues): Comic[] {
 	return getComics();
 }
 
-export function deleteCover(comicId: string): Comic[] {
+export function deleteCoverImage(comicId: string): Comic[] {
 	const comic = DB.get(comicId);
 	if (comic) {
 		comic.cover = undefined;
@@ -167,7 +167,18 @@ export function deleteCover(comicId: string): Comic[] {
 	return getComics();
 }
 
-export function addImage(comicId: string, panelId: string, image: ResponsiveImage): Comic[] {
+export function addCoverImage(comicId: string, image: ResponsiveImage): Comic[] {
+	const comic = DB.get(comicId);
+	if (comic) {
+		comic.cover = image;
+		DB.set(comicId, comic);
+		saveDB();
+	}
+
+	return getComics();
+}
+
+export function addPanelImage(comicId: string, panelId: string, image: ResponsiveImage): Comic[] {
 	const comic = DB.get(comicId);
 	if (comic) {
 		const panel = comic.panels.find((p) => p.id === panelId);

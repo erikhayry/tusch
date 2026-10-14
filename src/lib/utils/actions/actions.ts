@@ -1,12 +1,14 @@
 import {
 	getByokValues,
 	getCreateComicValues,
+	getCreateCoverImageValues,
 	getCreatePanelImageValues,
 	getCreatePanelValues,
 } from '$lib/components/forms/utils/values';
 import type { Comic } from '$lib/types';
 import { error, fail, type Action, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
-import type { CreatePanelImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
+import type { CreateCoverImageResponse } from '../../../routes/api/chat/cover-image/createCoverImageApiTypes';
+import type { CreatePanelImageResponse } from '../../../routes/api/chat/panel-image/createPanelImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
 import { getCookieArgs } from '../key';
 
@@ -31,6 +33,7 @@ export const ACTION = {
 
 export type CreateComicResult = { comic: Comic };
 export type CreatePanelImageResult = CreatePanelImageResponse & { comicId: string };
+export type CreateCoverImageResult = CreateCoverImageResponse;
 export type ByokResult = { success: boolean };
 type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
 
@@ -119,6 +122,33 @@ export const globalActions = {
 		}
 	},
 
+	[ACTION.CREATE_COVER_IMAGE]: async ({
+		request,
+		fetch,
+	}: RequestEvent): ActionResult<CreateCoverImageResult> => {
+		const result = await getCreateCoverImageValues(await request.formData());
+
+		if (!result.success) {
+			return error(500, result.error);
+		}
+
+		const { comicJsonString, instructions, includeImage, imageUrl } = result.data;
+
+		try {
+			const response = await fetch(
+				'/api/chat/cover-image',
+				getPostRequestInit({
+					comicJsonString,
+					instructions,
+					imageUrl: includeImage ? imageUrl : undefined,
+				}),
+			);
+			return await response.json();
+		} catch (e: unknown) {
+			return error(500, (e as Error).message);
+		}
+	},
+
 	[ACTION.CREATE_PANEL_IMAGE]: async ({
 		request,
 		fetch,
@@ -141,7 +171,7 @@ export const globalActions = {
 
 		try {
 			const response = await fetch(
-				'/api/chat/image',
+				'/api/chat/panel-image',
 				getPostRequestInit({
 					panelJsonString,
 					instructions,

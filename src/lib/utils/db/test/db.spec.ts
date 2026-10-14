@@ -3,12 +3,13 @@ import { PanelSchema } from '$lib/types';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import {
 	addComic,
-	addImage,
+	addCoverImage,
 	addPanel,
+	addPanelImage,
 	clearComics,
 	deleteComic,
-	deleteCover,
-	deleteImage,
+	deleteCoverImage,
+	deletePanelImage,
 	deleteType,
 	editType,
 	getCharacter,
@@ -46,9 +47,21 @@ describe('Db', () => {
 	});
 
 	it('should remove cover image', () => {
-		deleteCover(Comic1.id);
+		deleteCoverImage(Comic1.id);
 
 		expect(getComic(Comic1.id)?.cover).toBeUndefined();
+	});
+
+	it('should add cover image', () => {
+		const image = {
+			landscape: { src: 'https://example.com/wide.jpg', width: 100, height: 100 },
+			portrait: { src: 'https://example.com/narrow.jpg', width: 100, height: 100 },
+			alt: '',
+		};
+		deleteCoverImage(Comic1.id);
+		addCoverImage(Comic1.id, image);
+
+		expect(getComic(Comic1.id)?.cover).toEqual(image);
 	});
 
 	describe('addImage image', () => {
@@ -61,7 +74,7 @@ describe('Db', () => {
 				alt: '',
 			};
 
-			addImage(Comic1.id, Comic1.panels[0].id, image);
+			addPanelImage(Comic1.id, Comic1.panels[0].id, image);
 
 			expect(getComic(Comic1.id)?.panels[0].image).toEqual(image);
 		});
@@ -73,7 +86,7 @@ describe('Db', () => {
 				alt: '',
 			};
 
-			addImage(Comic1.id, Comic1.panels[0].id, image);
+			addPanelImage(Comic1.id, Comic1.panels[0].id, image);
 
 			expect(getComic(Comic1.id)?.panels[0].image).toEqual(image);
 		});
@@ -83,7 +96,7 @@ describe('Db', () => {
 		it('should remove image', () => {
 			expect(getComic(Comic1.id)?.panels[0].image).toBeDefined();
 
-			deleteImage(Comic1.id, Comic1.panels[0].id);
+			deletePanelImage(Comic1.id, Comic1.panels[0].id);
 
 			expect(getComic(Comic1.id)?.panels[0].image).toBeUndefined();
 		});

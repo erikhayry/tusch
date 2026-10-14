@@ -13,6 +13,8 @@ export class ComicPage {
 	readonly deletePanelButton: Locator;
 	readonly coverImage: Locator;
 	readonly deleteCoverButton: Locator;
+	readonly addCoverButton: Locator;
+	readonly newCoverImage: Locator;
 
 	constructor(page: Page, comic: Comic) {
 		this.page = page;
@@ -24,7 +26,9 @@ export class ComicPage {
 		this.initialNumberOfListItems = this.comic.panels.length;
 		this.deletePanelButton = page.getByRole('button', { name: m.deletePanel({ number: 3 }) });
 		this.coverImage = page.getByRole('img', { name: this.comic.cover?.alt });
+		this.newCoverImage = page.getByRole('img', { name: 'mock alt text' });
 		this.deleteCoverButton = page.getByRole('button', { name: m.deleteCover() });
+		this.addCoverButton = page.getByRole('button', { name: m.addCover() });
 	}
 
 	async goto() {

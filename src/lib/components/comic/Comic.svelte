@@ -3,6 +3,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import Character from '../charachter/Character.svelte';
+	import CreateCoverImageForm from '../forms/createCoverImageForm/CreateCoverImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
 	import Image from '../image/Image.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
@@ -26,6 +27,11 @@
 					comicId: comic.id,
 					type: DB_ITEM_TYPE.enum.coverImage,
 				}}
+			/>
+		{:else}
+			<CreateCoverImageForm
+				values={{ comicJsonString: JSON.stringify(comic) }}
+				label={m.addCover()}
 			/>
 		{/if}
 		<Section>

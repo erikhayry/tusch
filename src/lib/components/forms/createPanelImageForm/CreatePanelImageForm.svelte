@@ -3,7 +3,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import { ACTION, type CreatePanelImageResult } from '$lib/utils/actions/actions';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
-	import { addImage } from '$lib/utils/db/db';
+	import { addPanelImage } from '$lib/utils/db/db';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
@@ -21,7 +21,7 @@
 				`data:image/png;base64,${image.landscape.src}`,
 			);
 
-			addImage(comicId, panelId, {
+			addPanelImage(comicId, panelId, {
 				landscape: {
 					src: fileName,
 					width: image.landscape.width,

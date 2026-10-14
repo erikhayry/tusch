@@ -1,7 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../../../../examples/examples';
-import { mockImageResponse } from '../../../../../api/chat/image/utils/mock';
+import { mockImageResponse } from '../../../../../api/chat/panel-image/utils/mock';
 
 export class PanelPage {
 	readonly page: Page;

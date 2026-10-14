@@ -1,19 +1,30 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions/actions';
+	import { ACTION, type CreateCoverImageResult } from '$lib/utils/actions/actions';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
+	import { addCoverImage } from '$lib/utils/db/db';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
 		INSTRUCTIONS_VALUE_KEY,
 	} from '$lib/utils/db/dbTypes';
-	import { getImage } from '$lib/utils/storage/storage';
+	import { generateId } from '$lib/utils/id';
+	import { getImage, saveImage } from '$lib/utils/storage/storage';
 	import type { CreateCoverImageFormProps } from './createCoverImageFormTypes';
 
-	const handleSubmit = onSubmit<unknown>(async ({ update, result }) => {
-		if (result.data?.image) {
-			//TODO
+	const handleSubmit = onSubmit<CreateCoverImageResult>(async ({ update, result }) => {
+		if (result.data) {
+			const { landscape, portrait } = result.data.image;
+			const fileName = await saveImage(
+				`${generateId()}.png`,
+				`data:image/png;base64,${landscape.src}`,
+			);
+			addCoverImage(result.data.comicId, {
+				alt: landscape.alt,
+				landscape: { ...landscape, src: fileName },
+				portrait: { ...portrait, src: fileName },
+			});
 		}
 		await update();
 	});
@@ -31,7 +42,7 @@
 	});
 </script>
 
-<form method="POST" action={`?/${ACTION.CREATE_PANEL_IMAGE}`} use:enhance={handleSubmit}>
+<form method="POST" action={`?/${ACTION.CREATE_COVER_IMAGE}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
 		<input type="hidden" name={entry[0]} value={entry[1]} />
 	{/each}

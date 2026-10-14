@@ -61,9 +61,3 @@ export const OpenAiImageOutputSchema = z.object({
 });
 
 export type OpenAiImageOutput = z.infer<typeof OpenAiImageOutputSchema>;
-
-export const CreateCoverImageResponseSchema = z.object({
-	landscape: CreatedImageSchema,
-	portrait: CreatedImageSchema,
-});
-export type CreateCoverImageResponse = z.infer<typeof CreateCoverImageResponseSchema>;
