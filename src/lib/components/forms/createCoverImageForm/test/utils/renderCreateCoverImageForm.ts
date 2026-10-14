@@ -1,9 +1,9 @@
-import CreateImageForm from '$lib/components/forms/createImageForm/CreateImageForm.svelte';
-import { CreateImageFormPropsMock } from '$lib/components/forms/createImageForm/test/utils/mockcreateImageForm';
+import CreateImageForm from '$lib/components/forms/createCoverImageForm/CreateCoverImageForm.svelte';
+import { CreateCoverImageFormPropsMock } from '$lib/components/forms/createCoverImageForm/test/utils/mockCreateImageCoverForm';
 import { m } from '$lib/paraglide/messages';
 import { render } from '@testing-library/svelte';
 
-export function renderCreateCoverImageForm(props = CreateImageFormPropsMock[0]) {
+export function renderCreateCoverImageForm(props = CreateCoverImageFormPropsMock[0]) {
 	const { getByRole, findByRole, queryByRole } = render(CreateImageForm, props);
 
 	return {

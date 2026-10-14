@@ -5,7 +5,7 @@ import {
 } from '$lib/utils/db/dbTypes';
 import { z } from 'zod';
 
-export const CreateImageFormPropsSchema = z.object({
+export const CreatePanelImageFormPropsSchema = z.object({
 	label: z.string(),
 	values: CreatePanelImageValuesSchema.omit({
 		[INSTRUCTIONS_VALUE_KEY]: true,
@@ -14,4 +14,4 @@ export const CreateImageFormPropsSchema = z.object({
 	imageName: z.string().optional(),
 });
 
-export type CreateImageFormProps = z.infer<typeof CreateImageFormPropsSchema>;
+export type CreatePanelImageFormProps = z.infer<typeof CreatePanelImageFormPropsSchema>;

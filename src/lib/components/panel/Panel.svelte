@@ -6,7 +6,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import { getCharacter } from '$lib/utils/db/db';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
-	import CreateImageForm from '../forms/createImageForm/CreateImageForm.svelte';
+	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
 	import Image from '../image/Image.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
@@ -21,7 +21,7 @@
 	<Heading>{m.panelTitle({ number, total: totalNumberOfPanels })}</Heading>
 	<p>{panel.visualDescription}</p>
 	{#if panel.image === undefined}
-		<CreateImageForm
+		<CreatePanelImageForm
 			label={m.addImage()}
 			values={{
 				comicId,
@@ -32,7 +32,7 @@
 		/>
 	{:else}
 		<Image image={panel.image} />
-		<CreateImageForm
+		<CreatePanelImageForm
 			label={m.generateNewImage()}
 			imageName={panel.image?.landscape.src}
 			values={{

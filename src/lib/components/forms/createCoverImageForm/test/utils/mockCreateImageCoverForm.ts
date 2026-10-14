@@ -1,4 +1,4 @@
-import { CreateImageFormPropsSchema as CreateCoverImageFormPropsSchema } from '$lib/components/forms/createImageForm/createImageFormTypes';
+import { CreateCoverImageFormPropsSchema } from '$lib/components/forms/createCoverImageForm/createCoverImageFormTypes';
 import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
 
 export function getCreateCoverImageFormPropMock() {

@@ -1,10 +1,10 @@
-import CreateImageForm from '$lib/components/forms/createImageForm/CreateImageForm.svelte';
-import { CreateImageFormPropsMock } from '$lib/components/forms/createImageForm/test/utils/mockcreateImageForm';
+import CreatePanelImageForm from '$lib/components/forms/createPanelImageForm/CreatePanelImageForm.svelte';
+import { CreatePanelImageFormPropsMock } from '$lib/components/forms/createPanelImageForm/test/utils/mockCreatePanelImageForm';
 import { m } from '$lib/paraglide/messages';
 import { render } from '@testing-library/svelte';
 
-export function renderCreateImageForm(props = CreateImageFormPropsMock[0]) {
-	const { getByRole, findByRole, queryByRole } = render(CreateImageForm, props);
+export function renderCreatePanelImageForm(props = CreatePanelImageFormPropsMock[0]) {
+	const { getByRole, findByRole, queryByRole } = render(CreatePanelImageForm, props);
 
 	return {
 		getButton: () => getByRole('button', { name: props.label }),

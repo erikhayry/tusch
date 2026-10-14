@@ -11,7 +11,7 @@
 	} from '$lib/utils/db/dbTypes';
 	import { generateId } from '$lib/utils/id';
 	import { getImage, saveImage } from '$lib/utils/storage/storage';
-	import type { CreateImageFormProps } from './createImageFormTypes';
+	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
 	const handleSubmit = onSubmit<CreatePanelImageResult>(async ({ update, result }) => {
 		if (result.data?.image) {
@@ -40,7 +40,7 @@
 		await update();
 	});
 
-	let { label, values, imageName }: CreateImageFormProps = $props();
+	let { label, values, imageName }: CreatePanelImageFormProps = $props();
 
 	let imageUrl = $state<string | null>(null);
 
