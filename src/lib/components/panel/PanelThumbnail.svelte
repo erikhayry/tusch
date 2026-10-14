@@ -1,12 +1,12 @@
 <script lang="ts">
-	import PanelImage from './components/panelImage/PanelImage.svelte';
+	import Image from '../image/Image.svelte';
 	import { type PanelThumbnailProps } from './panelTypes';
 
 	let { panel, alt }: PanelThumbnailProps = $props();
 </script>
 
 {#if panel.image}
-	<PanelImage {panel} {alt} />
+	<Image image={panel.image} {alt} />
 {:else}
 	{panel.id}
 {/if}

@@ -5,7 +5,7 @@ import { render, within } from '@testing-library/svelte';
 import { ComicPropsMock } from './mockComic';
 
 export function renderComic(props = ComicPropsMock[0]) {
-	const { getByRole, getByTestId, getByText } = render(Comic, props);
+	const { getByRole, getByTestId, getByText, findByRole } = render(Comic, props);
 
 	const {
 		comic: { source, title },
@@ -21,6 +21,7 @@ export function renderComic(props = ComicPropsMock[0]) {
 		getDeletePanelButton: (number: number) =>
 			getByRole('button', { name: m.deletePanel({ number }) }),
 		getStyle: () => getByText(props.comic.style),
+		findCover: () => findByRole('img', { name: props.comic.cover?.alt }),
 		props,
 	};
 }

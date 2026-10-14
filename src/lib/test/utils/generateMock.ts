@@ -13,6 +13,7 @@ export function generateMock<T extends z.ZodType>(schema: T): z.infer<T> {
 			height: 600,
 			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
 			alt: 'mock alt text',
+			characters: [],
 		})
 		.generate() as z.infer<T>;
 }
@@ -43,6 +44,7 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 			height: 600,
 			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
 			alt: 'mock alt text',
+			characters: [],
 		})
 		.supply(ImageAssetSchema, {
 			width: 800,

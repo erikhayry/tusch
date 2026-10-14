@@ -1,11 +1,26 @@
 import { renderComic } from '$lib/components/comic/test/utils/renderComic';
+import { generateMock } from '$lib/test/utils/generateMock';
+import { ResponsiveImageSchema } from '$lib/types';
 import { describe, expect, it } from 'vitest';
+import { ComicPropsMock } from './utils/mockComic';
 
 describe('Comic', () => {
 	it('should render title', () => {
 		const { getTitle } = renderComic();
 
 		expect(getTitle()).toBeInTheDocument();
+	});
+
+	it('should render cover', async () => {
+		const { findCover } = renderComic({
+			...ComicPropsMock[0],
+			comic: {
+				...ComicPropsMock[0].comic,
+				cover: generateMock(ResponsiveImageSchema),
+			},
+		});
+
+		expect(await findCover()).toBeInTheDocument();
 	});
 
 	it('should render source', () => {

@@ -8,10 +8,10 @@
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import CreateImageForm from '../forms/createImageForm/CreateImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
+	import Image from '../image/Image.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
 	import FieldActions from './components/fieldActions/FieldActions.svelte';
-	import PanelImage from './components/panelImage/PanelImage.svelte';
 	import { type PanelProps } from './panelTypes';
 
 	let { number, totalNumberOfPanels, panel, comicId, style, characters }: PanelProps = $props();
@@ -31,7 +31,7 @@
 			}}
 		/>
 	{:else}
-		<PanelImage {panel} />
+		<Image image={panel.image} />
 		<CreateImageForm
 			label={m.generateNewImage()}
 			imageName={panel.image?.landscape.src}

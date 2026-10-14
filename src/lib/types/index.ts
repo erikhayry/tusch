@@ -143,6 +143,7 @@ export const ComicSchema = z.object({
 	id: z.uuid(),
 	title: z.string(),
 	source: z.url(),
+	cover: z.optional(ResponsiveImageSchema),
 	style: ComicStyleEnum,
 	panels: PanelArraySchema,
 	setting: z.optional(SettingSchema),

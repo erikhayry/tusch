@@ -4,6 +4,7 @@
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import Character from '../charachter/Character.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
+	import Image from '../image/Image.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
@@ -17,6 +18,9 @@
 	<Heading>{comic.title}</Heading>
 	<Section>
 		<Heading>{m.settings()}</Heading>
+		{#if comic.cover}
+			<Image image={comic.cover} />
+		{/if}
 		<Section>
 			<Heading>{m.comicStyle()}</Heading>
 			<p>{comic.style}</p>
