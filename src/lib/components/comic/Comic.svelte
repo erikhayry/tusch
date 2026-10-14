@@ -20,6 +20,13 @@
 		<Heading>{m.settings()}</Heading>
 		{#if comic.cover}
 			<Image image={comic.cover} />
+			<DeleteItemForm
+				label={m.deleteCover()}
+				values={{
+					comicId: comic.id,
+					type: DB_ITEM_TYPE.enum.coverImage,
+				}}
+			/>
 		{/if}
 		<Section>
 			<Heading>{m.comicStyle()}</Heading>

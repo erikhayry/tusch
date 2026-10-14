@@ -1,4 +1,4 @@
-import type { ComicStyle, Panel } from '$lib/types';
+import type { Comic, ComicStyle, Panel } from '$lib/types';
 import { STYLES } from '$lib/utils/comicStyles';
 import type { ResponseInputItem } from 'openai/resources/responses/responses.mjs';
 import { OPEN_AI_ROLE, OPEN_AI_TYPE } from './settings';
@@ -28,6 +28,11 @@ export const INIT = {
 		...GLOBAL_HOWS.COMIC,
 		'PANEL COUNT: Generate between 5 and 10 sequential panels that form a cohesive narrative arc.',
 	],
+};
+
+export const COVER_IMAGE = {
+	WHAT: 'Generate a cover image for the comic based on the attached comic characters, panels, and style.',
+	HOWS: [...GLOBAL_HOWS.IMAGE],
 };
 
 export const IMAGE = {
@@ -65,7 +70,17 @@ export function buildInitialMessages(url: string, style: ComicStyle): string[] {
 	return [INIT.WHAT, `Source URL: ${url}`, ...INIT.HOWS, ...buildStyleInstruction(style)];
 }
 
-export function buildImageMessages({
+export function buildCoverImageMessages({ comic }: { comic: Comic }): string[] {
+	return [
+		COVER_IMAGE.WHAT,
+		...COVER_IMAGE.HOWS,
+		...buildStyleInstruction(comic.style),
+		`CHARACTERS: ${JSON.stringify(comic.characters)}`,
+		`PANELS: ${JSON.stringify(comic.panels)}`,
+	];
+}
+
+export function buildPanelImageMessages({
 	panel,
 	instruction,
 	charactersJson,

@@ -9,7 +9,7 @@ import {
 } from '$lib/utils/db/dbTypes';
 import type { ActionFailure, RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { CreateImageResponseSchema } from '../../../../routes/api/chat/image/createImageApiTypes';
+import { CreatePanelImageResponseSchema } from '../../../../routes/api/chat/image/createImageApiTypes';
 import { ACTION, globalActions, type CreateImageResult } from '../actions';
 
 const cookesSetSpy = vi.fn();
@@ -133,7 +133,7 @@ describe('actions', () => {
 			const values = { ...generateMock(CreateImageValuesSchema), comicId: comicMock.id };
 			addComic(comicMock);
 
-			const response = generateMock(CreateImageResponseSchema);
+			const response = generateMock(CreatePanelImageResponseSchema);
 
 			const result = (await globalActions[ACTION.CREATE_IMAGE](
 				getMockRequestEvent(values, response),

@@ -6,7 +6,7 @@ import {
 } from '$lib/components/forms/utils/values';
 import type { Comic } from '$lib/types';
 import { error, fail, type Action, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
-import type { CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
+import type { CreatePanelImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
 import { getCookieArgs } from '../key';
 
@@ -29,7 +29,7 @@ export const ACTION = {
 } as const;
 
 export type CreateComicResult = { comic: Comic };
-export type CreateImageResult = CreateImageResponse & { comicId: string };
+export type CreateImageResult = CreatePanelImageResponse & { comicId: string };
 export type ByokResult = { success: boolean };
 type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
 
@@ -149,7 +149,7 @@ export const globalActions = {
 					imageUrl: includeImage ? imageUrl : undefined,
 				}),
 			);
-			const { image, panelId }: CreateImageResponse = await response.json();
+			const { image, panelId }: CreatePanelImageResponse = await response.json();
 
 			return {
 				comicId,

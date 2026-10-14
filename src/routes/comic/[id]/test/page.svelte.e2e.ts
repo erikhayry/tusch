@@ -16,6 +16,16 @@ test('opens panel view', async ({ page }) => {
 	await page.waitForURL(`**/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
 });
 
+test('delete cover', async ({ page }) => {
+	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
+
+	await expect(comicPage.coverImage).toBeVisible();
+
+	await comicPage.deleteCoverButton.click();
+
+	await expect(comicPage.coverImage).not.toBeVisible();
+});
+
 test('delete panel', async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 

@@ -1,8 +1,11 @@
 import { generateMock } from '$lib/test/utils/generateMock';
 import { PanelsMock } from '$lib/types/test/utils/mockTypes';
-import { CreateImageResponseSchema, type CreateImageResponse } from '../createImageApiTypes';
+import {
+	CreatePanelImageResponseSchema,
+	type CreatePanelImageResponse,
+} from '../createImageApiTypes';
 
-export const mockImageResponse: CreateImageResponse = {
-	...generateMock(CreateImageResponseSchema),
+export const mockImageResponse: CreatePanelImageResponse = {
+	...generateMock(CreatePanelImageResponseSchema),
 	panelId: PanelsMock[0].id,
 };

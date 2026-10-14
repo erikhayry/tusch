@@ -1,11 +1,11 @@
 import { CreatedImageSchema } from '$lib/utils/ai/aiTypes';
 import { z } from 'zod';
 
-export const CreateImageResponseSchema = z.object({
+export const CreatePanelImageResponseSchema = z.object({
 	panelId: z.string(),
 	image: z.object({
 		landscape: CreatedImageSchema,
 		portrait: CreatedImageSchema,
 	}),
 });
-export type CreateImageResponse = z.infer<typeof CreateImageResponseSchema>;
+export type CreatePanelImageResponse = z.infer<typeof CreatePanelImageResponseSchema>;

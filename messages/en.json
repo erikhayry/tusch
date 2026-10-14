@@ -46,5 +46,6 @@
 	"year": "Year",
 	"season": "Season",
 	"instructions": "Additional Instructions",
-	"includeImage": "Include Image in instructions"
+	"includeImage": "Include Image in instructions",
+	"deleteCover": "Delete Cover"
 }

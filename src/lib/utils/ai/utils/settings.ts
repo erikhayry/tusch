@@ -14,8 +14,8 @@ export const MODEL = {
 } as const;
 
 export const IMAGE_SIZE = {
-	NARROW: '1024x1536',
-	WIDE: '1536x1024',
+	PORTRAIT: '1024x1536',
+	LANDSCAPE: '1536x1024',
 } as const;
 export type ImageSizeValue = (typeof IMAGE_SIZE)[keyof typeof IMAGE_SIZE];
 

@@ -90,7 +90,12 @@ export function deleteImage(comicId: string, panelId: string): Comic[] {
 
 export function deleteType(values: DeleteValues): Comic[] {
 	switch (values.type) {
-		case DB_ITEM_TYPE.enum.image: {
+		case DB_ITEM_TYPE.enum.coverImage: {
+			deleteCover(values.comicId);
+			return getComics();
+		}
+
+		case DB_ITEM_TYPE.enum.panelImage: {
 			deleteImage(values.comicId, values.panelId);
 			return getComics();
 		}
@@ -148,6 +153,17 @@ export function editType(values: EditValues): Comic[] {
 	}
 
 	saveDB();
+	return getComics();
+}
+
+export function deleteCover(comicId: string): Comic[] {
+	const comic = DB.get(comicId);
+	if (comic) {
+		comic.cover = undefined;
+		DB.set(comicId, comic);
+		saveDB();
+	}
+
 	return getComics();
 }
 

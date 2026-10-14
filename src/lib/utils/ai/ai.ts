@@ -1,6 +1,6 @@
 import { type Comic, type ComicStyle, type Panel, type Url } from '$lib/types';
 import type { Cookies } from '@sveltejs/kit';
-import { type CreateImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
+import { type CreatePanelImageResponse } from '../../../routes/api/chat/image/createImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
 import { generateId } from '../id';
 import {
@@ -9,13 +9,19 @@ import {
 	CreatePanelSchema,
 	InitialComicSchema,
 	SchemaName,
+	type CreateCoverImageResponse,
 	type CreatedImage,
 	type CreateImage,
 	type InitialComic,
 	type OpenAiImageOutput,
 } from './aiTypes';
 import { image, ping, text } from './sdk/openAi';
-import { buildImageMessages, buildInitialMessages, buildPanelMessages } from './utils/messages';
+import {
+	buildCoverImageMessages,
+	buildInitialMessages,
+	buildPanelImageMessages,
+	buildPanelMessages,
+} from './utils/messages';
 import { IMAGE_SIZE } from './utils/settings';
 
 function getOutputText(response: OpenAiImageOutput): string | undefined {
@@ -67,7 +73,30 @@ function getImageFromOpenAiResponse(response: OpenAiImageOutput): CreatedImage {
 	return CreatedImageSchema.parse({ src, ...getImageData(response) });
 }
 
-export async function createImage({
+export async function createCoverImage({
+	cookies,
+	comic,
+}: {
+	comic: Comic;
+	cookies: Cookies;
+}): Promise<CreateCoverImageResponse> {
+	const response = await image({
+		cookies,
+		messages: buildCoverImageMessages({ comic }),
+		schema: SchemaName.enum.createImage,
+		imageUrl: undefined,
+		size: IMAGE_SIZE.PORTRAIT,
+	});
+
+	const createdImage = getImageFromOpenAiResponse(response);
+
+	return {
+		landscape: createdImage,
+		portrait: createdImage,
+	};
+}
+
+export async function createPanelImage({
 	panel,
 	instruction,
 	style,
@@ -81,10 +110,10 @@ export async function createImage({
 	charactersJson: string;
 	cookies: Cookies;
 	imageUrl?: string;
-}): Promise<CreateImageResponse> {
+}): Promise<CreatePanelImageResponse> {
 	const response = await image({
 		cookies,
-		messages: buildImageMessages({
+		messages: buildPanelImageMessages({
 			panel,
 			charactersJson,
 			instruction,
@@ -92,7 +121,7 @@ export async function createImage({
 		}),
 		schema: SchemaName.enum.createImage,
 		imageUrl,
-		size: IMAGE_SIZE.NARROW,
+		size: IMAGE_SIZE.PORTRAIT,
 	});
 	const createdImage = getImageFromOpenAiResponse(response);
 

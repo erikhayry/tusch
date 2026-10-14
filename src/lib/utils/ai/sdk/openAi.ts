@@ -83,7 +83,7 @@ export async function image({
 	messages,
 	schema,
 	imageUrl,
-	size = IMAGE_SIZE.NARROW,
+	size = IMAGE_SIZE.PORTRAIT,
 }: {
 	cookies: Cookies;
 	messages: string[];

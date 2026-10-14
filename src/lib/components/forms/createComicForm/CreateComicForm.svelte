@@ -13,9 +13,22 @@
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { STYLES } from '$lib/utils/comicStyles';
 	import { addComic } from '$lib/utils/db/db';
+	import { generateId } from '$lib/utils/id';
+	import { saveImage } from '$lib/utils/storage/storage';
 
 	const handleSubmit = onSubmit<CreateComicResult>(async ({ result }) => {
 		if (result.data?.comic) {
+			const comic = result.data.comic;
+
+			if (comic.cover) {
+				const fileName = await saveImage(
+					`${generateId()}.png`,
+					`data:image/png;base64,${comic.cover.landscape.src}`,
+				);
+				comic.cover.landscape.src = fileName;
+				comic.cover.portrait.src = fileName;
+			}
+
 			addComic(result.data.comic);
 			await goto(resolve(`/comic/${result.data.comic.id}`));
 		}

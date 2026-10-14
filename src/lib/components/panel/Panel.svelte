@@ -44,7 +44,7 @@
 		/>
 		<DeleteItemForm
 			label={m.removeImage()}
-			values={{ type: DB_ITEM_TYPE.enum.image, comicId, panelId: panel.id }}
+			values={{ type: DB_ITEM_TYPE.enum.panelImage, comicId, panelId: panel.id }}
 		/>
 	{/if}
 

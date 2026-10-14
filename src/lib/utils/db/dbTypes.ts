@@ -1,7 +1,14 @@
 import { ComicStyleEnum } from '$lib/types';
 import z from 'zod';
 
-export const DB_ITEM_TYPE = z.enum(['dialogue', 'captions', 'panels', 'comics', 'image']);
+export const DB_ITEM_TYPE = z.enum([
+	'dialogue',
+	'captions',
+	'panels',
+	'comics',
+	'panelImage',
+	'coverImage',
+]);
 export type DbItemType = z.infer<typeof DB_ITEM_TYPE>;
 
 export const DeleteValuesSchema = z
@@ -28,7 +35,13 @@ export const DeleteValuesSchema = z
 		z.object({
 			comicId: z.string(),
 			panelId: z.string(),
-			type: z.enum([DB_ITEM_TYPE.enum.image]),
+			type: z.enum([DB_ITEM_TYPE.enum.panelImage]),
+		}),
+	)
+	.or(
+		z.object({
+			comicId: z.string(),
+			type: z.enum([DB_ITEM_TYPE.enum.coverImage]),
 		}),
 	);
 export type DeleteValues = z.infer<typeof DeleteValuesSchema>;

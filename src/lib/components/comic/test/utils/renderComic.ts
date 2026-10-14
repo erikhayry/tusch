@@ -22,6 +22,7 @@ export function renderComic(props = ComicPropsMock[0]) {
 			getByRole('button', { name: m.deletePanel({ number }) }),
 		getStyle: () => getByText(props.comic.style),
 		findCover: () => findByRole('img', { name: props.comic.cover?.alt }),
+		findDeleteCoverButton: () => findByRole('button', { name: m.deleteCover() }),
 		props,
 	};
 }

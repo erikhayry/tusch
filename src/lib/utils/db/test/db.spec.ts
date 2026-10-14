@@ -7,6 +7,7 @@ import {
 	addPanel,
 	clearComics,
 	deleteComic,
+	deleteCover,
 	deleteImage,
 	deleteType,
 	editType,
@@ -44,13 +45,19 @@ describe('Db', () => {
 		});
 	});
 
+	it('should remove cover image', () => {
+		deleteCover(Comic1.id);
+
+		expect(getComic(Comic1.id)?.cover).toBeUndefined();
+	});
+
 	describe('addImage image', () => {
 		it('should add image', () => {
 			Comic1.panels[0].image = undefined;
 
 			const image = {
-				wide: { src: 'https://example.com/wide.jpg', width: 100, height: 100 },
-				narrow: { src: 'https://example.com/narrow.jpg', width: 100, height: 100 },
+				landscape: { src: 'https://example.com/wide.jpg', width: 100, height: 100 },
+				portrait: { src: 'https://example.com/narrow.jpg', width: 100, height: 100 },
 				alt: '',
 			};
 
@@ -61,8 +68,8 @@ describe('Db', () => {
 
 		it('should replace image', () => {
 			const image = {
-				wide: { src: 'https://example.com/wide.jpg', width: 100, height: 100 },
-				narrow: { src: 'https://example.com/narrow.jpg', width: 100, height: 100 },
+				landscape: { src: 'https://example.com/wide.jpg', width: 100, height: 100 },
+				portrait: { src: 'https://example.com/narrow.jpg', width: 100, height: 100 },
 				alt: '',
 			};
 

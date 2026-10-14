@@ -3,7 +3,7 @@ import { PanelsMock } from '$lib/types/test/utils/mockTypes';
 import { STYLES } from '$lib/utils/comicStyles';
 import type { Cookies } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createImage, createPanel, initComic } from '../ai';
+import { createPanel, createPanelImage, initComic } from '../ai';
 import { SchemaName } from '../aiTypes';
 import { IMAGE, INIT, PANEL } from '../utils/messages';
 import {
@@ -70,7 +70,7 @@ describe('ai', () => {
 		it('should call sdk with correct messages', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage({
+			await createPanelImage({
 				panel: PanelsMock[0],
 				instruction: 'USER INSTRUCTIONS',
 				style: ComicStyleEnum.enum.anime,
@@ -90,7 +90,7 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage({
+			await createPanelImage({
 				panel: PanelsMock[0],
 				instruction: 'USER INSTRUCTIONS',
 				style: ComicStyleEnum.enum.anime,
@@ -111,7 +111,7 @@ describe('ai', () => {
 					landscape: { src, alt, width, height },
 				},
 				panelId,
-			} = await createImage({
+			} = await createPanelImage({
 				panel: PanelsMock[0],
 				instruction: 'USER INSTRUCTIONS',
 				style: ComicStyleEnum.enum.anime,
