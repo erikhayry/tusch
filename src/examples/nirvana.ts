@@ -108,7 +108,7 @@ export const NIRVANA: Comic = {
 			timeOfDay: 'afternoon',
 			year: 1987,
 			image: {
-				wide: {
+				landscape: {
 					src: '/examples/nirvana/1.png',
 					width: 1024,
 					height: 1536,
@@ -145,7 +145,7 @@ export const NIRVANA: Comic = {
 						},
 					],
 				},
-				narrow: {
+				portrait: {
 					src: '/examples/nirvana/1.png',
 					width: 1024,
 					height: 1536,
@@ -207,7 +207,7 @@ export const NIRVANA: Comic = {
 			timeOfDay: 'afternoon',
 			year: 1989,
 			image: {
-				wide: {
+				landscape: {
 					src: '/examples/nirvana/2.png',
 					width: 1024,
 					height: 1536,
@@ -244,7 +244,7 @@ export const NIRVANA: Comic = {
 						},
 					],
 				},
-				narrow: {
+				portrait: {
 					src: '/examples/nirvana/2.png',
 					width: 1024,
 					height: 1536,
@@ -306,7 +306,7 @@ export const NIRVANA: Comic = {
 			timeOfDay: 'night',
 			year: 1990,
 			image: {
-				wide: {
+				landscape: {
 					src: '/examples/nirvana/3.png',
 					width: 1024,
 					height: 1536,
@@ -358,7 +358,7 @@ export const NIRVANA: Comic = {
 						},
 					],
 				},
-				narrow: {
+				portrait: {
 					src: '/examples/nirvana/3.png',
 					width: 1024,
 					height: 1536,

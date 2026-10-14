@@ -22,13 +22,13 @@
 			);
 
 			addImage(comicId, panelId, {
-				wide: {
+				landscape: {
 					src: fileName,
 					width: image.landscape.width,
 					height: image.landscape.height,
 					characters: image.landscape.characters,
 				},
-				narrow: {
+				portrait: {
 					src: fileName,
 					width: image.landscape.width,
 					height: image.landscape.height,

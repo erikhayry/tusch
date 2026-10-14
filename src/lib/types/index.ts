@@ -57,8 +57,8 @@ export const ImageAssetSchema = z.object({
 export type ImageAsset = z.infer<typeof ImageAssetSchema>;
 
 export const ResponsiveImageSchema = z.object({
-	wide: ImageAssetSchema,
-	narrow: ImageAssetSchema,
+	landscape: ImageAssetSchema,
+	portrait: ImageAssetSchema,
 	alt: z.string(),
 });
 export type ResponsiveImage = z.infer<typeof ResponsiveImageSchema>;

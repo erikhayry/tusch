@@ -18,12 +18,12 @@ export const PanelsMock = ComicMock.panels;
 export const UrlMock = ComicMock.source;
 
 export const ImageMock: ResponsiveImage = {
-	wide: {
+	landscape: {
 		src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
 		width: 1000,
 		height: 1000,
 	},
-	narrow: {
+	portrait: {
 		src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
 		width: 1000,
 		height: 1000,

@@ -35,14 +35,14 @@ const MOCK: Record<string, string> = {
 		image: {
 			landscape: {
 				alt: 'mock alt text',
-				width: EXAMPLES[0].panels[0].image?.wide.width,
-				height: EXAMPLES[0].panels[0].image?.wide.height,
+				width: EXAMPLES[0].panels[0].image?.landscape.width,
+				height: EXAMPLES[0].panels[0].image?.landscape.height,
 				src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
 			},
 			portrait: {
 				alt: 'mock alt text',
-				width: EXAMPLES[0].panels[0].image?.narrow.width,
-				height: EXAMPLES[0].panels[0].image?.narrow.height,
+				width: EXAMPLES[0].panels[0].image?.portrait.width,
+				height: EXAMPLES[0].panels[0].image?.portrait.height,
 				src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
 			},
 		},
