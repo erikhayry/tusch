@@ -55,9 +55,14 @@
 		<input type="hidden" name={entry[0]} value={entry[1]} />
 	{/each}
 
-	<img width="50px" height="auto" src={imageUrl} alt="" />
-	<input type="hidden" name={IMAGE_VALUE_KEY} value={imageUrl} />
-	<input type="checkbox" name={INCLUDE_IMAGE_VALUE_KEY} />
+	{#if imageName}
+		<img width="50px" height="auto" src={imageUrl} alt="" />
+		<label for={INCLUDE_IMAGE_VALUE_KEY}>
+			<input type="hidden" name={IMAGE_VALUE_KEY} value={imageUrl} />
+			<input type="checkbox" id={INCLUDE_IMAGE_VALUE_KEY} name={INCLUDE_IMAGE_VALUE_KEY} />
+			<span>{m.includeImage()}</span>
+		</label>
+	{/if}
 
 	<label for={INSTRUCTIONS_VALUE_KEY}>
 		{m.instructions()}
