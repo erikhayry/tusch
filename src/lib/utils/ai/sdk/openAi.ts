@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
 import { OpenAiImageOutputSchema, type OpenAiImageOutput, type SchemaName } from '../aiTypes';
 import { getSchemaAsTextFormat } from '../utils/format';
-import { getChatMessages } from '../utils/messages';
+import { getChatMessages, getImageMessages } from '../utils/messages';
 import { MODEL, TOOLS } from '../utils/settings';
 
 function getClient(cookies: Cookies): OpenAI {
@@ -82,11 +82,12 @@ export async function image(
 	cookies: Cookies,
 	messages: string[],
 	schema: SchemaName,
+	imageUrl?: string,
 ): Promise<OpenAiImageOutput> {
 	const client = getClient(cookies);
 	const req: ResponseCreateParamsWithTools = {
 		model: MODEL.TEXT,
-		input: getChatMessages(messages),
+		input: [...getChatMessages(messages), ...getImageMessages(imageUrl)],
 		tools: [TOOLS.IMAGE],
 		store: true,
 		include: [],

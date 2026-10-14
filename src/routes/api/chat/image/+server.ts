@@ -6,15 +6,16 @@ import type { CreateImageResponse } from './createImageApiTypes.js';
 export async function POST({ request, cookies }) {
 	try {
 		const data = await request.json();
-		const { panelJsonString, instructions, style, charactersJsonString } = data;
+		const { panelJsonString, instructions, style, charactersJsonString, imageUrl } = data;
 
-		const response: CreateImageResponse = await createImage(
-			PanelSchemaJson.parse(panelJsonString),
-			instructions,
+		const response: CreateImageResponse = await createImage({
+			panel: PanelSchemaJson.parse(panelJsonString),
+			instruction: instructions,
 			style,
-			charactersJsonString,
+			charactersJson: charactersJsonString,
 			cookies,
-		);
+			imageUrl,
+		});
 
 		return json(response);
 	} catch (error) {

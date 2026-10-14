@@ -4,17 +4,19 @@
 	import { ACTION, type CreateImageResult } from '$lib/utils/actions/actions';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { addImage } from '$lib/utils/db/db';
-	import { INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
+	import {
+		IMAGE_VALUE_KEY,
+		INCLUDE_IMAGE_VALUE_KEY,
+		INSTRUCTIONS_VALUE_KEY,
+	} from '$lib/utils/db/dbTypes';
 	import { generateId } from '$lib/utils/id';
-	import { saveImage } from '$lib/utils/storage/storage';
+	import { getImage, saveImage } from '$lib/utils/storage/storage';
 	import type { CreateImageFormProps } from './createImageFormTypes';
 
 	const handleSubmit = onSubmit<CreateImageResult>(async ({ update, result }) => {
 		if (result.data?.image) {
 			const { comicId, panelId, image } = result.data;
 			const fileName = await saveImage(`${generateId()}.png`, `data:image/png;base64,${image.src}`);
-
-			console.log(image);
 
 			addImage(comicId, panelId, {
 				wide: {
@@ -35,13 +37,27 @@
 		await update();
 	});
 
-	let { label, values }: CreateImageFormProps = $props();
+	let { label, values, imageName }: CreateImageFormProps = $props();
+
+	let imageUrl = $state<string | null>(null);
+
+	$effect(() => {
+		if (imageName) {
+			getImage(imageName).then((url) => {
+				imageUrl = url;
+			});
+		}
+	});
 </script>
 
 <form method="POST" action={`?/${ACTION.CREATE_IMAGE}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
 		<input type="hidden" name={entry[0]} value={entry[1]} />
 	{/each}
+
+	<img width="50px" height="auto" src={imageUrl} alt="" />
+	<input type="hidden" name={IMAGE_VALUE_KEY} value={imageUrl} />
+	<input type="checkbox" name={INCLUDE_IMAGE_VALUE_KEY} />
 
 	<label for={INSTRUCTIONS_VALUE_KEY}>
 		{m.instructions()}

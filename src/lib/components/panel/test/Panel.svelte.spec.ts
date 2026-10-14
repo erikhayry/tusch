@@ -81,6 +81,7 @@ describe('Panel', () => {
 				totalNumberOfPanels: comic.panels.length,
 				style: comic.style,
 				number: 1,
+				characters: comic.characters,
 			};
 
 			const { getDialogue } = renderPanel(panelProps);

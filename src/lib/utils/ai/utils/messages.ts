@@ -1,6 +1,7 @@
 import type { ComicStyle, Panel } from '$lib/types';
 import { STYLES } from '$lib/utils/comicStyles';
-import { OPEN_AI_ROLE } from './settings';
+import type { ResponseInputItem } from 'openai/resources/responses/responses.mjs';
+import { OPEN_AI_ROLE, OPEN_AI_TYPE } from './settings';
 
 const GLOBAL_HOWS = {
 	PANEL: [
@@ -115,9 +116,27 @@ export function buildPanelMessages(index: number, panels: Panel[]): string[] {
 	];
 }
 
-export function getChatMessages(messages: string[]) {
+export function getChatMessages(messages: string[]): ResponseInputItem[] {
 	return messages.map((message) => ({
-		content: message,
 		role: OPEN_AI_ROLE.SYSTEM,
+		content: message,
 	}));
+}
+
+export function getImageMessages(imageUrl?: string): ResponseInputItem[] {
+	if (!imageUrl) return [];
+
+	return [
+		{
+			role: OPEN_AI_ROLE.USER,
+			content: [
+				{ type: OPEN_AI_TYPE.TEXT, text: 'Use attached image as reference to user instruction' },
+				{
+					type: OPEN_AI_TYPE.IMAGE,
+					image_url: imageUrl,
+					detail: 'auto',
+				},
+			],
+		},
+	];
 }

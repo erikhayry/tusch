@@ -70,13 +70,13 @@ describe('ai', () => {
 		it('should call sdk with correct messages', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage(
-				PanelsMock[0],
-				'USER INSTRUCTIONS',
-				ComicStyleEnum.enum.anime,
-				'characters',
-				CookiesMock,
-			);
+			await createImage({
+				panel: PanelsMock[0],
+				instruction: 'USER INSTRUCTIONS',
+				style: ComicStyleEnum.enum.anime,
+				charactersJson: 'characters',
+				cookies: CookiesMock,
+			});
 
 			expect(mockSendOpenAi.mock.calls[0][0].input[0].content).toEqual(IMAGE.WHAT);
 			expect(mockSendOpenAi.mock.calls[0][0].input.at(-2).content).toContain(
@@ -90,13 +90,13 @@ describe('ai', () => {
 		it('should call sdk with text format', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiImageResponse);
 
-			await createImage(
-				PanelsMock[0],
-				'USER INSTRUCTIONS',
-				ComicStyleEnum.enum.anime,
-				'characters',
-				CookiesMock,
-			);
+			await createImage({
+				panel: PanelsMock[0],
+				instruction: 'USER INSTRUCTIONS',
+				style: ComicStyleEnum.enum.anime,
+				charactersJson: 'characters',
+				cookies: CookiesMock,
+			});
 
 			expect(getFormatNameFromCall(mockSendOpenAi.mock.calls[0][0])).toEqual(
 				SchemaName.enum.createImage,
@@ -109,13 +109,13 @@ describe('ai', () => {
 			const {
 				image: { src, alt, width, height },
 				panelId,
-			} = await createImage(
-				PanelsMock[0],
-				'USER INSTRUCTIONS',
-				ComicStyleEnum.enum.anime,
-				'characters',
-				CookiesMock,
-			);
+			} = await createImage({
+				panel: PanelsMock[0],
+				instruction: 'USER INSTRUCTIONS',
+				style: ComicStyleEnum.enum.anime,
+				charactersJson: 'characters',
+				cookies: CookiesMock,
+			});
 
 			expect(src).toEqual(imageResulSrcMock);
 			expect(alt).toEqual(imageDataMock.alt);

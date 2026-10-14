@@ -34,6 +34,7 @@
 		<PanelImage {panel} />
 		<CreateImageForm
 			label={m.generateNewImage()}
+			imageName={panel.image?.wide.src}
 			values={{
 				comicId,
 				panelJsonString: JSON.stringify(panel),

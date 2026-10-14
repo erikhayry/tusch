@@ -3,6 +3,11 @@ export const OPEN_AI_ROLE = {
 	SYSTEM: 'system',
 } as const;
 
+export const OPEN_AI_TYPE = {
+	TEXT: 'input_text',
+	IMAGE: 'input_image',
+} as const;
+
 export const MODEL = {
 	IMAGE: 'gpt-image-2.5-flare',
 	TEXT: 'gpt-6-luna',
