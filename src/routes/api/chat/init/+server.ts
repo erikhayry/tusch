@@ -11,7 +11,7 @@ export async function POST({ request, cookies }) {
 
 		return json({
 			...comic,
-			cover,
+			cover: cover.image,
 		});
 	} catch (error) {
 		console.error(error);
