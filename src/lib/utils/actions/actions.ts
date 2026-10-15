@@ -7,13 +7,20 @@ import {
 } from '$lib/components/forms/utils/values';
 import type { Comic, Panel } from '$lib/types';
 import { error, fail, type Action, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
-import type { CreateCoverImageResponse } from '../../../routes/api/chat/cover-image/createCoverImageApiTypes';
-import type { CreatePanelImageResponse } from '../../../routes/api/chat/panel-image/createPanelImageApiTypes';
-import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
-import { getImageFromOpenAiResponse } from '../ai/ai';
+import {
+	getComicFromOpenAiResponse,
+	getImageFromOpenAiResponse,
+	getPanelFromOpenAiResponse,
+} from '../ai/ai';
 import { SchemaName } from '../ai/aiTypes';
-import { buildCoverImageMessages, buildPanelImageMessages } from '../ai/utils/messages';
+import {
+	buildCoverImageMessages,
+	buildInitialMessages,
+	buildPanelImageMessages,
+	buildPanelMessages,
+} from '../ai/utils/messages';
 import { IMAGE_SIZE } from '../ai/utils/settings';
+import { generateId } from '../id';
 import { getCookieArgs } from '../key';
 
 function getPostRequestInit(body: unknown) {
@@ -37,8 +44,8 @@ export const ACTION = {
 
 export type CreateComicResult = { comic: Comic; output: unknown };
 export type CreatePanelResult = { comicId: string; index: number; panel: Panel; output: unknown };
-export type CreatePanelImageResult = CreatePanelImageResponse & { comicId: string };
-export type CreateCoverImageResult = CreateCoverImageResponse;
+export type CreatePanelImageResult = { comicId: string };
+export type CreateCoverImageResult = {};
 export type ByokResult = { success: boolean };
 type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
 
@@ -55,11 +62,11 @@ export const globalActions = {
 		cookies.set(...getCookieArgs(key));
 
 		try {
-			const response = await fetch('/api/chat/ping');
-			const data: { success: boolean } = await response.json();
+			const response = await fetch('/api/ai/ping');
+			const responseJson = await response.json();
 
 			return {
-				success: data.success,
+				success: responseJson.status,
 			};
 		} catch {
 			return fail(500, { message: 'Failed to set byok cookie' });
@@ -83,19 +90,55 @@ export const globalActions = {
 		}
 
 		const { url, style } = result.data;
+		const comicMessagesJsonString = JSON.stringify(buildInitialMessages(url, style));
 
 		try {
-			const response = await fetch('/api/chat/init', getPostRequestInit({ url, style }));
+			const initComicResponse = await fetch(
+				'/api/ai/comic',
+				getPostRequestInit({
+					messagesJsonString: comicMessagesJsonString,
+					schemaName: SchemaName.enum.initComic,
+				}),
+			);
+			const initComicResponseJson = await initComicResponse.json();
+			const initialComic = getComicFromOpenAiResponse(initComicResponseJson);
 
-			if (!response.ok) {
-				return fail(500, { message: 'Failed to initialize comic' });
-			}
+			const comic: Comic = {
+				id: generateId(),
+				source: url,
+				...initialComic,
+				panels: initialComic.panels.map((initialPanel) => ({
+					...initialPanel,
+					id: generateId(),
+				})),
+			};
 
-			const { comic, output } = await response.json();
+			const coverImageMessagesJsonString = JSON.stringify(buildCoverImageMessages({ comic }));
+			const coverImageResponse = await fetch(
+				'/api/ai/image',
+				getPostRequestInit({
+					messagesJsonString: coverImageMessagesJsonString,
+					schemaName: SchemaName.enum.createImage,
+					size: IMAGE_SIZE.PORTRAIT,
+				}),
+			);
+			const coverImageResponseJson = await coverImageResponse.json();
+			const createdImage = getImageFromOpenAiResponse(coverImageResponseJson);
+			const serializableImage = structuredClone(createdImage);
 
 			return {
-				comic,
-				output,
+				comic: {
+					...comic,
+					cover: {
+						landscape: serializableImage,
+						portrait: serializableImage,
+						alt: serializableImage.alt,
+					},
+				},
+				output: {
+					init: initComicResponseJson.output,
+					coverImage: coverImageResponseJson.output,
+				},
 			};
 		} catch (e: unknown) {
 			const message = e instanceof Error ? e.message : 'Unknown error occurred';
@@ -115,17 +158,24 @@ export const globalActions = {
 
 		try {
 			const { panelsJsonString, index, comicId } = result.data;
-			const response = await fetch(
-				'/api/chat/panel',
-				getPostRequestInit({ panelsJsonString, index }),
+			const messagesJsonString = JSON.stringify(
+				buildPanelMessages(index, JSON.parse(panelsJsonString)),
 			);
-			const { panel, output }: CreatePanelResponse = await response.json();
+			const response = await fetch(
+				'/api/ai/panel',
+				getPostRequestInit({
+					messagesJsonString,
+					schemaName: SchemaName.enum.createPanel,
+				}),
+			);
+			const responseJson = await response.json();
+			const panel = getPanelFromOpenAiResponse(responseJson);
 
 			return {
 				comicId,
 				index,
 				panel,
-				output,
+				output: responseJson.output,
 			};
 		} catch (e: unknown) {
 			return error(500, (e as Error).message);
@@ -142,11 +192,10 @@ export const globalActions = {
 			return error(500, result.error);
 		}
 
-		const { comicJsonString, instructions, includeImage, imageUrl } = result.data;
-		const comic = JSON.parse(comicJsonString);
-		const messagesJsonString = JSON.stringify(buildCoverImageMessages({ comic }));
-
 		try {
+			const { comicJsonString, instructions, includeImage, imageUrl } = result.data;
+			const comic = JSON.parse(comicJsonString);
+			const messagesJsonString = JSON.stringify(buildCoverImageMessages({ comic }));
 			const response = await fetch(
 				'/api/ai/image',
 				getPostRequestInit({

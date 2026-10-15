@@ -1,7 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../../../../examples/examples';
-import { mockImageResponse } from '../../../../../api/chat/panel-image/utils/mock';
 
 export class PanelPage {
 	readonly page: Page;
@@ -28,7 +27,7 @@ export class PanelPage {
 		this.deleteImageButton = page.getByRole('button', { name: m.removeImage() });
 		this.replaceImageButton = page.getByRole('button', { name: m.generateNewImage() });
 		this.image = page.getByRole('img', { name: EXAMPLES[0].panels[0].image?.alt });
-		this.mockedImage = page.getByRole('img', { name: mockImageResponse.image.alt });
+		this.mockedImage = page.getByRole('img', { name: 'mock alt text' });
 		this.addPanelBeforeButton = page.getByRole('button', { name: m.addPanelBefore({ number: 2 }) });
 		this.initialNumberOfPanels = EXAMPLES[0].panels.length;
 		this.numberOfPanels = async () =>

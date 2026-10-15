@@ -1,10 +1,13 @@
 import { building } from '$app/env';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
-import { generateId } from '$lib/utils/id';
 import type { Handle, HandleFetch } from '@sveltejs/kit';
-import { EXAMPLES } from './examples/examples';
-import { CREATE_COVER_RESPONSE } from './tests/mock/openAi/openAiResponse';
+import {
+	CREATE_COVER_RESPONSE,
+	CREATE_PANEL_RESPONSE,
+	INIT_COMIC_RESPONSE,
+	PING_RESPONSE,
+} from './tests/mock/openAi/openAiResponse';
 
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
@@ -24,40 +27,11 @@ function isPlaywrightTestRequest(): boolean {
 	return !building && process.env.PLAYWRIGHT_TEST === 'true';
 }
 
-const MOCK_IMAGE = {
-	landscape: {
-		alt: 'mock alt text',
-		width: EXAMPLES[0].panels[0].image?.landscape.width,
-		height: EXAMPLES[0].panels[0].image?.landscape.height,
-		src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
-	},
-	portrait: {
-		alt: 'mock alt text',
-		width: EXAMPLES[0].panels[0].image?.portrait.width,
-		height: EXAMPLES[0].panels[0].image?.portrait.height,
-		src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
-	},
-};
-
 const MOCK: Record<string, string> = {
-	'/api/chat/panel': JSON.stringify({
-		panel: {
-			...EXAMPLES[0].panels[0],
-			id: generateId(),
-		},
-		output: '',
-	}),
-	'/api/chat/init': JSON.stringify(EXAMPLES[0]),
-	'/api/chat/ping': JSON.stringify({ success: true }),
-	'/api/chat/panel-image': JSON.stringify({
-		panelId: EXAMPLES[0].panels[0].id,
-		image: MOCK_IMAGE,
-	}),
-	'/api/chat/cover-image': JSON.stringify({
-		comicId: EXAMPLES[0].id,
-		image: MOCK_IMAGE,
-	}),
+	'/api/ai/ping': JSON.stringify(PING_RESPONSE),
 	'/api/ai/image': JSON.stringify(CREATE_COVER_RESPONSE),
+	'/api/ai/panel': JSON.stringify(CREATE_PANEL_RESPONSE),
+	'/api/ai/comic': JSON.stringify(INIT_COMIC_RESPONSE),
 };
 
 function getMockResponse(mock: string) {
