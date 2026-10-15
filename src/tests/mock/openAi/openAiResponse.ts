@@ -46,7 +46,7 @@ export const CREATE_COVER_RESPONSE: OpenAiOutput = {
 			content: [
 				{
 					type: 'output_text',
-					text: '{"data":{"alt":"A worker in a dark blue jacket, red scarf, and flat cap stands in the foreground with one hand raised and a plain cloth hanging from his other hand. A young woman with a long braid and burgundy headscarf stands close beside him, looking solemnly toward the road. A soldier with his rifle pointed down stands apart to the right, head lowered. A distant procession fills the road behind them as it winds through green spring countryside, with budding trees, scattered rural buildings, and a river valley beneath a bright sky. The figures are shown from a low, close viewpoint, with the road receding between them and the crowd.","width":1024,"height":1536,"characters":[{"id":"a3c916f0-539b-4ab5-86e3-8cc3f72b09f4","head":{"x":187,"y":83,"width":179,"height":202},"full":{"x":0,"y":72,"width":410,"height":1464}},{"id":"8d5307a9-0215-4f7e-9c93-f13407d2b960","head":{"x":387,"y":281,"width":165,"height":173},"full":{"x":350,"y":272,"width":290,"height":1118}},{"id":"0a928c58-c171-438a-9783-16b174be9ff2","head":{"x":832,"y":421,"width":101,"height":111},"full":{"x":755,"y":421,"width":210,"height":681}}]}}',
+					text: '{"data":{"alt":"mock alt text","width":1024,"height":1536,"characters":[{"id":"a3c916f0-539b-4ab5-86e3-8cc3f72b09f4","head":{"x":187,"y":83,"width":179,"height":202},"full":{"x":0,"y":72,"width":410,"height":1464}},{"id":"8d5307a9-0215-4f7e-9c93-f13407d2b960","head":{"x":387,"y":281,"width":165,"height":173},"full":{"x":350,"y":272,"width":290,"height":1118}},{"id":"0a928c58-c171-438a-9783-16b174be9ff2","head":{"x":832,"y":421,"width":101,"height":111},"full":{"x":755,"y":421,"width":210,"height":681}}]}}',
 				},
 			],
 		},
@@ -97,3 +97,5 @@ export const CREATE_PANEL_IMAGE_RESPONSE: OpenAiOutput = {
 		},
 	],
 };
+
+export const PING_RESPONSE = { status: true, message: 'API key is valid' };

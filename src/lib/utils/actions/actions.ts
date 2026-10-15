@@ -10,6 +10,10 @@ import { error, fail, type Action, type ActionFailure, type RequestEvent } from 
 import type { CreateCoverImageResponse } from '../../../routes/api/chat/cover-image/createCoverImageApiTypes';
 import type { CreatePanelImageResponse } from '../../../routes/api/chat/panel-image/createPanelImageApiTypes';
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
+import { getImageFromOpenAiResponse } from '../ai/ai';
+import { SchemaName } from '../ai/aiTypes';
+import { buildCoverImageMessages } from '../ai/utils/messages';
+import { IMAGE_SIZE } from '../ai/utils/settings';
 import { getCookieArgs } from '../key';
 
 function getPostRequestInit(body: unknown) {
@@ -139,17 +143,32 @@ export const globalActions = {
 		}
 
 		const { comicJsonString, instructions, includeImage, imageUrl } = result.data;
+		const comic = JSON.parse(comicJsonString);
+		const messagesJsonString = JSON.stringify(buildCoverImageMessages({ comic }));
 
 		try {
 			const response = await fetch(
-				'/api/chat/cover-image',
+				'/api/ai/image',
 				getPostRequestInit({
-					comicJsonString,
+					messagesJsonString,
+					schemaName: SchemaName.enum.createImage.toString(),
+					size: IMAGE_SIZE.PORTRAIT,
 					instructions,
 					imageUrl: includeImage ? imageUrl : undefined,
 				}),
 			);
-			return await response.json();
+			const responseJson = await response.json();
+			const createdImage = getImageFromOpenAiResponse(responseJson);
+			const serializableImage = structuredClone(createdImage);
+
+			return {
+				output: '',
+				comicId: comic.id,
+				image: {
+					landscape: serializableImage,
+					portrait: serializableImage,
+				},
+			};
 		} catch (e: unknown) {
 			return error(500, (e as Error).message);
 		}

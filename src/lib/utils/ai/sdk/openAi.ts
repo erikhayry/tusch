@@ -2,7 +2,12 @@ import { COOKIE_NAME } from '$lib/utils/key';
 import type { Cookies } from '@sveltejs/kit';
 import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
-import { OpenAiOutputSchema, type OpenAiOutput, type SchemaName } from '../aiTypes';
+import {
+	OpenAiOutputSchema,
+	type OpenAiOutput,
+	type OpenAiPingOutput,
+	type SchemaName,
+} from '../aiTypes';
 import { getSchemaAsTextFormat } from '../utils/format';
 import { getChatMessages, getImageMessages } from '../utils/messages';
 import { IMAGE_SIZE, MODEL, TOOLS, type ImageSizeValue } from '../utils/settings';
@@ -23,10 +28,7 @@ async function parse(client: OpenAI, req: ResponseCreateParamsWithTools): Promis
 	return OpenAiOutputSchema.parse(response);
 }
 
-export async function ping(cookies: Cookies): Promise<{
-	status: boolean;
-	message: string;
-}> {
+export async function ping(cookies: Cookies): Promise<OpenAiPingOutput> {
 	const client = getClient(cookies);
 	try {
 		await client.models.list();
@@ -61,14 +63,14 @@ export async function ping(cookies: Cookies): Promise<{
 export async function text(
 	cookies: Cookies,
 	messages: string[],
-	schema: SchemaName,
+	schemaName: SchemaName,
 ): Promise<OpenAiOutput> {
 	const client = getClient(cookies);
 	const req: ResponseCreateParamsWithTools = {
 		model: MODEL.TEXT,
 		input: getChatMessages(messages),
 		text: {
-			format: getSchemaAsTextFormat(schema),
+			format: getSchemaAsTextFormat(schemaName),
 		},
 	};
 
@@ -78,13 +80,13 @@ export async function text(
 export async function image({
 	cookies,
 	messages,
-	schema,
+	schemaName,
 	imageUrl,
 	size = IMAGE_SIZE.PORTRAIT,
 }: {
 	cookies: Cookies;
 	messages: string[];
-	schema: SchemaName;
+	schemaName: SchemaName;
 	imageUrl?: string;
 	size: ImageSizeValue;
 }): Promise<OpenAiOutput> {
@@ -96,7 +98,7 @@ export async function image({
 		store: true,
 		include: [],
 		text: {
-			format: getSchemaAsTextFormat(schema),
+			format: getSchemaAsTextFormat(schemaName),
 		},
 	};
 

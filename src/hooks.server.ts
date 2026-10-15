@@ -4,6 +4,7 @@ import { paraglideMiddleware } from '$lib/paraglide/server';
 import { generateId } from '$lib/utils/id';
 import type { Handle, HandleFetch } from '@sveltejs/kit';
 import { EXAMPLES } from './examples/examples';
+import { CREATE_COVER_RESPONSE } from './tests/mock/openAi/openAiResponse';
 
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
@@ -56,6 +57,7 @@ const MOCK: Record<string, string> = {
 		comicId: EXAMPLES[0].id,
 		image: MOCK_IMAGE,
 	}),
+	'/api/ai/image': JSON.stringify(CREATE_COVER_RESPONSE),
 };
 
 function getMockResponse(mock: string) {

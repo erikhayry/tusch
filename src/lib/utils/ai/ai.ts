@@ -75,7 +75,7 @@ function getImageData(response: OpenAiOutput): CreateImage {
 	return CreateImageSchema.parse(output);
 }
 
-function getImageFromOpenAiResponse(response: OpenAiOutput): CreatedImage {
+export function getImageFromOpenAiResponse(response: OpenAiOutput): CreatedImage {
 	const src = response.output.find((item) => item.type === 'image_generation_call')?.result;
 
 	return CreatedImageSchema.parse({ src, ...getImageData(response) });
@@ -91,7 +91,7 @@ export async function createCoverImage({
 	const response = await image({
 		cookies,
 		messages: buildCoverImageMessages({ comic }),
-		schema: SchemaName.enum.createImage,
+		schemaName: SchemaName.enum.createImage,
 		imageUrl: undefined,
 		size: IMAGE_SIZE.PORTRAIT,
 	});
@@ -131,7 +131,7 @@ export async function createPanelImage({
 			instruction,
 			style,
 		}),
-		schema: SchemaName.enum.createImage,
+		schemaName: SchemaName.enum.createImage,
 		imageUrl,
 		size: IMAGE_SIZE.PORTRAIT,
 	});
