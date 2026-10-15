@@ -7,5 +7,6 @@ export const CreatePanelImageResponseSchema = z.object({
 		landscape: CreatedImageSchema,
 		portrait: CreatedImageSchema,
 	}),
+	output: z.unknown(),
 });
 export type CreatePanelImageResponse = z.infer<typeof CreatePanelImageResponseSchema>;

@@ -1,7 +1,7 @@
 import { PanelSchemaJson } from '$lib/types/utils/json.js';
 import { createPanelImage } from '$lib/utils/ai/ai';
 import { json } from '@sveltejs/kit';
-import type { CreatePanelImageResponse } from './createImageApiTypes.js';
+import type { CreatePanelImageResponse } from './createPanelImageApiTypes';
 
 export async function POST({ request, cookies }) {
 	try {

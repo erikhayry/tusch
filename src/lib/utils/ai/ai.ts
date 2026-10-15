@@ -12,8 +12,9 @@ import {
 	SchemaName,
 	type CreatedImage,
 	type CreateImage,
+	type CreatePanel,
 	type InitialComic,
-	type OpenAiImageOutput,
+	type OpenAiOutput,
 } from './aiTypes';
 import { image, ping, text } from './sdk/openAi';
 import {
@@ -24,25 +25,29 @@ import {
 } from './utils/messages';
 import { IMAGE_SIZE } from './utils/settings';
 
-function getOutputText(response: OpenAiImageOutput): string | undefined {
+function getOutputText(response: OpenAiOutput): string | undefined {
 	const content = response.output.find((item) => item.type === 'message')?.content;
 
 	return content?.find(({ type }) => type === 'output_text')?.text;
 }
 
-function parseOutputText(response: OpenAiImageOutput): unknown | undefined {
+function parseOutputText(response: OpenAiOutput): unknown | undefined {
 	const text = getOutputText(response);
 
 	return text ? JSON.parse(text).data : undefined;
 }
 
-function getComicFromOpenAiResponse(response: OpenAiImageOutput): InitialComic {
+function getComicFromOpenAiResponse(response: OpenAiOutput): InitialComic {
 	const output = parseOutputText(response);
 
 	return InitialComicSchema.parse(output);
 }
 
-export async function initComic(source: Url, style: ComicStyle, cookies: Cookies): Promise<Comic> {
+export async function initComic(
+	source: Url,
+	style: ComicStyle,
+	cookies: Cookies,
+): Promise<{ comic: Comic; output: OpenAiOutput }> {
 	const response = await text(
 		cookies,
 		buildInitialMessages(source, style),
@@ -51,23 +56,26 @@ export async function initComic(source: Url, style: ComicStyle, cookies: Cookies
 	const comic = getComicFromOpenAiResponse(response);
 
 	return {
-		id: generateId(),
-		source,
-		...comic,
-		panels: comic.panels.map((initialPanel) => ({
-			...initialPanel,
+		comic: {
 			id: generateId(),
-		})),
+			source,
+			...comic,
+			panels: comic.panels.map((initialPanel) => ({
+				...initialPanel,
+				id: generateId(),
+			})),
+		},
+		output: response,
 	};
 }
 
-function getImageData(response: OpenAiImageOutput): CreateImage {
+function getImageData(response: OpenAiOutput): CreateImage {
 	const output = parseOutputText(response);
 
 	return CreateImageSchema.parse(output);
 }
 
-function getImageFromOpenAiResponse(response: OpenAiImageOutput): CreatedImage {
+function getImageFromOpenAiResponse(response: OpenAiOutput): CreatedImage {
 	const src = response.output.find((item) => item.type === 'image_generation_call')?.result;
 
 	return CreatedImageSchema.parse({ src, ...getImageData(response) });
@@ -91,6 +99,7 @@ export async function createCoverImage({
 	const createdImage = getImageFromOpenAiResponse(response);
 
 	return {
+		output: response,
 		comicId: comic.id,
 		image: {
 			landscape: createdImage,
@@ -129,12 +138,13 @@ export async function createPanelImage({
 	const createdImage = getImageFromOpenAiResponse(response);
 
 	return {
+		output: response,
 		image: { landscape: createdImage, portrait: createdImage },
 		panelId: panel.id,
 	};
 }
 
-function getPanelFromOpenAiResponse(response: OpenAiImageOutput): CreatePanelResponse {
+function getPanelFromOpenAiResponse(response: OpenAiOutput): CreatePanel {
 	const output = parseOutputText(response);
 
 	return CreatePanelSchema.parse(output);
@@ -151,9 +161,9 @@ export async function createPanel(
 		SchemaName.enum.createPanel,
 	);
 
-	const result = getPanelFromOpenAiResponse(response);
+	const panel = getPanelFromOpenAiResponse(response);
 
-	return result;
+	return { panel, output: response };
 }
 
 export async function test(cookies: Cookies): Promise<boolean> {

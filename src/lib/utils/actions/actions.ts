@@ -5,7 +5,7 @@ import {
 	getCreatePanelImageValues,
 	getCreatePanelValues,
 } from '$lib/components/forms/utils/values';
-import type { Comic } from '$lib/types';
+import type { Comic, Panel } from '$lib/types';
 import { error, fail, type Action, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { CreateCoverImageResponse } from '../../../routes/api/chat/cover-image/createCoverImageApiTypes';
 import type { CreatePanelImageResponse } from '../../../routes/api/chat/panel-image/createPanelImageApiTypes';
@@ -31,7 +31,8 @@ export const ACTION = {
 	BYOK: 'byok',
 } as const;
 
-export type CreateComicResult = { comic: Comic };
+export type CreateComicResult = { comic: Comic; output: unknown };
+export type CreatePanelResult = { comicId: string; index: number; panel: Panel; output: unknown };
 export type CreatePanelImageResult = CreatePanelImageResponse & { comicId: string };
 export type CreateCoverImageResult = CreateCoverImageResponse;
 export type ByokResult = { success: boolean };
@@ -86,10 +87,11 @@ export const globalActions = {
 				return fail(500, { message: 'Failed to initialize comic' });
 			}
 
-			const comic: Comic = await response.json();
+			const { comic, output } = await response.json();
 
 			return {
 				comic,
+				output,
 			};
 		} catch (e: unknown) {
 			const message = e instanceof Error ? e.message : 'Unknown error occurred';
@@ -97,7 +99,10 @@ export const globalActions = {
 		}
 	},
 
-	[ACTION.CREATE_PANEL]: async ({ request, fetch }: RequestEvent) => {
+	[ACTION.CREATE_PANEL]: async ({
+		request,
+		fetch,
+	}: RequestEvent): ActionResult<CreatePanelResult> => {
 		const result = await getCreatePanelValues(await request.formData());
 
 		if (!result.success) {
@@ -110,12 +115,13 @@ export const globalActions = {
 				'/api/chat/panel',
 				getPostRequestInit({ panelsJsonString, index }),
 			);
-			const panel: CreatePanelResponse = await response.json();
+			const { panel, output }: CreatePanelResponse = await response.json();
 
 			return {
 				comicId,
 				index,
 				panel,
+				output,
 			};
 		} catch (e: unknown) {
 			return error(500, (e as Error).message);
@@ -180,12 +186,13 @@ export const globalActions = {
 					imageUrl: includeImage ? imageUrl : undefined,
 				}),
 			);
-			const { image, panelId }: CreatePanelImageResponse = await response.json();
+			const { image, panelId, output }: CreatePanelImageResponse = await response.json();
 
 			return {
 				comicId,
 				panelId,
 				image,
+				output,
 			};
 		} catch (e: unknown) {
 			return error(500, (e as Error).message);

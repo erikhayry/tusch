@@ -43,7 +43,7 @@ export const SCHEMA: Record<SchemaName, z.ZodType> = {
 	createPanel: CreatePanelSchema,
 } as const;
 
-export const OpenAiImageOutputSchema = z.object({
+export const OpenAiOutputSchema = z.object({
 	output: z.array(
 		z.object({
 			type: z.string(),
@@ -60,4 +60,4 @@ export const OpenAiImageOutputSchema = z.object({
 	),
 });
 
-export type OpenAiImageOutput = z.infer<typeof OpenAiImageOutputSchema>;
+export type OpenAiOutput = z.infer<typeof OpenAiOutputSchema>;

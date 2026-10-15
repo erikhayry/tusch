@@ -7,5 +7,6 @@ export const CreateCoverImageResponseSchema = z.object({
 		landscape: CreatedImageSchema,
 		portrait: CreatedImageSchema,
 	}),
+	output: z.unknown(),
 });
 export type CreateCoverImageResponse = z.infer<typeof CreateCoverImageResponseSchema>;

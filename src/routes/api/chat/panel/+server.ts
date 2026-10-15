@@ -7,9 +7,13 @@ export async function POST({ request, cookies }) {
 		const data = await request.json();
 		const { panelsJsonString, index } = data;
 
-		const panel = await createPanel(index, PanelArraySchemaJson.parse(panelsJsonString), cookies);
+		const { panel, output } = await createPanel(
+			index,
+			PanelArraySchemaJson.parse(panelsJsonString),
+			cookies,
+		);
 
-		return json(panel);
+		return json({ panel, output });
 	} catch (e) {
 		console.error(e);
 	}
