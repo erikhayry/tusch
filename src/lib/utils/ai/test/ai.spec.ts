@@ -49,12 +49,7 @@ describe('ai', () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiInitComicResponse);
 
 			const {
-				panels,
-				id,
-				source: returnedSource,
-				title,
-				setting,
-				characters,
+				comic: { panels, id, source: returnedSource, title, setting, characters },
 			} = await initComic(SOURCE, ComicStyleEnum.enum.anime, CookiesMock);
 
 			expect(panels).toHaveLength(InitialComicContentMock.data.panels.length);
@@ -150,7 +145,7 @@ describe('ai', () => {
 		it('should return panel', async () => {
 			mockSendOpenAi.mockResolvedValueOnce(mockOpenAiCreatePanelResponse);
 
-			const panel = await createPanel(1, PanelsMock, CookiesMock);
+			const { panel } = await createPanel(1, PanelsMock, CookiesMock);
 
 			expect(panel).toEqual(CreatePanelContentMock.data);
 		});

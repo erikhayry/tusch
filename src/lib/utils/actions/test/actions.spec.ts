@@ -1,5 +1,5 @@
 import { generateMock } from '$lib/test/utils/generateMock';
-import { ComicSchema } from '$lib/types';
+import { ComicSchema, PanelSchema } from '$lib/types';
 import { addComic } from '$lib/utils/db/db';
 import {
 	ByokValuesSchema,
@@ -10,7 +10,13 @@ import {
 import type { ActionFailure, RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CreatePanelImageResponseSchema } from '../../../../routes/api/chat/panel-image/createPanelImageApiTypes';
-import { ACTION, globalActions, type CreatePanelImageResult } from '../actions';
+import {
+	ACTION,
+	globalActions,
+	type CreateComicResult,
+	type CreatePanelImageResult,
+	type CreatePanelResult,
+} from '../actions';
 
 const cookesSetSpy = vi.fn();
 
@@ -59,11 +65,13 @@ describe('actions', () => {
 	describe('ACTION.CREATE_COMIC', () => {
 		it('should return a comic', async () => {
 			const values = generateMock(CreateComicValuesSchema);
-			const response = generateMock(ComicSchema);
+			const response = { comic: generateMock(ComicSchema), output: 'output' };
 
-			expect(
-				await globalActions[ACTION.CREATE_COMIC](getMockRequestEvent(values, response)),
-			).toEqual({ comic: response });
+			const { comic } = (await globalActions[ACTION.CREATE_COMIC](
+				getMockRequestEvent(values, response),
+			)) as CreateComicResult;
+
+			expect(comic).toEqual(response.comic);
 		});
 
 		it('should return error if no data is provided', async () => {
@@ -98,11 +106,14 @@ describe('actions', () => {
 	describe('ACTION.CREATE_PANEL', () => {
 		it('should return a panel', async () => {
 			const values = generateMock(CreatePanelValuesSchema);
-			const response = generateMock(ComicSchema);
+			const response = {
+				panel: generateMock(PanelSchema),
+				output: 'outp',
+			};
 
-			const result = await globalActions[ACTION.CREATE_PANEL](
+			const result = (await globalActions[ACTION.CREATE_PANEL](
 				getMockRequestEvent(values, response),
-			);
+			)) as CreatePanelResult;
 
 			expect(result.comicId).toEqual(values.comicId);
 			expect(result.panel).toBeDefined();
