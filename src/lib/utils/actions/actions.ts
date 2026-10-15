@@ -12,7 +12,7 @@ import type { CreatePanelImageResponse } from '../../../routes/api/chat/panel-im
 import type { CreatePanelResponse } from '../../../routes/api/chat/panel/createPanelApiTypes';
 import { getImageFromOpenAiResponse } from '../ai/ai';
 import { SchemaName } from '../ai/aiTypes';
-import { buildCoverImageMessages } from '../ai/utils/messages';
+import { buildCoverImageMessages, buildPanelImageMessages } from '../ai/utils/messages';
 import { IMAGE_SIZE } from '../ai/utils/settings';
 import { getCookieArgs } from '../key';
 
@@ -151,7 +151,7 @@ export const globalActions = {
 				'/api/ai/image',
 				getPostRequestInit({
 					messagesJsonString,
-					schemaName: SchemaName.enum.createImage.toString(),
+					schemaName: SchemaName.enum.createImage,
 					size: IMAGE_SIZE.PORTRAIT,
 					instructions,
 					imageUrl: includeImage ? imageUrl : undefined,
@@ -162,7 +162,7 @@ export const globalActions = {
 			const serializableImage = structuredClone(createdImage);
 
 			return {
-				output: '',
+				output: responseJson.output,
 				comicId: comic.id,
 				image: {
 					landscape: serializableImage,
@@ -194,24 +194,39 @@ export const globalActions = {
 			includeImage,
 		} = result.data;
 
+		const panel = JSON.parse(panelJsonString);
+		const messagesJsonString = JSON.stringify(
+			buildPanelImageMessages({
+				panel,
+				charactersJson: JSON.parse(charactersJsonString),
+				instruction: instructions,
+				style,
+			}),
+		);
+
 		try {
 			const response = await fetch(
-				'/api/chat/panel-image',
+				'/api/ai/image',
 				getPostRequestInit({
-					panelJsonString,
+					messagesJsonString,
+					schemaName: SchemaName.enum.createImage.toString(),
+					size: IMAGE_SIZE.PORTRAIT,
 					instructions,
-					style,
-					charactersJsonString,
 					imageUrl: includeImage ? imageUrl : undefined,
 				}),
 			);
-			const { image, panelId, output }: CreatePanelImageResponse = await response.json();
+			const responseJson = await response.json();
+			const createdImage = getImageFromOpenAiResponse(responseJson);
+			const serializableImage = structuredClone(createdImage);
 
 			return {
 				comicId,
-				panelId,
-				image,
-				output,
+				panelId: panel.id,
+				image: {
+					landscape: serializableImage,
+					portrait: serializableImage,
+				},
+				output: responseJson.output,
 			};
 		} catch (e: unknown) {
 			return error(500, (e as Error).message);

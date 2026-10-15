@@ -11,7 +11,5 @@ export const POST = async ({ request, cookies }) => {
 		size,
 	});
 
-	console.log(result);
-
 	return json(result);
 };
