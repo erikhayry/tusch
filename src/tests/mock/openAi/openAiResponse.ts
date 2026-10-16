@@ -1,6 +1,6 @@
 import type { OpenAiOutput } from '$lib/utils/ai/aiTypes';
 
-export const INIT_COMIC_RESPONSE: OpenAiOutput = {
+export const CREATE_COMIC_RESPONSE: OpenAiOutput = {
 	output: [
 		{
 			type: 'reasoning',
@@ -91,7 +91,7 @@ export const CREATE_PANEL_IMAGE_RESPONSE: OpenAiOutput = {
 			content: [
 				{
 					type: 'output_text',
-					text: '{"data":{"alt":"En arbetare står i förgrunden på en grusväg och håller en stor blank tygbanderoll på en trästång. Han har mörk arbetsjacka, flat keps och röd halsduk och ser allvarlig ut. Bakom honom fyller en lång rad arbetare vägen. Till höger står en ung kvinna med vinröd huvudduk och tygväska, betraktande tåget med ett allvarligt uttryck. Vårgrönt gräs och träd ramar in vägen; hus och ett öppet landskap syns längre bort i det klara morgonljuset.","width":1024,"height":1536,"characters":[{"id":"a3c916f0-539b-4ab5-86e3-8cc3f72b09f4","head":{"x":190,"y":220,"width":170,"height":200},"full":{"x":32,"y":220,"width":445,"height":1290}},{"id":"8d5307a9-0215-4f7e-9c93-f13407d2b960","head":{"x":810,"y":390,"width":190,"height":220},"full":{"x":740,"y":390,"width":284,"height":1020}}]}}',
+					text: '{"data":{"alt":"mock alt text","width":1024,"height":1536,"characters":[{"id":"a3c916f0-539b-4ab5-86e3-8cc3f72b09f4","head":{"x":190,"y":220,"width":170,"height":200},"full":{"x":32,"y":220,"width":445,"height":1290}},{"id":"8d5307a9-0215-4f7e-9c93-f13407d2b960","head":{"x":810,"y":390,"width":190,"height":220},"full":{"x":740,"y":390,"width":284,"height":1020}}]}}',
 				},
 			],
 		},

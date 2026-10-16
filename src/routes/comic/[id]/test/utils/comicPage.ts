@@ -1,6 +1,8 @@
 import { m } from '$lib/paraglide/messages';
 import type { Comic } from '$lib/types';
+import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import type { Locator, Page } from '@playwright/test';
+import { CREATE_COVER_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
 
 export class ComicPage {
 	readonly page: Page;
@@ -11,7 +13,7 @@ export class ComicPage {
 	readonly listItems: Locator;
 	readonly initialNumberOfListItems: number;
 	readonly deletePanelButton: Locator;
-	readonly coverImage: Locator;
+	readonly initialCoverImage: Locator;
 	readonly deleteCoverButton: Locator;
 	readonly addCoverButton: Locator;
 	readonly newCoverImage: Locator;
@@ -25,8 +27,10 @@ export class ComicPage {
 		this.listItems = page.getByRole('list', { name: m.panels() }).getByRole('listitem');
 		this.initialNumberOfListItems = this.comic.panels.length;
 		this.deletePanelButton = page.getByRole('button', { name: m.deletePanel({ number: 3 }) });
-		this.coverImage = page.getByRole('img', { name: this.comic.cover?.alt });
-		this.newCoverImage = page.getByRole('img', { name: 'mock alt text' });
+		this.initialCoverImage = page.getByRole('img', { name: this.comic.cover?.alt });
+		this.newCoverImage = page.getByRole('img', {
+			name: getImageFromOpenAiResponse(CREATE_COVER_RESPONSE).alt,
+		});
 		this.deleteCoverButton = page.getByRole('button', { name: m.deleteCover() });
 		this.addCoverButton = page.getByRole('button', { name: m.addCover() });
 	}

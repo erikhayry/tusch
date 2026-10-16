@@ -61,7 +61,9 @@ export const OpenAiOutputSchema = z.object({
 });
 
 export type OpenAiOutput = z.infer<typeof OpenAiOutputSchema>;
-export type OpenAiPingOutput = {
-	status: boolean;
-	message: string;
-};
+
+export const OpenAiPingSchema = z.object({
+	status: z.boolean(),
+	message: z.string(),
+});
+export type OpenAiPingOutput = z.infer<typeof OpenAiPingSchema>;

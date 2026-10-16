@@ -11,7 +11,7 @@ test('creates image', async ({ page }) => {
 
 	await panelPage.createImageButton.click();
 
-	await expect(panelPage.mockedImage).toBeVisible();
+	await expect(panelPage.newImage).toBeVisible();
 });
 
 test('replace image', async ({ page }) => {
@@ -19,7 +19,7 @@ test('replace image', async ({ page }) => {
 
 	await panelPage.replaceImageButton.click();
 
-	await expect(panelPage.mockedImage).toBeVisible();
+	await expect(panelPage.newImage).toBeVisible();
 });
 
 test('removes image', async ({ page }) => {
@@ -27,7 +27,7 @@ test('removes image', async ({ page }) => {
 
 	await panelPage.deleteImageButton.click();
 
-	await expect(panelPage.image).toBeHidden();
+	await expect(panelPage.initialImage).toBeHidden();
 });
 
 test('edit caption', async ({ page }) => {

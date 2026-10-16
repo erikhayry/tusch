@@ -5,7 +5,7 @@ import {
 	getCreatePanelImageValues,
 	getCreatePanelValues,
 } from '$lib/components/forms/utils/values';
-import type { Comic, Panel } from '$lib/types';
+import type { Comic, Panel, ResponsiveImage } from '$lib/types';
 import { error, fail, type Action, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import {
 	getComicFromOpenAiResponse,
@@ -44,8 +44,13 @@ export const ACTION = {
 
 export type CreateComicResult = { comic: Comic; output: unknown };
 export type CreatePanelResult = { comicId: string; index: number; panel: Panel; output: unknown };
-export type CreatePanelImageResult = { comicId: string };
-export type CreateCoverImageResult = {};
+export type CreatePanelImageResult = {
+	panelId: string;
+	comicId: string;
+	image: ResponsiveImage;
+	output: unknown;
+};
+export type CreateCoverImageResult = { comicId: string; image: ResponsiveImage; output: unknown };
 export type ByokResult = { success: boolean };
 type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
 
@@ -115,7 +120,7 @@ export const globalActions = {
 
 			const coverImageMessagesJsonString = JSON.stringify(buildCoverImageMessages({ comic }));
 			const coverImageResponse = await fetch(
-				'/api/ai/image',
+				'/api/ai/cover-image',
 				getPostRequestInit({
 					messagesJsonString: coverImageMessagesJsonString,
 					schemaName: SchemaName.enum.createImage,
@@ -197,7 +202,7 @@ export const globalActions = {
 			const comic = JSON.parse(comicJsonString);
 			const messagesJsonString = JSON.stringify(buildCoverImageMessages({ comic }));
 			const response = await fetch(
-				'/api/ai/image',
+				'/api/ai/cover-image',
 				getPostRequestInit({
 					messagesJsonString,
 					schemaName: SchemaName.enum.createImage,
@@ -216,6 +221,7 @@ export const globalActions = {
 				image: {
 					landscape: serializableImage,
 					portrait: serializableImage,
+					alt: serializableImage.alt,
 				},
 			};
 		} catch (e: unknown) {
@@ -255,7 +261,7 @@ export const globalActions = {
 
 		try {
 			const response = await fetch(
-				'/api/ai/image',
+				'/api/ai/panel-image',
 				getPostRequestInit({
 					messagesJsonString,
 					schemaName: SchemaName.enum.createImage.toString(),
@@ -274,6 +280,7 @@ export const globalActions = {
 				image: {
 					landscape: serializableImage,
 					portrait: serializableImage,
+					alt: serializableImage.alt,
 				},
 				output: responseJson.output,
 			};
