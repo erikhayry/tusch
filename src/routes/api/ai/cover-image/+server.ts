@@ -1,15 +1,3 @@
-import { image } from '$lib/utils/ai/sdk/openAi';
-import { json } from '@sveltejs/kit';
+import { postImage } from '../utils/post';
 
-export const POST = async ({ request, cookies }) => {
-	const { messagesJsonString, schemaName, size } = await request.json();
-
-	const result = await image({
-		cookies,
-		messages: JSON.parse(messagesJsonString),
-		schemaName,
-		size,
-	});
-
-	return json(result);
-};
+export const POST = postImage;
