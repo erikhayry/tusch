@@ -1,5 +1,5 @@
 import { generateMock } from '$lib/test/utils/generateMock';
-import { CharacterSchema, ComicSchema, PanelArraySchema, PanelSchema } from '$lib/types';
+import { CharacterSchema, PanelArraySchema, PanelSchema } from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -167,10 +167,7 @@ describe('actions', () => {
 
 	describe('ACTION.CREATE_COVER_IMAGE', () => {
 		it('should return a image', async () => {
-			const values = {
-				...generateMock(CreateCoverImageValuesSchema),
-				comicJsonString: JSON.stringify(generateMock(ComicSchema)),
-			};
+			const values = generateMock(CreateCoverImageValuesSchema);
 			const responseSpy = vi.fn().mockResolvedValueOnce(CREATE_COVER_IMAGE_RESPONSE);
 
 			const result = (await globalActions[ACTION.CREATE_COVER_IMAGE](
@@ -200,18 +197,15 @@ describe('actions', () => {
 	});
 });
 
-function getFormData(values: Record<string, string | number | boolean>) {
+function getFormData(values: Record<string, unknown>) {
 	const formData = new FormData();
 	Object.entries(values).forEach(([key, value]) => {
-		formData.set(key, value.toString());
+		formData.set(key, JSON.stringify(value));
 	});
 	return formData;
 }
 
-function getMockRequestEvent(
-	values: Record<string, string | number | boolean>,
-	responsesSpy: typeof vi.fn,
-) {
+function getMockRequestEvent(values: Record<string, unknown>, responsesSpy: typeof vi.fn) {
 	return {
 		request: {
 			formData: async () => {

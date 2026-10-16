@@ -29,10 +29,7 @@
 				}}
 			/>
 		{:else}
-			<CreateCoverImageForm
-				values={{ comicJsonString: JSON.stringify(comic) }}
-				label={m.addCover()}
-			/>
+			<CreateCoverImageForm values={{ comic }} label={m.addCover()} />
 		{/if}
 		<Section>
 			<Heading>{m.comicStyle()}</Heading>

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION, type CreatePanelImageResult } from '$lib/utils/actions/actions';
+	import { ACTION } from '$lib/utils/actions/actions';
+	import type { CreatePanelImageResult } from '$lib/utils/actions/createPanelImage';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { addPanelImage } from '$lib/utils/db/db';
 	import {
@@ -34,7 +35,7 @@
 					height: image.landscape.height,
 					characters: image.landscape.characters,
 				},
-				alt: image.landscape.alt,
+				alt: image.alt,
 			});
 		}
 		await update();
@@ -55,7 +56,7 @@
 
 <form method="POST" action={`?/${ACTION.CREATE_PANEL_IMAGE}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
-		<input type="hidden" name={entry[0]} value={entry[1]} />
+		<input type="hidden" name={entry[0]} value={JSON.stringify(entry[1])} />
 	{/each}
 
 	{#if imageName}

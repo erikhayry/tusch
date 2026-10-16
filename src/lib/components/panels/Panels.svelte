@@ -17,7 +17,7 @@
 			{#each panels as panel, index (panel.id)}
 				<li>
 					<CreatePanelForm
-						values={{ comicId, index, panelsJsonString: JSON.stringify(panels) }}
+						values={{ comicId, index, panels }}
 						label={m.addPanelBefore({ number: index + 1 })}
 					/>
 					<a
@@ -26,7 +26,7 @@
 						>{m.panel({ number: index + 1 })}
 					</a>
 					<CreatePanelForm
-						values={{ comicId, index, panelsJsonString: JSON.stringify(panels) }}
+						values={{ comicId, index, panels }}
 						label={m.addPanelAfter({ number: index + 1 })}
 					/>
 				</li>

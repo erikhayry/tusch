@@ -25,8 +25,8 @@
 			label={m.addImage()}
 			values={{
 				comicId,
-				panelJsonString: JSON.stringify(panel),
-				charactersJsonString: JSON.stringify(characters),
+				panel,
+				characters,
 				style,
 			}}
 		/>
@@ -37,8 +37,8 @@
 			imageName={panel.image?.landscape.src}
 			values={{
 				comicId,
-				panelJsonString: JSON.stringify(panel),
-				charactersJsonString: JSON.stringify(characters),
+				panel,
+				characters,
 				style,
 			}}
 		/>

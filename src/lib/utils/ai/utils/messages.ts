@@ -1,4 +1,4 @@
-import type { Comic, ComicStyle, Panel } from '$lib/types';
+import type { Character, Comic, ComicStyle, Panel } from '$lib/types';
 import { STYLES } from '$lib/utils/comicStyles';
 import type { ResponseInputItem } from 'openai/resources/responses/responses.mjs';
 import { OPEN_AI_ROLE, OPEN_AI_TYPE } from './settings';
@@ -82,13 +82,13 @@ export function buildCoverImageMessages({ comic }: { comic: Comic }): string[] {
 
 export function buildPanelImageMessages({
 	panel,
-	instruction,
-	charactersJson,
+	instructions,
+	characters,
 	style,
 }: {
 	panel: Panel;
-	instruction: string;
-	charactersJson: string;
+	instructions: string;
+	characters: Character[];
 	style: ComicStyle;
 }): string[] {
 	const meta: string[] = [];
@@ -104,14 +104,14 @@ export function buildPanelImageMessages({
 	if (panel.season) meta.push(`Season: ${panel.season}`);
 	if (panel.timeOfDay) meta.push(`Time of day: ${panel.timeOfDay}`);
 
-	meta.push(`Characters in comic: ${charactersJson}`);
+	meta.push(`Characters in comic: ${JSON.stringify(characters)}`);
 
 	return [
 		IMAGE.WHAT,
 		...meta,
 		...IMAGE.HOWS,
 		...buildStyleInstruction(style),
-		`USER INSTRUCTION: ${instruction}`,
+		`USER INSTRUCTION: ${instructions}`,
 	];
 }
 

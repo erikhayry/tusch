@@ -9,7 +9,8 @@
 
 	import Section from '$lib/components/relativeHeading/Section.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION, type CreateComicResult } from '$lib/utils/actions/actions';
+	import { ACTION } from '$lib/utils/actions/actions';
+	import type { CreateComicResult } from '$lib/utils/actions/createComic';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { STYLES } from '$lib/utils/comicStyles';
 	import { addComic } from '$lib/utils/db/db';

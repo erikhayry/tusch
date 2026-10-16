@@ -1,9 +1,9 @@
 import { type Action, type ActionFailure } from '@sveltejs/kit';
 import { byok } from './byok';
 import { createComic } from './createComic';
-import { createCoverImage } from './createCoverImage';
-import { createPanel } from './createPanel';
-import { createPanelImage } from './createPanelImage';
+import { submitCoverImage } from './createCoverImage';
+import { submitPanel } from './createPanel';
+import { submitPanelImage } from './createPanelImage';
 
 export const ACTION = {
 	CLIENT: 'client',
@@ -23,7 +23,7 @@ export const globalActions = {
 	},
 	[ACTION.BYOK]: byok,
 	[ACTION.CREATE_COMIC]: createComic,
-	[ACTION.CREATE_PANEL]: createPanel,
-	[ACTION.CREATE_COVER_IMAGE]: createCoverImage,
-	[ACTION.CREATE_PANEL_IMAGE]: createPanelImage,
+	[ACTION.CREATE_PANEL]: submitPanel,
+	[ACTION.CREATE_COVER_IMAGE]: submitCoverImage,
+	[ACTION.CREATE_PANEL_IMAGE]: submitPanelImage,
 } satisfies Record<string, Action>;

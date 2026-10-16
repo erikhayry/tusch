@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION, type CreateCoverImageResult } from '$lib/utils/actions/actions';
+	import { ACTION } from '$lib/utils/actions/actions';
+	import type { CreateCoverImageResult } from '$lib/utils/actions/createCoverImage';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { addCoverImage } from '$lib/utils/db/db';
 	import {
@@ -15,13 +16,13 @@
 
 	const handleSubmit = onSubmit<CreateCoverImageResult>(async ({ update, result }) => {
 		if (result.data) {
-			const { landscape, portrait } = result.data.image;
+			const { landscape, portrait, alt } = result.data.image;
 			const fileName = await saveImage(
 				`${generateId()}.png`,
 				`data:image/png;base64,${landscape.src}`,
 			);
 			addCoverImage(result.data.comicId, {
-				alt: landscape.alt,
+				alt,
 				landscape: { ...landscape, src: fileName },
 				portrait: { ...portrait, src: fileName },
 			});
@@ -44,7 +45,7 @@
 
 <form method="POST" action={`?/${ACTION.CREATE_COVER_IMAGE}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
-		<input type="hidden" name={entry[0]} value={entry[1]} />
+		<input type="hidden" name={entry[0]} value={JSON.stringify(entry[1])} />
 	{/each}
 
 	{#if imageName}
