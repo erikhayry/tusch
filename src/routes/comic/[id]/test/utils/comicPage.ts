@@ -2,7 +2,7 @@ import { m } from '$lib/paraglide/messages';
 import type { Comic } from '$lib/types';
 import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import type { Locator, Page } from '@playwright/test';
-import { CREATE_COVER_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
+import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
 
 export class ComicPage {
 	readonly page: Page;
@@ -29,7 +29,7 @@ export class ComicPage {
 		this.deletePanelButton = page.getByRole('button', { name: m.deletePanel({ number: 3 }) });
 		this.initialCoverImage = page.getByRole('img', { name: this.comic.cover?.alt });
 		this.newCoverImage = page.getByRole('img', {
-			name: getImageFromOpenAiResponse(CREATE_COVER_RESPONSE).alt,
+			name: getImageFromOpenAiResponse(CREATE_COVER_IMAGE_RESPONSE).alt,
 		});
 		this.deleteCoverButton = page.getByRole('button', { name: m.deleteCover() });
 		this.addCoverButton = page.getByRole('button', { name: m.addCover() });

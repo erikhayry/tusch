@@ -26,7 +26,7 @@ export const CREATE_COMIC_RESPONSE: OpenAiOutput = {
 	],
 };
 
-export const CREATE_COVER_RESPONSE: OpenAiOutput = {
+export const CREATE_COVER_IMAGE_RESPONSE: OpenAiOutput = {
 	output: [
 		{
 			type: 'reasoning',

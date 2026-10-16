@@ -53,7 +53,6 @@ export type CreatePanelImageResult = {
 export type CreateCoverImageResult = { comicId: string; image: ResponsiveImage; output: unknown };
 export type ByokResult = { success: boolean };
 type ActionResult<T> = Promise<T | ActionFailure<{ message: string }>>;
-
 export const globalActions = {
 	[ACTION.BYOK]: async ({ request, cookies, fetch }: RequestEvent): ActionResult<ByokResult> => {
 		const result = await getByokValues(await request.formData());
@@ -147,7 +146,7 @@ export const globalActions = {
 			};
 		} catch (e: unknown) {
 			const message = e instanceof Error ? e.message : 'Unknown error occurred';
-			return fail(500, { message });
+			return error(500, { message });
 		}
 	},
 
@@ -163,9 +162,11 @@ export const globalActions = {
 
 		try {
 			const { panelsJsonString, index, comicId } = result.data;
+
 			const messagesJsonString = JSON.stringify(
 				buildPanelMessages(index, JSON.parse(panelsJsonString)),
 			);
+
 			const response = await fetch(
 				'/api/ai/panel',
 				getPostRequestInit({

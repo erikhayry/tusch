@@ -4,7 +4,7 @@ import { paraglideMiddleware } from '$lib/paraglide/server';
 import type { Handle, HandleFetch } from '@sveltejs/kit';
 import {
 	CREATE_COMIC_RESPONSE,
-	CREATE_COVER_RESPONSE,
+	CREATE_COVER_IMAGE_RESPONSE,
 	CREATE_PANEL_IMAGE_RESPONSE,
 	CREATE_PANEL_RESPONSE,
 	PING_RESPONSE,
@@ -30,7 +30,7 @@ function isPlaywrightTestRequest(): boolean {
 
 const MOCK: Record<string, string> = {
 	'/api/ai/ping': JSON.stringify(PING_RESPONSE),
-	'/api/ai/cover-image': JSON.stringify(CREATE_COVER_RESPONSE),
+	'/api/ai/cover-image': JSON.stringify(CREATE_COVER_IMAGE_RESPONSE),
 	'/api/ai/panel-image': JSON.stringify(CREATE_PANEL_IMAGE_RESPONSE),
 	'/api/ai/panel': JSON.stringify(CREATE_PANEL_RESPONSE),
 	'/api/ai/comic': JSON.stringify(CREATE_COMIC_RESPONSE),
