@@ -1,8 +1,5 @@
-import {
-	CreateCoverImageValuesSchema,
-	INCLUDE_IMAGE_VALUE_KEY,
-	INSTRUCTIONS_VALUE_KEY,
-} from '$lib/utils/db/dbTypes';
+import { CreateCoverImageValuesSchema } from '$lib/utils/actions/createCoverImage';
+import { INCLUDE_IMAGE_VALUE_KEY, INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
 import { z } from 'zod';
 
 export const CreateCoverImageFormPropsSchema = z.object({

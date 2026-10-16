@@ -1,6 +1,6 @@
+import { asOpenAiOutput, PING_SUCCESS } from '$lib/utils/ai/sdk/openAi';
 import { describe, expect, it, vi } from 'vitest';
 import { GET } from '../+server';
-import { PING_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
 import { COOKIES_MOCK } from '../../test/util/mockPostArgs';
 
 vi.mock('openai', async () => {
@@ -15,6 +15,6 @@ describe('api/ai/comic', () => {
 		expect(result.status).toBe(200);
 
 		const json = await result.json();
-		expect(json).toEqual(PING_RESPONSE);
+		expect(json).toEqual(asOpenAiOutput(PING_SUCCESS));
 	});
 });

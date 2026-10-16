@@ -1,13 +1,6 @@
 import { generateMock } from '$lib/test/utils/generateMock';
 import { CharacterSchema, ComicSchema, PanelArraySchema, PanelSchema } from '$lib/types';
-import {
-	ByokValuesSchema,
-	CreateComicValuesSchema,
-	CreateCoverImageValuesSchema,
-	CreatePanelImageValuesSchema,
-	CreatePanelValuesSchema,
-} from '$lib/utils/db/dbTypes';
-import type { ActionFailure, RequestEvent } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -17,14 +10,12 @@ import {
 	CREATE_PANEL_RESPONSE,
 	PING_RESPONSE,
 } from '../../../../tests/mock/openAi/openAiResponse';
-import {
-	ACTION,
-	globalActions,
-	type CreateComicResult,
-	type CreateCoverImageResult,
-	type CreatePanelImageResult,
-	type CreatePanelResult,
-} from '../actions';
+import { ACTION, globalActions } from '../actions';
+import { ByokValuesSchema } from '../byok';
+import { CreateComicValuesSchema, type CreateComicResult } from '../createComic';
+import { CreateCoverImageValuesSchema, type CreateCoverImageResult } from '../createCoverImage';
+import { CreatePanelValuesSchema, type CreatePanelResult } from '../createPanel';
+import { CreatePanelImageValuesSchema, type CreatePanelImageResult } from '../createPanelImage';
 
 const cookesSetSpy = vi.fn();
 
@@ -46,7 +37,7 @@ describe('actions', () => {
 
 			const result = await globalActions[ACTION.BYOK](getMockRequestEvent(values, responseSpy));
 
-			expect(result).toEqual({ success: true });
+			expect(result.success).toBeTruthy();
 		});
 
 		it('should return error if invalid data is provided', async () => {
@@ -90,11 +81,9 @@ describe('actions', () => {
 				.mockResolvedValueOnce(CREATE_COMIC_RESPONSE)
 				.mockResolvedValueOnce(CREATE_COVER_IMAGE_RESPONSE);
 
-			const result = (await globalActions[ACTION.CREATE_COMIC](
-				getMockRequestEvent(values, responseSpy),
-			)) as unknown as ActionFailure;
-
-			expect(result.status).toEqual(500);
+			await expect(
+				globalActions[ACTION.CREATE_COMIC](getMockRequestEvent(values, responseSpy)),
+			).rejects.toThrow();
 		});
 
 		it('should return error if response is invalid', async () => {

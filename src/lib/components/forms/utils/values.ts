@@ -1,21 +1,8 @@
 import {
-	type ByokValues,
-	ByokValuesSchema,
-	type CreateComicValues,
-	CreateComicValuesSchema,
-	type CreateCoverImageValues,
-	CreateCoverImageValuesSchema,
-	type CreatePanelImageValues,
-	CreatePanelImageValuesSchema,
-	type CreatePanelValues,
-	CreatePanelValuesSchema,
 	type DeleteValues,
 	DeleteValuesSchema,
 	type EditValues,
 	EditValuesSchema,
-	IMAGE_VALUE_KEY,
-	INCLUDE_IMAGE_VALUE_KEY,
-	INSTRUCTIONS_VALUE_KEY,
 } from '$lib/utils/db/dbTypes';
 import type { ZodSafeParseResult } from 'zod';
 
@@ -33,25 +20,6 @@ export async function getEditValues(formData: FormData): Promise<ZodSafeParseRes
 	});
 }
 
-export async function getCreateComicValues(
-	formData: FormData,
-): Promise<ZodSafeParseResult<CreateComicValues>> {
-	return CreateComicValuesSchema.safeParse({
-		url: formData.get('url'),
-		style: formData.get('style'),
-	});
-}
-
-export async function getCreatePanelValues(
-	formData: FormData,
-): Promise<ZodSafeParseResult<CreatePanelValues>> {
-	return CreatePanelValuesSchema.safeParse({
-		comicId: formData.get('comicId'),
-		panelsJsonString: formData.get('panelsJsonString'),
-		index: Number.parseInt(formData.get('index')!.toString()),
-	});
-}
-
 export async function getDeleteValues(
 	formData: FormData,
 ): Promise<ZodSafeParseResult<DeleteValues>> {
@@ -60,37 +28,5 @@ export async function getDeleteValues(
 		panelId: formData.get('panelId'),
 		index: getIndex(formData),
 		type: formData.get('type'),
-	});
-}
-
-export async function getCreateCoverImageValues(
-	formData: FormData,
-): Promise<ZodSafeParseResult<CreateCoverImageValues>> {
-	return CreateCoverImageValuesSchema.safeParse({
-		comicJsonString: formData.get('comicJsonString'),
-		style: formData.get('style'),
-		[INSTRUCTIONS_VALUE_KEY]: formData.get(INSTRUCTIONS_VALUE_KEY),
-		[INCLUDE_IMAGE_VALUE_KEY]: Boolean(formData.get(INCLUDE_IMAGE_VALUE_KEY)),
-		[IMAGE_VALUE_KEY]: formData.get(IMAGE_VALUE_KEY) || undefined,
-	});
-}
-
-export async function getCreatePanelImageValues(
-	formData: FormData,
-): Promise<ZodSafeParseResult<CreatePanelImageValues>> {
-	return CreatePanelImageValuesSchema.safeParse({
-		comicId: formData.get('comicId'),
-		panelJsonString: formData.get('panelJsonString'),
-		style: formData.get('style'),
-		charactersJsonString: formData.get('charactersJsonString'),
-		[INSTRUCTIONS_VALUE_KEY]: formData.get(INSTRUCTIONS_VALUE_KEY),
-		[INCLUDE_IMAGE_VALUE_KEY]: Boolean(formData.get(INCLUDE_IMAGE_VALUE_KEY)),
-		[IMAGE_VALUE_KEY]: formData.get(IMAGE_VALUE_KEY) || undefined,
-	});
-}
-
-export async function getByokValues(formData: FormData): Promise<ZodSafeParseResult<ByokValues>> {
-	return ByokValuesSchema.safeParse({
-		key: formData.get('key'),
 	});
 }

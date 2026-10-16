@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { POST } from '../+server';
 import { CREATE_PANEL_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
 import { mockParse } from '../../test/util/mockOpenAi';
-import { mockPotsArgs } from '../../test/util/mockPostArgs';
+import { mockPostArgs } from '../../test/util/mockPostArgs';
 
 vi.mock('openai', async () => {
 	const { mockOpenAiFactory } = await import('../../test/util/mockOpenAi');
@@ -13,7 +13,7 @@ vi.mock('openai', async () => {
 describe('api/ai/panel', () => {
 	it('should return response', async () => {
 		mockParse.mockResolvedValue(CREATE_PANEL_RESPONSE);
-		const result = await POST(mockPotsArgs('["test"]', SchemaName.enum.initComic));
+		const result = await POST(mockPostArgs('["test"]', SchemaName.enum.initComic));
 
 		expect(result.status).toBe(200);
 

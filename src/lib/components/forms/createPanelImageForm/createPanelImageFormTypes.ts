@@ -1,8 +1,5 @@
-import {
-	CreatePanelImageValuesSchema,
-	INCLUDE_IMAGE_VALUE_KEY,
-	INSTRUCTIONS_VALUE_KEY,
-} from '$lib/utils/db/dbTypes';
+import { CreatePanelImageValuesSchema } from '$lib/utils/actions/createPanelImage';
+import { INCLUDE_IMAGE_VALUE_KEY, INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
 import { z } from 'zod';
 
 export const CreatePanelImageFormPropsSchema = z.object({

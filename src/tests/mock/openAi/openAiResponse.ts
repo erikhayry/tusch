@@ -98,4 +98,16 @@ export const CREATE_PANEL_IMAGE_RESPONSE: OpenAiOutput = {
 	],
 };
 
-export const PING_RESPONSE = { status: true, message: 'API key is valid' };
+export const PING_RESPONSE: OpenAiOutput = {
+	output: [
+		{
+			type: 'message',
+			content: [
+				{
+					type: 'output_text',
+					text: '{"data":{"success":true, "message": "test"}}',
+				},
+			],
+		},
+	],
+};

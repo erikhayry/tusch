@@ -2,15 +2,26 @@ import { COOKIE_NAME } from '$lib/utils/key';
 import type { Cookies } from '@sveltejs/kit';
 import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
-import {
-	OpenAiOutputSchema,
-	type OpenAiOutput,
-	type OpenAiPingOutput,
-	type SchemaName,
-} from '../aiTypes';
+import { OpenAiOutputSchema, type OpenAiOutput, type SchemaName } from '../aiTypes';
 import { getSchemaAsTextFormat } from '../utils/format';
 import { getChatMessages, getImageMessages } from '../utils/messages';
 import { IMAGE_SIZE, MODEL, TOOLS, type ImageSizeValue } from '../utils/settings';
+
+export function asOpenAiOutput(output: Record<string, unknown>): OpenAiOutput {
+	return {
+		output: [
+			{
+				type: 'message',
+				content: [
+					{
+						type: 'output_text',
+						text: JSON.stringify(output),
+					},
+				],
+			},
+		],
+	};
+}
 
 function getClient(cookies: Cookies): OpenAI {
 	const apiKey = cookies.get(COOKIE_NAME);
@@ -28,35 +39,40 @@ async function parse(client: OpenAI, req: ResponseCreateParamsWithTools): Promis
 	return OpenAiOutputSchema.parse(response);
 }
 
-export async function ping(cookies: Cookies): Promise<OpenAiPingOutput> {
+export const PING_SUCCESS = { status: true, message: 'API key is valid' };
+
+export async function ping(cookies: Cookies): Promise<OpenAiOutput> {
 	const client = getClient(cookies);
 	try {
 		await client.models.list();
-		return { status: true, message: 'API key is valid' };
+		return asOpenAiOutput(PING_SUCCESS);
 	} catch (error) {
 		if (error instanceof OpenAI.AuthenticationError) {
-			return { status: false, message: 'API key is invalid or rejected (HTTP 401)' };
+			return asOpenAiOutput({
+				status: false,
+				message: 'API key is invalid or rejected (HTTP 401)',
+			});
 		}
 
 		if (error instanceof OpenAI.PermissionDeniedError) {
-			return { status: false, message: 'API key lacks permission (HTTP 403)' };
+			return asOpenAiOutput({ status: false, message: 'API key lacks permission (HTTP 403)' });
 		}
 
 		if (error instanceof OpenAI.APIConnectionError) {
-			return { status: false, message: 'Could not connect to the API endpoint' };
+			return asOpenAiOutput({ status: false, message: 'Could not connect to the API endpoint' });
 		}
 
 		if (error instanceof OpenAI.APIError) {
-			return {
+			return asOpenAiOutput({
 				status: false,
 				message: `API request failed (HTTP ${error.status}): ${error.message}`,
-			};
+			});
 		}
 
-		return {
+		return asOpenAiOutput({
 			status: false,
 			message: `Unexpected error: ${error instanceof Error ? error.message : String(error)}`,
-		};
+		});
 	}
 }
 

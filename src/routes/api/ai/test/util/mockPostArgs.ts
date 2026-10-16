@@ -6,7 +6,7 @@ export const COOKIES_MOCK = {
 	},
 };
 
-export function mockPotsArgs(messagesJsonString: string, schemaName: SchemaName) {
+export function mockPostArgs(messagesJsonString: string, schemaName: SchemaName) {
 	return {
 		request: {
 			json: async () => ({

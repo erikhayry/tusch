@@ -34,6 +34,12 @@ export type CreatedImage = z.infer<typeof CreatedImageSchema>;
 export const CreatePanelSchema = INITAL_PANEL_SCHEMA;
 export type CreatePanel = z.infer<typeof CreatePanelSchema>;
 
+export const PingSchema = z.object({
+	success: z.boolean(),
+	message: z.string(),
+});
+export type Ping = z.infer<typeof PingSchema>;
+
 export const SchemaName = z.enum(['initComic', 'createImage', 'createPanel']);
 export type SchemaName = z.infer<typeof SchemaName>;
 

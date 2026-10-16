@@ -1,4 +1,4 @@
-import { CreatePanelValuesSchema } from '$lib/utils/db/dbTypes';
+import { CreatePanelValuesSchema } from '$lib/utils/actions/createPanel';
 import { z } from 'zod';
 
 export const CreatePanelFormPropsSchema = z.object({
