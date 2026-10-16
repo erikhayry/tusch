@@ -1,9 +1,22 @@
 import type { OpenAiOutput } from '$lib/utils/ai/aiTypes';
 import { error, type RequestEvent } from '@sveltejs/kit';
-import { getPostRequestInit } from './getPostRequestInit';
 
 export type ValidationResult<T> =
 	{ success: true; data: T } | { success: false; error: { message: string } };
+
+function getPostRequestInit(body?: Record<string, unknown>) {
+	if (body) {
+		return {
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
+	}
+
+	return undefined;
+}
 
 export async function postAiResponse<T, R extends ValidationResult<T>, H>({
 	api,
