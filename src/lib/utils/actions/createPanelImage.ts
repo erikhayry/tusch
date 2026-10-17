@@ -16,7 +16,7 @@ export const CreatePanelImageValuesSchema = z.object({
 	characters: z.array(CharacterSchema),
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
 	[IMAGE_VALUE_KEY]: z.string().optional(),
-	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
+	[INCLUDE_IMAGE_VALUE_KEY]: z.string().optional(),
 });
 export type CreatePanelImageValues = z.infer<typeof CreatePanelImageValuesSchema>;
 

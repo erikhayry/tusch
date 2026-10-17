@@ -6,9 +6,9 @@ export function renderPanelThumbnail(props = PanelThumbnailPropsMock[0]) {
 	const { findByRole, queryByRole, getByText } = render(PanelThumbnail, props);
 
 	return {
-		findPanelImage: () => findByRole('img', { name: props.alt }),
-		queryPanelImage: () => queryByRole('img', { name: props.alt }),
-		getPanelId: (id: string) => getByText(id),
+		findPanelImage: () => findByRole('img', { name: props.panel.editorialTitle }),
+		queryPanelImage: () => queryByRole('img', { name: props.panel.editorialTitle }),
+		getPanelTitle: (title: string) => getByText(title),
 		props,
 	};
 }

@@ -38,7 +38,7 @@ export function renderPanel(props = PanelPropsMock[0]) {
 		getImage: () => findByRole('img', { name: props.panel.image?.alt }),
 		getTitle: () =>
 			getByRole('heading', {
-				name: `${m.panelTitle({ number: props.number, total: props.totalNumberOfPanels })}`,
+				name: `${props.number}/${props.totalNumberOfPanels}: ${props.panel.editorialTitle}`,
 				level: 2,
 			}),
 		getVisualDescription: () => getByText(props.panel.visualDescription),

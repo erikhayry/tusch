@@ -35,7 +35,7 @@
 			<Heading>{m.comicStyle()}</Heading>
 			<p>{comic.style}</p>
 
-			<Heading>Source</Heading>
+			<Heading>{m.source()}</Heading>
 			<a target="_blank" rel="external" href={comic.source}>{comic.source}</a>
 
 			<Heading id="panels">{m.panels()}</Heading>
@@ -43,7 +43,7 @@
 				{#each comic.panels as panel, index (panel)}
 					<li>
 						<a href={resolve(`/comic/${comic.id}/${panel.id}`)}>
-							<PanelThumbnail {panel} alt={panel.id} />
+							<PanelThumbnail {panel} />
 						</a>
 						<DeleteItemForm
 							label={m.deletePanel({ number: index + 1 })}

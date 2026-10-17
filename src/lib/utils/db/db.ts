@@ -8,6 +8,7 @@ const STORAGE_KEY = 'comics_db';
 
 function loadInitialData(): [string, Comic][] {
 	if (!browser) return [];
+
 	try {
 		const stored = localStorage.getItem(STORAGE_KEY);
 		if (stored) {

@@ -22,7 +22,7 @@ export class ComicPage {
 		this.page = page;
 		this.comic = comic;
 		this.heading = page.getByRole('heading', { name: this.comic.title, level: 2 });
-		this.link = page.getByRole('link', { name: this.comic.panels[0].id });
+		this.link = page.getByRole('link', { name: this.comic.panels[0].editorialTitle });
 		this.notFound = page.getByRole('heading', { name: '404' });
 		this.listItems = page.getByRole('list', { name: m.panels() }).getByRole('listitem');
 		this.initialNumberOfListItems = this.comic.panels.length;

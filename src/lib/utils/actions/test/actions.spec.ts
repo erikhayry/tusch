@@ -131,7 +131,7 @@ describe('actions', () => {
 	});
 
 	describe('ACTION.CREATE_PANEL_IMAGE', () => {
-		it('should return a image', async () => {
+		it('should return a panel image', async () => {
 			const values = {
 				...generateMock(CreatePanelImageValuesSchema),
 				charactersJsonString: JSON.stringify([generateMock(CharacterSchema)]),

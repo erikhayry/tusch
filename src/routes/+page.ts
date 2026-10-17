@@ -3,6 +3,8 @@ import { resolve } from '$app/paths';
 import { type Comic } from '$lib/types';
 import { getComics } from '$lib/utils/db/db';
 
+export const ssr = false;
+
 export interface Props {
 	comics: Comic[];
 }
@@ -15,6 +17,6 @@ export function load() {
 	}
 
 	return {
-		comics: getComics(),
+		comics,
 	};
 }

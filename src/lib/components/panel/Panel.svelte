@@ -18,7 +18,7 @@
 </script>
 
 <Section data-testId={PanelTestId}>
-	<Heading>{m.panelTitle({ number, total: totalNumberOfPanels })}</Heading>
+	<Heading>{number}/{totalNumberOfPanels}: {panel.editorialTitle}</Heading>
 	<p>{panel.visualDescription}</p>
 	{#if panel.image === undefined}
 		<CreatePanelImageForm

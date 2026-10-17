@@ -12,10 +12,9 @@ export const PanelPropsSchema = z.object({
 
 export const PanelThumbnailPropsSchema = z.object({
 	panel: PanelSchema.pick({
-		id: true,
 		image: true,
+		editorialTitle: true,
 	}),
-	alt: z.string(),
 });
 
 export type PanelProps = z.infer<typeof PanelPropsSchema>;

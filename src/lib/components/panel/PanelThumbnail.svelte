@@ -2,11 +2,11 @@
 	import Image from '../image/Image.svelte';
 	import { type PanelThumbnailProps } from './panelTypes';
 
-	let { panel, alt }: PanelThumbnailProps = $props();
+	let { panel }: PanelThumbnailProps = $props();
 </script>
 
 {#if panel.image}
-	<Image image={panel.image} {alt} />
+	<Image image={panel.image} alt={panel.editorialTitle} />
 {:else}
-	{panel.id}
+	{panel.editorialTitle || '??'}
 {/if}

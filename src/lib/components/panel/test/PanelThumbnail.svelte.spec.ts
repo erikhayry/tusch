@@ -9,13 +9,13 @@ describe('Panel Thumbnail', () => {
 		expect(await findPanelImage()).toBeInTheDocument();
 	});
 
-	it('should render panel id if image does not exist', () => {
-		const { queryPanelImage, getPanelId } = renderPanelThumbnail({
+	it('should render panel title if image does not exist', () => {
+		const { queryPanelImage, getPanelTitle } = renderPanelThumbnail({
 			...PanelThumbnailPropsMock[0],
 			panel: { ...PanelThumbnailPropsMock[0].panel, image: undefined },
 		});
 
 		expect(queryPanelImage()).not.toBeInTheDocument();
-		expect(getPanelId(PanelThumbnailPropsMock[0].panel.id)).toBeInTheDocument();
+		expect(getPanelTitle(PanelThumbnailPropsMock[0].panel.editorialTitle)).toBeInTheDocument();
 	});
 });

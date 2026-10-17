@@ -165,6 +165,7 @@ export const NIRVANA: Comic = {
 	panels: [
 		{
 			id: '1b5d0c66-131d-4a3e-a8f5-14584e8934c1',
+			editorialTitle: 'Panel 1 editorialTitle',
 			captions: [
 				'Aberdeen, Washington. Kurt Cobain och Krist Novoselic börjar spela tillsammans och lägger grunden till ett band som så småningom får namnet Nirvana.',
 			],
@@ -264,6 +265,7 @@ export const NIRVANA: Comic = {
 		},
 		{
 			id: '58a77ab8-39d6-4500-8d59-9e86af54d7d2',
+			editorialTitle: 'Panel 2 editorialTitle',
 			captions: [
 				'Efter spelningar i den lokala musikscenen ger Nirvana ut debutalbumet Bleach på skivbolaget Sub Pop.',
 			],
@@ -363,6 +365,7 @@ export const NIRVANA: Comic = {
 		},
 		{
 			id: 'e0dbad89-928a-4f7c-bfad-0c00d8b52c92',
+			editorialTitle: 'Panel 3 editorialTitle',
 			captions: [
 				'År 1990 ansluter Dave Grohl som trummis. Den nya sättningen börjar arbeta fram nästa kapitel för bandet.',
 			],

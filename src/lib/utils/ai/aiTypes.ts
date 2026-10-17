@@ -2,6 +2,7 @@ import { CharachterPositionsSchema, ComicSchema, PanelSchema } from '$lib/types'
 import z from 'zod';
 
 const INITAL_PANEL_SCHEMA = PanelSchema.pick({
+	editorialTitle: true,
 	captions: true,
 	dialogue: true,
 	visualDescription: true,
