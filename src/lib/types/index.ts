@@ -151,3 +151,6 @@ export const ComicSchema = z.object({
 	characters: z.array(CharacterSchema),
 });
 export type Comic = z.infer<typeof ComicSchema>;
+
+export const ModelSchema = z.string();
+export type Model = z.infer<typeof ModelSchema>;

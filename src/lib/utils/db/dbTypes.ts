@@ -1,5 +1,10 @@
 import z from 'zod';
 
+export const STORAGE = {
+	COMICS: 'comics_db',
+	CONFIG: 'config_db',
+} as const;
+
 export const DB_ITEM_TYPE = z.enum([
 	'dialogue',
 	'captions',
@@ -57,3 +62,8 @@ export type EditValues = z.infer<typeof EditValuesSchema>;
 export const INSTRUCTIONS_VALUE_KEY = 'instructions';
 export const INCLUDE_IMAGE_VALUE_KEY = 'includeImage';
 export const IMAGE_VALUE_KEY = 'imageUrl';
+
+export const ConfigValuesSchema = z.object({
+	model: z.string(),
+});
+export type ConfigValues = z.infer<typeof ConfigValuesSchema>;

@@ -13,7 +13,7 @@
 	import type { CreateComicResult } from '$lib/utils/actions/createComic';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { STYLES } from '$lib/utils/comicStyles';
-	import { addComic } from '$lib/utils/db/db';
+	import { addComic } from '$lib/utils/db/db.svelte';
 	import { generateId } from '$lib/utils/id';
 	import { saveImage } from '$lib/utils/storage/storage';
 

@@ -111,3 +111,26 @@ export const PING_RESPONSE: OpenAiOutput = {
 		},
 	],
 };
+
+export const MODELS_RESPONSE = {
+	options: { method: 'get', path: '/models', __security: { bearerAuth: true } },
+	response: {},
+	body: { object: 'list', data: [[Object], [Object]] },
+	data: [
+		{
+			id: 'gpt-6-luna',
+			object: 'model',
+			created: 1789406102,
+			owned_by: 'system',
+			shutdown_date: null,
+		},
+		{
+			id: 'gpt-image-2.5-flare',
+			object: 'model',
+			created: 1788563147,
+			owned_by: 'system',
+			shutdown_date: null,
+		},
+	],
+	object: 'list',
+};

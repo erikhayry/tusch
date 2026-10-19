@@ -7,6 +7,7 @@ import {
 	CREATE_COVER_IMAGE_RESPONSE,
 	CREATE_PANEL_IMAGE_RESPONSE,
 	CREATE_PANEL_RESPONSE,
+	MODELS_RESPONSE,
 	PING_RESPONSE,
 } from './tests/mock/openAi/openAiResponse';
 
@@ -34,6 +35,7 @@ const MOCK: Record<string, string> = {
 	'/api/ai/panel-image': JSON.stringify(CREATE_PANEL_IMAGE_RESPONSE),
 	'/api/ai/panel': JSON.stringify(CREATE_PANEL_RESPONSE),
 	'/api/ai/comic': JSON.stringify(CREATE_COMIC_RESPONSE),
+	'/api/ai/models': JSON.stringify(MODELS_RESPONSE),
 };
 
 function getMockResponse(mock: string) {

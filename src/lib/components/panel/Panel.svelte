@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
-	import { getCharacter } from '$lib/utils/db/db';
+	import { getCharacter } from '$lib/utils/db/db.svelte';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';

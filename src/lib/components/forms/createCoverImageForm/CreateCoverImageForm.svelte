@@ -4,7 +4,7 @@
 	import { ACTION } from '$lib/utils/actions/actions';
 	import type { CreateCoverImageResult } from '$lib/utils/actions/createCoverImage';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
-	import { addCoverImage } from '$lib/utils/db/db';
+	import { addCoverImage } from '$lib/utils/db/db.svelte';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,

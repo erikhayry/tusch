@@ -1,5 +1,5 @@
 import type { Character, ComicStyle, Panel } from '$lib/types/index';
-import { getComic } from '$lib/utils/db/db';
+import { getComic } from '$lib/utils/db/db.svelte';
 
 export interface Props {
 	panel: Panel;

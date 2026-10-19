@@ -3,7 +3,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import { ACTION } from '$lib/utils/actions/actions';
 	import { onEdit, type SubmitCallback } from '$lib/utils/actions/onEdit';
-	import { editType } from '$lib/utils/db/db';
+	import { editType } from '$lib/utils/db/db.svelte';
 	import { getEditValues } from '../utils/values';
 	import { type EditTextFieldFormProps } from './editTextFieldFormTypes';
 

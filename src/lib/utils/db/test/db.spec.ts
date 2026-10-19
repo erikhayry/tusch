@@ -14,7 +14,7 @@ import {
 	editType,
 	getCharacter,
 	getComic,
-} from '$lib/utils/db/db';
+} from '$lib/utils/db/db.svelte';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DB_ITEM_TYPE } from '../dbTypes';
 

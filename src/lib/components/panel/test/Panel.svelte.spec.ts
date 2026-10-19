@@ -1,5 +1,5 @@
 import { renderPanel } from '$lib/components/panel/test/utils/renderPanel';
-import { getComics } from '$lib/utils/db/db';
+import { getComics } from '$lib/utils/db/db.svelte';
 import { fireEvent } from '@testing-library/svelte';
 import { describe, expect, it } from 'vitest';
 import type { PanelProps } from '../panelTypes';

@@ -120,3 +120,9 @@ export async function image({
 
 	return parse(client, req);
 }
+
+export async function models(cookies: Cookies) {
+	const client = getClient(cookies);
+
+	return client.models.list();
+}

@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { ACTION } from '$lib/utils/actions/actions';
 	import { onEdit } from '$lib/utils/actions/onEdit';
-	import { deleteType } from '$lib/utils/db/db';
+	import { deleteType } from '$lib/utils/db/db.svelte';
 	import { getDeleteValues } from '../utils/values';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
 

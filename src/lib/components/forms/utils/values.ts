@@ -1,4 +1,6 @@
 import {
+	type ConfigValues,
+	ConfigValuesSchema,
 	type DeleteValues,
 	DeleteValuesSchema,
 	type EditValues,
@@ -28,5 +30,13 @@ export async function getDeleteValues(
 		panelId: formData.get('panelId'),
 		index: getIndex(formData),
 		type: formData.get('type'),
+	});
+}
+
+export async function getConfigValues(
+	formData: FormData,
+): Promise<ZodSafeParseResult<ConfigValues>> {
+	return ConfigValuesSchema.safeParse({
+		model: formData.get('model'),
 	});
 }

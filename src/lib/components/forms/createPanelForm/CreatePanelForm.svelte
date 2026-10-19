@@ -3,7 +3,7 @@
 	import { ACTION } from '$lib/utils/actions/actions';
 	import type { CreatePanelResult } from '$lib/utils/actions/createPanel';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
-	import { addPanel } from '$lib/utils/db/db';
+	import { addPanel } from '$lib/utils/db/db.svelte';
 	import { type CreatePanelFormProps } from './createPanelFormTypes';
 
 	const handleSubmit = onSubmit<CreatePanelResult>(async ({ update, result }) => {

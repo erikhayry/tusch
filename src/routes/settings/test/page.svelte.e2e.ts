@@ -27,3 +27,13 @@ test.skip('shows error if invalid key', async ({ page }) => {
 
 	expect(createPage.invalidKeyMessage).toBeVisible();
 });
+
+test.only('should set model', async ({ page }) => {
+	const createPage = await new CreatePage(page).goto();
+
+	await createPage.modelsSelect.selectOption('gpt-image-2.5-flare');
+
+	await createPage.saveSettingsButton.click();
+
+	expect(createPage.currentModel).toHaveText('gpt-image-2.5-flare');
+});

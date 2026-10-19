@@ -1,5 +1,6 @@
-import { ImageAssetSchema, PanelSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
+import { ImageAssetSchema, ModelSchema, PanelSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
 import { CreatedImageSchema } from '$lib/utils/ai/aiTypes';
+import { ConfigValuesSchema } from '$lib/utils/db/dbTypes';
 import { vi } from 'vitest';
 import { zocker } from 'zocker';
 import z from 'zod';
@@ -8,6 +9,8 @@ export function generateMock<T extends z.ZodType>(schema: T): z.infer<T> {
 	return zocker(schema)
 		.setSeed(1)
 		.override(z.ZodFunction, () => vi.fn())
+		.supply(ModelSchema, 'gpt-6-luna')
+		.supply(ConfigValuesSchema, { model: 'gpt-6-luna' })
 		.supply(CreatedImageSchema, {
 			width: 800,
 			height: 600,
@@ -22,6 +25,8 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 	return zocker(schema)
 		.setSeed(1)
 		.optional({ undefined_chance: 0 })
+		.supply(ModelSchema, 'gpt-6-luna')
+		.supply(ConfigValuesSchema, { model: 'gpt-6-luna' })
 		.supply(PanelSchema.shape.dialogue, [
 			{
 				text: 'Arbetare: Vi kräver bättre villkor och rätten att organisera oss.',

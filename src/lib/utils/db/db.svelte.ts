@@ -1,16 +1,20 @@
 import { browser } from '$app/environment';
-import { type Comic, type Panel, type ResponsiveImage } from '$lib/types';
+import { type Comic, type Model, type Panel, type ResponsiveImage } from '$lib/types';
 import { SvelteMap } from 'svelte/reactivity';
 import { EXAMPLES } from '../../../examples/examples';
-import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from './dbTypes';
+import {
+	DB_ITEM_TYPE,
+	STORAGE,
+	type ConfigValues,
+	type DeleteValues,
+	type EditValues,
+} from './dbTypes';
 
-const STORAGE_KEY = 'comics_db';
-
-function loadInitialData(): [string, Comic][] {
+function loadInitialComics(): [string, Comic][] {
 	if (!browser) return [];
 
 	try {
-		const stored = localStorage.getItem(STORAGE_KEY);
+		const stored = localStorage.getItem(STORAGE.COMICS);
 		if (stored) {
 			const parsed = JSON.parse(stored);
 			if (Array.isArray(parsed) && parsed.length > 0) {
@@ -23,8 +27,22 @@ function loadInitialData(): [string, Comic][] {
 	return [];
 }
 
-export const DB = new SvelteMap<string, Comic>(loadInitialData());
-if (DB.size === 0) {
+function loadInitialConfig(): ConfigValues {
+	if (!browser) return {};
+
+	try {
+		const stored = localStorage.getItem(STORAGE.CONFIG);
+		if (stored) return JSON.parse(stored);
+		return {};
+	} catch (err) {
+		console.error('Failed to load DB from localStorage:', err);
+	}
+	return {};
+}
+export const COMIC_DB = new SvelteMap<string, Comic>(loadInitialComics());
+export const CONFIG_DB = $state<ConfigValues>(loadInitialConfig());
+
+if (COMIC_DB.size === 0) {
 	addComic(EXAMPLES[0]);
 	addComic({ ...EXAMPLES[0], id: '6dcbdd2b-a490-473f-bb50-fe7c894b8534', title: 'NIRVANA 2' });
 	addComic({ ...EXAMPLES[0], id: '6dcbdd2b-a490-473f-bb50-fe7c894b8535', title: 'NIRVANA 3' });
@@ -33,40 +51,40 @@ if (DB.size === 0) {
 export function saveDB(): void {
 	if (!browser) return;
 	try {
-		const entries = Array.from(DB.entries());
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+		const entries = Array.from(COMIC_DB.entries());
+		localStorage.setItem(STORAGE.COMICS, JSON.stringify(entries));
 	} catch (err) {
 		console.error('Failed to save DB to localStorage:', err);
 	}
 }
 
 export function getComic(id: string): Comic | undefined {
-	return DB.get(id);
+	return COMIC_DB.get(id);
 }
 
 export function getComics(): Comic[] {
-	return Array.from(DB.values());
+	return Array.from(COMIC_DB.values());
 }
 
 export function addComic(comic: Comic): Comic[] {
-	DB.set(comic.id, comic);
+	COMIC_DB.set(comic.id, comic);
 	saveDB();
 	return getComics();
 }
 
 export function deleteComic(id: string): Comic[] {
-	DB.delete(id);
+	COMIC_DB.delete(id);
 	saveDB();
 	return getComics();
 }
 
 export function clearComics(): void {
-	DB.clear();
+	COMIC_DB.clear();
 	saveDB();
 }
 
 export function updateComic(comic: Comic): Comic[] {
-	DB.set(comic.id, comic);
+	COMIC_DB.set(comic.id, comic);
 	saveDB();
 	return getComics();
 }
@@ -76,12 +94,12 @@ export function getPanel(comicId: string, panelId: string): Panel | undefined {
 }
 
 export function deletePanelImage(comicId: string, panelId: string): Comic[] {
-	const comic = DB.get(comicId);
+	const comic = COMIC_DB.get(comicId);
 	if (comic) {
 		const panel = comic.panels.find((p) => p.id === panelId);
 		if (panel) {
 			panel.image = undefined;
-			DB.set(comicId, comic);
+			COMIC_DB.set(comicId, comic);
 			saveDB();
 		}
 	}
@@ -158,10 +176,10 @@ export function editType(values: EditValues): Comic[] {
 }
 
 export function deleteCoverImage(comicId: string): Comic[] {
-	const comic = DB.get(comicId);
+	const comic = COMIC_DB.get(comicId);
 	if (comic) {
 		comic.cover = undefined;
-		DB.set(comicId, comic);
+		COMIC_DB.set(comicId, comic);
 		saveDB();
 	}
 
@@ -169,10 +187,10 @@ export function deleteCoverImage(comicId: string): Comic[] {
 }
 
 export function addCoverImage(comicId: string, image: ResponsiveImage): Comic[] {
-	const comic = DB.get(comicId);
+	const comic = COMIC_DB.get(comicId);
 	if (comic) {
 		comic.cover = image;
-		DB.set(comicId, comic);
+		COMIC_DB.set(comicId, comic);
 		saveDB();
 	}
 
@@ -180,12 +198,12 @@ export function addCoverImage(comicId: string, image: ResponsiveImage): Comic[] 
 }
 
 export function addPanelImage(comicId: string, panelId: string, image: ResponsiveImage): Comic[] {
-	const comic = DB.get(comicId);
+	const comic = COMIC_DB.get(comicId);
 	if (comic) {
 		const panel = comic.panels.find((p) => p.id === panelId);
 		if (panel) {
 			panel.image = image;
-			DB.set(comicId, comic);
+			COMIC_DB.set(comicId, comic);
 			saveDB();
 		}
 	}
@@ -205,4 +223,30 @@ export function addPanel(comicId: string, panel: Panel, index: number): Comic[] 
 
 export function getCharacter(comicId: string, characterId: string): string | undefined {
 	return getComic(comicId)?.characters.find((charachter) => charachter.id === characterId)?.name;
+}
+
+export function saveConfig(): void {
+	if (!browser) return;
+	try {
+		localStorage.setItem(STORAGE.CONFIG, JSON.stringify(CONFIG_DB));
+	} catch (err) {
+		console.error('Failed to save DB to localStorage:', err);
+	}
+}
+
+export function getConfig(): ConfigValues {
+	return CONFIG_DB;
+}
+
+export function addModel(model: Model): ConfigValues {
+	const config = getConfig();
+
+	config.model = model;
+	saveConfig();
+
+	return getConfig();
+}
+
+export function getModel(): Model | undefined {
+	return getConfig().model;
 }

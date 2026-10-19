@@ -1,7 +1,7 @@
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { type Comic } from '$lib/types';
-import { getComics } from '$lib/utils/db/db';
+import { getComics } from '$lib/utils/db/db.svelte';
 
 export const ssr = false;
 

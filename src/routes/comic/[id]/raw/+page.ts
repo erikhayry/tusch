@@ -1,5 +1,5 @@
 import type { Comic } from '$lib/types/index.js';
-import { getComic } from '$lib/utils/db/db.js';
+import { getComic } from '$lib/utils/db/db.svelte';
 
 export interface Data {
 	comic: Comic;
