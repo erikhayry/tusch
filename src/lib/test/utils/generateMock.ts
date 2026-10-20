@@ -1,4 +1,12 @@
-import { ImageAssetSchema, ModelSchema, PanelSchema, SeasonEnum, TimeOfDayEnum } from '$lib/types';
+import {
+	IMAGE_MODEL_KEY,
+	ImageAssetSchema,
+	ModelSchema,
+	PanelSchema,
+	SeasonEnum,
+	TEXT_MODEL_KEY,
+	TimeOfDayEnum,
+} from '$lib/types';
 import { CreatedImageSchema } from '$lib/utils/ai/aiTypes';
 import { ConfigValuesSchema } from '$lib/utils/db/dbTypes';
 import { vi } from 'vitest';
@@ -10,7 +18,7 @@ export function generateMock<T extends z.ZodType>(schema: T): z.infer<T> {
 		.setSeed(1)
 		.override(z.ZodFunction, () => vi.fn())
 		.supply(ModelSchema, 'gpt-6-luna')
-		.supply(ConfigValuesSchema, { model: 'gpt-6-luna' })
+		.supply(ConfigValuesSchema, { [TEXT_MODEL_KEY]: 'gpt-6-luna', [IMAGE_MODEL_KEY]: 'gpt-image' })
 		.supply(CreatedImageSchema, {
 			width: 800,
 			height: 600,
@@ -26,7 +34,10 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 		.setSeed(1)
 		.optional({ undefined_chance: 0 })
 		.supply(ModelSchema, 'gpt-6-luna')
-		.supply(ConfigValuesSchema, { model: 'gpt-6-luna' })
+		.supply(ConfigValuesSchema, {
+			[TEXT_MODEL_KEY]: 'gpt-6-luna',
+			[IMAGE_MODEL_KEY]: 'gpt-6-image',
+		})
 		.supply(PanelSchema.shape.dialogue, [
 			{
 				text: 'Arbetare: Vi kräver bättre villkor och rätten att organisera oss.',

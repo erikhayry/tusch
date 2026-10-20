@@ -154,3 +154,11 @@ export type Comic = z.infer<typeof ComicSchema>;
 
 export const ModelSchema = z.string();
 export type Model = z.infer<typeof ModelSchema>;
+
+export const TEXT_MODEL_KEY = 'textModel';
+export const IMAGE_MODEL_KEY = 'imageModel';
+export const ConfigSchema = z.object({
+	[TEXT_MODEL_KEY]: ModelSchema,
+	[IMAGE_MODEL_KEY]: ModelSchema,
+});
+export type Config = z.infer<typeof ConfigSchema>;

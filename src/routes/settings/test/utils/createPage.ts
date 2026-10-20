@@ -1,4 +1,5 @@
 import { m } from '$lib/paraglide/messages';
+import { TEXT_MODEL_KEY } from '$lib/types';
 import type { Locator, Page } from '@playwright/test';
 
 export class CreatePage {
@@ -17,8 +18,8 @@ export class CreatePage {
 		this.keyInput = page.getByRole('textbox', { name: m.byok() });
 		this.successMessage = page.getByText(m.keyAdded());
 		this.invalidKeyMessage = page.getByText(m.invalidKey());
-		this.modelsSelect = page.getByRole('combobox', { name: m.selectModel() });
-		this.currentModel = page.getByRole('listitem', { name: 'model' });
+		this.modelsSelect = page.getByRole('combobox', { name: m.selectTextModel() });
+		this.currentModel = page.getByRole('listitem', { name: TEXT_MODEL_KEY });
 		this.saveSettingsButton = page.getByRole('button', { name: m.saveConfig() });
 	}
 

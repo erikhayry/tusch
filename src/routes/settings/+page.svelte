@@ -11,5 +11,5 @@
 
 <Page title="TODO">
 	<LoginForm />
-	<ConfigForm models={data.models} {config} />
+	<ConfigForm models={data} {config} />
 </Page>

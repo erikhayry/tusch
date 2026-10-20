@@ -1,3 +1,4 @@
+import { ConfigSchema } from '$lib/types';
 import z from 'zod';
 
 export const STORAGE = {
@@ -63,7 +64,5 @@ export const INSTRUCTIONS_VALUE_KEY = 'instructions';
 export const INCLUDE_IMAGE_VALUE_KEY = 'includeImage';
 export const IMAGE_VALUE_KEY = 'imageUrl';
 
-export const ConfigValuesSchema = z.object({
-	model: z.string(),
-});
+export const ConfigValuesSchema = ConfigSchema;
 export type ConfigValues = z.infer<typeof ConfigValuesSchema>;

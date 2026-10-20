@@ -1,3 +1,4 @@
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
 import {
 	type ConfigValues,
 	ConfigValuesSchema,
@@ -37,6 +38,7 @@ export async function getConfigValues(
 	formData: FormData,
 ): Promise<ZodSafeParseResult<ConfigValues>> {
 	return ConfigValuesSchema.safeParse({
-		model: formData.get('model'),
+		[IMAGE_MODEL_KEY]: formData.get(IMAGE_MODEL_KEY),
+		[TEXT_MODEL_KEY]: formData.get(TEXT_MODEL_KEY),
 	});
 }

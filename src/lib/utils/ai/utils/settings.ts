@@ -1,3 +1,5 @@
+import type { Model } from '$lib/types';
+
 export const OPEN_AI_ROLE = {
 	USER: 'user',
 	SYSTEM: 'system',
@@ -8,29 +10,26 @@ export const OPEN_AI_TYPE = {
 	IMAGE: 'input_image',
 } as const;
 
-export const MODEL = {
-	IMAGE: 'gpt-image-2.5-flare',
-	TEXT: 'gpt-6-luna',
-} as const;
-
 export const IMAGE_SIZE = {
 	PORTRAIT: '1024x1536',
 	LANDSCAPE: '1536x1024',
 } as const;
 export type ImageSizeValue = (typeof IMAGE_SIZE)[keyof typeof IMAGE_SIZE];
 
-const IMAGE_SETTINGS = {
-	type: 'image_generation',
-	model: MODEL.IMAGE,
-	quality: 'low',
-	output_format: 'webp',
-	background: 'opaque',
-	moderation: 'auto',
-} as const;
+export function getImageSettings(model: Model) {
+	return {
+		type: 'image_generation',
+		model,
+		quality: 'low',
+		output_format: 'webp',
+		background: 'opaque',
+		moderation: 'auto',
+	} as const;
+}
 
 export const TOOLS = {
-	image: (size: ImageSizeValue) => ({
-		...IMAGE_SETTINGS,
+	image: (size: ImageSizeValue, model: Model) => ({
+		...getImageSettings(model),
 		size,
 	}),
 };

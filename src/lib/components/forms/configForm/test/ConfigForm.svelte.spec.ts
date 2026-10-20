@@ -1,4 +1,5 @@
 import { renderConfigForm } from '$lib/components/forms/configForm/test/utils/renderConfigForm';
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
 import { describe, expect, it } from 'vitest';
 
 describe('ConfigForm', () => {
@@ -11,13 +12,21 @@ describe('ConfigForm', () => {
 	it('should render current config', () => {
 		const { getConfig, props } = renderConfigForm();
 
-		expect(getConfig('model')).toHaveTextContent(props.config.model);
+		expect(getConfig(TEXT_MODEL_KEY)).toHaveTextContent(props.config[TEXT_MODEL_KEY]);
+		expect(getConfig(IMAGE_MODEL_KEY)).toHaveTextContent(props.config[IMAGE_MODEL_KEY]);
 	});
 
-	it('should render available models', () => {
-		const { getModels, getModelItems, props } = renderConfigForm();
+	it('should render available text models', () => {
+		const { getTextModels, getTextModelItems, props } = renderConfigForm();
 
-		expect(getModels()).toBeInTheDocument();
-		expect(getModelItems()).toHaveLength(props.models.length);
+		expect(getTextModels()).toBeInTheDocument();
+		expect(getTextModelItems()).toHaveLength(props.models[TEXT_MODEL_KEY].length);
+	});
+
+	it('should render available image models', () => {
+		const { getImageModels, getImageModelItems, props } = renderConfigForm();
+
+		expect(getImageModels()).toBeInTheDocument();
+		expect(getImageModelItems()).toHaveLength(props.models[IMAGE_MODEL_KEY].length);
 	});
 });

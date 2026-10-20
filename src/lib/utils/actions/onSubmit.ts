@@ -11,7 +11,6 @@ export function onSubmit<T extends Record<string, unknown> | undefined>(
 	return async () => {
 		globalError.reset();
 		globalLoading.start();
-
 		return async ({ result, update }) => {
 			try {
 				if (result.type === 'success' && result.data !== undefined) {

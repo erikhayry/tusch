@@ -1,5 +1,12 @@
 import { browser } from '$app/environment';
-import { type Comic, type Model, type Panel, type ResponsiveImage } from '$lib/types';
+import {
+	IMAGE_MODEL_KEY,
+	TEXT_MODEL_KEY,
+	type Comic,
+	type Model,
+	type Panel,
+	type ResponsiveImage,
+} from '$lib/types';
 import { SvelteMap } from 'svelte/reactivity';
 import { EXAMPLES } from '../../../examples/examples';
 import {
@@ -33,6 +40,7 @@ function loadInitialConfig(): ConfigValues {
 	try {
 		const stored = localStorage.getItem(STORAGE.CONFIG);
 		if (stored) return JSON.parse(stored);
+
 		return {};
 	} catch (err) {
 		console.error('Failed to load DB from localStorage:', err);
@@ -238,15 +246,30 @@ export function getConfig(): ConfigValues {
 	return CONFIG_DB;
 }
 
-export function addModel(model: Model): ConfigValues {
+export function addTextModel(model: Model): ConfigValues {
 	const config = getConfig();
 
-	config.model = model;
+	config[TEXT_MODEL_KEY] = model;
+
 	saveConfig();
 
 	return getConfig();
 }
 
-export function getModel(): Model | undefined {
-	return getConfig().model;
+export function getTextModel(): Model | undefined {
+	return getConfig()[TEXT_MODEL_KEY];
+}
+
+export function addImageModel(model: Model): ConfigValues {
+	const config = getConfig();
+
+	config[IMAGE_MODEL_KEY] = model;
+
+	saveConfig();
+
+	return getConfig();
+}
+
+export function getImageModel(): Model | undefined {
+	return getConfig()[IMAGE_MODEL_KEY];
 }

@@ -1,11 +1,15 @@
-import { COOKIE_NAME } from '$lib/utils/key';
+import {
+	IMAGE_MODEL_COOKIE_NAME,
+	KEY_COOKIE_NAME,
+	TEXT_MODEL_COOKIE_NAME,
+} from '$lib/utils/cookies';
 import type { Cookies } from '@sveltejs/kit';
 import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
 import { OpenAiOutputSchema, type OpenAiOutput, type SchemaName } from '../aiTypes';
 import { getSchemaAsTextFormat } from '../utils/format';
 import { getChatMessages, getImageMessages } from '../utils/messages';
-import { IMAGE_SIZE, MODEL, TOOLS, type ImageSizeValue } from '../utils/settings';
+import { IMAGE_SIZE, TOOLS, type ImageSizeValue } from '../utils/settings';
 
 export function asOpenAiOutput(output: Record<string, unknown>): OpenAiOutput {
 	return {
@@ -24,7 +28,7 @@ export function asOpenAiOutput(output: Record<string, unknown>): OpenAiOutput {
 }
 
 function getClient(cookies: Cookies): OpenAI {
-	const apiKey = cookies.get(COOKIE_NAME);
+	const apiKey = cookies.get(KEY_COOKIE_NAME);
 
 	if (!apiKey) {
 		throw new Error('Missing OpenAI API key in cookies');
@@ -83,7 +87,7 @@ export async function text(
 ): Promise<OpenAiOutput> {
 	const client = getClient(cookies);
 	const req: ResponseCreateParamsWithTools = {
-		model: MODEL.TEXT,
+		model: cookies.get(TEXT_MODEL_COOKIE_NAME),
 		input: getChatMessages(messages),
 		text: {
 			format: getSchemaAsTextFormat(schemaName),
@@ -107,10 +111,11 @@ export async function image({
 	size: ImageSizeValue;
 }): Promise<OpenAiOutput> {
 	const client = getClient(cookies);
+
 	const req: ResponseCreateParamsWithTools = {
-		model: MODEL.TEXT,
+		model: cookies.get(TEXT_MODEL_COOKIE_NAME),
 		input: [...getChatMessages(messages), ...getImageMessages(imageUrl)],
-		tools: [TOOLS.image(size)],
+		tools: [TOOLS.image(size, cookies.get(IMAGE_MODEL_COOKIE_NAME) || '')],
 		store: true,
 		include: [],
 		text: {

@@ -1,7 +1,9 @@
 import type { Model } from '$lib/types/index.js';
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types/index.js';
 
 export interface Props {
-	models: Model[];
+	[TEXT_MODEL_KEY]: Model[];
+	[IMAGE_MODEL_KEY]: Model[];
 }
 
 export async function load({ fetch }): Promise<Props> {
@@ -9,6 +11,11 @@ export async function load({ fetch }): Promise<Props> {
 	const models = await response.json();
 
 	return {
-		models: models.data.map(({ id }) => id),
+		[TEXT_MODEL_KEY]: models.data
+			?.filter(({ id }: { id: string }) => !id.includes('image'))
+			.map(({ id }: { id: string }) => id),
+		[IMAGE_MODEL_KEY]: models.data
+			?.filter(({ id }: { id: string }) => id.includes('image'))
+			.map(({ id }: { id: string }) => id),
 	};
 }

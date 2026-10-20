@@ -2,7 +2,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 import z from 'zod';
 import { getPingResultFromOpenAiResponse } from '../ai/ai';
 import type { OpenAiOutput, Ping } from '../ai/aiTypes';
-import { getCookieArgs } from '../key';
+import { KEY_COOKIE_NAME, getCookieArgs } from '../cookies';
 import { submitAiResponse } from './utils/postAiResponse';
 
 export const ByokValuesSchema = z.object({
@@ -11,7 +11,7 @@ export const ByokValuesSchema = z.object({
 export type ByokValues = z.infer<typeof ByokValuesSchema>;
 
 function onValues({ cookies }: RequestEvent, { key }: ByokValues) {
-	cookies.set(...getCookieArgs(key));
+	cookies.set(...getCookieArgs(KEY_COOKIE_NAME, key));
 }
 
 function handleResponse(responseJson: OpenAiOutput): Ping {
