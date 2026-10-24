@@ -1,7 +1,8 @@
 import { generateMock } from '$lib/test/utils/generateMock';
-import { PanelSchema } from '$lib/types';
+import { ImageAssetSchema, PanelSchema } from '$lib/types';
 import { ComicsMock } from '$lib/types/test/utils/mockTypes';
 import {
+	addCharacterImage,
 	addComic,
 	addCoverImage,
 	addPanel,
@@ -13,6 +14,7 @@ import {
 	deleteType,
 	editType,
 	getCharacter,
+	getCharacterName,
 	getComic,
 } from '$lib/utils/db/db.svelte';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -175,9 +177,20 @@ describe('Db', () => {
 
 	describe('get charachter name', () => {
 		it('should return character name', () => {
-			const characterName = getCharacter(Comic1.id, Comic1.characters[0].id);
+			const characterName = getCharacterName(Comic1.id, Comic1.characters[0].id);
 
 			expect(characterName).toEqual(Comic1.characters[0].name);
+		});
+	});
+
+	describe('charachter images', () => {
+		it('should add charachter image from panel', () => {
+			const image = generateMock(ImageAssetSchema);
+			addCharacterImage(Comic1.id, Comic1.characters[0].id, image);
+
+			const images = getCharacter(Comic1.id, Comic1.characters[0].id)!.images;
+
+			expect(images.at(-1)).toEqual(image);
 		});
 	});
 });

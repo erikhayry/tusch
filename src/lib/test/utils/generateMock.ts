@@ -1,7 +1,7 @@
 import {
 	IMAGE_MODEL_KEY,
-	ImageAssetSchema,
 	ModelSchema,
+	PanelImageAssetSchema,
 	PanelSchema,
 	SeasonEnum,
 	TEXT_MODEL_KEY,
@@ -62,7 +62,7 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 			alt: 'mock alt text',
 			characters: [],
 		})
-		.supply(ImageAssetSchema, {
+		.supply(PanelImageAssetSchema, {
 			width: 800,
 			height: 600,
 			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',

@@ -52,13 +52,17 @@ export const ImageAssetSchema = z.object({
 	src: z.string(),
 	width: z.number().int().positive(),
 	height: z.number().int().positive(),
-	characters: z.optional(z.array(CharachterPositionsSchema)),
 });
 export type ImageAsset = z.infer<typeof ImageAssetSchema>;
 
+export const PanelImageAssetSchema = ImageAssetSchema.extend({
+	characters: z.optional(z.array(CharachterPositionsSchema)),
+});
+export type PanelImageAsset = z.infer<typeof PanelImageAssetSchema>;
+
 export const ResponsiveImageSchema = z.object({
-	landscape: ImageAssetSchema,
-	portrait: ImageAssetSchema,
+	landscape: PanelImageAssetSchema,
+	portrait: PanelImageAssetSchema,
 	alt: z.string(),
 });
 export type ResponsiveImage = z.infer<typeof ResponsiveImageSchema>;
@@ -105,6 +109,7 @@ export const CharacterSchema = z.object({
 	id: z.uuid(),
 	name: z.string(),
 	description: CharacterDescriptionSchema,
+	images: z.array(ImageAssetSchema),
 });
 export type Character = z.infer<typeof CharacterSchema>;
 

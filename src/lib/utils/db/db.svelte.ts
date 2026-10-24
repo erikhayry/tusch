@@ -2,7 +2,9 @@ import { browser } from '$app/environment';
 import {
 	IMAGE_MODEL_KEY,
 	TEXT_MODEL_KEY,
+	type Character,
 	type Comic,
+	type ImageAsset,
 	type Model,
 	type Panel,
 	type ResponsiveImage,
@@ -229,8 +231,18 @@ export function addPanel(comicId: string, panel: Panel, index: number): Comic[] 
 	return getComics();
 }
 
-export function getCharacter(comicId: string, characterId: string): string | undefined {
-	return getComic(comicId)?.characters.find((charachter) => charachter.id === characterId)?.name;
+export function getCharacter(comicId: string, characterId: string): Character | undefined {
+	return getComic(comicId)?.characters.find((charachter) => charachter.id === characterId);
+}
+
+export function getCharacterName(comicId: string, characterId: string): string | undefined {
+	return getCharacter(comicId, characterId)?.name;
+}
+
+export function addCharacterImage(comicId: string, characterId: string, image: ImageAsset) {
+	const charachter = getCharacter(comicId, characterId);
+
+	charachter?.images.push(image);
 }
 
 export function saveConfig(): void {
