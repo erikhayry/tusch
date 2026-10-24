@@ -108,6 +108,7 @@ export const NIRVANA: Comic = {
 				masterVisualPrompt:
 					'Ung vuxen vit amerikansk man, smal och medellång, smalt ansikte, ljusa ögon, rufsigt axellångt blont hår, sliten randig tröja eller kofta, blekta jeans och slitna sneakers, håller ofta en elgitarr',
 			},
+			images: [],
 		},
 		{
 			id: 'b79d4e36-2837-4f4a-9b9f-25d95cde6253',
@@ -134,6 +135,7 @@ export const NIRVANA: Comic = {
 				masterVisualPrompt:
 					'Ung vuxen kroatisk-amerikansk man, mycket lång och smal, avlångt ansikte, ljusa ögon, långt rakt mörkbrunt hår, enkel flanellskjorta eller mörk t-shirt, lösa jeans och mörka kängor, spelar basgitarr',
 			},
+			images: [],
 		},
 		{
 			id: 'c6e3a1f8-5d92-4d20-8e76-1a04a70b3f42',
@@ -160,6 +162,7 @@ export const NIRVANA: Comic = {
 				masterVisualPrompt:
 					'Ung vuxen vit amerikansk man, lång och atletisk, oval ansiktsform med markerad käke, ljusa ögon, kort rufsigt mörkbrunt hår, mörk t-shirt, slitstarka jeans och mörka sneakers, håller trumstockar',
 			},
+			images: [],
 		},
 	],
 	panels: [
