@@ -7,4 +7,10 @@ describe('Character', () => {
 
 		expect(getName()).toBeInTheDocument();
 	});
+
+	it('should render panels', () => {
+		const { getPanels } = renderCharachter();
+
+		expect(getPanels()).toBeInTheDocument();
+	});
 });

@@ -38,6 +38,7 @@
 	"panel": "Panel {number}",
 	"panelTitle": "Panel: {number} of {total}",
 	"panels": "Panels",
+	"characterPanels": "Panels with charachter",
 	"removeImage": "Remove Image",
 	"saveCaption": "Save Caption {number}",
 	"saveDialogue": "Save Dialogue {number}",

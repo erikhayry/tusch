@@ -62,7 +62,7 @@
 				<ul aria-labelledby="characters">
 					{#each comic.characters as character (character)}
 						<li>
-							<Character {character} />
+							<Character {character} comicId={comic.id} />
 						</li>
 					{/each}
 				</ul>

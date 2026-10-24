@@ -35,18 +35,20 @@ export type Url = z.infer<typeof UrlValue>;
 
 export const YearSchema = z.number().int();
 
-export const CharachterPositionSchema = z.object({
+export const CropSchema = z.object({
 	x: z.number(),
 	y: z.number(),
 	width: z.number(),
 	height: z.number(),
 });
+export type Crop = z.infer<typeof CropSchema>;
 
 export const CharachterPositionsSchema = z.object({
 	id: z.string(),
-	head: CharachterPositionSchema,
-	full: CharachterPositionSchema,
+	head: CropSchema,
+	full: CropSchema,
 });
+export type CharachterPositions = z.infer<typeof CharachterPositionsSchema>;
 
 export const ImageAssetSchema = z.object({
 	src: z.string(),
@@ -59,6 +61,17 @@ export const PanelImageAssetSchema = ImageAssetSchema.extend({
 	characters: z.optional(z.array(CharachterPositionsSchema)),
 });
 export type PanelImageAsset = z.infer<typeof PanelImageAssetSchema>;
+
+export const CharacterImageAssetSchema = ImageAssetSchema;
+export type CharacterImageAsset = z.infer<typeof CharacterImageAssetSchema>;
+
+export const CharacterImageSchema = z.object({
+	id: z.uuid(),
+	panelId: z.uuid(),
+	head: CharacterImageAssetSchema,
+	full: CharacterImageAssetSchema,
+});
+export type CharacterImage = z.infer<typeof CharacterImageSchema>;
 
 export const ResponsiveImageSchema = z.object({
 	landscape: PanelImageAssetSchema,
@@ -109,7 +122,7 @@ export const CharacterSchema = z.object({
 	id: z.uuid(),
 	name: z.string(),
 	description: CharacterDescriptionSchema,
-	images: z.array(ImageAssetSchema),
+	images: z.array(CharacterImageSchema),
 });
 export type Character = z.infer<typeof CharacterSchema>;
 

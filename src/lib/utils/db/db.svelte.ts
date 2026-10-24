@@ -3,8 +3,8 @@ import {
 	IMAGE_MODEL_KEY,
 	TEXT_MODEL_KEY,
 	type Character,
+	type CharacterImage,
 	type Comic,
-	type ImageAsset,
 	type Model,
 	type Panel,
 	type ResponsiveImage,
@@ -239,10 +239,32 @@ export function getCharacterName(comicId: string, characterId: string): string |
 	return getCharacter(comicId, characterId)?.name;
 }
 
-export function addCharacterImage(comicId: string, characterId: string, image: ImageAsset) {
+export function addCharacterImage(comicId: string, characterId: string, image: CharacterImage) {
 	const charachter = getCharacter(comicId, characterId);
 
 	charachter?.images.push(image);
+
+	saveDB();
+}
+
+export function removeCharacterImage(comicId: string, characterId: string, imageId: string) {
+	const charachter = getCharacter(comicId, characterId);
+	const index = charachter?.images.findIndex(({ id }) => id === imageId);
+
+	if (index !== undefined) {
+		charachter?.images.splice(index, 1);
+	}
+
+	saveDB();
+}
+
+export function getPanelsWithCharachter(
+	comicId: string,
+	charachterId: string,
+): Panel[] | undefined {
+	return getComic(comicId)?.panels.filter(({ image }) => {
+		return image?.landscape.characters?.find(({ id }) => id === charachterId);
+	});
 }
 
 export function saveConfig(): void {

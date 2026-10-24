@@ -1,4 +1,5 @@
 import {
+	CharachterPositionsSchema,
 	IMAGE_MODEL_KEY,
 	ModelSchema,
 	PanelImageAssetSchema,
@@ -66,6 +67,7 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 			width: 800,
 			height: 600,
 			src: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+			characters: [generateMock(CharachterPositionsSchema)],
 		})
 		.array({
 			min: 3,
