@@ -22,6 +22,7 @@ export class PanelPage {
 	readonly initialNumberOfPanels: number;
 	readonly numberOfPanels: () => Promise<number>;
 	readonly addPanelBeforeButton: Locator;
+	readonly dialogueCharacterImage: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -46,6 +47,10 @@ export class PanelPage {
 		this.editDialogueInput = page.getByRole('textbox', { name: m.editDialogue({ number: 1 }) });
 		this.saveDialogueButton = page.getByRole('button', { name: m.saveDialogue({ number: 1 }) });
 		this.deleteDialogueButton = page.getByRole('button', { name: m.deleteDialogue({ number: 1 }) });
+
+		this.dialogueCharacterImage = page
+			.getByRole('list', { name: m.dialogues() })
+			.getByRole('img', { name: 'charachter' });
 	}
 
 	async removeCaption() {

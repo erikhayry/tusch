@@ -1,7 +1,7 @@
-import type { ResponsiveImage } from '$lib/types';
+import type { ImageAsset } from '$lib/types';
 
-export function getImageSrc(image?: ResponsiveImage): string {
+export function getImageSrc(image?: ImageAsset): string {
 	if (!image) return '';
 
-	return image.landscape.src;
+	return image.src;
 }

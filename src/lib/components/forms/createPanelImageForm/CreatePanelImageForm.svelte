@@ -4,39 +4,70 @@
 	import { ACTION } from '$lib/utils/actions/actions';
 	import type { CreatePanelImageResult } from '$lib/utils/actions/createPanelImage';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
-	import { addPanelImage } from '$lib/utils/db/db.svelte';
+	import { cropImage } from '$lib/utils/crop/crop';
+	import { addCharacterImage, addPanelImage, getPanel } from '$lib/utils/db/db.svelte';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
 		INSTRUCTIONS_VALUE_KEY,
 	} from '$lib/utils/db/dbTypes';
 	import { generateId } from '$lib/utils/id';
-	import { getImage, saveImage } from '$lib/utils/storage/storage';
+	import {
+		getImage,
+		getImageUrl,
+		saveBase64Image,
+		saveBlobImage,
+	} from '$lib/utils/storage/storage';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
 	const handleSubmit = onSubmit<CreatePanelImageResult>(async ({ update, result }) => {
 		if (result.data?.image) {
 			const { comicId, panelId, image } = result.data;
-			const fileName = await saveImage(
-				`${generateId()}.png`,
-				`data:image/png;base64,${image.landscape.src}`,
-			);
-
+			const panelImageFileName = await saveBase64Image(image.landscape.src);
 			addPanelImage(comicId, panelId, {
 				landscape: {
-					src: fileName,
+					src: panelImageFileName,
 					width: image.landscape.width,
 					height: image.landscape.height,
 					characters: image.landscape.characters,
 				},
 				portrait: {
-					src: fileName,
+					src: panelImageFileName,
 					width: image.landscape.width,
 					height: image.landscape.height,
 					characters: image.landscape.characters,
 				},
 				alt: image.alt,
 			});
+
+			const panelImage = getPanel(comicId, panelId)?.image;
+			if (panelImage) {
+				const characters = image.landscape.characters || [];
+				for (const character of characters) {
+					const url = await getImageUrl(panelImage.landscape.src);
+
+					const head = await cropImage(url, character.head);
+					const charachterHeadImageFileName = await saveBlobImage(`${generateId()}.png`, head);
+
+					const full = await cropImage(url, character.full);
+					const charachterFullImageFileName = await saveBlobImage(`${generateId()}.png`, full);
+
+					addCharacterImage(comicId, character.id, {
+						id: generateId(),
+						panelId,
+						head: {
+							src: charachterHeadImageFileName,
+							width: character.head.width,
+							height: character.head.height,
+						},
+						full: {
+							src: charachterFullImageFileName,
+							width: character.head.width,
+							height: character.head.height,
+						},
+					});
+				}
+			}
 		}
 		await update();
 	});

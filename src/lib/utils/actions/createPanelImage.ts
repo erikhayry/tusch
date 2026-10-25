@@ -1,4 +1,9 @@
-import { CharacterSchema, ComicStyleEnum, PanelSchema, type ResponsiveImage } from '$lib/types';
+import {
+	CharacterSchema,
+	ComicStyleEnum,
+	PanelSchema,
+	type ResponsivePanelImage,
+} from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import { getImageFromOpenAiResponse } from '../ai/ai';
@@ -23,7 +28,7 @@ export type CreatePanelImageValues = z.infer<typeof CreatePanelImageValuesSchema
 export type CreatePanelImageResult = {
 	panelId: string;
 	comicId: string;
-	image: ResponsiveImage;
+	image: ResponsivePanelImage;
 	output: unknown;
 };
 

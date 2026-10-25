@@ -1,18 +1,28 @@
 <script lang="ts">
-	import type { Comic } from '$lib/types';
+	import type { ImageAsset } from '$lib/types';
 	import { getImageUrl } from '$lib/utils/storage/storage';
+	import type { SvelteHTMLElements } from 'svelte/elements';
 	import { getImageSrc } from '../panel/utils/image';
 
-	let { image, alt }: { image: Comic['cover']; alt?: string } = $props();
-	let imageSrc = $state<string | null>(null);
+	type Props = SvelteHTMLElements['img'] & {
+		image?: ImageAsset;
+		alt: string;
+	};
+
+	let { image, alt, src: nativeSrc, ...imgAttributes }: Props = $props();
+	let src = $state<string | null | undefined>(null);
 
 	$effect(() => {
-		getImageUrl(getImageSrc(image)).then((url) => {
-			imageSrc = url;
-		});
+		if (image) {
+			getImageUrl(getImageSrc(image)).then((url) => {
+				src = url;
+			});
+		} else {
+			src = nativeSrc;
+		}
 	});
 </script>
 
-{#if imageSrc && image}
-	<img src={imageSrc} alt={alt ?? image.alt} />
+{#if src}
+	<img {...imgAttributes} {src} {alt} />
 {/if}

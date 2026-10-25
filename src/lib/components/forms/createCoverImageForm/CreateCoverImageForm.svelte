@@ -10,17 +10,13 @@
 		INCLUDE_IMAGE_VALUE_KEY,
 		INSTRUCTIONS_VALUE_KEY,
 	} from '$lib/utils/db/dbTypes';
-	import { generateId } from '$lib/utils/id';
-	import { getImage, saveImage } from '$lib/utils/storage/storage';
+	import { getImage, saveBase64Image } from '$lib/utils/storage/storage';
 	import type { CreateCoverImageFormProps } from './createCoverImageFormTypes';
 
 	const handleSubmit = onSubmit<CreateCoverImageResult>(async ({ update, result }) => {
 		if (result.data) {
 			const { landscape, portrait, alt } = result.data.image;
-			const fileName = await saveImage(
-				`${generateId()}.png`,
-				`data:image/png;base64,${landscape.src}`,
-			);
+			const fileName = await saveBase64Image(landscape.src);
 			addCoverImage(result.data.comicId, {
 				alt,
 				landscape: { ...landscape, src: fileName },

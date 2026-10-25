@@ -69,3 +69,15 @@ test('add panel before', async ({ page }) => {
 
 	expect(await panelPage.numberOfPanels()).toBe(panelPage.initialNumberOfPanels + 1);
 });
+
+//Works, fix test data
+test.skip('show character image next to dialogue', async ({ page }) => {
+	const panelPage = new PanelPage(page).goto();
+
+	await panelPage.deleteImageButton.click();
+	await panelPage.createImageButton.waitFor({ state: 'visible' });
+	await panelPage.createImageButton.click();
+	await panelPage.newImage.waitFor({ state: 'visible' });
+
+	expect(panelPage.dialogueCharacterImage).toBeVisible();
+});

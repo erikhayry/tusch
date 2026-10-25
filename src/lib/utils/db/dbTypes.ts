@@ -1,4 +1,4 @@
-import { ConfigSchema } from '$lib/types';
+import { ConfigSchema, CropSchema } from '$lib/types';
 import z from 'zod';
 
 export const STORAGE = {
@@ -15,6 +15,14 @@ export const DB_ITEM_TYPE = z.enum([
 	'coverImage',
 ]);
 export type DbItemType = z.infer<typeof DB_ITEM_TYPE>;
+
+export const CreateCharacterImageValueSchema = z.object({
+	comicId: z.string(),
+	characterId: z.string(),
+	image: z.string(),
+	crop: CropSchema,
+});
+export type CreateCharacterImageValue = z.infer<typeof CreateCharacterImageValueSchema>;
 
 export const DeleteValuesSchema = z
 	.object({

@@ -74,11 +74,18 @@ export const CharacterImageSchema = z.object({
 export type CharacterImage = z.infer<typeof CharacterImageSchema>;
 
 export const ResponsiveImageSchema = z.object({
+	landscape: ImageAssetSchema,
+	portrait: ImageAssetSchema,
+	alt: z.string(),
+});
+export type ResponsiveImage = z.infer<typeof ResponsiveImageSchema>;
+
+export const ResponsivePanelImageSchema = z.object({
 	landscape: PanelImageAssetSchema,
 	portrait: PanelImageAssetSchema,
 	alt: z.string(),
 });
-export type ResponsiveImage = z.infer<typeof ResponsiveImageSchema>;
+export type ResponsivePanelImage = z.infer<typeof ResponsivePanelImageSchema>;
 
 export const CharacterDescriptionSchema = z.object({
 	// Core demographics & face
@@ -151,7 +158,7 @@ export const PanelSchema = z.object({
 	timeOfDay: TimeOfDayEnum,
 	season: SeasonEnum,
 	style: z.optional(ComicStyleDescriptionSchema),
-	image: z.optional(ResponsiveImageSchema),
+	image: z.optional(ResponsivePanelImageSchema),
 });
 export type Panel = z.infer<typeof PanelSchema>;
 

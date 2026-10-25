@@ -5,9 +5,10 @@ import {
 	type Character,
 	type CharacterImage,
 	type Comic,
+	type ImageAsset,
 	type Model,
 	type Panel,
-	type ResponsiveImage,
+	type ResponsivePanelImage,
 } from '$lib/types';
 import { SvelteMap } from 'svelte/reactivity';
 import { EXAMPLES } from '../../../examples/examples';
@@ -196,7 +197,7 @@ export function deleteCoverImage(comicId: string): Comic[] {
 	return getComics();
 }
 
-export function addCoverImage(comicId: string, image: ResponsiveImage): Comic[] {
+export function addCoverImage(comicId: string, image: ResponsivePanelImage): Comic[] {
 	const comic = COMIC_DB.get(comicId);
 	if (comic) {
 		comic.cover = image;
@@ -207,7 +208,11 @@ export function addCoverImage(comicId: string, image: ResponsiveImage): Comic[] 
 	return getComics();
 }
 
-export function addPanelImage(comicId: string, panelId: string, image: ResponsiveImage): Comic[] {
+export function addPanelImage(
+	comicId: string,
+	panelId: string,
+	image: ResponsivePanelImage,
+): Comic[] {
 	const comic = COMIC_DB.get(comicId);
 	if (comic) {
 		const panel = comic.panels.find((p) => p.id === panelId);
@@ -256,6 +261,20 @@ export function removeCharacterImage(comicId: string, characterId: string, image
 	}
 
 	saveDB();
+}
+
+export function getCharacterImageForPanel(
+	comicId: string,
+	panelId: string,
+	charachterId: string,
+): ImageAsset | undefined {
+	console.log(comicId, panelId, charachterId);
+	const comic = getComic(comicId);
+	console.log(comic?.characters);
+
+	return comic?.characters
+		.find((charachter) => charachter.id === charachterId)
+		?.images.find((image) => image.panelId === panelId)?.head;
 }
 
 export function getPanelsWithCharachter(

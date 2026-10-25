@@ -1,3 +1,4 @@
+import { generateId } from '../id';
 import { base64ToBlob } from './utils/base64ToBlob';
 
 async function getFileHandle(fileName: string, create: boolean = false) {
@@ -5,15 +6,19 @@ async function getFileHandle(fileName: string, create: boolean = false) {
 	return await root.getFileHandle(fileName, { create });
 }
 
-export async function saveImage(fileName: string, base64Data: string) {
+export async function saveBlobImage(fileName: string, imageBlob: Blob) {
 	const fileHandle = await getFileHandle(fileName, true);
-	const imageBlob = base64ToBlob(base64Data);
-
 	const writable = await fileHandle.createWritable();
 	await writable.write(imageBlob);
 	await writable.close();
 
 	return fileName;
+}
+
+export async function saveBase64Image(imageData: string) {
+	const imageBlob = base64ToBlob(`data:image/webp;base64,${imageData}`);
+
+	return saveBlobImage(`${generateId()}.webp`, imageBlob);
 }
 
 export async function getImageUrl(fileName: string) {

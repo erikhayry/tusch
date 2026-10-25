@@ -13,6 +13,7 @@ import {
 	deleteType,
 	editType,
 	getCharacter,
+	getCharacterImageForPanel,
 	getCharacterName,
 	getComic,
 	getPanelsWithCharachter,
@@ -216,6 +217,18 @@ describe('Db', () => {
 			expect(getPanelsWithCharachter(ComicsMock[0].id, image.id)!.at(0)!.id).toEqual(
 				ComicsMock[0].panels[0].id,
 			);
+		});
+
+		it.skip('should return panel image for character', () => {
+			const image = ComicsMock[0].panels[0].image!.portrait.characters![0];
+
+			expect(
+				getCharacterImageForPanel(
+					ComicsMock[0].id,
+					ComicsMock[0].panels[0].dialogue[0].characterId,
+					ComicsMock[0].panels[0].id,
+				),
+			).toEqual(image);
 		});
 	});
 });

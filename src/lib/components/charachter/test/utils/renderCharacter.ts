@@ -1,7 +1,7 @@
 import Character from '$lib/components/charachter/Character.svelte';
 import { CharachterPropsMock } from '$lib/components/charachter/test/utils/mockCharacter';
+import { m } from '$lib/paraglide/messages';
 import { render } from '@testing-library/svelte';
-import { m } from '../../../../../paraglide/messages';
 
 export function renderCharachter(props = CharachterPropsMock[0]) {
 	const { getByRole } = render(Character, props);

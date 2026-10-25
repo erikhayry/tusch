@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
-	import { getCharacterName } from '$lib/utils/db/db.svelte';
+	import { getCharacterImageForPanel, getCharacterName } from '$lib/utils/db/db.svelte';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
@@ -31,7 +31,7 @@
 			}}
 		/>
 	{:else}
-		<Image image={panel.image} />
+		<Image image={panel.image.landscape} alt={panel.image.alt} />
 		<CreatePanelImageForm
 			label={m.generateNewImage()}
 			imageName={panel.image?.landscape.src}
@@ -78,6 +78,12 @@
 		<ul aria-labelledby="panel-dialogue">
 			{#each panel.dialogue as dialogue, index (dialogue)}
 				<li>
+					<Image
+						width={50}
+						height={50}
+						image={getCharacterImageForPanel(comicId, panel.id, dialogue.characterId)}
+						alt="charachter"
+					/>
 					<p>{getCharacterName(comicId, dialogue.characterId)}</p>
 					<FieldActions
 						values={{
