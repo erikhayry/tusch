@@ -1,6 +1,6 @@
-import type { OpenAiOutput } from '$lib/utils/ai/aiTypes';
+import type { AiRequest, InitialComic, OpenAiOutput } from '$lib/utils/ai/aiTypes';
 
-const COMIC_DATA: { data: Comic } = {
+const COMIC_DATA: { data: InitialComic } = {
 	data: {
 		style: 'anime',
 		title: 'Ådalshändelserna: Vägen till Lunde',

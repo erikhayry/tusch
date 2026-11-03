@@ -10,7 +10,7 @@ vi.mock('openai', async () => {
 
 describe('api/ai/comic', () => {
 	it('should return response', async () => {
-		const result = await GET(COOKIES_MOCK);
+		const result = await GET(COOKIES_MOCK as unknown as Parameters<typeof GET>[0]);
 
 		expect(result.status).toBe(200);
 

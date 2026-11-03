@@ -1,5 +1,6 @@
 import { CharachterPositionsSchema, ComicSchema, PanelSchema } from '$lib/types';
 import z from 'zod';
+import { ImageSizeSchema } from './utils/settings';
 
 const INITAL_PANEL_SCHEMA = PanelSchema.pick({
 	editorialTitle: true,
@@ -43,6 +44,26 @@ export type Ping = z.infer<typeof PingSchema>;
 
 export const SchemaName = z.enum(['initComic', 'createImage', 'createPanel']);
 export type SchemaName = z.infer<typeof SchemaName>;
+
+export const AiTextRequestSchema = z.object({
+	messages: z.array(z.string()),
+	schemaName: z.enum([SchemaName.enum.initComic, SchemaName.enum.createPanel]),
+});
+export type AiTextRequest = z.infer<typeof AiTextRequestSchema>;
+
+export const AiImageRequestSchema = z.object({
+	messages: z.array(z.string()),
+	schemaName: z.literal(SchemaName.enum.createImage),
+	size: ImageSizeSchema,
+	imageUrl: z.string().optional(),
+});
+export type AiImageRequest = z.infer<typeof AiImageRequestSchema>;
+
+export const AiRequestSchema = z.discriminatedUnion('schemaName', [
+	AiTextRequestSchema,
+	AiImageRequestSchema,
+]);
+export type AiRequest = z.infer<typeof AiRequestSchema>;
 
 export const SCHEMA: Record<SchemaName, z.ZodType> = {
 	initComic: InitialComicSchema,

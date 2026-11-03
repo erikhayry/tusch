@@ -1,20 +1,24 @@
 <script lang="ts">
-	import type { ImageAsset } from '$lib/types';
+	import { ImageAssetSchema } from '$lib/types';
 	import { getImageUrl } from '$lib/utils/storage/storage';
 	import type { SvelteHTMLElements } from 'svelte/elements';
+	import { z } from 'zod';
 	import { getImageSrc } from '../panel/utils/image';
 
-	type Props = SvelteHTMLElements['img'] & {
-		image?: ImageAsset;
-		alt: string;
-	};
+	const ImageDataPropsSchema = z.object({
+		image: ImageAssetSchema.optional(),
+		alt: z.string(),
+	});
+	type ImageDataProps = z.infer<typeof ImageDataPropsSchema>;
+	type Props = SvelteHTMLElements['img'] & ImageDataProps;
 
 	let { image, alt, src: nativeSrc, ...imgAttributes }: Props = $props();
+	const imageData = $derived(ImageDataPropsSchema.parse({ image, alt }));
 	let src = $state<string | null | undefined>(null);
 
 	$effect(() => {
-		if (image) {
-			getImageUrl(getImageSrc(image)).then((url) => {
+		if (imageData.image) {
+			getImageUrl(getImageSrc(imageData.image)).then((url) => {
 				src = url;
 			});
 		} else {
@@ -24,5 +28,5 @@
 </script>
 
 {#if src}
-	<img {...imgAttributes} {src} {alt} />
+	<img {...imgAttributes} {src} alt={imageData.alt} />
 {/if}

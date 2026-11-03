@@ -1,12 +1,16 @@
-import type { Comic } from '$lib/types/index.js';
+import { ComicPageDataSchema, ComicRouteParamsSchema } from '$lib/types/routeData';
 import { getComic } from '$lib/utils/db/db.svelte';
+import { error } from '@sveltejs/kit';
+import { z } from 'zod';
 
-export interface Data {
-	comic: Comic;
-}
+export type Data = z.infer<typeof ComicPageDataSchema>;
 
 export function load({ params }) {
-	const comic = getComic(params.id);
+	const parsedParams = ComicRouteParamsSchema.safeParse(params);
+	if (!parsedParams.success) error(404, 'Comic not found');
 
-	return { comic };
+	const comic = getComic(parsedParams.data.id);
+	if (!comic) error(404, 'Comic not found');
+
+	return ComicPageDataSchema.parse({ comic });
 }

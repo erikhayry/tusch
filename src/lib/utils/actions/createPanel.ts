@@ -1,6 +1,11 @@
-import { PanelArraySchema, type Panel } from '$lib/types';
+import { PanelArraySchema, PanelSchema } from '$lib/types';
 import { getPanelFromOpenAiResponse } from '$lib/utils/ai/ai';
-import { SchemaName, type OpenAiOutput } from '$lib/utils/ai/aiTypes';
+import {
+	AiTextRequestSchema,
+	OpenAiOutputSchema,
+	SchemaName,
+	type OpenAiOutput,
+} from '$lib/utils/ai/aiTypes';
 import { buildPanelMessages } from '$lib/utils/ai/utils/messages';
 import { type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
@@ -13,31 +18,35 @@ export const CreatePanelValuesSchema = z.object({
 	index: z.number().int(),
 });
 export type CreatePanelValues = z.infer<typeof CreatePanelValuesSchema>;
-export type CreatePanelResult = { comicId: string; index: number; panel: Panel; output: unknown };
+export const CreatePanelResultSchema = z.object({
+	comicId: z.string(),
+	index: z.number().int(),
+	panel: PanelSchema,
+	output: OpenAiOutputSchema.shape.output,
+});
+export type CreatePanelResult = z.infer<typeof CreatePanelResultSchema>;
 
 function getBody({ panels, index }: CreatePanelValues) {
-	const messagesJsonString = JSON.stringify(buildPanelMessages(index, panels));
-
-	return {
-		messagesJsonString,
+	return AiTextRequestSchema.parse({
+		messages: buildPanelMessages(index, panels),
 		schemaName: SchemaName.enum.createPanel,
-	};
+	});
 }
 
 function handleResponse(responseJson: OpenAiOutput, { comicId, index }: CreatePanelValues) {
 	const panel = getPanelFromOpenAiResponse(responseJson);
 
-	return {
+	return CreatePanelResultSchema.parse({
 		comicId,
 		index,
 		panel,
 		output: responseJson.output,
-	};
+	});
 }
 
 export function fetchPanel(event: RequestEvent, values: CreatePanelValues) {
 	return fetchAiResponse({
-		api: '/api/ai/cover-image',
+		api: '/api/ai/panel',
 		event,
 		values,
 		getBody,

@@ -1,21 +1,16 @@
-import type { Model } from '$lib/types/index.js';
-import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types/index.js';
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
+import { AiModelsResponseSchema, SettingsPageDataSchema } from '$lib/types/routeData';
+import { z } from 'zod';
 
-export interface Props {
-	[TEXT_MODEL_KEY]: Model[];
-	[IMAGE_MODEL_KEY]: Model[];
-}
+export type Props = z.infer<typeof SettingsPageDataSchema>;
 
 export async function load({ fetch }): Promise<Props> {
 	const response = await fetch('/api/ai/models');
-	const models = await response.json();
+	const models = AiModelsResponseSchema.parse(await response.json());
+	const modelIds = models.data.map(({ id }) => id);
 
-	return {
-		[TEXT_MODEL_KEY]: models.data
-			?.filter(({ id }: { id: string }) => !id.includes('image'))
-			.map(({ id }: { id: string }) => id),
-		[IMAGE_MODEL_KEY]: models.data
-			?.filter(({ id }: { id: string }) => id.includes('image'))
-			.map(({ id }: { id: string }) => id),
-	};
+	return SettingsPageDataSchema.parse({
+		[TEXT_MODEL_KEY]: modelIds.filter((id) => !id.includes('image')),
+		[IMAGE_MODEL_KEY]: modelIds.filter((id) => id.includes('image')),
+	});
 }

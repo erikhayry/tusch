@@ -1,4 +1,5 @@
 import type { Model } from '$lib/types';
+import { z } from 'zod';
 
 export const OPEN_AI_ROLE = {
 	USER: 'user',
@@ -10,11 +11,13 @@ export const OPEN_AI_TYPE = {
 	IMAGE: 'input_image',
 } as const;
 
+export const ImageSizeSchema = z.enum(['1024x1536', '1536x1024']);
+export type ImageSizeValue = z.infer<typeof ImageSizeSchema>;
+
 export const IMAGE_SIZE = {
-	PORTRAIT: '1024x1536',
-	LANDSCAPE: '1536x1024',
+	PORTRAIT: ImageSizeSchema.enum['1024x1536'],
+	LANDSCAPE: ImageSizeSchema.enum['1536x1024'],
 } as const;
-export type ImageSizeValue = (typeof IMAGE_SIZE)[keyof typeof IMAGE_SIZE];
 
 export function getImageSettings(model: Model) {
 	return {

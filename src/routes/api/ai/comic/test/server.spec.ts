@@ -13,7 +13,9 @@ vi.mock('openai', async () => {
 describe('api/ai/comic', () => {
 	it('should return response', async () => {
 		mockParse.mockResolvedValue(CREATE_COMIC_RESPONSE);
-		const result = await POST(mockPostArgs('["test"]', SchemaName.enum.initComic));
+		const result = await POST(
+			mockPostArgs({ messages: ['test'], schemaName: SchemaName.enum.initComic }),
+		);
 
 		expect(result.status).toBe(200);
 

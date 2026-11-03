@@ -9,7 +9,7 @@ import {
 	TimeOfDayEnum,
 } from '$lib/types';
 import { CreatedImageSchema } from '$lib/utils/ai/aiTypes';
-import { ConfigValuesSchema } from '$lib/utils/db/dbTypes';
+import { ConfigStateSchema, ConfigValuesSchema } from '$lib/utils/db/dbTypes';
 import { vi } from 'vitest';
 import { zocker } from 'zocker';
 import z from 'zod';
@@ -20,6 +20,7 @@ export function generateMock<T extends z.ZodType>(schema: T): z.infer<T> {
 		.override(z.ZodFunction, () => vi.fn())
 		.supply(ModelSchema, 'gpt-6-luna')
 		.supply(ConfigValuesSchema, { [TEXT_MODEL_KEY]: 'gpt-6-luna', [IMAGE_MODEL_KEY]: 'gpt-image' })
+		.supply(ConfigStateSchema, { [TEXT_MODEL_KEY]: 'gpt-6-luna', [IMAGE_MODEL_KEY]: 'gpt-image' })
 		.supply(CreatedImageSchema, {
 			width: 800,
 			height: 600,
@@ -36,6 +37,10 @@ export function generateMocks<T extends z.ZodType>(schema: T, numberOfMocks: num
 		.optional({ undefined_chance: 0 })
 		.supply(ModelSchema, 'gpt-6-luna')
 		.supply(ConfigValuesSchema, {
+			[TEXT_MODEL_KEY]: 'gpt-6-luna',
+			[IMAGE_MODEL_KEY]: 'gpt-6-image',
+		})
+		.supply(ConfigStateSchema, {
 			[TEXT_MODEL_KEY]: 'gpt-6-luna',
 			[IMAGE_MODEL_KEY]: 'gpt-6-image',
 		})

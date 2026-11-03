@@ -1,22 +1,19 @@
-import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
-import { type Comic } from '$lib/types';
+import { ComicsPageDataSchema } from '$lib/types/routeData';
 import { getComics } from '$lib/utils/db/db.svelte';
+import { redirect } from '@sveltejs/kit';
+import { z } from 'zod';
 
 export const ssr = false;
 
-export interface Props {
-	comics: Comic[];
-}
+export type Props = z.infer<typeof ComicsPageDataSchema>;
 
 export function load() {
 	const comics = getComics();
 
 	if (comics.length === 0) {
-		return goto(resolve('/comic/create'));
+		throw redirect(307, resolve('/comic/create'));
 	}
 
-	return {
-		comics,
-	};
+	return ComicsPageDataSchema.parse({ comics });
 }

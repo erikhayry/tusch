@@ -1,12 +1,17 @@
-import type { OpenAiOutput } from '$lib/utils/ai/aiTypes';
+import {
+	AiRequestSchema,
+	OpenAiOutputSchema,
+	type AiRequest,
+	type OpenAiOutput,
+} from '$lib/utils/ai/aiTypes';
 import { error, type RequestEvent } from '@sveltejs/kit';
 import type z from 'zod';
 
-function getPostRequestInit(body?: Record<string, unknown>) {
+function getPostRequestInit(body?: AiRequest) {
 	if (body) {
 		return {
 			method: 'POST',
-			body: JSON.stringify(body),
+			body: JSON.stringify(AiRequestSchema.parse(body)),
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -32,7 +37,7 @@ function parseJsonValues(formData: FormData) {
 async function getValues<T extends z.ZodType>(
 	formData: FormData,
 	schema: T,
-): Promise<{ success: true; data: z.output<T> } | { success: false; error: z.ZodError }> {
+): Promise<z.ZodSafeParseResult<z.output<T>>> {
 	return schema.safeParse(parseJsonValues(formData));
 }
 
@@ -47,20 +52,29 @@ async function handleRequest<T, H>({
 	api: string;
 	event: RequestEvent;
 	values: T;
-	getBody?: (values: T) => Record<string, unknown>;
+	getBody?: (values: T) => AiRequest;
 	onValues?: (event: RequestEvent, values: T) => void;
 	handleResponse: (data: OpenAiOutput, values: T) => H;
 }): Promise<H | ReturnType<typeof error>> {
 	onValues?.(event, values);
 
+	let response: Response;
 	try {
-		const body = getBody?.(values);
-		const response = await event.fetch(api, getPostRequestInit(body));
-		const responseJson = await response.json();
+		response = await event.fetch(api, getPostRequestInit(getBody?.(values)));
+	} catch (e: unknown) {
+		return error(502, e instanceof Error ? e.message : 'AI request failed');
+	}
 
+	if (!response.ok) {
+		const responseText = await response.text();
+		return error(response.status, responseText || 'AI request failed');
+	}
+
+	try {
+		const responseJson = OpenAiOutputSchema.parse(await response.json());
 		return handleResponse(responseJson, values);
 	} catch (e: unknown) {
-		return error(500, (e as Error).message);
+		return error(502, e instanceof Error ? e.message : 'Invalid AI response');
 	}
 }
 
@@ -75,7 +89,7 @@ export async function fetchAiResponse<T, H>({
 	api: string;
 	event: RequestEvent;
 	values: T;
-	getBody?: (values: T) => Record<string, unknown>;
+	getBody?: (values: T) => AiRequest;
 	onValues?: (event: RequestEvent, values: T) => void;
 	handleResponse: (data: OpenAiOutput, values: T) => H;
 }): Promise<H | ReturnType<typeof error>> {
@@ -100,7 +114,7 @@ export async function submitAiResponse<T extends z.ZodType, H>({
 	api: string;
 	event: RequestEvent;
 	schema: T;
-	getBody?: (values: z.output<T>) => Record<string, unknown>;
+	getBody?: (values: z.output<T>) => AiRequest;
 	onValues?: (event: RequestEvent, values: z.output<T>) => void;
 	handleResponse: (data: OpenAiOutput, values: z.output<T>) => H;
 }): Promise<H | ReturnType<typeof error>> {

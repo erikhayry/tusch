@@ -1,4 +1,5 @@
 import { SchemaName } from '$lib/utils/ai/aiTypes';
+import { IMAGE_SIZE } from '$lib/utils/ai/utils/settings';
 import { describe, expect, it, vi } from 'vitest';
 import { POST } from '../+server';
 import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
@@ -13,7 +14,13 @@ vi.mock('openai', async () => {
 describe('api/ai/cover-image', () => {
 	it('should return response', async () => {
 		mockParse.mockResolvedValue(CREATE_COVER_IMAGE_RESPONSE);
-		const result = await POST(mockPostArgs('["test"]', SchemaName.enum.initComic));
+		const result = await POST(
+			mockPostArgs({
+				messages: ['test'],
+				schemaName: SchemaName.enum.createImage,
+				size: IMAGE_SIZE.PORTRAIT,
+			}),
+		);
 
 		expect(result.status).toBe(200);
 

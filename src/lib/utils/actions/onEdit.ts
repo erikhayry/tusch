@@ -1,14 +1,12 @@
 import type { SubmitFunction } from '@sveltejs/kit';
+import type { ZodSafeParseResult } from 'zod';
 import { globalError } from '../states/error.svelte';
 import { globalLoading } from '../states/loading.svelte';
-
-type ValidationResult<T> =
-	{ success: true; data: T } | { success: false; error: { message: string } };
 
 export type SubmitCallback = NonNullable<Awaited<ReturnType<SubmitFunction>>>;
 
 export function onEdit<T>(
-	getValues: (formData: FormData) => Promise<ValidationResult<T>> | ValidationResult<T>,
+	getValues: (formData: FormData) => Promise<ZodSafeParseResult<T>> | ZodSafeParseResult<T>,
 	updateType: (data: T) => void,
 	onSuccess?: SubmitCallback,
 ): SubmitFunction {

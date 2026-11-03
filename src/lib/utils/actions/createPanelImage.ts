@@ -2,12 +2,17 @@ import {
 	CharacterSchema,
 	ComicStyleEnum,
 	PanelSchema,
-	type ResponsivePanelImage,
+	ResponsivePanelImageSchema,
 } from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import { getImageFromOpenAiResponse } from '../ai/ai';
-import { SchemaName, type OpenAiOutput } from '../ai/aiTypes';
+import {
+	AiImageRequestSchema,
+	OpenAiOutputSchema,
+	SchemaName,
+	type OpenAiOutput,
+} from '../ai/aiTypes';
 import { buildPanelImageMessages } from '../ai/utils/messages';
 import { IMAGE_SIZE } from '../ai/utils/settings';
 import { IMAGE_VALUE_KEY, INCLUDE_IMAGE_VALUE_KEY, INSTRUCTIONS_VALUE_KEY } from '../db/dbTypes';
@@ -25,12 +30,13 @@ export const CreatePanelImageValuesSchema = z.object({
 });
 export type CreatePanelImageValues = z.infer<typeof CreatePanelImageValuesSchema>;
 
-export type CreatePanelImageResult = {
-	panelId: string;
-	comicId: string;
-	image: ResponsivePanelImage;
-	output: unknown;
-};
+export const CreatePanelImageResultSchema = z.object({
+	panelId: z.string(),
+	comicId: z.string(),
+	image: ResponsivePanelImageSchema,
+	output: OpenAiOutputSchema.shape.output,
+});
+export type CreatePanelImageResult = z.infer<typeof CreatePanelImageResultSchema>;
 
 function getBody({
 	panel,
@@ -40,22 +46,17 @@ function getBody({
 	includeImage,
 	imageUrl,
 }: CreatePanelImageValues) {
-	const messagesJsonString = JSON.stringify(
-		buildPanelImageMessages({
+	return AiImageRequestSchema.parse({
+		messages: buildPanelImageMessages({
 			panel,
 			characters,
 			instructions,
 			style,
 		}),
-	);
-
-	return {
-		messagesJsonString,
-		schemaName: SchemaName.enum.createImage.toString(),
+		schemaName: SchemaName.enum.createImage,
 		size: IMAGE_SIZE.PORTRAIT,
-		instructions,
 		imageUrl: includeImage ? imageUrl : undefined,
-	};
+	});
 }
 
 function handleResponse(
@@ -65,7 +66,7 @@ function handleResponse(
 	const createdImage = getImageFromOpenAiResponse(responseJson);
 	const serializableImage = structuredClone(createdImage);
 
-	return {
+	return CreatePanelImageResultSchema.parse({
 		comicId,
 		panelId: panel.id,
 		image: {
@@ -74,7 +75,7 @@ function handleResponse(
 			alt: serializableImage.alt,
 		},
 		output: responseJson.output,
-	};
+	});
 }
 
 export function fetchPanelImage(event: RequestEvent, values: CreatePanelImageValues) {

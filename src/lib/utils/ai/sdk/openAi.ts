@@ -6,10 +6,15 @@ import {
 import type { Cookies } from '@sveltejs/kit';
 import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
-import { OpenAiOutputSchema, type OpenAiOutput, type SchemaName } from '../aiTypes';
+import {
+	OpenAiOutputSchema,
+	type AiImageRequest,
+	type AiTextRequest,
+	type OpenAiOutput,
+} from '../aiTypes';
 import { getSchemaAsTextFormat } from '../utils/format';
 import { getChatMessages, getImageMessages } from '../utils/messages';
-import { IMAGE_SIZE, TOOLS, type ImageSizeValue } from '../utils/settings';
+import { IMAGE_SIZE, TOOLS } from '../utils/settings';
 
 export function asOpenAiOutput(output: Record<string, unknown>): OpenAiOutput {
 	return {
@@ -82,8 +87,7 @@ export async function ping(cookies: Cookies): Promise<OpenAiOutput> {
 
 export async function text(
 	cookies: Cookies,
-	messages: string[],
-	schemaName: SchemaName,
+	{ messages, schemaName }: AiTextRequest,
 ): Promise<OpenAiOutput> {
 	const client = getClient(cookies);
 	const req: ResponseCreateParamsWithTools = {
@@ -103,13 +107,7 @@ export async function image({
 	schemaName,
 	imageUrl,
 	size = IMAGE_SIZE.PORTRAIT,
-}: {
-	cookies: Cookies;
-	messages: string[];
-	schemaName: SchemaName;
-	imageUrl?: string;
-	size: ImageSizeValue;
-}): Promise<OpenAiOutput> {
+}: { cookies: Cookies } & AiImageRequest): Promise<OpenAiOutput> {
 	const client = getClient(cookies);
 
 	const req: ResponseCreateParamsWithTools = {

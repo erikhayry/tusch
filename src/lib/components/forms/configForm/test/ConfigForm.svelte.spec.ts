@@ -11,9 +11,15 @@ describe('ConfigForm', () => {
 
 	it('should render current config', () => {
 		const { getConfig, props } = renderConfigForm();
+		const textModel = props.config[TEXT_MODEL_KEY];
+		const imageModel = props.config[IMAGE_MODEL_KEY];
 
-		expect(getConfig(TEXT_MODEL_KEY)).toHaveTextContent(props.config[TEXT_MODEL_KEY]);
-		expect(getConfig(IMAGE_MODEL_KEY)).toHaveTextContent(props.config[IMAGE_MODEL_KEY]);
+		if (textModel === undefined || imageModel === undefined) {
+			throw new Error('Config fixture must include both model values');
+		}
+
+		expect(getConfig(TEXT_MODEL_KEY)).toHaveTextContent(textModel);
+		expect(getConfig(IMAGE_MODEL_KEY)).toHaveTextContent(imageModel);
 	});
 
 	it('should render available text models', () => {

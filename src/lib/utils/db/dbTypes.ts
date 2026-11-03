@@ -1,10 +1,13 @@
-import { ConfigSchema, CropSchema } from '$lib/types';
+import { ComicSchema, ConfigSchema, CropSchema } from '$lib/types';
 import z from 'zod';
 
 export const STORAGE = {
 	COMICS: 'comics_db',
 	CONFIG: 'config_db',
 } as const;
+
+export const ComicEntriesSchema = z.array(z.tuple([z.string(), ComicSchema]));
+export type ComicEntries = z.infer<typeof ComicEntriesSchema>;
 
 export const DB_ITEM_TYPE = z.enum([
 	'dialogue',
@@ -74,3 +77,6 @@ export const IMAGE_VALUE_KEY = 'imageUrl';
 
 export const ConfigValuesSchema = ConfigSchema;
 export type ConfigValues = z.infer<typeof ConfigValuesSchema>;
+
+export const ConfigStateSchema = ConfigSchema.partial();
+export type ConfigState = z.infer<typeof ConfigStateSchema>;

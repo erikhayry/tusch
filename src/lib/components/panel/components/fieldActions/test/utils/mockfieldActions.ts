@@ -1,5 +1,5 @@
+import { FieldActionsPropsSchema } from '$lib/components/panel/components/fieldActions/fieldActionsTypes';
 import { generateMock, generateMocks } from '$lib/test/utils/generateMock';
-import { FieldActionsPropsSchema } from '$lib/components/panel/components/fieldActions/fieldActionsTypes
 
 export function getFieldActionsPropMock() {
 	return generateMock(FieldActionsPropsSchema);

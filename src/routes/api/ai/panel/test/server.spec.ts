@@ -13,7 +13,9 @@ vi.mock('openai', async () => {
 describe('api/ai/panel', () => {
 	it('should return response', async () => {
 		mockParse.mockResolvedValue(CREATE_PANEL_RESPONSE);
-		const result = await POST(mockPostArgs('["test"]', SchemaName.enum.initComic));
+		const result = await POST(
+			mockPostArgs({ messages: ['test'], schemaName: SchemaName.enum.createPanel }),
+		);
 
 		expect(result.status).toBe(200);
 

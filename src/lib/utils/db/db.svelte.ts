@@ -13,23 +13,25 @@ import {
 import { SvelteMap } from 'svelte/reactivity';
 import { EXAMPLES } from '../../../examples/examples';
 import {
+	ComicEntriesSchema,
+	ConfigStateSchema,
 	DB_ITEM_TYPE,
 	STORAGE,
-	type ConfigValues,
+	type ComicEntries,
+	type ConfigState,
 	type DeleteValues,
 	type EditValues,
 } from './dbTypes';
 
-function loadInitialComics(): [string, Comic][] {
+function loadInitialComics(): ComicEntries {
 	if (!browser) return [];
 
 	try {
 		const stored = localStorage.getItem(STORAGE.COMICS);
 		if (stored) {
-			const parsed = JSON.parse(stored);
-			if (Array.isArray(parsed) && parsed.length > 0) {
-				return parsed;
-			}
+			const parsed = ComicEntriesSchema.safeParse(JSON.parse(stored));
+			if (parsed.success) return parsed.data;
+			console.error('Failed to validate comics from localStorage:', parsed.error);
 		}
 	} catch (err) {
 		console.error('Failed to load DB from localStorage:', err);
@@ -37,21 +39,23 @@ function loadInitialComics(): [string, Comic][] {
 	return [];
 }
 
-function loadInitialConfig(): ConfigValues {
+function loadInitialConfig(): ConfigState {
 	if (!browser) return {};
 
 	try {
 		const stored = localStorage.getItem(STORAGE.CONFIG);
-		if (stored) return JSON.parse(stored);
-
-		return {};
+		if (stored) {
+			const parsed = ConfigStateSchema.safeParse(JSON.parse(stored));
+			if (parsed.success) return parsed.data;
+			console.error('Failed to validate config from localStorage:', parsed.error);
+		}
 	} catch (err) {
 		console.error('Failed to load DB from localStorage:', err);
 	}
 	return {};
 }
 export const COMIC_DB = new SvelteMap<string, Comic>(loadInitialComics());
-export const CONFIG_DB = $state<ConfigValues>(loadInitialConfig());
+export const CONFIG_DB = $state<ConfigState>(loadInitialConfig());
 
 if (COMIC_DB.size === 0) {
 	addComic(EXAMPLES[0]);
@@ -62,7 +66,7 @@ if (COMIC_DB.size === 0) {
 export function saveDB(): void {
 	if (!browser) return;
 	try {
-		const entries = Array.from(COMIC_DB.entries());
+		const entries = ComicEntriesSchema.parse(Array.from(COMIC_DB.entries()));
 		localStorage.setItem(STORAGE.COMICS, JSON.stringify(entries));
 	} catch (err) {
 		console.error('Failed to save DB to localStorage:', err);
@@ -289,17 +293,17 @@ export function getPanelsWithCharachter(
 export function saveConfig(): void {
 	if (!browser) return;
 	try {
-		localStorage.setItem(STORAGE.CONFIG, JSON.stringify(CONFIG_DB));
+		localStorage.setItem(STORAGE.CONFIG, JSON.stringify(ConfigStateSchema.parse(CONFIG_DB)));
 	} catch (err) {
 		console.error('Failed to save DB to localStorage:', err);
 	}
 }
 
-export function getConfig(): ConfigValues {
+export function getConfig(): ConfigState {
 	return CONFIG_DB;
 }
 
-export function addTextModel(model: Model): ConfigValues {
+export function addTextModel(model: Model): ConfigState {
 	const config = getConfig();
 
 	config[TEXT_MODEL_KEY] = model;
@@ -313,7 +317,7 @@ export function getTextModel(): Model | undefined {
 	return getConfig()[TEXT_MODEL_KEY];
 }
 
-export function addImageModel(model: Model): ConfigValues {
+export function addImageModel(model: Model): ConfigState {
 	const config = getConfig();
 
 	config[IMAGE_MODEL_KEY] = model;

@@ -18,13 +18,13 @@
 		globalLoading.start();
 		const characterImageResult = await getCreateCharacterImageValues(formData);
 		if (characterImageResult.success) {
-			const { comicId, characterId, crop, image } = characterImageResult.data;
+			const { crop, image } = characterImageResult.data;
 			const url = await getImageUrl(image);
 			const newImage = await cropImage(url, crop);
 			imageSrc = URL.createObjectURL(newImage);
 		}
 
-		return ({ result }) => {
+		return () => {
 			globalLoading.stop();
 		};
 	};

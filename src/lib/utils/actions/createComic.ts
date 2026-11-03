@@ -1,8 +1,8 @@
-import { ComicStyleEnum, type Comic } from '$lib/types';
+import { ComicSchema, ComicStyleEnum, type Comic } from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
 import z from 'zod';
 import { getComicFromOpenAiResponse } from '../ai/ai';
-import { SchemaName, type OpenAiOutput } from '../ai/aiTypes';
+import { AiTextRequestSchema, SchemaName, type OpenAiOutput } from '../ai/aiTypes';
 import { buildInitialMessages } from '../ai/utils/messages';
 import { INSTRUCTIONS_VALUE_KEY } from '../db/dbTypes';
 import { generateId } from '../id';
@@ -15,15 +15,17 @@ export const CreateComicValuesSchema = z.object({
 	style: ComicStyleEnum,
 });
 export type CreateComicValues = z.infer<typeof CreateComicValuesSchema>;
-export type CreateComicResult = { comic: Comic; output: unknown };
+export const CreateComicResultSchema = z.object({
+	comic: ComicSchema,
+	output: z.string(),
+});
+export type CreateComicResult = z.infer<typeof CreateComicResultSchema>;
 
 function getBody({ url, style }: CreateComicValues) {
-	const comicMessagesJsonString = JSON.stringify(buildInitialMessages(url, style));
-
-	return {
-		messagesJsonString: comicMessagesJsonString,
+	return AiTextRequestSchema.parse({
+		messages: buildInitialMessages(url, style),
 		schemaName: SchemaName.enum.initComic,
-	};
+	});
 }
 
 function handleResponse(responseJson: OpenAiOutput, { url }: CreateComicValues): Comic {
@@ -54,11 +56,11 @@ export async function createComic(event: RequestEvent): ActionResult<CreateComic
 		[INSTRUCTIONS_VALUE_KEY]: '',
 	});
 
-	return {
+	return CreateComicResultSchema.parse({
 		comic: {
 			...comic,
 			cover: coverResult.image,
 		},
 		output: '',
-	};
+	});
 }

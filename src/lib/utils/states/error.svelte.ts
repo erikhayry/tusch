@@ -1,18 +1,24 @@
-type Error = { isError: true; message: string } | { isError: false };
+import { z } from 'zod';
+
+export const ErrorStateSchema = z.discriminatedUnion('isError', [
+	z.object({ isError: z.literal(true), message: z.string() }),
+	z.object({ isError: z.literal(false) }),
+]);
+export type ErrorStateValue = z.infer<typeof ErrorStateSchema>;
 
 class ErrorState {
-	private isErrorState = $state<Error>({ isError: false });
+	private isErrorState = $state<ErrorStateValue>({ isError: false });
 
 	get error() {
 		return this.isErrorState;
 	}
 
 	set(message: string) {
-		this.isErrorState = { isError: true, message };
+		this.isErrorState = ErrorStateSchema.parse({ isError: true, message });
 	}
 
 	reset() {
-		this.isErrorState = { isError: false };
+		this.isErrorState = ErrorStateSchema.parse({ isError: false });
 	}
 }
 

@@ -1,19 +1,17 @@
-import type { SchemaName } from '$lib/utils/ai/aiTypes';
+import type { AiRequest } from '$lib/utils/ai/aiTypes';
+import type { RequestEvent } from '@sveltejs/kit';
 
 export const COOKIES_MOCK = {
 	cookies: {
 		get: () => 'apiKey',
 	},
-};
+} as unknown as RequestEvent;
 
-export function mockPostArgs(messagesJsonString: string, schemaName: SchemaName) {
+export function mockPostArgs(body: AiRequest): RequestEvent {
 	return {
 		request: {
-			json: async () => ({
-				messagesJsonString,
-				schemaName,
-			}),
+			json: async () => body,
 		},
-		...COOKIES_MOCK,
-	};
+		cookies: COOKIES_MOCK.cookies,
+	} as unknown as RequestEvent;
 }
