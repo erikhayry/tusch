@@ -1,16 +1,16 @@
-class LoadingState {
-	private isLoadingState = $state(false);
+export class LoadingState {
+	private pendingCount = $state(0);
 
 	get isLoading() {
-		return this.isLoadingState;
+		return this.pendingCount > 0;
 	}
 
 	start() {
-		this.isLoadingState = true;
+		this.pendingCount += 1;
 	}
 
 	stop() {
-		this.isLoadingState = false;
+		this.pendingCount = Math.max(0, this.pendingCount - 1);
 	}
 }
 

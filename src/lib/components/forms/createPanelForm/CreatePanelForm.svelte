@@ -4,16 +4,13 @@
 		CREATE_PANEL_ACTION,
 		type CreatePanelResult,
 	} from '$lib/features/panels/contracts/createPanel';
+	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { encodeFormValue } from '$lib/forms/form-data';
-	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { addPanel } from '$lib/utils/db/db.svelte';
 	import { type CreatePanelFormProps } from './createPanelFormTypes';
 
-	const handleSubmit = onSubmit<CreatePanelResult>(async ({ update, result }) => {
-		if (result.data?.panel) {
-			const { comicId, panel, index } = result.data;
-			addPanel(comicId, panel, index);
-		}
+	const handleSubmit = enhanceAction<CreatePanelResult>(async ({ data, update }) => {
+		addPanel(data.comicId, data.panel, data.index);
 		await update();
 	});
 

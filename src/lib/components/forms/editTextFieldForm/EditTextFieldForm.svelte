@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { EDIT_TEXT_ACTION, getEditValues } from '$lib/features/panels/contracts/editText';
+	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
 	import { m } from '$lib/paraglide/messages';
-	import { onEdit, type SubmitCallback } from '$lib/utils/actions/onEdit';
 	import { editType } from '$lib/utils/db/db.svelte';
 	import { type EditTextFieldFormProps } from './editTextFieldFormTypes';
 
 	//TODO a11y
 	let editable = $state(false);
 
-	const onSuccess: SubmitCallback = async ({ update }) => {
+	const handleSubmit = enhanceClientCommand(getEditValues, editType, async ({ update }) => {
 		editable = false;
 		await update();
-	};
-
-	const handleSubmit = onEdit(getEditValues, editType, onSuccess);
+	});
 
 	const toggleEditing = () => {
 		editable = !editable;

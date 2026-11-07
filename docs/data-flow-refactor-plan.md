@@ -615,9 +615,9 @@ Names may change, but the responsibilities must stay distinct and explicit.
 
 ### Steps
 
-- [ ] Add `src/lib/forms/enhance-action.ts`.
-- [ ] Add `src/lib/forms/enhance-client-command.ts`.
-- [ ] Centralize:
+- [x] Add `src/lib/forms/enhance-action.ts`.
+- [x] Add `src/lib/forms/enhance-client-command.ts`.
+- [x] Centralize:
   - Loading lifecycle.
   - Error normalization.
   - Expected action failures.
@@ -625,38 +625,38 @@ Names may change, but the responsibilities must stay distinct and explicit.
   - Optional form reset.
   - Optional route invalidation.
   - Duplicate-submit protection.
-- [ ] Replace the global loading boolean with a request counter or equivalent concurrency-safe implementation.
-- [ ] Preserve the existing global loader UI through an adapter if necessary.
-- [ ] Keep structured failures available for future form-scoped rendering.
-- [ ] For client-only forms:
+- [x] Replace the global loading boolean with a request counter or equivalent concurrency-safe implementation.
+- [x] Preserve the existing global loader UI through an adapter if necessary.
+- [x] Keep structured failures available for future form-scoped rendering.
+- [x] For client-only forms:
   - Decode before submission.
   - Do not mutate when decoding fails.
   - Commit only after the `?/client` action succeeds during the migration.
-- [ ] Pilot the server-backed helper on:
+- [x] Pilot the server-backed helper on:
   - `src/lib/components/forms/createPanelForm/CreatePanelForm.svelte`
-- [ ] Pilot the client-command helper on:
+- [x] Pilot the client-command helper on:
   - `src/lib/components/forms/editTextFieldForm/EditTextFieldForm.svelte`
-- [ ] Preserve existing form markup and action names during the pilot.
-- [ ] Keep compatibility wrappers for unmigrated forms until all consumers move.
+- [x] Preserve existing form markup and action names during the pilot.
+- [x] Keep compatibility wrappers for unmigrated forms until all consumers move.
 
 ### Tests
 
-- [ ] Loading starts and stops exactly once.
-- [ ] Concurrent submissions do not hide the global loader prematurely.
-- [ ] Validation failure does not execute a command.
-- [ ] Action failure does not execute a client workflow.
-- [ ] A thrown client workflow error is surfaced and loading stops.
-- [ ] Successful client command runs once.
-- [ ] Duplicate submissions cannot produce duplicate commits.
-- [ ] Existing component interaction tests continue to pass.
+- [x] Loading starts and stops exactly once.
+- [x] Concurrent submissions do not hide the global loader prematurely.
+- [x] Validation failure does not execute a command.
+- [x] Action failure does not execute a client workflow.
+- [x] A thrown client workflow error is surfaced and loading stops.
+- [x] Successful client command runs once.
+- [x] Duplicate submissions cannot produce duplicate commits.
+- [x] Existing component interaction tests continue to pass.
 
 ### Acceptance criteria
 
-- [ ] The pilot forms keep native `<form>` and `use:enhance`.
-- [ ] Both pilot flows use shared lifecycle handling.
-- [ ] Client mutation no longer happens before a successful action result.
-- [ ] Components do not manually manipulate global loading/error state.
-- [ ] Existing route behavior is preserved.
+- [x] The pilot forms keep native `<form>` and `use:enhance`.
+- [x] Both pilot flows use shared lifecycle handling.
+- [x] Client mutation no longer happens before a successful action result.
+- [x] Components do not manually manipulate global loading/error state.
+- [x] Existing route behavior is preserved.
 
 ---
 
