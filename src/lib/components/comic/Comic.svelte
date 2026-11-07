@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { toCoverPrompt } from '$lib/features/comics/contracts/createCoverImage';
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import Character from '../charachter/Character.svelte';
@@ -29,7 +30,7 @@
 				}}
 			/>
 		{:else}
-			<CreateCoverImageForm values={{ comic }} label={m.addCover()} />
+			<CreateCoverImageForm values={{ comic: toCoverPrompt(comic) }} label={m.addCover()} />
 		{/if}
 		<Section>
 			<Heading>{m.comicStyle()}</Heading>

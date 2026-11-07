@@ -8,7 +8,7 @@
 
 	import { m } from '$lib/paraglide/messages';
 
-	import { ACTION } from '$lib/utils/actions/actions';
+	import { BYOK_ACTION } from '$lib/features/settings/contracts/validateApiKey';
 	import { globalLoading } from '$lib/utils/states/loading.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
@@ -35,7 +35,7 @@
 	<form
 		data-testId={loginFormTestId}
 		method="POST"
-		action={`?/${ACTION.BYOK}`}
+		action={`?/${BYOK_ACTION}`}
 		use:enhance={handleSubmit}
 	>
 		<label>

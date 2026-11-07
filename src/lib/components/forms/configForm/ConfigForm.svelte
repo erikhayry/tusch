@@ -7,13 +7,16 @@
 
 	import Heading from '$lib/components/relativeHeading/Heading.svelte';
 	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import {
+		CONFIG_ACTION,
+		getConfigValues,
+	} from '$lib/features/settings/contracts/saveModelSettings';
 	import { m } from '$lib/paraglide/messages';
 	import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
-	import { ACTION } from '$lib/utils/actions/actions';
 	import { onEdit } from '$lib/utils/actions/onEdit';
 	import { addImageModel, addTextModel } from '$lib/utils/db/db.svelte';
 	import type { ConfigValues } from '$lib/utils/db/dbTypes';
-	import { getConfigValues } from '../utils/values';
+
 	import { type ConfigFormProps } from './configFormTypes';
 
 	const handleSubmit = onEdit(getConfigValues, (values: ConfigValues) => {
@@ -38,7 +41,7 @@
 		{/each}
 	</ul>
 
-	<form method="POST" action={`?/${ACTION.CONFIG}`} use:enhance={handleSubmit}>
+	<form method="POST" action={`?/${CONFIG_ACTION}`} use:enhance={handleSubmit}>
 		<label for="select-text-model">{m.selectTextModel()}</label>
 		<select id="select-text-model" name={TEXT_MODEL_KEY}>
 			{#each models[TEXT_MODEL_KEY] as model, index (index)}

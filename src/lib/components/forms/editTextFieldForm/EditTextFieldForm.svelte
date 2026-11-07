@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { EDIT_TEXT_ACTION, getEditValues } from '$lib/features/panels/contracts/editText';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions/actions';
 	import { onEdit, type SubmitCallback } from '$lib/utils/actions/onEdit';
 	import { editType } from '$lib/utils/db/db.svelte';
-	import { getEditValues } from '../utils/values';
 	import { type EditTextFieldFormProps } from './editTextFieldFormTypes';
 
 	//TODO a11y
@@ -26,7 +25,7 @@
 </script>
 
 {#if editable}
-	<form method="POST" action={`?/${ACTION.CLIENT}`} use:enhance={handleSubmit}>
+	<form method="POST" action={`?/${EDIT_TEXT_ACTION}`} use:enhance={handleSubmit}>
 		{#each Object.entries(values) as entry (entry[0])}
 			{#if entry[0] === 'value'}
 				<label>

@@ -3,6 +3,7 @@
 </script>
 
 <script lang="ts">
+	import { toCreatePanelImageValues } from '$lib/features/panels/contracts/createPanelImage';
 	import { m } from '$lib/paraglide/messages';
 	import { getCharacterImageForPanel, getCharacterName } from '$lib/utils/db/db.svelte';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
@@ -23,24 +24,14 @@
 	{#if panel.image === undefined}
 		<CreatePanelImageForm
 			label={m.addImage()}
-			values={{
-				comicId,
-				panel,
-				characters,
-				style,
-			}}
+			values={toCreatePanelImageValues(comicId, panel, characters, style)}
 		/>
 	{:else}
 		<Image image={panel.image.landscape} alt={panel.image.alt} />
 		<CreatePanelImageForm
 			label={m.generateNewImage()}
 			imageName={panel.image?.landscape.src}
-			values={{
-				comicId,
-				panel,
-				characters,
-				style,
-			}}
+			values={toCreatePanelImageValues(comicId, panel, characters, style)}
 		/>
 		<DeleteItemForm
 			label={m.removeImage()}

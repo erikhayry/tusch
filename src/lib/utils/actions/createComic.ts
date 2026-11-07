@@ -1,7 +1,13 @@
-import { readString } from '$lib/forms/form-data';
-import { ComicSchema, ComicStyleEnum, type Comic } from '$lib/types';
+import {
+	CreateComicResultSchema,
+	CreateComicValuesSchema,
+	decodeCreateComicValues,
+	type CreateComicResult,
+	type CreateComicValues,
+} from '$lib/features/comics/contracts/createComic';
+import { toCoverPrompt } from '$lib/features/comics/contracts/createCoverImage';
+import type { Comic } from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
-import z from 'zod';
 import { getComicFromOpenAiResponse } from '../ai/ai';
 import { AiTextRequestSchema, SchemaName, type OpenAiOutput } from '../ai/aiTypes';
 import { buildInitialMessages } from '../ai/utils/messages';
@@ -10,24 +16,6 @@ import { generateId } from '../id';
 import type { ActionResult } from './actions';
 import { fetchCoverImage } from './createCoverImage';
 import { isFormFailure, submitAiResponse } from './utils/postAiResponse';
-
-export const CreateComicValuesSchema = z.object({
-	url: z.url(),
-	style: ComicStyleEnum,
-});
-export type CreateComicValues = z.infer<typeof CreateComicValuesSchema>;
-export const CreateComicResultSchema = z.object({
-	comic: ComicSchema,
-	output: z.string(),
-});
-export type CreateComicResult = z.infer<typeof CreateComicResultSchema>;
-
-function decodeValues(formData: FormData) {
-	return {
-		url: readString(formData, 'url'),
-		style: readString(formData, 'style'),
-	};
-}
 
 function getBody({ url, style }: CreateComicValues) {
 	return AiTextRequestSchema.parse({
@@ -54,7 +42,7 @@ export async function createComic(event: RequestEvent): ActionResult<CreateComic
 	const comic = await submitAiResponse({
 		api: '/api/ai/comic',
 		event,
-		decode: decodeValues,
+		decode: decodeCreateComicValues,
 		schema: CreateComicValuesSchema,
 		getBody,
 		handleResponse,
@@ -63,7 +51,7 @@ export async function createComic(event: RequestEvent): ActionResult<CreateComic
 	if (isFormFailure(comic)) return comic;
 
 	const coverResult = await fetchCoverImage(event, {
-		comic,
+		comic: toCoverPrompt(comic),
 		[INSTRUCTIONS_VALUE_KEY]: '',
 	});
 

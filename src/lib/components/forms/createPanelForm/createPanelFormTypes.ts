@@ -1,4 +1,4 @@
-import { CreatePanelValuesSchema } from '$lib/utils/actions/createPanel';
+import { CreatePanelValuesSchema } from '$lib/features/panels/contracts/createPanel';
 import { z } from 'zod';
 
 export const CreatePanelFormPropsSchema = z.object({

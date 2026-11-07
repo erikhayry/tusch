@@ -1,4 +1,11 @@
-import { getConfigValues } from '$lib/components/forms/utils/values';
+import { CREATE_COMIC_ACTION } from '$lib/features/comics/contracts/createComic';
+import { CREATE_COVER_IMAGE_ACTION } from '$lib/features/comics/contracts/createCoverImage';
+import { CREATE_PANEL_ACTION } from '$lib/features/panels/contracts/createPanel';
+import { CREATE_PANEL_IMAGE_ACTION } from '$lib/features/panels/contracts/createPanelImage';
+import { CONFIG_ACTION, getConfigValues } from '$lib/features/settings/contracts/saveModelSettings';
+import { BYOK_ACTION } from '$lib/features/settings/contracts/validateApiKey';
+import { CLIENT_ACTION_NAME } from '$lib/forms/action-names';
+import { FormFailureSchema } from '$lib/forms/form-failure';
 import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
 import { type Action, type ActionFailure } from '@sveltejs/kit';
 import { z } from 'zod';
@@ -9,35 +16,20 @@ import { submitCoverImage } from './createCoverImage';
 import { submitPanel } from './createPanel';
 import { submitPanelImage } from './createPanelImage';
 
-export const ActionNameSchema = z.enum([
-	'client',
-	'create-panel-image',
-	'create-cover-image',
-	'create-panel',
-	'create-comic',
-	'byok',
-	'config',
-]);
-export type ActionName = z.infer<typeof ActionNameSchema>;
-
 export const ACTION = {
-	CLIENT: ActionNameSchema.enum.client,
-	CREATE_PANEL_IMAGE: ActionNameSchema.enum['create-panel-image'],
-	CREATE_COVER_IMAGE: ActionNameSchema.enum['create-cover-image'],
-	CREATE_PANEL: ActionNameSchema.enum['create-panel'],
-	CREATE_COMIC: ActionNameSchema.enum['create-comic'],
-	BYOK: ActionNameSchema.enum.byok,
-	CONFIG: ActionNameSchema.enum.config,
+	CLIENT: CLIENT_ACTION_NAME,
+	CREATE_PANEL_IMAGE: CREATE_PANEL_IMAGE_ACTION,
+	CREATE_COVER_IMAGE: CREATE_COVER_IMAGE_ACTION,
+	CREATE_PANEL: CREATE_PANEL_ACTION,
+	CREATE_COMIC: CREATE_COMIC_ACTION,
+	BYOK: BYOK_ACTION,
+	CONFIG: CONFIG_ACTION,
 } as const;
 
 export const ActionSuccessResultSchema = z.object({ success: z.literal(true) });
 export type ActionSuccessResult = z.infer<typeof ActionSuccessResultSchema>;
 
-export const ActionFailureDataSchema = z.object({
-	code: z.string(),
-	message: z.string(),
-	fieldErrors: z.record(z.string(), z.array(z.string()).optional()).optional(),
-});
+export const ActionFailureDataSchema = FormFailureSchema;
 export type ActionFailureData = z.infer<typeof ActionFailureDataSchema>;
 
 export type ActionResult<T> = Promise<T | ActionFailure<ActionFailureData>>;
@@ -46,7 +38,7 @@ export const globalActions = {
 		return ActionSuccessResultSchema.parse({ success: true });
 	},
 	[ACTION.CONFIG]: async ({ request, cookies }) => {
-		const config = await getConfigValues(await request.formData());
+		const config = getConfigValues(await request.formData());
 
 		if (config.data?.[TEXT_MODEL_KEY]) {
 			cookies.set(...getCookieArgs(TEXT_MODEL_COOKIE_NAME, config.data?.[TEXT_MODEL_KEY], false));

@@ -8,9 +8,11 @@
 	import { resolve } from '$app/paths';
 
 	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import {
+		CREATE_COMIC_ACTION,
+		type CreateComicResult,
+	} from '$lib/features/comics/contracts/createComic';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions/actions';
-	import type { CreateComicResult } from '$lib/utils/actions/createComic';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { STYLES } from '$lib/utils/comicStyles';
 	import { addComic } from '$lib/utils/db/db.svelte';
@@ -33,7 +35,7 @@
 </script>
 
 <Section data-testId={createComicFormTestId}>
-	<form method="post" action={`?/${ACTION.CREATE_COMIC}`} use:enhance={handleSubmit}>
+	<form method="post" action={`?/${CREATE_COMIC_ACTION}`} use:enhance={handleSubmit}>
 		<label>
 			Url to source
 			<input

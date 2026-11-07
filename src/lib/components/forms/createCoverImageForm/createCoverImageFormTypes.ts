@@ -1,4 +1,4 @@
-import { CreateCoverImageValuesSchema } from '$lib/utils/actions/createCoverImage';
+import { CreateCoverImageValuesSchema } from '$lib/features/comics/contracts/createCoverImage';
 import { INCLUDE_IMAGE_VALUE_KEY, INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
 import { z } from 'zod';
 

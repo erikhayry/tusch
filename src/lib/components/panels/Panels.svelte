@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import { toCreatePanelValues } from '$lib/features/panels/contracts/createPanel';
 	import { m } from '$lib/paraglide/messages';
 	import CreatePanelForm from '../forms/createPanelForm/CreatePanelForm.svelte';
 	import Panel from '../panel/Panel.svelte';
@@ -17,7 +18,7 @@
 			{#each panels as panel, index (panel.id)}
 				<li>
 					<CreatePanelForm
-						values={{ comicId, index, panels }}
+						values={toCreatePanelValues(comicId, panels, index)}
 						label={m.addPanelBefore({ number: index + 1 })}
 					/>
 					<a
@@ -26,7 +27,7 @@
 						>{panel.editorialTitle}
 					</a>
 					<CreatePanelForm
-						values={{ comicId, index, panels }}
+						values={toCreatePanelValues(comicId, panels, index)}
 						label={m.addPanelAfter({ number: index + 1 })}
 					/>
 				</li>

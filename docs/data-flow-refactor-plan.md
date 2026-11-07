@@ -440,37 +440,37 @@ Document current behavior with tests and correct known data-flow contract bugs b
 
 ### Steps
 
-- [ ] Add tests for native `FormData` behavior:
+- [x] Add tests for native `FormData` behavior:
   - Checkbox present and absent.
   - Numeric-looking text.
   - Boolean-looking text.
   - `null`-looking text.
   - Declared JSON fields.
   - Malformed declared JSON fields.
-- [ ] Add tests for `onSubmit`:
+- [x] Add tests for `onSubmit`:
   - Success.
   - Action failure.
   - Server error.
   - Client success callback throwing.
   - Loading cleanup in every path.
-- [ ] Add tests for `onEdit`:
+- [x] Add tests for `onEdit`:
   - Valid input.
   - Invalid input.
   - Action failure.
   - Update callback failure.
   - Mutation timing.
-- [ ] Replace expected validation errors with `fail(400, structuredFailure)`.
-- [ ] Check `response.ok` before reading provider/API success data.
-- [ ] Ensure provider errors retain an actionable status and message.
-- [ ] Decode native checkbox values explicitly.
-- [ ] Forward image-reference fields through `src/routes/api/ai/utils/post.ts`.
-- [ ] Correct the endpoint used by `fetchPanel()`.
-- [ ] Add action-to-endpoint tests that assert:
+- [x] Replace expected validation errors with `fail(400, structuredFailure)`.
+- [x] Check `response.ok` before reading provider/API success data.
+- [x] Ensure provider errors retain an actionable status and message.
+- [x] Decode native checkbox values explicitly.
+- [x] Forward image-reference fields through `src/routes/api/ai/utils/post.ts`.
+- [x] Correct the endpoint used by `fetchPanel()`.
+- [x] Add action-to-endpoint tests that assert:
   - Endpoint path.
   - HTTP method.
   - Request body.
   - Optional image-reference forwarding.
-- [ ] Record existing unrelated diagnostics separately rather than fixing them in this work package.
+- [x] Record existing unrelated diagnostics separately rather than fixing them in this work package.
 
 ### Structured failure shape
 
@@ -489,22 +489,22 @@ Exact naming may vary, but expected validation and provider failures must not be
 
 ### Tests
 
-- [ ] Contract-level unit tests.
-- [ ] Action tests.
-- [ ] API adapter tests.
-- [ ] Submission-helper tests.
-- [ ] Existing relevant form tests.
+- [x] Contract-level unit tests.
+- [x] Action tests.
+- [x] API adapter tests.
+- [x] Submission-helper tests.
+- [x] Existing relevant form tests.
 
 ### Acceptance criteria
 
-- [ ] Text fields are never implicitly JSON-coerced.
-- [ ] Checkboxes decode correctly.
-- [ ] Reference-image data reaches the AI adapter.
-- [ ] `fetchPanel()` uses the panel endpoint.
-- [ ] Validation failures use `fail(400, ...)`.
-- [ ] Non-success upstream responses are handled before success parsing.
-- [ ] Existing intended form behavior remains unchanged.
-- [ ] No architectural file movement is mixed into this package.
+- [x] Text fields are never implicitly JSON-coerced.
+- [x] Checkboxes decode correctly.
+- [x] Reference-image data reaches the AI adapter.
+- [x] `fetchPanel()` uses the panel endpoint.
+- [x] Validation failures use `fail(400, ...)`.
+- [x] Non-success upstream responses are handled before success parsing.
+- [x] Existing intended form behavior remains unchanged.
+- [x] No architectural file movement is mixed into this package.
 
 ---
 
@@ -518,27 +518,27 @@ Give every operation one shared, explicit contract that can be used by forms, cl
 
 ### Steps
 
-- [ ] Create reusable, explicit field readers in `src/lib/forms/form-data.ts`, such as:
+- [x] Create reusable, explicit field readers in `src/lib/forms/form-data.ts`, such as:
   - `readString`
   - `readOptionalString`
   - `readInteger`
   - `readCheckbox`
   - `readJsonField`
-- [ ] Do not create a helper that attempts JSON parsing on every field.
-- [ ] Move decoding responsibility out of:
+- [x] Do not create a helper that attempts JSON parsing on every field.
+- [x] Move decoding responsibility out of:
   - `src/lib/components/forms/utils/values.ts`
   - `src/lib/utils/actions/utils/postAiResponse.ts`
-- [ ] Create a contract module per operation.
-- [ ] Each contract should own:
+- [x] Create a contract module per operation.
+- [x] Each contract should own:
   - Input schema.
   - Explicit `FormData` decoder.
   - Output type or schema.
   - Action name or action-name association.
   - Failure type.
   - Optional hidden-field encoder.
-- [ ] Move action result types out of server implementation modules so forms can import shared types without depending on server code.
-- [ ] Remove the import from `actions.ts` into the component layer.
-- [ ] Define minimal AI prompt-context DTOs.
+- [x] Move action result types out of server implementation modules so forms can import shared types without depending on server code.
+- [x] Remove the import from `actions.ts` into the component layer.
+- [x] Define minimal AI prompt-context DTOs.
 
 ### Minimum prompt-context DTOs
 
@@ -578,21 +578,21 @@ Include only:
 
 ### Tests
 
-- [ ] One decoder test file per feature contract.
-- [ ] Present and missing optional fields.
-- [ ] Malformed JSON only for declared JSON fields.
-- [ ] Checkbox behavior.
-- [ ] Numeric index coercion.
-- [ ] Minimal DTO tests proving asset data is omitted.
-- [ ] Shared contract types compile in both client and server consumers.
+- [x] One decoder test file per feature contract.
+- [x] Present and missing optional fields.
+- [x] Malformed JSON only for declared JSON fields.
+- [x] Checkbox behavior.
+- [x] Numeric index coercion.
+- [x] Minimal DTO tests proving asset data is omitted.
+- [x] Shared contract types compile in both client and server consumers.
 
 ### Acceptance criteria
 
-- [ ] Server action code has no imports from `src/lib/components`.
-- [ ] Forms no longer import result types from server implementation modules.
-- [ ] Generic whole-form JSON parsing is no longer used by migrated actions.
-- [ ] Every migrated form field has an explicit decoding rule.
-- [ ] AI requests use purpose-specific prompt DTOs rather than full mutable aggregates.
+- [x] Server action code has no imports from `src/lib/components`.
+- [x] Forms no longer import result types from server implementation modules.
+- [x] Generic whole-form JSON parsing is no longer used by migrated actions.
+- [x] Every migrated form field has an explicit decoding rule.
+- [x] AI requests use purpose-specific prompt DTOs rather than full mutable aggregates.
 
 ---
 

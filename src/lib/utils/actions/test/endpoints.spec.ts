@@ -1,3 +1,6 @@
+import { CreateCoverImageValuesSchema } from '$lib/features/comics/contracts/createCoverImage';
+import { toCreatePanelValues } from '$lib/features/panels/contracts/createPanel';
+import { CreatePanelImageValuesSchema } from '$lib/features/panels/contracts/createPanelImage';
 import { encodeFormValue } from '$lib/forms/form-data';
 import { generateMock } from '$lib/test/utils/generateMock';
 import { PanelArraySchema } from '$lib/types';
@@ -15,9 +18,7 @@ import {
 	CREATE_PANEL_RESPONSE,
 } from '../../../../tests/mock/openAi/openAiResponse';
 import { ACTION, globalActions } from '../actions';
-import { CreateCoverImageValuesSchema } from '../createCoverImage';
 import { fetchPanel } from '../createPanel';
-import { CreatePanelImageValuesSchema } from '../createPanelImage';
 
 type MockResponse = {
 	ok: boolean;
@@ -70,7 +71,7 @@ describe('action endpoints', () => {
 			);
 			const panels = generateMock(PanelArraySchema);
 
-			await fetchPanel(event, { comicId: 'comic-1', panels, index: 2 });
+			await fetchPanel(event, toCreatePanelValues('comic-1', panels, 2));
 
 			expect(fetch).toHaveBeenCalledOnce();
 			expect(fetch.mock.calls[0][0]).toBe('/api/ai/panel');
@@ -83,9 +84,9 @@ describe('action endpoints', () => {
 
 	describe('ACTION.CREATE_PANEL', () => {
 		it('posts the panel request to the panel endpoint', async () => {
-			const panels = generateMock(PanelArraySchema);
+			const values = toCreatePanelValues('comic-1', generateMock(PanelArraySchema), 0);
 			const { event, fetch } = getRequestEvent(
-				{ comicId: 'comic-1', panels, index: 0 },
+				{ comicId: 'comic-1', panels: values.panels, index: 0 },
 				{ '/api/ai/panel': okResponse(CREATE_PANEL_RESPONSE) },
 			);
 

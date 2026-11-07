@@ -4,6 +4,23 @@ import { INCLUDE_IMAGE_VALUE_KEY } from '$lib/utils/db/dbTypes';
 import type { RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import {
+	CreateComicValuesSchema,
+	type CreateComicResult,
+} from '$lib/features/comics/contracts/createComic';
+import {
+	CreateCoverImageValuesSchema,
+	type CreateCoverImageResult,
+} from '$lib/features/comics/contracts/createCoverImage';
+import {
+	CreatePanelValuesSchema,
+	type CreatePanelResult,
+} from '$lib/features/panels/contracts/createPanel';
+import {
+	CreatePanelImageValuesSchema,
+	type CreatePanelImageResult,
+} from '$lib/features/panels/contracts/createPanelImage';
+import { ByokValuesSchema } from '$lib/features/settings/contracts/validateApiKey';
 import { encodeFormValue } from '$lib/forms/form-data';
 import {
 	CREATE_COMIC_RESPONSE,
@@ -13,11 +30,6 @@ import {
 	PING_RESPONSE,
 } from '../../../../tests/mock/openAi/openAiResponse';
 import { ACTION, globalActions } from '../actions';
-import { ByokValuesSchema } from '../byok';
-import { CreateComicValuesSchema, type CreateComicResult } from '../createComic';
-import { CreateCoverImageValuesSchema, type CreateCoverImageResult } from '../createCoverImage';
-import { CreatePanelValuesSchema, type CreatePanelResult } from '../createPanel';
-import { CreatePanelImageValuesSchema, type CreatePanelImageResult } from '../createPanelImage';
 
 const cookesSetSpy = vi.fn();
 

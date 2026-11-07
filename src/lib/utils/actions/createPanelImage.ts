@@ -1,55 +1,17 @@
-import { readCheckbox, readJsonField, readString } from '$lib/forms/form-data';
 import {
-	CharacterSchema,
-	ComicStyleEnum,
-	PanelSchema,
-	ResponsivePanelImageSchema,
-} from '$lib/types';
+	CreatePanelImageResultSchema,
+	CreatePanelImageValuesSchema,
+	decodeCreatePanelImageValues,
+	type CreatePanelImageResult,
+	type CreatePanelImageValues,
+} from '$lib/features/panels/contracts/createPanelImage';
 import type { RequestEvent } from '@sveltejs/kit';
-import { z } from 'zod';
 import { getImageFromOpenAiResponse } from '../ai/ai';
-import {
-	AiImageRequestSchema,
-	OpenAiOutputSchema,
-	SchemaName,
-	type OpenAiOutput,
-} from '../ai/aiTypes';
+import { AiImageRequestSchema, SchemaName, type OpenAiOutput } from '../ai/aiTypes';
 import { buildPanelImageMessages } from '../ai/utils/messages';
 import { IMAGE_SIZE } from '../ai/utils/settings';
-import { IMAGE_VALUE_KEY, INCLUDE_IMAGE_VALUE_KEY, INSTRUCTIONS_VALUE_KEY } from '../db/dbTypes';
 import type { ActionResult } from './actions';
 import { fetchAiResponse, submitAiResponse } from './utils/postAiResponse';
-
-export const CreatePanelImageValuesSchema = z.object({
-	panel: PanelSchema,
-	comicId: z.string(),
-	style: ComicStyleEnum,
-	characters: z.array(CharacterSchema),
-	[INSTRUCTIONS_VALUE_KEY]: z.string(),
-	[IMAGE_VALUE_KEY]: z.string().optional(),
-	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
-});
-export type CreatePanelImageValues = z.infer<typeof CreatePanelImageValuesSchema>;
-
-export const CreatePanelImageResultSchema = z.object({
-	panelId: z.string(),
-	comicId: z.string(),
-	image: ResponsivePanelImageSchema,
-	output: OpenAiOutputSchema.shape.output,
-});
-export type CreatePanelImageResult = z.infer<typeof CreatePanelImageResultSchema>;
-
-function decodeValues(formData: FormData) {
-	return {
-		panel: readJsonField(formData, 'panel'),
-		comicId: readString(formData, 'comicId'),
-		style: readString(formData, 'style'),
-		characters: readJsonField(formData, 'characters'),
-		[INSTRUCTIONS_VALUE_KEY]: readString(formData, INSTRUCTIONS_VALUE_KEY),
-		[IMAGE_VALUE_KEY]: readString(formData, IMAGE_VALUE_KEY),
-		[INCLUDE_IMAGE_VALUE_KEY]: readCheckbox(formData, INCLUDE_IMAGE_VALUE_KEY),
-	};
-}
 
 function getBody({
 	panel,
@@ -105,7 +67,7 @@ export async function submitPanelImage(event: RequestEvent): ActionResult<Create
 	return submitAiResponse({
 		api: '/api/ai/panel-image',
 		event,
-		decode: decodeValues,
+		decode: decodeCreatePanelImageValues,
 		schema: CreatePanelImageValuesSchema,
 		getBody,
 		handleResponse,

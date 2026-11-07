@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import {
+		CREATE_COVER_IMAGE_ACTION,
+		type CreateCoverImageResult,
+	} from '$lib/features/comics/contracts/createCoverImage';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions/actions';
-	import type { CreateCoverImageResult } from '$lib/utils/actions/createCoverImage';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { addCoverImage } from '$lib/utils/db/db.svelte';
 	import {
@@ -40,7 +42,7 @@
 	});
 </script>
 
-<form method="POST" action={`?/${ACTION.CREATE_COVER_IMAGE}`} use:enhance={handleSubmit}>
+<form method="POST" action={`?/${CREATE_COVER_IMAGE_ACTION}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
 		<input type="hidden" name={entry[0]} value={encodeFormValue(entry[1])} />
 	{/each}

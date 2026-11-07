@@ -1,4 +1,6 @@
-import type { Character, Comic, ComicStyle, Panel } from '$lib/types';
+import type { CoverPrompt } from '$lib/features/comics/contracts/createCoverImage';
+import type { CharacterPrompt, PanelPrompt } from '$lib/features/comics/contracts/prompts';
+import type { ComicStyle, Panel } from '$lib/types';
 import { STYLES } from '$lib/utils/comicStyles';
 import type { ResponseInputItem } from 'openai/resources/responses/responses.mjs';
 import { OPEN_AI_ROLE, OPEN_AI_TYPE } from './settings';
@@ -70,7 +72,7 @@ export function buildInitialMessages(url: string, style: ComicStyle): string[] {
 	return [INIT.WHAT, `Source URL: ${url}`, ...INIT.HOWS, ...buildStyleInstruction(style)];
 }
 
-export function buildCoverImageMessages({ comic }: { comic: Comic }): string[] {
+export function buildCoverImageMessages({ comic }: { comic: CoverPrompt }): string[] {
 	return [
 		COVER_IMAGE.WHAT,
 		...COVER_IMAGE.HOWS,
@@ -86,9 +88,12 @@ export function buildPanelImageMessages({
 	characters,
 	style,
 }: {
-	panel: Panel;
+	panel: Pick<
+		Panel,
+		'visualDescription' | 'dialogue' | 'captions' | 'place' | 'year' | 'season' | 'timeOfDay'
+	>;
 	instructions: string;
-	characters: Character[];
+	characters: CharacterPrompt[];
 	style: ComicStyle;
 }): string[] {
 	const meta: string[] = [];
@@ -115,18 +120,11 @@ export function buildPanelImageMessages({
 	];
 }
 
-function removeImage(panels: Panel[]) {
-	return panels.map(({ image, ...panel }) => ({
-		...panel,
-		hasImage: Boolean(image),
-	}));
-}
-
-export function buildPanelMessages(index: number, panels: Panel[]): string[] {
+export function buildPanelMessages(index: number, panels: PanelPrompt[]): string[] {
 	return [
 		PANEL.WHAT,
 		`Target insertion index: ${index}`,
-		`Existing Panels Context: ${JSON.stringify(removeImage(panels))}`,
+		`Existing Panels Context: ${JSON.stringify(panels)}`,
 		...PANEL.HOWS,
 	];
 }

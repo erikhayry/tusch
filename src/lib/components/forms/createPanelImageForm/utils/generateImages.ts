@@ -1,5 +1,5 @@
+import type { CreatePanelImageResult } from '$lib/features/panels/contracts/createPanelImage';
 import type { CharachterPositions, Crop, ResponsivePanelImage } from '$lib/types';
-import type { CreatePanelImageResult } from '$lib/utils/actions/createPanelImage';
 import { cropImage } from '$lib/utils/crop/crop';
 import { addCharacterImage, addPanelImage } from '$lib/utils/db/db.svelte';
 import { generateId } from '$lib/utils/id';

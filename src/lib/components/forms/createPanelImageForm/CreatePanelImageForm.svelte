@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import {
+		CREATE_PANEL_IMAGE_ACTION,
+		type CreatePanelImageResult,
+	} from '$lib/features/panels/contracts/createPanelImage';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
-	import { ACTION } from '$lib/utils/actions/actions';
-	import type { CreatePanelImageResult } from '$lib/utils/actions/createPanelImage';
 	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { cropImage } from '$lib/utils/crop/crop';
 	import { addCharacterImage, addPanelImage, getPanel } from '$lib/utils/db/db.svelte';
@@ -86,7 +88,7 @@
 	});
 </script>
 
-<form method="POST" action={`?/${ACTION.CREATE_PANEL_IMAGE}`} use:enhance={handleSubmit}>
+<form method="POST" action={`?/${CREATE_PANEL_IMAGE_ACTION}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
 		<input type="hidden" name={entry[0]} value={encodeFormValue(entry[1])} />
 	{/each}

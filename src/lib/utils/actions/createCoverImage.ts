@@ -1,43 +1,17 @@
-import { readCheckbox, readJsonField, readString } from '$lib/forms/form-data';
-import { ComicSchema, ResponsiveImageSchema } from '$lib/types';
-import type { RequestEvent } from '@sveltejs/kit';
-import z from 'zod';
-import { getImageFromOpenAiResponse } from '../ai/ai';
 import {
-	AiImageRequestSchema,
-	OpenAiOutputSchema,
-	SchemaName,
-	type OpenAiOutput,
-} from '../ai/aiTypes';
-import { buildCoverImageMessages } from '../ai/utils/messages';
-import { IMAGE_SIZE } from '../ai/utils/settings';
-import { IMAGE_VALUE_KEY, INCLUDE_IMAGE_VALUE_KEY, INSTRUCTIONS_VALUE_KEY } from '../db/dbTypes';
+	CreateCoverImageResultSchema,
+	CreateCoverImageValuesSchema,
+	decodeCreateCoverImageValues,
+	type CreateCoverImageResult,
+	type CreateCoverImageValues,
+} from '$lib/features/comics/contracts/createCoverImage';
+import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
+import { AiImageRequestSchema, SchemaName, type OpenAiOutput } from '$lib/utils/ai/aiTypes';
+import { buildCoverImageMessages } from '$lib/utils/ai/utils/messages';
+import { IMAGE_SIZE } from '$lib/utils/ai/utils/settings';
+import { type RequestEvent } from '@sveltejs/kit';
 import type { ActionResult } from './actions';
 import { fetchAiResponse, submitAiResponse } from './utils/postAiResponse';
-
-export const CreateCoverImageResultSchema = z.object({
-	comicId: z.string(),
-	image: ResponsiveImageSchema,
-	output: OpenAiOutputSchema.shape.output,
-});
-export type CreateCoverImageResult = z.infer<typeof CreateCoverImageResultSchema>;
-
-export const CreateCoverImageValuesSchema = z.object({
-	comic: ComicSchema,
-	[INSTRUCTIONS_VALUE_KEY]: z.string(),
-	[IMAGE_VALUE_KEY]: z.string().optional(),
-	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
-});
-export type CreateCoverImageValues = z.infer<typeof CreateCoverImageValuesSchema>;
-
-function decodeValues(formData: FormData) {
-	return {
-		comic: readJsonField(formData, 'comic'),
-		[INSTRUCTIONS_VALUE_KEY]: readString(formData, INSTRUCTIONS_VALUE_KEY),
-		[IMAGE_VALUE_KEY]: readString(formData, IMAGE_VALUE_KEY),
-		[INCLUDE_IMAGE_VALUE_KEY]: readCheckbox(formData, INCLUDE_IMAGE_VALUE_KEY),
-	};
-}
 
 function getBody({ comic, instructions, imageUrl, includeImage }: CreateCoverImageValues) {
 	return AiImageRequestSchema.parse({
@@ -80,7 +54,7 @@ export async function submitCoverImage(event: RequestEvent): ActionResult<Create
 	return submitAiResponse({
 		api: '/api/ai/cover-image',
 		event,
-		decode: decodeValues,
+		decode: decodeCreateCoverImageValues,
 		schema: CreateCoverImageValuesSchema,
 		getBody,
 		handleResponse,

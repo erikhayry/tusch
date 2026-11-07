@@ -1,21 +1,13 @@
-import { readString } from '$lib/forms/form-data';
+import {
+	ByokValuesSchema,
+	decodeByokValues,
+	type ByokValues,
+} from '$lib/features/settings/contracts/validateApiKey';
 import type { RequestEvent } from '@sveltejs/kit';
-import z from 'zod';
 import { getPingResultFromOpenAiResponse } from '../ai/ai';
 import type { OpenAiOutput, Ping } from '../ai/aiTypes';
 import { KEY_COOKIE_NAME, getCookieArgs } from '../cookies';
 import { submitAiResponse } from './utils/postAiResponse';
-
-export const ByokValuesSchema = z.object({
-	key: z.string(),
-});
-export type ByokValues = z.infer<typeof ByokValuesSchema>;
-
-function decodeValues(formData: FormData) {
-	return {
-		key: readString(formData, 'key'),
-	};
-}
 
 function onValues({ cookies }: RequestEvent, { key }: ByokValues) {
 	cookies.set(...getCookieArgs(KEY_COOKIE_NAME, key));
@@ -29,7 +21,7 @@ export async function byok(event: RequestEvent) {
 	return submitAiResponse({
 		api: '/api/ai/ping',
 		event,
-		decode: decodeValues,
+		decode: decodeByokValues,
 		schema: ByokValuesSchema,
 		onValues,
 		handleResponse,
