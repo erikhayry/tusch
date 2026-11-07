@@ -1,3 +1,4 @@
+import { readString } from '$lib/forms/form-data';
 import { ComicSchema, ComicStyleEnum, type Comic } from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
 import z from 'zod';
@@ -8,7 +9,7 @@ import { INSTRUCTIONS_VALUE_KEY } from '../db/dbTypes';
 import { generateId } from '../id';
 import type { ActionResult } from './actions';
 import { fetchCoverImage } from './createCoverImage';
-import { submitAiResponse } from './utils/postAiResponse';
+import { isFormFailure, submitAiResponse } from './utils/postAiResponse';
 
 export const CreateComicValuesSchema = z.object({
 	url: z.url(),
@@ -20,6 +21,13 @@ export const CreateComicResultSchema = z.object({
 	output: z.string(),
 });
 export type CreateComicResult = z.infer<typeof CreateComicResultSchema>;
+
+function decodeValues(formData: FormData) {
+	return {
+		url: readString(formData, 'url'),
+		style: readString(formData, 'style'),
+	};
+}
 
 function getBody({ url, style }: CreateComicValues) {
 	return AiTextRequestSchema.parse({
@@ -46,10 +54,13 @@ export async function createComic(event: RequestEvent): ActionResult<CreateComic
 	const comic = await submitAiResponse({
 		api: '/api/ai/comic',
 		event,
+		decode: decodeValues,
 		schema: CreateComicValuesSchema,
 		getBody,
 		handleResponse,
 	});
+
+	if (isFormFailure(comic)) return comic;
 
 	const coverResult = await fetchCoverImage(event, {
 		comic,

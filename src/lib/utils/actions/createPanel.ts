@@ -1,3 +1,4 @@
+import { readInteger, readJsonField, readString } from '$lib/forms/form-data';
 import { PanelArraySchema, PanelSchema } from '$lib/types';
 import { getPanelFromOpenAiResponse } from '$lib/utils/ai/ai';
 import {
@@ -25,6 +26,14 @@ export const CreatePanelResultSchema = z.object({
 	output: OpenAiOutputSchema.shape.output,
 });
 export type CreatePanelResult = z.infer<typeof CreatePanelResultSchema>;
+
+function decodeValues(formData: FormData) {
+	return {
+		comicId: readString(formData, 'comicId'),
+		panels: readJsonField(formData, 'panels'),
+		index: readInteger(formData, 'index'),
+	};
+}
 
 function getBody({ panels, index }: CreatePanelValues) {
 	return AiTextRequestSchema.parse({
@@ -58,6 +67,7 @@ export async function submitPanel(event: RequestEvent): ActionResult<CreatePanel
 	return submitAiResponse({
 		api: '/api/ai/panel',
 		event,
+		decode: decodeValues,
 		schema: CreatePanelValuesSchema,
 		getBody,
 		handleResponse,

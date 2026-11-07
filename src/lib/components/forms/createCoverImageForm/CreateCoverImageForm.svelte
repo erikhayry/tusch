@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
 	import { ACTION } from '$lib/utils/actions/actions';
 	import type { CreateCoverImageResult } from '$lib/utils/actions/createCoverImage';
@@ -41,7 +42,7 @@
 
 <form method="POST" action={`?/${ACTION.CREATE_COVER_IMAGE}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
-		<input type="hidden" name={entry[0]} value={JSON.stringify(entry[1])} />
+		<input type="hidden" name={entry[0]} value={encodeFormValue(entry[1])} />
 	{/each}
 
 	{#if imageName}

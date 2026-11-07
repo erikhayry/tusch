@@ -33,7 +33,11 @@ export const ACTION = {
 export const ActionSuccessResultSchema = z.object({ success: z.literal(true) });
 export type ActionSuccessResult = z.infer<typeof ActionSuccessResultSchema>;
 
-export const ActionFailureDataSchema = z.object({ message: z.string() });
+export const ActionFailureDataSchema = z.object({
+	code: z.string(),
+	message: z.string(),
+	fieldErrors: z.record(z.string(), z.array(z.string()).optional()).optional(),
+});
 export type ActionFailureData = z.infer<typeof ActionFailureDataSchema>;
 
 export type ActionResult<T> = Promise<T | ActionFailure<ActionFailureData>>;

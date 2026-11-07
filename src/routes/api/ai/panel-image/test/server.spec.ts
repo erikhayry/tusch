@@ -27,4 +27,21 @@ describe('api/ai/panel-image', () => {
 		const json = await result.json();
 		expect(json).toEqual(CREATE_PANEL_IMAGE_RESPONSE);
 	});
+
+	it('should forward the reference image to the provider', async () => {
+		mockParse.mockClear();
+		mockParse.mockResolvedValue(CREATE_PANEL_IMAGE_RESPONSE);
+		const imageUrl = 'data:image/png;base64,AAAA';
+
+		await POST(
+			mockPostArgs({
+				messages: ['test'],
+				schemaName: SchemaName.enum.createImage,
+				size: IMAGE_SIZE.PORTRAIT,
+				imageUrl,
+			}),
+		);
+
+		expect(JSON.stringify(mockParse.mock.calls[0][0])).toContain(imageUrl);
+	});
 });

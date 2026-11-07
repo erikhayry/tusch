@@ -1,3 +1,4 @@
+import { readCheckbox, readJsonField, readString } from '$lib/forms/form-data';
 import { ComicSchema, ResponsiveImageSchema } from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
 import z from 'zod';
@@ -28,6 +29,15 @@ export const CreateCoverImageValuesSchema = z.object({
 	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
 });
 export type CreateCoverImageValues = z.infer<typeof CreateCoverImageValuesSchema>;
+
+function decodeValues(formData: FormData) {
+	return {
+		comic: readJsonField(formData, 'comic'),
+		[INSTRUCTIONS_VALUE_KEY]: readString(formData, INSTRUCTIONS_VALUE_KEY),
+		[IMAGE_VALUE_KEY]: readString(formData, IMAGE_VALUE_KEY),
+		[INCLUDE_IMAGE_VALUE_KEY]: readCheckbox(formData, INCLUDE_IMAGE_VALUE_KEY),
+	};
+}
 
 function getBody({ comic, instructions, imageUrl, includeImage }: CreateCoverImageValues) {
 	return AiImageRequestSchema.parse({
@@ -70,6 +80,7 @@ export async function submitCoverImage(event: RequestEvent): ActionResult<Create
 	return submitAiResponse({
 		api: '/api/ai/cover-image',
 		event,
+		decode: decodeValues,
 		schema: CreateCoverImageValuesSchema,
 		getBody,
 		handleResponse,
