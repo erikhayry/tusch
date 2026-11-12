@@ -7,7 +7,7 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
+		"prepare": "svelte-kit sync || echo ''; simple-git-hooks || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
@@ -33,10 +33,12 @@
 		"eslint-plugin-svelte": "^3.19.0",
 		"globals": "^17.6.0",
 		"jsdom": "^30.0.1",
+		"lint-staged": "^17.6.0",
 		"playwright": "^1.60.0",
 		"plop": "^4.0.5",
 		"prettier": "^3.9.9",
 		"prettier-plugin-svelte": "^4.1.1",
+		"simple-git-hooks": "^2.14.0",
 		"svelte": "^5.57.0",
 		"svelte-check": "^4.7.6",
 		"typescript": "^6.0.3",
@@ -52,5 +54,16 @@
 		"openai": "^7.27.0",
 		"zod": "^4.6.5",
 		"zod-validation-error": "^5.0.0"
+	},
+	"simple-git-hooks": {
+		"pre-commit": "pnpm exec lint-staged",
+		"pre-push": "pnpm run check && pnpm run lint && pnpm run --if-present check:requirements"
+	},
+	"lint-staged": {
+		"*.{js,mjs,ts,svelte}": [
+			"prettier --write --ignore-unknown",
+			"eslint --fix --no-warn-ignored"
+		],
+		"*.{json,md,yml,yaml,css,html}": "prettier --write --ignore-unknown"
 	}
 }
