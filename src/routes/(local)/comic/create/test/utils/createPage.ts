@@ -1,5 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import type { Locator, Page } from '@playwright/test';
+import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 
 export class CreatePage {
 	readonly page: Page;
@@ -29,7 +30,7 @@ export class CreatePage {
 	}
 
 	async goto() {
-		await this.page.goto(`/comic/create`);
+		await gotoHydrated(this.page, `/comic/create`);
 
 		return this;
 	}

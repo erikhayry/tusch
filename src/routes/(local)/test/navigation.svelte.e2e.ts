@@ -1,6 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../examples/examples';
+import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
 
 const EXAMPLE = EXAMPLES[0];
 const MISSING_ID = '00000000-0000-4000-8000-000000000000';
@@ -13,8 +14,7 @@ async function storedComics(page: Page): Promise<{ id: string; panels: { id: str
 
 /** Create a comic through the UI (mock AI) and return it as stored locally. */
 async function createComic(page: Page) {
-	await page.goto('/comic/create');
-	await page.waitForLoadState('networkidle');
+	await gotoHydrated(page, '/comic/create');
 	await page.getByRole('textbox', { name: /url/i }).fill('https://example.com/article');
 	await page.getByRole('button', { name: /submit/i }).click();
 	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
@@ -27,20 +27,20 @@ async function createComic(page: Page) {
 
 test.describe('direct navigation', () => {
 	test('opens an existing comic', async ({ page }) => {
-		await page.goto(`/comic/${EXAMPLE.id}`);
+		await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
 
 		await expect(page.getByRole('heading', { name: EXAMPLE.title, level: 2 })).toBeVisible();
 	});
 
 	test('shows not found for a missing comic', async ({ page }) => {
-		await page.goto(`/comic/${MISSING_ID}`);
+		await gotoHydrated(page, `/comic/${MISSING_ID}`);
 
 		await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
 		await expect(page.getByText('Comic not found')).toBeVisible();
 	});
 
 	test('shows not found for a missing panel', async ({ page }) => {
-		await page.goto(`/comic/${EXAMPLE.id}/${MISSING_ID}`);
+		await gotoHydrated(page, `/comic/${EXAMPLE.id}/${MISSING_ID}`);
 
 		await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
 		await expect(page.getByText('Panel not found')).toBeVisible();
@@ -49,7 +49,7 @@ test.describe('direct navigation', () => {
 	test('shows not found for a panel that belongs to another comic', async ({ page }) => {
 		const created = await createComic(page);
 
-		await page.goto(`/comic/${created.id}/${EXAMPLE.panels[0].id}`);
+		await gotoHydrated(page, `/comic/${created.id}/${EXAMPLE.panels[0].id}`);
 
 		await expect(page.getByText('Panel not found')).toBeVisible();
 	});
@@ -61,7 +61,7 @@ test.describe('direct navigation', () => {
 		await expect(page.getByRole('heading', { name: /^Comic:/, level: 1 })).toBeVisible();
 
 		// Previously server-rendered: a locally created panel 404'd on direct load.
-		await page.goto(`/comic/${created.id}/${created.panels[0].id}`);
+		await gotoHydrated(page, `/comic/${created.id}/${created.panels[0].id}`);
 		await expect(
 			page.getByRole('heading', { name: m.panel({ number: 1 }), level: 1 }),
 		).toBeVisible();

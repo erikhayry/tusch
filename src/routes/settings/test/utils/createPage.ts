@@ -1,6 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import { TEXT_MODEL_KEY } from '$lib/types';
 import type { Locator, Page } from '@playwright/test';
+import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 
 export class CreatePage {
 	readonly page: Page;
@@ -29,10 +30,7 @@ export class CreatePage {
 	}
 
 	async goto(query?: string) {
-		await this.page.goto(`/settings${query ? `?${query}` : ''}`);
-		// Wait for hydration so `use:enhance` is attached before the test submits;
-		// otherwise a fast submit falls back to a native POST and reloads the page.
-		await this.page.waitForLoadState('networkidle');
+		await gotoHydrated(this.page, `/settings${query ? `?${query}` : ''}`);
 
 		return this;
 	}

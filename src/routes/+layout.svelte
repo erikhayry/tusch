@@ -8,6 +8,12 @@
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 
 	let { children } = $props();
+
+	// Signals that the app has mounted (and `use:enhance` is attached), so E2E
+	// tests don't interact with server-rendered markup before hydration.
+	$effect(() => {
+		document.documentElement.dataset.hydrated = 'true';
+	});
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
