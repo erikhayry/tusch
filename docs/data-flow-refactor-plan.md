@@ -954,13 +954,13 @@ Make browser-only state, missing entities, credentials, and selected-model owner
 
 ### Steps
 
-- [ ] Establish one browser-only boundary for routes that read local comic state.
-- [ ] Prefer a layout or route group over repeated `export const ssr = false`.
-- [ ] Verify that server actions continue to operate correctly within that boundary.
-- [ ] Update route loaders to use domain selectors.
-- [ ] Return complete page data or throw/return an explicit not-found result.
-- [ ] Remove loaders that declare a complete type but return `{}`.
-- [ ] Define direct-navigation behavior for:
+- [x] Establish one browser-only boundary for routes that read local comic state.
+- [x] Prefer a layout or route group over repeated `export const ssr = false`.
+- [x] Verify that server actions continue to operate correctly within that boundary.
+- [x] Update route loaders to use domain selectors.
+- [x] Return complete page data or throw/return an explicit not-found result.
+- [x] Remove loaders that declare a complete type but return `{}`.
+- [x] Define direct-navigation behavior for:
   - Missing comic.
   - Missing panel.
   - Panel not belonging to comic.
@@ -982,11 +982,11 @@ Make browser-only state, missing entities, credentials, and selected-model owner
 
 ### Tests
 
-- [ ] Direct navigation to an existing local comic.
-- [ ] Direct navigation to a missing comic.
-- [ ] Direct navigation to a missing panel.
-- [ ] Reload after creating a comic.
-- [ ] Empty-state navigation.
+- [x] Direct navigation to an existing local comic.
+- [x] Direct navigation to a missing comic.
+- [x] Direct navigation to a missing panel.
+- [x] Reload after creating a comic.
+- [x] Empty-state navigation.
 - [x] Successful API-key validation stores a cookie.
 - [x] Failed API-key validation does not store or retain the candidate cookie.
 - [x] Successful model update writes both model cookies.
@@ -996,12 +996,12 @@ Make browser-only state, missing entities, credentials, and selected-model owner
 
 ### Acceptance criteria
 
-- [ ] The browser-only boundary is declared once.
-- [ ] Route data types match every possible loader result.
-- [ ] Missing entities are handled explicitly.
+- [x] The browser-only boundary is declared once.
+- [x] Route data types match every possible loader result.
+- [x] Missing entities are handled explicitly.
 - [x] Model configuration has one persisted authority.
 - [x] Invalid API keys are never committed as the active credential.
-- [ ] Data-flow-related diagnostics in the affected routes and config modules are resolved.
+- [x] Data-flow-related diagnostics in the affected routes and config modules are resolved.
 
 ---
 

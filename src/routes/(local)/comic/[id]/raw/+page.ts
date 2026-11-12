@@ -1,4 +1,3 @@
-import { bootstrapComics } from '$lib/features/comics/client/bootstrap';
 import { getComic } from '$lib/features/comics/client/comic-selectors';
 import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
 import { ComicPageDataSchema, ComicRouteParamsSchema } from '$lib/types/routeData';
@@ -7,11 +6,11 @@ import { z } from 'zod';
 
 export type Data = z.infer<typeof ComicPageDataSchema>;
 
-export function load({ params }) {
+export async function load({ params, parent }) {
+	await parent();
 	const parsedParams = ComicRouteParamsSchema.safeParse(params);
 	if (!parsedParams.success) error(404, 'Comic not found');
 
-	bootstrapComics();
 	const comic = getComic(comicStore.comics, parsedParams.data.id);
 	if (!comic) error(404, 'Comic not found');
 

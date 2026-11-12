@@ -2,7 +2,7 @@ import { m } from '$lib/paraglide/messages';
 import type { Comic } from '$lib/types';
 import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import type { Locator, Page } from '@playwright/test';
-import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
+import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../../tests/mock/openAi/openAiResponse';
 
 export class ComicPage {
 	readonly page: Page;
