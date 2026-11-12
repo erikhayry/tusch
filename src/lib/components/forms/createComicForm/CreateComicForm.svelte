@@ -8,29 +8,27 @@
 	import { resolve } from '$app/paths';
 
 	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
 	import {
 		CREATE_COMIC_ACTION,
 		type CreateComicResult,
 	} from '$lib/features/comics/contracts/createComic';
+	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { m } from '$lib/paraglide/messages';
-	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { STYLES } from '$lib/utils/comicStyles';
-	import { addComic } from '$lib/utils/db/db.svelte';
 	import { saveBase64Image } from '$lib/utils/storage/storage';
 
-	const handleSubmit = onSubmit<CreateComicResult>(async ({ result }) => {
-		if (result.data?.comic) {
-			const comic = result.data.comic;
+	const handleSubmit = enhanceAction<CreateComicResult>(async ({ data }) => {
+		const comic = data.comic;
 
-			if (comic.cover) {
-				const fileName = await saveBase64Image(comic.cover.landscape.src);
-				comic.cover.landscape.src = fileName;
-				comic.cover.portrait.src = fileName;
-			}
-
-			addComic(result.data.comic);
-			await goto(resolve(`/comic/${result.data.comic.id}`));
+		if (comic.cover) {
+			const fileName = await saveBase64Image(comic.cover.landscape.src);
+			comic.cover.landscape.src = fileName;
+			comic.cover.portrait.src = fileName;
 		}
+
+		expectCommitted(comicCommands.addComic(comic));
+		await goto(resolve(`/comic/${comic.id}`));
 	});
 </script>
 

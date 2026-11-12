@@ -1,13 +1,14 @@
 <script lang="ts">
+	import { getPanelsWithCharachter } from '$lib/features/comics/client/comic-selectors';
+	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { getPanelsWithCharachter } from '$lib/utils/db/db.svelte';
 	import CreateCharacterImageForm from '../forms/createCharacterImageForm/CreateCharacterImageForm.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
 	import { type CharacterProps } from './characterTypes';
 
 	let { character, comicId }: CharacterProps = $props();
-	let panels = $derived(getPanelsWithCharachter(comicId, character.id));
+	let panels = $derived(getPanelsWithCharachter(comicStore.comics, comicId, character.id));
 </script>
 
 <Section>

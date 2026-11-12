@@ -1,7 +1,9 @@
+import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
+import { getCharacter } from '$lib/features/comics/client/comic-selectors';
+import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
 import type { CreatePanelImageResult } from '$lib/features/panels/contracts/createPanelImage';
 import type { CharachterPositions, Crop, ResponsivePanelImage } from '$lib/types';
 import { cropImage } from '$lib/utils/crop/crop';
-import { addCharacterImage, addPanelImage } from '$lib/utils/db/db.svelte';
 import { generateId } from '$lib/utils/id';
 import { getImageUrl, saveBase64Image, saveBlobImage } from '$lib/utils/storage/storage';
 
@@ -47,17 +49,20 @@ async function setCharacterImages(
 	image: ResponsivePanelImage,
 ) {
 	for (const character of characters) {
-		addCharacterImage(comicId, character.id, {
-			id: generateId(),
-			panelId,
-			head: await getCharacterImage(image, character.head),
-			full: await getCharacterImage(image, character.full),
-		});
+		if (!getCharacter(comicStore.comics, comicId, character.id)) continue;
+		expectCommitted(
+			comicCommands.addCharacterImage(comicId, character.id, {
+				id: generateId(),
+				panelId,
+				head: await getCharacterImage(image, character.head),
+				full: await getCharacterImage(image, character.full),
+			}),
+		);
 	}
 }
 
 export async function genereateImages({ comicId, panelId, image }: CreatePanelImageResult) {
 	const panelImage = await getPanelImage(image);
-	addPanelImage(comicId, panelId, panelImage);
+	expectCommitted(comicCommands.replacePanelImage(comicId, panelId, panelImage));
 	setCharacterImages(comicId, panelId, image.landscape.characters || [], panelImage);
 }

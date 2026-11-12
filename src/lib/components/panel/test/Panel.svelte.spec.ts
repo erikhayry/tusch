@@ -1,5 +1,7 @@
 import { renderPanel } from '$lib/components/panel/test/utils/renderPanel';
-import { getComics } from '$lib/utils/db/db.svelte';
+import { bootstrapComics } from '$lib/features/comics/client/bootstrap';
+import { getComics } from '$lib/features/comics/client/comic-selectors';
+import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
 import { fireEvent } from '@testing-library/svelte';
 import { describe, expect, it } from 'vitest';
 import type { PanelProps } from '../panelTypes';
@@ -74,7 +76,8 @@ describe('Panel', () => {
 		});
 
 		it('should show character next to dialogue', () => {
-			const comic = getComics()[0];
+			bootstrapComics();
+			const comic = getComics(comicStore.comics)[0];
 			const panelProps: PanelProps = {
 				comicId: comic.id,
 				panel: comic.panels[0],

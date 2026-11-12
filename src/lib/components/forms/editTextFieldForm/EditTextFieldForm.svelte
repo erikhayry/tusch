@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { applyItemEdit } from '$lib/features/comics/client/item-commands';
 	import { EDIT_TEXT_ACTION, getEditValues } from '$lib/features/panels/contracts/editText';
 	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
 	import { m } from '$lib/paraglide/messages';
-	import { editType } from '$lib/utils/db/db.svelte';
 	import { type EditTextFieldFormProps } from './editTextFieldFormTypes';
 
 	//TODO a11y
 	let editable = $state(false);
 
-	const handleSubmit = enhanceClientCommand(getEditValues, editType, async ({ update }) => {
+	const handleSubmit = enhanceClientCommand(getEditValues, applyItemEdit, async ({ update }) => {
 		editable = false;
 		await update();
 	});

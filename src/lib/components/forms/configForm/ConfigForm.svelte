@@ -7,6 +7,7 @@
 
 	import Heading from '$lib/components/relativeHeading/Heading.svelte';
 	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import { addImageModel, addTextModel } from '$lib/features/settings/client/config-store.svelte';
 	import {
 		CONFIG_ACTION,
 		getConfigValues,
@@ -14,7 +15,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
 	import { onEdit } from '$lib/utils/actions/onEdit';
-	import { addImageModel, addTextModel } from '$lib/utils/db/db.svelte';
 	import type { ConfigValues } from '$lib/utils/db/dbTypes';
 
 	import { type ConfigFormProps } from './configFormTypes';

@@ -3,9 +3,13 @@
 </script>
 
 <script lang="ts">
+	import {
+		getCharacterImageForPanel,
+		getCharacterName,
+	} from '$lib/features/comics/client/comic-selectors';
+	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
 	import { toCreatePanelImageValues } from '$lib/features/panels/contracts/createPanelImage';
 	import { m } from '$lib/paraglide/messages';
-	import { getCharacterImageForPanel, getCharacterName } from '$lib/utils/db/db.svelte';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
 	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
@@ -72,10 +76,15 @@
 					<Image
 						width={50}
 						height={50}
-						image={getCharacterImageForPanel(comicId, panel.id, dialogue.characterId)}
+						image={getCharacterImageForPanel(
+							comicStore.comics,
+							comicId,
+							panel.id,
+							dialogue.characterId,
+						)}
 						alt="charachter"
 					/>
-					<p>{getCharacterName(comicId, dialogue.characterId)}</p>
+					<p>{getCharacterName(comicStore.comics, comicId, dialogue.characterId)}</p>
 					<FieldActions
 						values={{
 							type: DB_ITEM_TYPE.enum.dialogue,

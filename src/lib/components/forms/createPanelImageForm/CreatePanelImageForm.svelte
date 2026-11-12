@@ -1,14 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
+	import { getCharacter, getPanel } from '$lib/features/comics/client/comic-selectors';
+	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
 	import {
 		CREATE_PANEL_IMAGE_ACTION,
 		type CreatePanelImageResult,
 	} from '$lib/features/panels/contracts/createPanelImage';
+	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
-	import { onSubmit } from '$lib/utils/actions/onSubmit';
 	import { cropImage } from '$lib/utils/crop/crop';
-	import { addCharacterImage, addPanelImage, getPanel } from '$lib/utils/db/db.svelte';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
@@ -23,30 +25,35 @@
 	} from '$lib/utils/storage/storage';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
-	const handleSubmit = onSubmit<CreatePanelImageResult>(async ({ update, result }) => {
-		if (result.data?.image) {
-			const { comicId, panelId, image } = result.data;
+	const handleSubmit = enhanceAction<CreatePanelImageResult>(async ({ data, update }) => {
+		if (data.image) {
+			const { comicId, panelId, image } = data;
 			const panelImageFileName = await saveBase64Image(image.landscape.src);
-			addPanelImage(comicId, panelId, {
-				landscape: {
-					src: panelImageFileName,
-					width: image.landscape.width,
-					height: image.landscape.height,
-					characters: image.landscape.characters,
-				},
-				portrait: {
-					src: panelImageFileName,
-					width: image.landscape.width,
-					height: image.landscape.height,
-					characters: image.landscape.characters,
-				},
-				alt: image.alt,
-			});
+			expectCommitted(
+				comicCommands.replacePanelImage(comicId, panelId, {
+					landscape: {
+						src: panelImageFileName,
+						width: image.landscape.width,
+						height: image.landscape.height,
+						characters: image.landscape.characters,
+					},
+					portrait: {
+						src: panelImageFileName,
+						width: image.landscape.width,
+						height: image.landscape.height,
+						characters: image.landscape.characters,
+					},
+					alt: image.alt,
+				}),
+			);
 
-			const panelImage = getPanel(comicId, panelId)?.image;
+			const panelImage = getPanel(comicStore.comics, comicId, panelId)?.image;
 			if (panelImage) {
 				const characters = image.landscape.characters || [];
 				for (const character of characters) {
+					// The model can reference characters that are not in this comic; skip those crops.
+					if (!getCharacter(comicStore.comics, comicId, character.id)) continue;
+
 					const url = await getImageUrl(panelImage.landscape.src);
 
 					const head = await cropImage(url, character.head);
@@ -55,20 +62,22 @@
 					const full = await cropImage(url, character.full);
 					const charachterFullImageFileName = await saveBlobImage(`${generateId()}.png`, full);
 
-					addCharacterImage(comicId, character.id, {
-						id: generateId(),
-						panelId,
-						head: {
-							src: charachterHeadImageFileName,
-							width: character.head.width,
-							height: character.head.height,
-						},
-						full: {
-							src: charachterFullImageFileName,
-							width: character.head.width,
-							height: character.head.height,
-						},
-					});
+					expectCommitted(
+						comicCommands.addCharacterImage(comicId, character.id, {
+							id: generateId(),
+							panelId,
+							head: {
+								src: charachterHeadImageFileName,
+								width: character.head.width,
+								height: character.head.height,
+							},
+							full: {
+								src: charachterFullImageFileName,
+								width: character.head.width,
+								height: character.head.height,
+							},
+						}),
+					);
 				}
 			}
 		}

@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
 	import {
 		CREATE_PANEL_ACTION,
 		type CreatePanelResult,
 	} from '$lib/features/panels/contracts/createPanel';
 	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { encodeFormValue } from '$lib/forms/form-data';
-	import { addPanel } from '$lib/utils/db/db.svelte';
 	import { type CreatePanelFormProps } from './createPanelFormTypes';
 
 	const handleSubmit = enhanceAction<CreatePanelResult>(async ({ data, update }) => {
-		addPanel(data.comicId, data.panel, data.index);
+		expectCommitted(comicCommands.insertPanel(data.comicId, data.panel, data.index));
 		await update();
 	});
 

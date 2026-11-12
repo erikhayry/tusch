@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
 	import {
 		CREATE_COVER_IMAGE_ACTION,
 		type CreateCoverImageResult,
 	} from '$lib/features/comics/contracts/createCoverImage';
+	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
-	import { onSubmit } from '$lib/utils/actions/onSubmit';
-	import { addCoverImage } from '$lib/utils/db/db.svelte';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
@@ -16,16 +16,16 @@
 	import { getImage, saveBase64Image } from '$lib/utils/storage/storage';
 	import type { CreateCoverImageFormProps } from './createCoverImageFormTypes';
 
-	const handleSubmit = onSubmit<CreateCoverImageResult>(async ({ update, result }) => {
-		if (result.data) {
-			const { landscape, portrait, alt } = result.data.image;
-			const fileName = await saveBase64Image(landscape.src);
-			addCoverImage(result.data.comicId, {
+	const handleSubmit = enhanceAction<CreateCoverImageResult>(async ({ data, update }) => {
+		const { landscape, portrait, alt } = data.image;
+		const fileName = await saveBase64Image(landscape.src);
+		expectCommitted(
+			comicCommands.replaceCover(data.comicId, {
 				alt,
 				landscape: { ...landscape, src: fileName },
 				portrait: { ...portrait, src: fileName },
-			});
-		}
+			}),
+		);
 		await update();
 	});
 

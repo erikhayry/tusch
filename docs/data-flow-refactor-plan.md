@@ -670,13 +670,13 @@ Separate reactive state, domain commands, selectors, bootstrap, and persistence 
 
 ### Steps
 
-- [ ] Extract reactive comic state into `comic-store.svelte.ts`.
-- [ ] Extract read operations into `comic-selectors.ts`.
-- [ ] Extract explicit mutations into `comic-commands.ts`.
-- [ ] Extract persistence into `comic-persistence.ts`.
-- [ ] Move initial loading and example seeding into an explicit `bootstrap.ts`.
-- [ ] Remove example seeding as a module-import side effect.
-- [ ] Define a versioned persisted snapshot:
+- [x] Extract reactive comic state into `comic-store.svelte.ts`.
+- [x] Extract read operations into `comic-selectors.ts`.
+- [x] Extract explicit mutations into `comic-commands.ts`.
+- [x] Extract persistence into `comic-persistence.ts`.
+- [x] Move initial loading and example seeding into an explicit `bootstrap.ts`.
+- [x] Remove example seeding as a module-import side effect.
+- [x] Define a versioned persisted snapshot:
 
   ```ts
   {
@@ -685,19 +685,19 @@ Separate reactive state, domain commands, selectors, bootstrap, and persistence 
   }
   ```
 
-- [ ] Validate persisted snapshots with Zod.
-- [ ] Define behavior for:
+- [x] Validate persisted snapshots with Zod.
+- [x] Define behavior for:
   - Missing storage.
   - Empty storage.
   - Corrupt JSON.
   - Unsupported versions.
   - Invalid comic data.
   - Storage quota failures.
-- [ ] Use copy-on-write aggregate updates.
-- [ ] Ensure one domain command produces:
+- [x] Use copy-on-write aggregate updates.
+- [x] Ensure one domain command produces:
   - One reactive store replacement.
   - One persistence write.
-- [ ] Replace generic operations with explicit commands:
+- [x] Replace generic operations with explicit commands:
   - `addComic`
   - `deleteComic`
   - `insertPanel`
@@ -712,10 +712,10 @@ Separate reactive state, domain commands, selectors, bootstrap, and persistence 
   - `deleteDialogue`
   - `addCharacterImage`
   - `removeCharacterImage`
-- [ ] Return typed failures or results for missing IDs and invalid indexes.
-- [ ] Move configuration out of the comic database boundary.
-- [ ] Keep a temporary compatibility facade if needed for incremental migration.
-- [ ] Remove the facade after all callers use commands/selectors directly.
+- [x] Return typed failures or results for missing IDs and invalid indexes.
+- [x] Move configuration out of the comic database boundary.
+- [x] Keep a temporary compatibility facade if needed for incremental migration.
+- [x] Remove the facade after all callers use commands/selectors directly.
 
 ### Command rules
 
@@ -729,26 +729,26 @@ Separate reactive state, domain commands, selectors, bootstrap, and persistence 
 
 ### Tests
 
-- [ ] Every command has focused unit tests.
-- [ ] Missing comic, panel, character, and image IDs.
-- [ ] Invalid insertion and deletion indexes.
-- [ ] Nested changes trigger reactive updates.
-- [ ] Exactly one persistence write per command.
-- [ ] Snapshot validation.
-- [ ] Snapshot migration.
-- [ ] Empty state.
-- [ ] Corrupt state.
-- [ ] Explicit example bootstrap.
-- [ ] Storage write failure does not silently report success.
+- [x] Every command has focused unit tests.
+- [x] Missing comic, panel, character, and image IDs.
+- [x] Invalid insertion and deletion indexes.
+- [x] Nested changes trigger reactive updates.
+- [x] Exactly one persistence write per command.
+- [x] Snapshot validation.
+- [x] Snapshot migration.
+- [x] Empty state.
+- [x] Corrupt state.
+- [x] Explicit example bootstrap.
+- [x] Storage write failure does not silently report success.
 
 ### Acceptance criteria
 
-- [ ] `db.svelte.ts` no longer mixes all current responsibilities.
-- [ ] No command depends on route invalidation to make a nested mutation visible.
-- [ ] Generic `editType` and `deleteType` switches are removed from migrated code.
-- [ ] Persistence is versioned and validated.
-- [ ] Example data is initialized explicitly.
-- [ ] Configuration is no longer stored in the comic database module.
+- [x] `db.svelte.ts` no longer mixes all current responsibilities.
+- [x] No command depends on route invalidation to make a nested mutation visible.
+- [x] Generic `editType` and `deleteType` switches are removed from migrated code.
+- [x] Persistence is versioned and validated.
+- [x] Example data is initialized explicitly.
+- [x] Configuration is no longer stored in the comic database module.
 
 ---
 

@@ -1,5 +1,7 @@
+import { bootstrapComics } from '$lib/features/comics/client/bootstrap';
+import { getComic } from '$lib/features/comics/client/comic-selectors';
+import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
 import { PanelPageDataSchema, PanelRouteParamsSchema } from '$lib/types/routeData';
-import { getComic } from '$lib/utils/db/db.svelte';
 import { error } from '@sveltejs/kit';
 import { z } from 'zod';
 
@@ -10,7 +12,8 @@ export function load({ params }) {
 	if (!parsedParams.success) error(404, 'Panel not found');
 
 	const { id: comicId, panel: panelId } = parsedParams.data;
-	const comic = getComic(comicId);
+	bootstrapComics();
+	const comic = getComic(comicStore.comics, comicId);
 	if (!comic) error(404, 'Comic not found');
 
 	const index = comic.panels.findIndex(({ id }) => id === panelId);
