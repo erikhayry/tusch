@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { KEY_COOKIE_NAME } from '$lib/utils/cookies';
+import { KEY_COOKIE_NAME, TEXT_MODEL_COOKIE_NAME } from '$lib/utils/cookies';
 import { CreatePage } from './utils/createPage';
 
 test('has expected title', async ({ page }) => {
@@ -57,6 +57,27 @@ test('should set model', async ({ page }) => {
 	await createPage.modelsSelect.selectOption('gpt-6-luna');
 
 	await createPage.saveSettingsButton.click();
+
+	await expect(createPage.currentModel).toHaveText('gpt-6-luna');
+});
+
+test('shows the cookie-backed model selection after reload', async ({ page, context }) => {
+	await context.addCookies([
+		{ name: TEXT_MODEL_COOKIE_NAME, value: 'gpt-6-luna', url: 'http://localhost:4173' },
+	]);
+	const createPage = await new CreatePage(page).goto();
+
+	await expect(createPage.currentModel).toHaveText('gpt-6-luna');
+	await expect(createPage.modelsSelect).toHaveValue('gpt-6-luna');
+});
+
+test('keeps the saved model after a reload', async ({ page }) => {
+	const createPage = await new CreatePage(page).goto();
+	await createPage.modelsSelect.selectOption('gpt-6-luna');
+	await createPage.saveSettingsButton.click();
+	await expect(createPage.currentModel).toHaveText('gpt-6-luna');
+
+	await page.reload();
 
 	await expect(createPage.currentModel).toHaveText('gpt-6-luna');
 });

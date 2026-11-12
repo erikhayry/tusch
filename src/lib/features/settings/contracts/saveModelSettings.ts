@@ -1,9 +1,20 @@
 import { readString } from '$lib/forms/form-data';
 import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
-import { ConfigValuesSchema, type ConfigValues } from '$lib/utils/db/dbTypes';
-import type { ZodSafeParseResult } from 'zod';
+import { ConfigStateSchema, ConfigValuesSchema, type ConfigValues } from '$lib/utils/db/dbTypes';
+import { z, type ZodSafeParseResult } from 'zod';
 
 export const CONFIG_ACTION = 'config' as const;
+
+/** Committed settings returned after both model cookies are written. */
+export const SaveModelSettingsResultSchema = z.object({
+	success: z.literal(true),
+	config: ConfigValuesSchema,
+});
+export type SaveModelSettingsResult = z.infer<typeof SaveModelSettingsResultSchema>;
+
+/** Selected models as stored in cookies; either may be missing before the first save. */
+export const SelectedModelsSchema = ConfigStateSchema;
+export type SelectedModels = z.infer<typeof SelectedModelsSchema>;
 
 export function decodeConfigValues(formData: FormData) {
 	return {
@@ -12,6 +23,12 @@ export function decodeConfigValues(formData: FormData) {
 	};
 }
 
+/** Both models are required and non-empty; a partial save is rejected. */
+export const SaveModelSettingsValuesSchema = ConfigValuesSchema.extend({
+	[TEXT_MODEL_KEY]: z.string().min(1),
+	[IMAGE_MODEL_KEY]: z.string().min(1),
+});
+
 export function getConfigValues(formData: FormData): ZodSafeParseResult<ConfigValues> {
-	return ConfigValuesSchema.safeParse(decodeConfigValues(formData));
+	return SaveModelSettingsValuesSchema.safeParse(decodeConfigValues(formData));
 }

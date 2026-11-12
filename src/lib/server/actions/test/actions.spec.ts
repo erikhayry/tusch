@@ -26,7 +26,11 @@ import {
 } from '../../generation/generation-service';
 import { fakeGateway } from '../../generation/test/fake-gateway';
 import { createComicAction, createPanelAction } from '../generation-actions';
-import { saveModelSettingsAction, validateApiKeyAction } from '../settings-actions';
+import {
+	readSelectedModels,
+	saveModelSettingsAction,
+	validateApiKeyAction,
+} from '../settings-actions';
 
 const { getAiGateway } = vi.hoisted(() => ({ getAiGateway: vi.fn() }));
 vi.mock('../../ai/gateway', async (importOriginal) => ({
@@ -189,13 +193,16 @@ describe('server actions', () => {
 			expect(cookies.set).not.toHaveBeenCalled();
 		});
 
-		it('writes both model cookies', async () => {
+		it('writes both model cookies and returns the committed settings', async () => {
 			const { event, cookies } = requestEvent({
 				[TEXT_MODEL_KEY]: 'text',
 				[IMAGE_MODEL_KEY]: 'image',
 			});
 
-			expect(await saveModelSettingsAction(event)).toEqual({ success: true });
+			expect(await saveModelSettingsAction(event)).toEqual({
+				success: true,
+				config: { [TEXT_MODEL_KEY]: 'text', [IMAGE_MODEL_KEY]: 'image' },
+			});
 
 			expect(cookies.set).toHaveBeenCalledWith(TEXT_MODEL_COOKIE_NAME, 'text', expect.any(Object));
 			expect(cookies.set).toHaveBeenCalledWith(
@@ -203,6 +210,31 @@ describe('server actions', () => {
 				'image',
 				expect.any(Object),
 			);
+		});
+	});
+
+	describe('model settings validation', () => {
+		it.each([
+			['a missing image model', { [TEXT_MODEL_KEY]: 'text' }],
+			['an empty text model', { [TEXT_MODEL_KEY]: '', [IMAGE_MODEL_KEY]: 'image' }],
+		])('rejects %s with fail(400) and leaves both cookies untouched', async (_, values) => {
+			const { event, cookies } = requestEvent(values);
+
+			expect(await saveModelSettingsAction(event)).toMatchObject({
+				status: 400,
+				data: { code: 'invalid_input' },
+			});
+			expect(cookies.set).not.toHaveBeenCalled();
+		});
+
+		it('reads the selected models from cookies only', () => {
+			const cookies = {
+				get: vi.fn((name: string) =>
+					name === TEXT_MODEL_COOKIE_NAME ? 'text' : name === KEY_COOKIE_NAME ? 'sk' : undefined,
+				),
+			};
+
+			expect(readSelectedModels(cookies as never)).toEqual({ [TEXT_MODEL_KEY]: 'text' });
 		});
 	});
 
