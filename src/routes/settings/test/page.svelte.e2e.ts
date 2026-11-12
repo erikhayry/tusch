@@ -1,11 +1,22 @@
 import { expect, test } from '@playwright/test';
 import { KEY_COOKIE_NAME, TEXT_MODEL_COOKIE_NAME } from '$lib/utils/cookies';
+import { LandingPage } from '../../(local)/test/utils/landingPage';
 import { CreatePage } from './utils/createPage';
 
-test('has expected title', async ({ page }) => {
+test('is titled Settings', { tag: '@REQ-034' }, async ({ page }) => {
 	const createPage = await new CreatePage(page).goto();
 
 	await expect(createPage.heading).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'TODO' })).toHaveCount(0);
+});
+
+test('links back to the start page', { tag: '@REQ-034' }, async ({ page }) => {
+	const createPage = await new CreatePage(page).goto();
+
+	await createPage.backLink.click();
+
+	await expect(page).toHaveURL(/\/$/);
+	await expect(new LandingPage(page).comicsHeading).toBeVisible();
 });
 
 test('submits key', { tag: '@REQ-028' }, async ({ page }) => {
