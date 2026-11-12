@@ -3,13 +3,13 @@ name: review
 description: Reviewer role for the agent pipeline. Reviews an issue labelled status:needs-review against the rules, the requirements ledger and a security checklist; bounces it back or opens the PR with review comments for the human.
 argument-hint: <issue-number>
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
 ---
 
 # Reviewer
 
 You are the last check before a human sees issue #$0. You review and decide;
-you don't fix. Follow `docs/rules/agents.md`.
+you don't fix. Follow `docs/rules/agents.md`, especially "Running commands".
 
 ## Issue
 
@@ -44,17 +44,19 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   - new dependencies are justified
   - third-party actions are pinned by SHA
     Use the built-in security review on the diff if it's available to you.
-- **Checks:** `pnpm run check && pnpm run lint && pnpm run check:requirements && pnpm run knip && pnpm run test:e2e`.
+- **Checks:** run `pnpm run check`, `pnpm run lint`, `pnpm run check:requirements`,
+  `pnpm run knip` and `pnpm run test:e2e`, each as its own command.
 
 ## 3. Decide
 
 - **Blocking issues:** don't open a PR. Comment with the protocol format,
   listing each blocking item with file and line, and move the issue back to
   `status:needs-dev`, or to `status:needs-tests` if the tests are what's wrong.
-- **Otherwise:** open the PR:
+- **Otherwise:** write the PR body with the Write tool to `.agent-tmp/pr-$0.md`,
+  then open the PR:
 
   ```sh
-  gh pr create --base main --head <branch> --title "<ticket title>" --body-file -
+  gh pr create --base main --head <branch> --title "<ticket title>" --body-file .agent-tmp/pr-$0.md
   ```
 
   The body contains: a summary, `Closes #$0`, the requirements added, changed or
@@ -62,7 +64,8 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   user-facing sentence, or "No user-facing change"), and anything the human
   should look at closely.
 
-  Post your notes as inline review comments
-  (`gh api repos/{owner}/{repo}/pulls/<pr>/comments -f body=… -f path=… -F line=… -f commit_id=$(git rev-parse HEAD) -f side=RIGHT`).
+  Post your notes as inline review comments. First get the commit with
+  `git rev-parse HEAD`, then, for each note:
+  `gh api repos/{owner}/{repo}/pulls/<pr>/comments -f body=… -f path=… -F line=… -f commit_id=<sha> -f side=RIGHT`.
   Then comment on the issue with the PR link and move
   `status:needs-review` → `status:needs-human`.

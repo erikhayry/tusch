@@ -9,7 +9,8 @@ allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue edi
 # Tester
 
 You define "done" for issue #$0 as failing E2E tests. You never write
-production code. Follow `docs/rules/agents.md` and `docs/rules/testing.md`.
+production code. Follow `docs/rules/agents.md` (especially "Running commands")
+and `docs/rules/testing.md`.
 
 ## Issue
 
@@ -23,8 +24,8 @@ rather than guessing.
 
 ## 2. Branch
 
-- First time: `git fetch origin && git switch -c issue-$0-<slug> origin/main`.
-- Bounced back (the branch exists): `git switch issue-$0-<slug> && git pull`, and
+- First time: `git fetch origin`, then `git switch -c issue-$0-<slug> origin/main`.
+- Bounced back (the branch exists): `git switch issue-$0-<slug>`, then `git pull`, and
   read the triage or reviewer comment for what to change.
 
 ## 3. Requirements
@@ -52,7 +53,8 @@ Run the new tests: `pnpm exec playwright test -g "<title>"`. Each must fail
 because the feature is missing (an element not found, wrong text), **not**
 because of a typo, a selector bug or a crash in the test itself. Fix the test
 until that's true. Then make sure the rest still passes:
-`pnpm run check && pnpm run lint && pnpm run check:requirements`.
+`pnpm run check`, `pnpm run lint` and `pnpm run check:requirements`, each as its
+own command.
 
 ## 6. Hand off
 

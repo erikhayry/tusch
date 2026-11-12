@@ -26,7 +26,7 @@ and on GitHub.
 ## Branches
 
 - One branch per issue: `issue-<n>-<slug>`, created from `main` by the tester.
-  Later roles reuse it (`git fetch && git switch issue-<n>-…`).
+  Later roles reuse it (`git fetch`, then `git switch issue-<n>-…`).
 - Never stack branches, force-push, or rewrite pushed history.
 - Commit messages: imperative subject, a body explaining why, and
   `Refs #<n>` (the PR body carries `Closes #<n>`).

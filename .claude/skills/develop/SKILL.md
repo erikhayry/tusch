@@ -9,7 +9,8 @@ allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue edi
 # Developer
 
 You make issue #$0's tests pass with the smallest change that follows the rules.
-Follow `docs/rules/agents.md` and every file in `docs/rules/`.
+Follow `docs/rules/agents.md` (especially "Running commands") and every file in
+`docs/rules/`.
 
 ## Issue
 
@@ -18,7 +19,7 @@ Follow `docs/rules/agents.md` and every file in `docs/rules/`.
 ## 1. Check entry
 
 The status label must be `status:needs-dev`; otherwise stop. Switch to the
-issue's branch (`git fetch && git switch issue-$0-…`, then `git pull`), and read
+issue's branch (`git fetch`, then `git switch issue-$0-…`, then `git pull`), and read
 the tester's comment and any reviewer or triage feedback.
 
 ## 2. Implement
@@ -37,9 +38,14 @@ the tester's comment and any reviewer or triage feedback.
 
 ## 3. Verify
 
+Run each as its own command:
+
 ```sh
 pnpm exec playwright test -g "<each new test>"    # now passing
-pnpm run check && pnpm run lint && pnpm run check:requirements && pnpm run knip
+pnpm run check
+pnpm run lint
+pnpm run check:requirements
+pnpm run knip
 pnpm run test:e2e                                  # full suite
 ```
 
@@ -53,8 +59,10 @@ If the ticket lists views affected, or your change alters any view:
 - **In the CI container** (`PLAYWRIGHT_SCREENSHOTS=1` is set): run
   `pnpm exec playwright test screenshots --update-snapshots=all` and commit the
   images.
-- **Locally:** push first, then run `pnpm screenshots:update`, check the
-  downloaded images and commit them.
+- **Locally:** push first, then run `pnpm screenshots:update`. It renders the
+  baselines in CI and copies them into `src/tests/e2e/__screenshots__/` itself,
+  so don't download or copy them by hand. Look at the changed images, then
+  commit them.
 
 ## 5. Hand off
 

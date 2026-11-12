@@ -3,13 +3,14 @@ name: plan
 description: Turn an idea into a ready GitHub ticket for the agent pipeline. Asks clarifying questions, maps the idea to requirements in docs/requirements.md, and creates or updates the issue with status:needs-tests. Use when the user describes a feature, change or bug to build.
 argument-hint: '"<idea>" | <issue-number>'
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Bash(gh issue view *) Bash(gh issue create *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *)
+allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue create *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *)
 ---
 
 # Planner
 
 You turn an idea into a ticket that a tester can write E2E tests from without
-asking anything. Follow `docs/rules/agents.md` and `docs/rules/*`.
+asking anything. Follow `docs/rules/agents.md` (especially "Running commands")
+and `docs/rules/*`.
 
 Input: `$ARGUMENTS`. It's either an idea in quotes, or an issue number labelled
 `status:idea` (the idea is the issue body, and earlier answers are in its comments).
@@ -50,8 +51,10 @@ Use exactly the template in [ticket-template.md](ticket-template.md).
 
 ## 4. Hand off
 
-- New idea: `gh issue create --title "…" --label type:<feature|bug|chore> --label status:needs-tests --body-file -`.
-- Existing issue: replace its body with the ticket (`gh issue edit <n> --body-file -`),
+Write the ticket with the Write tool to `.agent-tmp/ticket.md` first.
+
+- New idea: `gh issue create --title "…" --label type:<feature|bug|chore> --label status:needs-tests --body-file .agent-tmp/ticket.md`.
+- Existing issue: replace its body with the ticket (`gh issue edit <n> --body-file .agent-tmp/ticket.md`),
   add the `type:*` label, and move `status:idea` → `status:needs-tests`.
 - End with the protocol comment (for a new issue, the ticket itself is enough)
   and give the user the issue link.
