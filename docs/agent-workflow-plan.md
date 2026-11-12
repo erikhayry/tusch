@@ -183,12 +183,15 @@ derived from the current code:
 
 ## 9. Risks
 
-- **Bot-triggered events.** If label hand-off by `claude[bot]` cannot trigger
-  workflows, AW8 falls back to one workflow that runs the next stage directly
-  after the previous one. AW1 decides this before AW8 starts.
-- **PR creation from Actions.** `mcp__github__create_pull_request` did not load
-  in the current workflow; AW1 must prove a working path (e.g. `gh pr create`
-  with the app token) or the reviewer posts a "Create PR" link.
+- **Bot-triggered hand-off: resolved by AW1 (#27).** Inside `claude-code-action`,
+  `gh` is authenticated as `claude[bot]` (`GH_TOKEN`). A label it sets triggers
+  `issues: labeled` workflows (actor `claude[bot]`), and the action accepts that
+  event with `allowed_bots: 'claude[bot]'`. Label hand-off works as designed.
+- **PR creation from Actions: resolved by AW1.** Allow `Bash(gh pr create:*)`;
+  the PR is authored by `claude[bot]`, so the human can approve it. Required
+  approvals on `main` can now be enabled for agent PRs (§8).
+- Pin third-party actions to a full commit SHA (`…@<sha> # v1`); SonarCloud's
+  quality gate fails tag-pinned actions.
 - **Screenshot flakiness.** Mitigated by Linux-only baselines and determinism;
   any flaky view is masked or removed, not retried.
 - **Cost.** Caps per role, one agent per issue, and a WIP limit (at most two
