@@ -4,7 +4,7 @@ import { EXAMPLES } from '../../../../../../examples/examples';
 import { PanelPage } from './utils/panelPage';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 
-test('creates image', async ({ page }) => {
+test('creates image', { tag: '@REQ-015' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.deleteImageButton.click();
@@ -16,7 +16,7 @@ test('creates image', async ({ page }) => {
 	await expect(panelPage.newImage).toBeVisible();
 });
 
-test('replace image', async ({ page }) => {
+test('replace image', { tag: '@REQ-016' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.replaceImageButton.click();
@@ -24,7 +24,7 @@ test('replace image', async ({ page }) => {
 	await expect(panelPage.newImage).toBeVisible();
 });
 
-test('removes image', async ({ page }) => {
+test('removes image', { tag: '@REQ-017' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto(1);
 
 	await panelPage.deleteImageButton.click();
@@ -32,7 +32,7 @@ test('removes image', async ({ page }) => {
 	await expect(panelPage.initialImage).toBeHidden();
 });
 
-test('edit caption', async ({ page }) => {
+test('edit caption', { tag: '@REQ-019' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.editCaption('NEW CAPTION');
@@ -40,7 +40,7 @@ test('edit caption', async ({ page }) => {
 	await expect(page.getByText('NEW CAPTION', { exact: true })).toBeVisible();
 });
 
-test('remove caption', async ({ page }) => {
+test('remove caption', { tag: '@REQ-019' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto(1);
 
 	await panelPage.removeCaption();
@@ -48,7 +48,7 @@ test('remove caption', async ({ page }) => {
 	await expect(page.getByText(EXAMPLES[0].panels[1].captions[0])).toBeHidden();
 });
 
-test('edit dialogue', async ({ page }) => {
+test('edit dialogue', { tag: '@REQ-020' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.editDialogue('NEW DIALOGUE');
@@ -56,7 +56,7 @@ test('edit dialogue', async ({ page }) => {
 	await expect(page.getByText('NEW DIALOGUE')).toBeVisible();
 });
 
-test('remove dialogue', async ({ page }) => {
+test('remove dialogue', { tag: '@REQ-020' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto(1);
 
 	await panelPage.removeDialogue();
@@ -64,7 +64,7 @@ test('remove dialogue', async ({ page }) => {
 	await expect(page.getByText(EXAMPLES[0].panels[1].dialogue[0].text)).toBeHidden();
 });
 
-test('add panel before', async ({ page }) => {
+test('add panel before', { tag: '@REQ-021' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.addPanelBefore();
@@ -84,7 +84,7 @@ test.skip('show character image next to dialogue', async ({ page }) => {
 	await expect(panelPage.dialogueCharacterImage).toBeVisible();
 });
 
-test('add caption', async ({ page }) => {
+test('add caption', { tag: ['@REQ-019', '@REQ-022'] }, async ({ page }) => {
 	await gotoHydrated(page, `/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
 	const captions = page.getByRole('list', { name: m.captions() }).getByRole('listitem');
 	const before = await captions.count();

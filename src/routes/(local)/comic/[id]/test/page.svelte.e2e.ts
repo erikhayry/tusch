@@ -2,13 +2,13 @@ import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../../examples/examples';
 import { ComicPage } from './utils/comicPage';
 
-test('has expected title', async ({ page }) => {
+test('has expected title', { tag: '@REQ-010' }, async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 
 	await expect(comicPage.heading).toBeVisible();
 });
 
-test('opens panel view', async ({ page }) => {
+test('opens panel view', { tag: '@REQ-010' }, async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 
 	await comicPage.link.click();
@@ -16,7 +16,7 @@ test('opens panel view', async ({ page }) => {
 	await page.waitForURL(`**/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
 });
 
-test('delete cover', async ({ page }) => {
+test('delete cover', { tag: '@REQ-012' }, async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 
 	await expect(comicPage.initialCoverImage).toBeVisible();
@@ -26,7 +26,7 @@ test('delete cover', async ({ page }) => {
 	await expect(comicPage.initialCoverImage).not.toBeVisible();
 });
 
-test('create cover', async ({ page }) => {
+test('create cover', { tag: '@REQ-011' }, async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 
 	await comicPage.deleteCoverButton.click();
@@ -35,7 +35,7 @@ test('create cover', async ({ page }) => {
 	await expect(comicPage.newCoverImage).toBeVisible();
 });
 
-test('delete panel', async ({ page }) => {
+test('delete panel', { tag: '@REQ-013' }, async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 
 	await expect(comicPage.listItems).toHaveCount(comicPage.initialNumberOfListItems);
