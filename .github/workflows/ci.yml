@@ -58,7 +58,7 @@ jobs:
       - name: E2E tests
         if: ${{ !inputs.update_screenshots }}
         # Missing baselines are written (not failed) so they can be collected below.
-        run: pnpm run test:e2e --update-snapshots=missing
+        run: pnpm exec svelte-kit sync && pnpm exec playwright test --update-snapshots=missing
 
       - name: Fail on new, uncommitted screenshot baselines
         if: ${{ !inputs.update_screenshots }}
@@ -72,7 +72,7 @@ jobs:
 
       - name: Regenerate all screenshot baselines
         if: ${{ inputs.update_screenshots }}
-        run: pnpm run test:e2e screenshots --update-snapshots=all
+        run: pnpm exec svelte-kit sync && pnpm exec playwright test screenshots --update-snapshots=all
 
       - name: Upload screenshot baselines
         if: ${{ always() }}
