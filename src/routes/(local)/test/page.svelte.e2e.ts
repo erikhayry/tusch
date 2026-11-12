@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
-import { EXAMPLES } from '../../examples/examples';
+import { EXAMPLES } from '../../../examples/examples';
 import { LandingPage } from './utils/landingPage';
 
 test('navigates to create', async ({ page }) => {
@@ -29,13 +29,16 @@ test('removes comic', async ({ page }) => {
 	await expect(landingPage.comicLink(0)).toBeHidden();
 });
 
-//FIX when no seed
-test.skip('redirect to create when no comics', async ({ page }) => {
-	const landingPage = await new LandingPage(page).goto();
+test('redirects to create once every comic is deleted', async ({ page }) => {
+	await new LandingPage(page).goto();
+	const deleteButtons = page.getByRole('button', { name: /^Delete Comic / });
+	await expect(deleteButtons.first()).toBeVisible();
 
-	await landingPage.deleteComicButton(EXAMPLES[0].title).click();
-	await landingPage.deleteComicButton(EXAMPLES[1].title).click();
-	await landingPage.deleteComicButton(EXAMPLES[2].title).click();
+	for (let remaining = await deleteButtons.count(); remaining > 0; remaining--) {
+		await deleteButtons.first().click();
+		await expect(deleteButtons).toHaveCount(remaining - 1);
+	}
 
+	await expect(page).toHaveURL(/\/comic\/create$/);
 	await expect(page.getByRole('heading', { name: m.createNewComic() })).toBeVisible();
 });

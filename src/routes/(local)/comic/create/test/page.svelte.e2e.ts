@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { EXAMPLES } from '../../../../examples/examples';
+import { EXAMPLES } from '../../../../../examples/examples';
 import { CreatePage } from './utils/createPage';
 
 test('has expected title', async ({ page }) => {

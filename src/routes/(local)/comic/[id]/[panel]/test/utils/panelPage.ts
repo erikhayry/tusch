@@ -1,8 +1,8 @@
 import { m } from '$lib/paraglide/messages';
 import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import { expect, type Locator, type Page } from '@playwright/test';
-import { EXAMPLES } from '../../../../../../examples/examples';
-import { CREATE_PANEL_IMAGE_RESPONSE } from '../../../../../../tests/mock/openAi/openAiResponse';
+import { EXAMPLES } from '../../../../../../../examples/examples';
+import { CREATE_PANEL_IMAGE_RESPONSE } from '../../../../../../../tests/mock/openAi/openAiResponse';
 
 export class PanelPage {
 	readonly page: Page;

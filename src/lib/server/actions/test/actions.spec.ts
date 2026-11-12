@@ -14,10 +14,10 @@ import {
 } from '$lib/utils/cookies';
 import { isHttpError, type RequestEvent } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { actions as rootActions } from '../../../../routes/+page.server';
-import { actions as comicActions } from '../../../../routes/comic/[id]/+page.server';
-import { actions as panelActions } from '../../../../routes/comic/[id]/[panel]/+page.server';
-import { actions as createActions } from '../../../../routes/comic/create/+page.server';
+import { actions as rootActions } from '../../../../routes/(local)/+page.server';
+import { actions as comicActions } from '../../../../routes/(local)/comic/[id]/+page.server';
+import { actions as panelActions } from '../../../../routes/(local)/comic/[id]/[panel]/+page.server';
+import { actions as createActions } from '../../../../routes/(local)/comic/create/+page.server';
 import { actions as settingsActions } from '../../../../routes/settings/+page.server';
 import { AiGatewayError, type AiCredentials } from '../../ai/ai-gateway';
 import {

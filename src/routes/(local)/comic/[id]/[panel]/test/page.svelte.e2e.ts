@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { EXAMPLES } from '../../../../../examples/examples';
+import { EXAMPLES } from '../../../../../../examples/examples';
 import { PanelPage } from './utils/panelPage';
 
 test('creates image', async ({ page }) => {

@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import type { Locator, Page } from '@playwright/test';
-import { EXAMPLES } from '../../../examples/examples';
+import { EXAMPLES } from '../../../../examples/examples';
 
 export class LandingPage {
 	readonly page: Page;
