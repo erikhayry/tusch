@@ -24,6 +24,17 @@
 - Commit messages: imperative subject; body explains why.
 - Never commit secrets or `.env*` files.
 
+## Git hooks
+
+Installed automatically by `pnpm install` (`simple-git-hooks`, configured in `package.json`):
+
+| Hook       | Runs                                                             |
+| ---------- | ---------------------------------------------------------------- |
+| pre-commit | Prettier + ESLint `--fix` on **staged files** (`lint-staged`)    |
+| pre-push   | `pnpm run check`, `pnpm run lint`, `pnpm run check:requirements` |
+
+E2E runs in CI, not in hooks. Use `--no-verify` only in an emergency, and say so in the PR.
+
 ## Before pushing
 
 ```sh
