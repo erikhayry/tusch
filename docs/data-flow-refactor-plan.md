@@ -2,7 +2,7 @@
 
 | Metadata     | Value                                                                           |
 | ------------ | ------------------------------------------------------------------------------- |
-| Status       | Proposed                                                                        |
+| Status       | Implemented                                                                     |
 | Scope        | Data flow only                                                                  |
 | Audience     | Implementation agents and reviewers                                             |
 | Architecture | SvelteKit, Svelte 5, Zod, browser-local persistence                             |
@@ -954,13 +954,13 @@ Make browser-only state, missing entities, credentials, and selected-model owner
 
 ### Steps
 
-- [ ] Establish one browser-only boundary for routes that read local comic state.
-- [ ] Prefer a layout or route group over repeated `export const ssr = false`.
-- [ ] Verify that server actions continue to operate correctly within that boundary.
-- [ ] Update route loaders to use domain selectors.
-- [ ] Return complete page data or throw/return an explicit not-found result.
-- [ ] Remove loaders that declare a complete type but return `{}`.
-- [ ] Define direct-navigation behavior for:
+- [x] Establish one browser-only boundary for routes that read local comic state.
+- [x] Prefer a layout or route group over repeated `export const ssr = false`.
+- [x] Verify that server actions continue to operate correctly within that boundary.
+- [x] Update route loaders to use domain selectors.
+- [x] Return complete page data or throw/return an explicit not-found result.
+- [x] Remove loaders that declare a complete type but return `{}`.
+- [x] Define direct-navigation behavior for:
   - Missing comic.
   - Missing panel.
   - Panel not belonging to comic.
@@ -982,11 +982,11 @@ Make browser-only state, missing entities, credentials, and selected-model owner
 
 ### Tests
 
-- [ ] Direct navigation to an existing local comic.
-- [ ] Direct navigation to a missing comic.
-- [ ] Direct navigation to a missing panel.
-- [ ] Reload after creating a comic.
-- [ ] Empty-state navigation.
+- [x] Direct navigation to an existing local comic.
+- [x] Direct navigation to a missing comic.
+- [x] Direct navigation to a missing panel.
+- [x] Reload after creating a comic.
+- [x] Empty-state navigation.
 - [x] Successful API-key validation stores a cookie.
 - [x] Failed API-key validation does not store or retain the candidate cookie.
 - [x] Successful model update writes both model cookies.
@@ -996,12 +996,12 @@ Make browser-only state, missing entities, credentials, and selected-model owner
 
 ### Acceptance criteria
 
-- [ ] The browser-only boundary is declared once.
-- [ ] Route data types match every possible loader result.
-- [ ] Missing entities are handled explicitly.
+- [x] The browser-only boundary is declared once.
+- [x] Route data types match every possible loader result.
+- [x] Missing entities are handled explicitly.
 - [x] Model configuration has one persisted authority.
 - [x] Invalid API keys are never committed as the active credential.
-- [ ] Data-flow-related diagnostics in the affected routes and config modules are resolved.
+- [x] Data-flow-related diagnostics in the affected routes and config modules are resolved.
 
 ---
 
@@ -1021,13 +1021,13 @@ If adding product functionality is not desired, use an existing caption operatio
 
 ### Steps for an add-caption proof
 
-- [ ] Add an `AddCaption` contract.
-- [ ] Add an explicit `addCaption` domain command.
-- [ ] Add or extend a native SvelteKit form.
-- [ ] Connect it through `enhanceClientCommand`.
-- [ ] Add focused contract, command, and component tests.
-- [ ] Add relevant E2E coverage.
-- [ ] Record all files changed.
+- [x] Add an `AddCaption` contract.
+- [x] Add an explicit `addCaption` domain command.
+- [x] Add or extend a native SvelteKit form.
+- [x] Connect it through `enhanceClientCommand`.
+- [x] Add focused contract, command, and component tests.
+- [x] Add relevant E2E coverage.
+- [x] Record all files changed.
 
 ### Expected change set
 
@@ -1050,11 +1050,11 @@ It must not require changes to:
 
 ### Acceptance criteria
 
-- [ ] The feature works through the established native form pattern.
-- [ ] No central dispatcher or broad switch is introduced.
-- [ ] No unrelated feature files are changed.
-- [ ] The implementation demonstrates the intended extension path.
-- [ ] The changed-file list is documented in the PR summary.
+- [x] The feature works through the established native form pattern.
+- [x] No central dispatcher or broad switch is introduced.
+- [x] No unrelated feature files are changed.
+- [x] The implementation demonstrates the intended extension path.
+- [x] The changed-file list is documented in the PR summary.
 
 ## 7. Migration matrix
 
@@ -1175,30 +1175,30 @@ Prioritize:
 
 ## 9. Global definition of done
 
-- [ ] Native SvelteKit forms and `use:enhance` remain the standard.
-- [ ] No new form or state-management library is introduced.
-- [ ] Server modules do not import from `src/lib/components`.
-- [ ] Server modules do not import client `.svelte.ts` state.
-- [ ] Migrated forms do not perform persistence or asset orchestration.
-- [ ] Every migrated form field has explicit decoding rules.
-- [ ] Generic whole-form JSON coercion is removed.
-- [ ] Expected validation errors use structured `fail(400, ...)`.
-- [ ] Provider response status is checked.
-- [ ] Client commands use copy-on-write aggregate commits.
-- [ ] One logical command results in one persistence write.
-- [ ] Persisted comic snapshots are versioned and validated.
-- [ ] Demo/example initialization is explicit.
-- [ ] Asset workflows stage files before committing metadata.
-- [ ] Failed asset workflows clean up staged files where possible.
-- [ ] Actions call services directly rather than the app’s own API.
-- [ ] Routes expose only the actions they use.
-- [ ] Browser-only route behavior is declared once.
-- [ ] Missing comics and panels are handled explicitly.
-- [ ] Cookies are the single authority for selected models.
-- [ ] API keys are validated before being committed.
-- [ ] A small feature can be added without editing central dispatchers or switches.
-- [ ] Targeted tests, type checks, and relevant E2E tests pass.
-- [ ] Pre-existing unrelated failures are reported separately.
+- [x] Native SvelteKit forms and `use:enhance` remain the standard.
+- [x] No new form or state-management library is introduced.
+- [x] Server modules do not import from `src/lib/components`.
+- [x] Server modules do not import client `.svelte.ts` state.
+- [x] Migrated forms do not perform persistence or asset orchestration.
+- [x] Every migrated form field has explicit decoding rules.
+- [x] Generic whole-form JSON coercion is removed.
+- [x] Expected validation errors use structured `fail(400, ...)`.
+- [x] Provider response status is checked.
+- [x] Client commands use copy-on-write aggregate commits.
+- [x] One logical command results in one persistence write.
+- [x] Persisted comic snapshots are versioned and validated.
+- [x] Demo/example initialization is explicit.
+- [x] Asset workflows stage files before committing metadata.
+- [x] Failed asset workflows clean up staged files where possible.
+- [x] Actions call services directly rather than the app’s own API.
+- [x] Routes expose only the actions they use.
+- [x] Browser-only route behavior is declared once.
+- [x] Missing comics and panels are handled explicitly.
+- [x] Cookies are the single authority for selected models.
+- [x] API keys are validated before being committed.
+- [x] A small feature can be added without editing central dispatchers or switches.
+- [x] Targeted tests, type checks, and relevant E2E tests pass.
+- [x] Pre-existing unrelated failures are reported separately.
 
 ## 10. Agent execution protocol
 
@@ -1286,3 +1286,5 @@ The following work is intentionally outside this plan unless required to complet
 - Replacing SvelteKit forms with client-only event handlers.
 
 These should be planned separately after the data-flow boundaries are stable.
+
+Audited against the code after WP7 (see #8). Follow-up outside the plan's scope: #21 (two forms still bypass the shared enhancers).

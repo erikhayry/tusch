@@ -206,6 +206,14 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			);
 		},
 
+		addCaption(comicId: string, panelId: string, caption: string): CommandResult {
+			return updateComic(comicId, (comic) =>
+				updatePanel(comic, panelId, (panel) =>
+					ok({ ...panel, captions: [...panel.captions, caption] }),
+				),
+			);
+		},
+
 		editCaption(comicId: string, panelId: string, index: number, value: string): CommandResult {
 			return updateComic(comicId, (comic) =>
 				updatePanel(comic, panelId, (panel) => {

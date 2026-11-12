@@ -1,11 +1,11 @@
 import {
-    CharacterSchema,
-    ComicSchema,
-    ComicStyleEnum,
-    IMAGE_MODEL_KEY,
-    ModelSchema,
-    PanelSchema,
-    TEXT_MODEL_KEY,
+	CharacterSchema,
+	ComicSchema,
+	ComicStyleEnum,
+	IMAGE_MODEL_KEY,
+	ModelSchema,
+	PanelSchema,
+	TEXT_MODEL_KEY,
 } from '$lib/types';
 import { z } from 'zod';
 

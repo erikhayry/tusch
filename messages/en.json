@@ -55,5 +55,7 @@
 	"season": "Season",
 	"instructions": "Additional Instructions",
 	"includeImage": "Include Image in instructions",
-	"deleteCover": "Delete Cover"
+	"deleteCover": "Delete Cover",
+	"addCaption": "Add caption",
+	"newCaption": "New caption"
 }

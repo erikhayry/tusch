@@ -1,4 +1,8 @@
 import type { AiImageRequest, AiTextRequest, OpenAiOutput } from '$lib/utils/ai/aiTypes';
+import {
+	ValidateApiKeyResultSchema,
+	type ValidateApiKeyResult,
+} from '$lib/features/settings/contracts/validateApiKey';
 import { z } from 'zod';
 
 export const AiGatewayErrorKindSchema = z.enum([
@@ -30,11 +34,9 @@ export const AiCredentialsSchema = z.object({
 });
 export type AiCredentials = z.infer<typeof AiCredentialsSchema>;
 
-export const PingResultSchema = z.object({
-	success: z.boolean(),
-	message: z.string(),
-});
-export type PingResult = z.infer<typeof PingResultSchema>;
+/** A key check result; the same shape the BYOK action returns to the form. */
+export const PingResultSchema = ValidateApiKeyResultSchema;
+export type PingResult = ValidateApiKeyResult;
 
 /** Provider-neutral boundary for every AI call the server makes. */
 export interface AiGateway {

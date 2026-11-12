@@ -81,3 +81,16 @@ test('keeps the saved model after a reload', async ({ page }) => {
 
 	await expect(createPage.currentModel).toHaveText('gpt-6-luna');
 });
+
+test('shows a readable error when key validation is rate limited', async ({ page, context }) => {
+	const createPage = await new CreatePage(page).goto();
+
+	await createPage.submit('sk-mock-error:rate-limit');
+
+	await expect(page.getByTestId('error-test-id')).toContainText(
+		'AI provider rate limit reached, try again shortly',
+	);
+	await expect(createPage.keyInput).toBeVisible();
+	const cookie = (await context.cookies()).find(({ name }) => name === KEY_COOKIE_NAME);
+	expect(cookie).toBeUndefined();
+});

@@ -197,6 +197,35 @@ describe('comic commands', () => {
 	});
 
 	describe('captions and dialogue', () => {
+		it('appends a caption', () => {
+			const { store, storage, commands } = setup();
+
+			expect(commands.addCaption(COMIC_ID, PANEL_A, 'caption 2')).toEqual({ ok: true });
+
+			expect(panelOf(store.comics).captions).toEqual(['caption 0', 'caption 1', 'caption 2']);
+			expect(storage.writes).toHaveLength(1);
+		});
+
+		it('allows a duplicate caption', () => {
+			const { store, commands } = setup();
+
+			commands.addCaption(COMIC_ID, PANEL_A, 'caption 0');
+
+			expect(panelOf(store.comics).captions).toEqual(['caption 0', 'caption 1', 'caption 0']);
+		});
+
+		it.each([
+			['comic', MISSING_ID, PANEL_A, 'comic-not-found'],
+			['panel', COMIC_ID, MISSING_ID, 'panel-not-found'],
+		])('fails without writing for a missing %s', (_, comicId, panelId, code) => {
+			const { store, storage, commands } = setup();
+			const before = store.comics;
+
+			expect(commands.addCaption(comicId, panelId, 'x')).toMatchObject({ ok: false, code });
+			expect(store.comics).toBe(before);
+			expect(storage.writes).toHaveLength(0);
+		});
+
 		it('edits a caption', () => {
 			const { store, commands } = setup();
 
