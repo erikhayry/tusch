@@ -26,7 +26,11 @@ import {
 } from '../../generation/generation-service';
 import { fakeGateway } from '../../generation/test/fake-gateway';
 import { createComicAction, createPanelAction } from '../generation-actions';
-import { saveModelSettingsAction, validateApiKeyAction } from '../settings-actions';
+import {
+	readSelectedModels,
+	saveModelSettingsAction,
+	validateApiKeyAction,
+} from '../settings-actions';
 
 const { getAiGateway } = vi.hoisted(() => ({ getAiGateway: vi.fn() }));
 vi.mock('../../ai/gateway', async (importOriginal) => ({
@@ -137,13 +141,49 @@ describe('server actions', () => {
 			expect(credentials.apiKey).toBe('sk-new');
 		});
 
-		it('reports a rejected key as success: false', async () => {
+		it('reports a rejected key as success: false and does not store it', async () => {
 			getAiGateway.mockReturnValue(
 				fakeGateway({ ping: async () => ({ success: false, message: 'rejected' }) }),
 			);
-			const { event } = requestEvent({ key: 'sk-bad' });
+			const { event, cookies } = requestEvent({ key: 'sk-bad' });
 
 			expect(await validateApiKeyAction(event)).toEqual({ success: false, message: 'rejected' });
+			expect(cookies.set).not.toHaveBeenCalled();
+		});
+
+		it('validates before storing the key', async () => {
+			const order: string[] = [];
+			getAiGateway.mockReturnValue(
+				fakeGateway({
+					ping: async () => {
+						order.push('ping');
+						return { success: true, message: 'ok' };
+					},
+				}),
+			);
+			const { event, cookies } = requestEvent({ key: 'sk-new' });
+			cookies.set.mockImplementation(() => order.push('set'));
+
+			await validateApiKeyAction(event);
+
+			expect(order).toEqual(['ping', 'set']);
+		});
+
+		it('stores nothing when validation is rate limited', async () => {
+			getAiGateway.mockReturnValue(
+				fakeGateway({
+					ping: async () => {
+						throw new AiGatewayError('rate-limit', 'slow down', 429);
+					},
+				}),
+			);
+			const { event, cookies } = requestEvent({ key: 'sk-new' });
+
+			expect(await validateApiKeyAction(event)).toMatchObject({
+				status: 429,
+				data: { code: 'rate_limited' },
+			});
+			expect(cookies.set).not.toHaveBeenCalled();
 		});
 
 		it('rejects a missing key with fail(400)', async () => {
@@ -153,13 +193,16 @@ describe('server actions', () => {
 			expect(cookies.set).not.toHaveBeenCalled();
 		});
 
-		it('writes both model cookies', async () => {
+		it('writes both model cookies and returns the committed settings', async () => {
 			const { event, cookies } = requestEvent({
 				[TEXT_MODEL_KEY]: 'text',
 				[IMAGE_MODEL_KEY]: 'image',
 			});
 
-			expect(await saveModelSettingsAction(event)).toEqual({ success: true });
+			expect(await saveModelSettingsAction(event)).toEqual({
+				success: true,
+				config: { [TEXT_MODEL_KEY]: 'text', [IMAGE_MODEL_KEY]: 'image' },
+			});
 
 			expect(cookies.set).toHaveBeenCalledWith(TEXT_MODEL_COOKIE_NAME, 'text', expect.any(Object));
 			expect(cookies.set).toHaveBeenCalledWith(
@@ -167,6 +210,31 @@ describe('server actions', () => {
 				'image',
 				expect.any(Object),
 			);
+		});
+	});
+
+	describe('model settings validation', () => {
+		it.each([
+			['a missing image model', { [TEXT_MODEL_KEY]: 'text' }],
+			['an empty text model', { [TEXT_MODEL_KEY]: '', [IMAGE_MODEL_KEY]: 'image' }],
+		])('rejects %s with fail(400) and leaves both cookies untouched', async (_, values) => {
+			const { event, cookies } = requestEvent(values);
+
+			expect(await saveModelSettingsAction(event)).toMatchObject({
+				status: 400,
+				data: { code: 'invalid_input' },
+			});
+			expect(cookies.set).not.toHaveBeenCalled();
+		});
+
+		it('reads the selected models from cookies only', () => {
+			const cookies = {
+				get: vi.fn((name: string) =>
+					name === TEXT_MODEL_COOKIE_NAME ? 'text' : name === KEY_COOKIE_NAME ? 'sk' : undefined,
+				),
+			};
+
+			expect(readSelectedModels(cookies as never)).toEqual({ [TEXT_MODEL_KEY]: 'text' });
 		});
 	});
 

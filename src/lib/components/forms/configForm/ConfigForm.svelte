@@ -7,26 +7,19 @@
 
 	import Heading from '$lib/components/relativeHeading/Heading.svelte';
 	import Section from '$lib/components/relativeHeading/Section.svelte';
-	import { addImageModel, addTextModel } from '$lib/features/settings/client/config-store.svelte';
 	import {
 		CONFIG_ACTION,
-		getConfigValues,
+		type SaveModelSettingsResult,
 	} from '$lib/features/settings/contracts/saveModelSettings';
+	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { m } from '$lib/paraglide/messages';
 	import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
-	import { onEdit } from '$lib/utils/actions/onEdit';
-	import type { ConfigValues } from '$lib/utils/db/dbTypes';
 
 	import { type ConfigFormProps } from './configFormTypes';
 
-	const handleSubmit = onEdit(getConfigValues, (values: ConfigValues) => {
-		if (values[IMAGE_MODEL_KEY]) {
-			addImageModel(values[IMAGE_MODEL_KEY]);
-		}
-		if (values[TEXT_MODEL_KEY]) {
-			addTextModel(values[TEXT_MODEL_KEY]);
-		}
-	});
+	// The server writes both model cookies; the UI only changes once the reloaded
+	// page data reflects the committed settings.
+	const handleSubmit = enhanceAction<SaveModelSettingsResult>(({ update }) => update());
 
 	let { models, config }: ConfigFormProps = $props();
 </script>
@@ -36,7 +29,7 @@
 
 	<Heading id="currentConfig">{m.currentConfig()}</Heading>
 	<ul aria-labelledby="currentConfig">
-		{#each Object.entries(config) as configEntry (configEntry[1])}
+		{#each Object.entries(config) as configEntry (configEntry[0])}
 			<li aria-label={configEntry[0]}>{configEntry[1]}</li>
 		{/each}
 	</ul>

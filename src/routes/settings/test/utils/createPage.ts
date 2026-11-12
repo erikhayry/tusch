@@ -23,13 +23,16 @@ export class CreatePage {
 		this.saveSettingsButton = page.getByRole('button', { name: m.saveConfig() });
 	}
 
-	async submit() {
-		await this.keyInput.fill('mock key');
+	async submit(key = 'mock key') {
+		await this.keyInput.fill(key);
 		await this.keyInput.press('Enter');
 	}
 
 	async goto(query?: string) {
 		await this.page.goto(`/settings${query ? `?${query}` : ''}`);
+		// Wait for hydration so `use:enhance` is attached before the test submits;
+		// otherwise a fast submit falls back to a native POST and reloads the page.
+		await this.page.waitForLoadState('networkidle');
 
 		return this;
 	}

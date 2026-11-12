@@ -965,15 +965,15 @@ Make browser-only state, missing entities, credentials, and selected-model owner
   - Missing panel.
   - Panel not belonging to comic.
   - Empty comic collection.
-- [ ] Make selected-model cookies the only persisted model authority.
-- [ ] Remove `CONFIG_DB` and its local-storage persistence.
-- [ ] Return safe selected-model values through settings load/action data.
-- [ ] Never expose the API key through page data.
-- [ ] Change BYOK flow to:
+- [x] Make selected-model cookies the only persisted model authority.
+- [x] Remove `CONFIG_DB` and its local-storage persistence.
+- [x] Return safe selected-model values through settings load/action data.
+- [x] Never expose the API key through page data.
+- [x] Change BYOK flow to:
   1. Read candidate key.
   2. Validate candidate through the gateway.
   3. Set the HTTP-only cookie only after validation succeeds.
-- [ ] Make model-setting updates atomic from the UI perspective:
+- [x] Make model-setting updates atomic from the UI perspective:
   1. Submit selected models.
   2. Validate.
   3. Write cookies.
@@ -987,20 +987,20 @@ Make browser-only state, missing entities, credentials, and selected-model owner
 - [ ] Direct navigation to a missing panel.
 - [ ] Reload after creating a comic.
 - [ ] Empty-state navigation.
-- [ ] Successful API-key validation stores a cookie.
-- [ ] Failed API-key validation does not store or retain the candidate cookie.
-- [ ] Successful model update writes both model cookies.
-- [ ] Failed model update leaves previous settings unchanged.
-- [ ] Settings UI reflects cookie-backed values.
-- [ ] API key is absent from page data and browser-readable state.
+- [x] Successful API-key validation stores a cookie.
+- [x] Failed API-key validation does not store or retain the candidate cookie.
+- [x] Successful model update writes both model cookies.
+- [x] Failed model update leaves previous settings unchanged.
+- [x] Settings UI reflects cookie-backed values.
+- [x] API key is absent from page data and browser-readable state.
 
 ### Acceptance criteria
 
 - [ ] The browser-only boundary is declared once.
 - [ ] Route data types match every possible loader result.
 - [ ] Missing entities are handled explicitly.
-- [ ] Model configuration has one persisted authority.
-- [ ] Invalid API keys are never committed as the active credential.
+- [x] Model configuration has one persisted authority.
+- [x] Invalid API keys are never committed as the active credential.
 - [ ] Data-flow-related diagnostics in the affected routes and config modules are resolved.
 
 ---
