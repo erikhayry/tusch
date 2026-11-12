@@ -7,5 +7,6 @@ The project rules live in `docs/rules/`. Read them before changing code:
 - `docs/rules/forms.md`: native forms, contracts, enhancers
 - `docs/rules/testing.md`: E2E only, page objects, mocked AI
 - `docs/rules/workflow.md`: issues, labels, branches, PRs
+- `docs/rules/agents.md`: the protocol for the role skills in `.claude/skills/`
 
 `CLAUDE.md` imports the same files for Claude Code.
