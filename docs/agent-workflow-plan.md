@@ -74,6 +74,9 @@ development by hand); the skill still finishes by setting the next label.
 | `status:blocked`                           | An agent gave up (turn/time cap, ambiguity, failing CI); needs a human |
 | `type:feature` / `type:bug` / `type:chore` | Kind of work; bugs start with a reproducing E2E test                   |
 
+Labels are defined in `.github/labels.yml` and synced with
+`scripts/sync-labels.sh` (create/update only, never deletes).
+
 Rules: one `status:*` at a time; agents never skip a state; a failed agent run
 sets `status:blocked` and comments why.
 
@@ -170,7 +173,15 @@ derived from the current code:
 | AW13 | Weekly tech-lead audit: stale REQs, flaky tests, stuck issues (#38)                  | AW8        |
 | AW9  | Pilot one small feature end to end; fix what breaks; document                        | all        |
 
-## 8. Risks
+## 8. Repository settings
+
+- Merged branches are deleted automatically, so a stacked PR retargets to `main`.
+- `main` requires the CI `test` check (admins included) and blocks force-push and deletion.
+- **No required approvals yet:** GitHub doesn't let an author approve their own PR, and PRs
+  opened from the local session are authored by the repo owner. Require 1 approval once
+  agents open PRs as `claude[bot]` (after AW1); the human merge stays the gate until then.
+
+## 9. Risks
 
 - **Bot-triggered events.** If label hand-off by `claude[bot]` cannot trigger
   workflows, AW8 falls back to one workflow that runs the next stage directly
