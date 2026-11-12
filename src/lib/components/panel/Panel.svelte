@@ -11,6 +11,7 @@
 	import { toCreatePanelImageValues } from '$lib/features/panels/contracts/createPanelImage';
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
+	import AddCaptionForm from '../forms/addCaptionForm/AddCaptionForm.svelte';
 	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
 	import Image from '../image/Image.svelte';
@@ -50,7 +51,7 @@
 	<Section>
 		<Heading id="panel-caption">{m.captions()}</Heading>
 		<ul aria-labelledby="panel-caption">
-			{#each panel.captions as caption, index (caption)}
+			{#each panel.captions as caption, index (index)}
 				<li>
 					<FieldActions
 						values={{
@@ -68,6 +69,7 @@
 				</li>
 			{/each}
 		</ul>
+		<AddCaptionForm {comicId} panelId={panel.id} />
 
 		<Heading id="panel-dialogue">{m.dialogues()}</Heading>
 		<ul aria-labelledby="panel-dialogue">

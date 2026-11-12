@@ -1021,13 +1021,13 @@ If adding product functionality is not desired, use an existing caption operatio
 
 ### Steps for an add-caption proof
 
-- [ ] Add an `AddCaption` contract.
-- [ ] Add an explicit `addCaption` domain command.
-- [ ] Add or extend a native SvelteKit form.
-- [ ] Connect it through `enhanceClientCommand`.
-- [ ] Add focused contract, command, and component tests.
-- [ ] Add relevant E2E coverage.
-- [ ] Record all files changed.
+- [x] Add an `AddCaption` contract.
+- [x] Add an explicit `addCaption` domain command.
+- [x] Add or extend a native SvelteKit form.
+- [x] Connect it through `enhanceClientCommand`.
+- [x] Add focused contract, command, and component tests.
+- [x] Add relevant E2E coverage.
+- [x] Record all files changed.
 
 ### Expected change set
 
@@ -1050,11 +1050,11 @@ It must not require changes to:
 
 ### Acceptance criteria
 
-- [ ] The feature works through the established native form pattern.
-- [ ] No central dispatcher or broad switch is introduced.
-- [ ] No unrelated feature files are changed.
-- [ ] The implementation demonstrates the intended extension path.
-- [ ] The changed-file list is documented in the PR summary.
+- [x] The feature works through the established native form pattern.
+- [x] No central dispatcher or broad switch is introduced.
+- [x] No unrelated feature files are changed.
+- [x] The implementation demonstrates the intended extension path.
+- [x] The changed-file list is documented in the PR summary.
 
 ## 7. Migration matrix
 
