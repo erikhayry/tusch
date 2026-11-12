@@ -27,6 +27,9 @@ vite.config.ts.timestamp-*
 test-results
 # Paraglide
 src/lib/paraglide
+
+# Scratch files written by agents (comment and PR bodies)
+/.agent-tmp/
 project.inlang/cache/
 
 # Stale paraglide output from an older outdir, and inlang-generated files

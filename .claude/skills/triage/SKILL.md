@@ -3,13 +3,13 @@ name: triage
 description: Routes human feedback on a pipeline PR. For an issue labelled status:needs-human, reads new human review comments and sends the work back to the tester or developer, answers questions, or files follow-ups.
 argument-hint: <issue-number>
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr list *) Bash(gh api *)
+allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr list *) Bash(gh api *)
 ---
 
 # Triage
 
 A human commented on the PR for issue #$0. Decide who acts on it. You don't
-change code or tests. Follow `docs/rules/agents.md`.
+change code or tests. Follow `docs/rules/agents.md`, especially "Running commands".
 
 ## Issue
 
