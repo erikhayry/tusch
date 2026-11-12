@@ -58,8 +58,14 @@ jobs:
           set -euo pipefail
           skill='' ; target=''
 
-          issue_has_label() { gh issue view "$1" --json labels --jq '.labels[].name' | grep -qx "$2"; }
-          issue_from_ref() { printf '%s' "$1" | sed -nE 's/^issue-([0-9]+)-.*/\1/p'; }
+          issue_has_label() {
+            local number=$1 label=$2
+            gh issue view "$number" --json labels --jq '.labels[].name' | grep -qx "$label"
+          }
+          issue_from_ref() {
+            local ref=$1
+            printf '%s' "$ref" | sed -nE 's/^issue-([0-9]+)-.*/\1/p'
+          }
 
           case "$EVENT" in
             issues)
@@ -68,6 +74,7 @@ jobs:
                 status:needs-tests)  skill=test;    target=$ISSUE ;;
                 status:needs-dev)    skill=develop; target=$ISSUE ;;
                 status:needs-review) skill=review;  target=$ISSUE ;;
+                *)                   ;;  # other labels start nothing
               esac ;;
             issue_comment|pull_request_review|pull_request_review_comment)
               # Only humans start planning/triage; @claude mentions belong to claude.yml.
@@ -86,6 +93,7 @@ jobs:
               if [ "$MERGED" = true ] && [ -n "$(issue_from_ref "$HEAD_REF")" ]; then
                 skill=tech-lead; target="reconcile $PR"
               fi ;;
+            *) ;;
           esac
 
           case "$skill" in
@@ -117,7 +125,7 @@ jobs:
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - if: steps.route.outputs.skill != ''
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 12.6.0
 
