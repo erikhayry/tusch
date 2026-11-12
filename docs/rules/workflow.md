@@ -11,6 +11,23 @@
   set `status:blocked` and comment **why** and what a human must decide.
 - `type:bug` work starts with an E2E test that reproduces the bug.
 
+## Running the pipeline on GitHub
+
+`.github/workflows/agents.yml` runs the role skills automatically:
+
+| You do                                                                     | Runs                                                                             |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Add `status:idea` to an issue, or answer the planner's questions there     | `/plan <n>`                                                                      |
+| Add `status:needs-tests` (or a skill hands off to it)                      | `/test <n>` → `/develop` → `/review`, each started by the previous stage's label |
+| Comment or review on a pipeline PR while the issue is `status:needs-human` | `/triage <n>`                                                                    |
+| Merge a pipeline PR (branch `issue-<n>-…`)                                 | `/tech-lead reconcile <pr>`                                                      |
+
+- Bare approvals, bot comments and `@claude` mentions don't start a stage
+  (`@claude` goes to `claude.yml`).
+- One agent runs per issue at a time. A failed or timed-out run sets
+  `status:blocked` and links the run.
+- To take over by hand, run the same skill locally (`/develop 42`) or move the label yourself.
+
 ## Branches and PRs
 
 - One issue, one branch, one PR. Branch from `main` as `issue-<n>-<slug>`.
