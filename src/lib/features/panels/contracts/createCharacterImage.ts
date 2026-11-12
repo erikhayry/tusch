@@ -4,6 +4,8 @@ import {
 	CreateCharacterImageValueSchema,
 	type CreateCharacterImageValue,
 } from '$lib/utils/db/dbTypes';
+
+export type { CreateCharacterImageValue };
 import type { ZodSafeParseResult } from 'zod';
 
 export const CREATE_CHARACTER_IMAGE_ACTION = CLIENT_ACTION_NAME;

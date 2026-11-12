@@ -4,42 +4,35 @@
 
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { workflowDeps } from '$lib/client/workflow-deps';
+	import { createCharacterCrop } from '$lib/features/panels/client/workflows/create-character-crop';
 	import {
 		CREATE_CHARACTER_IMAGE_ACTION,
 		getCreateCharacterImageValues,
+		type CreateCharacterImageValue,
 	} from '$lib/features/panels/contracts/createCharacterImage';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { createCharacterCrop } from '$lib/features/panels/client/workflows/create-character-crop';
-	import { globalLoading } from '$lib/utils/states/loading.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
+	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
+	import { encodeFormValue } from '$lib/forms/form-data';
 
 	import { type CreateCharacterImageFormProps } from './createCharacterImageFormTypes';
 
 	let imageSrc = $state<string | null>(null);
 
-	const handleSubmit: SubmitFunction = async ({ formData }) => {
-		globalLoading.start();
-		const characterImageResult = await getCreateCharacterImageValues(formData);
-		if (characterImageResult.success) {
-			const cropped = await createCharacterCrop(workflowDeps, characterImageResult.data);
-			imageSrc = URL.createObjectURL(cropped);
-		}
+	// Preview only: crop the stored panel image after the no-op action succeeds.
+	async function showCrop(values: CreateCharacterImageValue) {
+		const cropped = await createCharacterCrop(workflowDeps, values);
+		if (imageSrc) URL.revokeObjectURL(imageSrc);
+		imageSrc = URL.createObjectURL(cropped);
+	}
 
-		return () => {
-			globalLoading.stop();
-		};
-	};
+	const handleSubmit = enhanceClientCommand(getCreateCharacterImageValues, showCrop);
 
 	let { label, values }: CreateCharacterImageFormProps = $props();
 </script>
 
 <form method="POST" action={`?/${CREATE_CHARACTER_IMAGE_ACTION}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
-		<input
-			type="hidden"
-			name={entry[0]}
-			value={typeof entry[1] === 'object' ? JSON.stringify(entry[1]) : entry[1]}
-		/>
+		<input type="hidden" name={entry[0]} value={encodeFormValue(entry[1])} />
 	{/each}
 	<img src={imageSrc} alt="" />
 
