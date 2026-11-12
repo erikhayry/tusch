@@ -11,6 +11,7 @@ import {
 	serializeComicSnapshot,
 	type ComicSnapshotStorage,
 } from './comic-persistence';
+import { bootstrapComics } from './bootstrap';
 import { comicStore, type ComicStoreState } from './comic-store.svelte';
 
 export type CommandFailureCode =
@@ -28,6 +29,8 @@ type Outcome<T> = { ok: true; value: T } | CommandFailure;
 export interface ComicCommandDeps {
 	store: ComicStoreState;
 	storage: ComicSnapshotStorage;
+	/** Runs before every command so writes never replace comics that were not loaded yet. */
+	ensureLoaded?: () => void;
 }
 
 function ok<T>(value: T): Outcome<T> {
@@ -78,7 +81,13 @@ function updateCharacter(
 	});
 }
 
-export function createComicCommands({ store, storage }: ComicCommandDeps) {
+export function createComicCommands({ store, storage, ensureLoaded }: ComicCommandDeps) {
+	/** Current comics, loading persisted state first so a write never drops unloaded comics. */
+	function current(): Comic[] {
+		ensureLoaded?.();
+		return store.comics;
+	}
+
 	function commit(transition: Outcome<Comic[]>): CommandResult {
 		if (!transition.ok) return transition;
 
@@ -96,7 +105,7 @@ export function createComicCommands({ store, storage }: ComicCommandDeps) {
 	}
 
 	function updateComic(comicId: string, change: (comic: Comic) => Outcome<Comic>): CommandResult {
-		const comics = store.comics;
+		const comics = current();
 		const comic = comics.find(({ id }) => id === comicId);
 		if (!comic) return commit(fail('comic-not-found', `Comic ${comicId} not found`));
 
@@ -106,9 +115,9 @@ export function createComicCommands({ store, storage }: ComicCommandDeps) {
 		return commit(ok(comics.map((current) => (current.id === comicId ? next.value : current))));
 	}
 
-	return {
+	const commands = {
 		addComic(comic: Comic): CommandResult {
-			const comics = store.comics;
+			const comics = current();
 			const exists = comics.some(({ id }) => id === comic.id);
 
 			return commit(
@@ -121,7 +130,7 @@ export function createComicCommands({ store, storage }: ComicCommandDeps) {
 		},
 
 		deleteComic(comicId: string): CommandResult {
-			const comics = store.comics;
+			const comics = current();
 			if (!comics.some(({ id }) => id === comicId)) {
 				return commit(fail('comic-not-found', `Comic ${comicId} not found`));
 			}
@@ -274,6 +283,8 @@ export function createComicCommands({ store, storage }: ComicCommandDeps) {
 			);
 		},
 	};
+
+	return commands;
 }
 
 export type ComicCommands = ReturnType<typeof createComicCommands>;
@@ -281,6 +292,7 @@ export type ComicCommands = ReturnType<typeof createComicCommands>;
 export const comicCommands = createComicCommands({
 	store: comicStore,
 	storage: localComicStorage,
+	ensureLoaded: bootstrapComics,
 });
 
 export function expectCommitted(result: CommandResult): void {

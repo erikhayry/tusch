@@ -301,6 +301,26 @@ describe('comic commands', () => {
 		});
 	});
 
+	describe('ensureLoaded', () => {
+		it('loads persisted comics before a command reads the store', () => {
+			const persisted = [makeComic(OTHER_COMIC_ID)];
+			const store = fakeStore([]);
+			const storage = fakeStorage();
+			const commands = createComicCommands({
+				store,
+				storage,
+				ensureLoaded: () => {
+					if (store.comics.length === 0) store.replace(persisted);
+				},
+			});
+
+			expect(commands.addComic(makeComic())).toEqual({ ok: true });
+
+			expect(store.comics.map(({ id }) => id)).toEqual([OTHER_COMIC_ID, COMIC_ID]);
+			expect(JSON.parse(storage.writes[0]).comics).toHaveLength(2);
+		});
+	});
+
 	describe('expectCommitted', () => {
 		it('does nothing for a committed result', () => {
 			expect(() => expectCommitted({ ok: true })).not.toThrow();
