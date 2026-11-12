@@ -8,21 +8,19 @@
 
 	import { m } from '$lib/paraglide/messages';
 
-	import { BYOK_ACTION } from '$lib/features/settings/contracts/validateApiKey';
-	import { globalLoading } from '$lib/utils/states/loading.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
+	import {
+		BYOK_ACTION,
+		type ValidateApiKeyResult,
+	} from '$lib/features/settings/contracts/validateApiKey';
+	import { enhanceAction } from '$lib/forms/enhance-action';
 
 	let success = $state<boolean | null>(null);
 
-	const handleSubmit: SubmitFunction = () => {
-		globalLoading.start();
-		return ({ result }) => {
-			globalLoading.stop();
-			if (result.type === 'success') {
-				success = Boolean(result.data?.success);
-			}
-		};
-	};
+	// Failures (invalid input, rate limits, provider errors) surface in the global
+	// error region via the shared enhancer.
+	const handleSubmit = enhanceAction<ValidateApiKeyResult>(({ data }) => {
+		success = data.success;
+	});
 </script>
 
 {#if success}
