@@ -62,4 +62,4 @@ jobs:
           # running the project's checks. No network tools, no arbitrary shell.
           claude_args: |
             --max-turns 60
-            --allowedTools "Edit,MultiEdit,Write,Bash(pnpm install:*),Bash(pnpm run check),Bash(pnpm exec vitest:*),Bash(pnpm run test:e2e),Bash(pnpm exec playwright test:*),Bash(pnpm exec prettier:*),Bash(pnpm exec svelte-kit sync),Bash(git status:*),Bash(git diff:*),Bash(git log:*),mcp__github__create_pull_request"
+            --allowedTools "Edit,MultiEdit,Write,Bash(pnpm install:*),Bash(pnpm run check),Bash(pnpm run test:e2e),Bash(pnpm exec playwright test:*),Bash(pnpm exec prettier:*),Bash(pnpm exec svelte-kit sync),Bash(git status:*),Bash(git diff:*),Bash(git log:*),mcp__github__create_pull_request"

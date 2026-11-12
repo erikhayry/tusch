@@ -52,9 +52,6 @@ jobs:
       - name: Requirements ledger
         run: pnpm run check:requirements
 
-      - name: Unit and component tests
-        run: pnpm exec vitest run
-
       - name: E2E tests
         if: ${{ !inputs.update_screenshots }}
         # Missing baselines are written (not failed) so they can be collected below.

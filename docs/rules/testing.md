@@ -2,12 +2,14 @@
 
 ## E2E is the only test layer
 
-- Write Playwright E2E tests only. **Do not add unit or component tests**
-  (`*.spec.ts`, `*.svelte.spec.ts`). Existing Vitest tests stay until E2E covers
-  the same behaviour, then they are deleted (plan AW5). Don't extend them.
-- Goal: every feature/requirement has at least one E2E test.
-- `pnpm generate` (plop) still scaffolds unit-test files; delete them or don't
-  use that part of the output.
+- Write Playwright E2E tests only. There is no unit-test runner: Vitest and all
+  unit/component tests were removed (AW5). Don't add `*.spec.ts` files.
+- Every requirement in `docs/requirements.md` has at least one E2E test.
+- Prove behaviour through the UI (or an HTTP request, as in
+  `(local)/test/actions.svelte.e2e.ts`); inject failures with test-only hooks
+  (`mock-error:` markers, `page.addInitScript`, `page.route`) rather than mocks
+  of internal modules.
+- `pnpm generate page` scaffolds a route with an E2E test and a page object.
 
 ## Where and how
 

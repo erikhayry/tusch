@@ -19,21 +19,6 @@ export default function (plop) {
 				path: 'src/lib/components/{{camelCase name}}/{{camelCase name}}Types.ts',
 				templateFile: 'plop-templates/component/types.ts.hbs',
 			},
-			{
-				type: 'add',
-				path: 'src/lib/components/{{camelCase name}}/test/{{pascalCase name}}.svelte.spec.ts',
-				templateFile: 'plop-templates/component/test.svelte.spec.ts.hbs',
-			},
-			{
-				type: 'add',
-				path: 'src/lib/components/{{camelCase name}}/test/utils/mock{{camelCase name}}.ts',
-				templateFile: 'plop-templates/component/mock.ts.hbs',
-			},
-			{
-				type: 'add',
-				path: 'src/lib/components/{{camelCase name}}/test/utils/render{{pascalCase name}}.ts',
-				templateFile: 'plop-templates/component/render.ts.hbs',
-			},
 		],
 	});
 	plop.setGenerator('page', {

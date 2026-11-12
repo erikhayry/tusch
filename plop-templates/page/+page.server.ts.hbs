@@ -1,3 +1,5 @@
-import { globalActions } from '$lib/utils/actions/actions';
+import type { Actions } from './$types';
 
-export const actions = globalActions;
+// Expose only the actions this page's forms post to, keyed by each contract's
+// action name (see docs/rules/architecture.md, "Routes").
+export const actions = {} satisfies Actions;

@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { CreatePage } from './utils/createPage';
 
-test('has expected title', async ({ page }) => {
+// Tag every test with the requirement it proves (docs/requirements.md), e.g. '@REQ-033'.
+test('has expected title', { tag: '@REQ-TODO' }, async ({ page }) => {
 	const createPage = await new CreatePage(page).goto();
 
 	await expect(createPage.heading).toBeVisible();
