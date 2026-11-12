@@ -57,6 +57,19 @@ Drive failures from the UI with markers in submitted text:
   untested active requirements, stale gaps and tagged skipped tests.
 - Run the tests for one requirement: `pnpm exec playwright test --grep @REQ-019`.
 
-## Coming with the workflow plan
+## Screenshots
 
-- AW6: committed screenshot baselines for every view (`toHaveScreenshot`).
+- `src/tests/e2e/screenshots.e2e.ts` captures every view with `toHaveScreenshot()`.
+  **A new view gets a screenshot test in the same PR.**
+- Baselines live in `src/tests/e2e/__screenshots__/` and are **Linux-only**: CI
+  runs inside `mcr.microsoft.com/playwright:<version>-noble` (keep the tag in
+  sync with `@playwright/test`). Locally the screenshot tests are skipped unless
+  `PLAYWRIGHT_SCREENSHOTS=1`; macOS images won't match, so never commit them.
+- **Intended UI change:** push the branch, run `pnpm screenshots:update` (it
+  runs CI with `update_screenshots` and downloads the new baselines), look at
+  the images, and commit them. GitHub's image diff in the PR is the visual review.
+- A missing baseline fails CI with a "commit these baselines" error; the images
+  are in the run's `screenshots` artifact. Diffs of failed comparisons are in
+  `screenshot-diffs`.
+- Keep views deterministic: mock gateway, seeded examples, no time-dependent
+  content. Mask anything volatile (`mask: [locator]`) rather than retrying.

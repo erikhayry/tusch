@@ -17,6 +17,7 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "svelte-kit sync && playwright test",
 		"test:e2e:ui": "svelte-kit sync && playwright test --ui",
+		"screenshots:update": "scripts/update-screenshots.sh",
 		"generate": "plop"
 	},
 	"devDependencies": {

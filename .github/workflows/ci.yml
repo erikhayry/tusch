@@ -4,6 +4,12 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      update_screenshots:
+        description: Regenerate all screenshot baselines and upload them (pnpm screenshots:update)
+        type: boolean
+        default: false
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -13,8 +19,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Same image everywhere, so screenshot baselines render identically.
+    # Keep the tag in sync with @playwright/test in package.json.
+    container: mcr.microsoft.com/playwright:v1.63.0-noble
+    env:
+      PLAYWRIGHT_SCREENSHOTS: '1'
     steps:
       - uses: actions/checkout@v4
+
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - uses: pnpm/action-setup@v4
         with:
@@ -39,11 +52,40 @@ jobs:
       - name: Requirements ledger
         run: pnpm run check:requirements
 
-      - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
-
       - name: Unit and component tests
         run: pnpm exec vitest run
 
       - name: E2E tests
-        run: pnpm run test:e2e
+        if: ${{ !inputs.update_screenshots }}
+        # Missing baselines are written (not failed) so they can be collected below.
+        run: pnpm run test:e2e --update-snapshots=missing
+
+      - name: Fail on new, uncommitted screenshot baselines
+        if: ${{ !inputs.update_screenshots }}
+        run: |
+          new=$(git status --porcelain --untracked-files=all -- '*/__screenshots__/*')
+          if [ -n "$new" ]; then
+            echo "::error::New screenshot baselines were generated. Download the 'screenshots' artifact (or run pnpm screenshots:update) and commit them:"
+            echo "$new"
+            exit 1
+          fi
+
+      - name: Regenerate all screenshot baselines
+        if: ${{ inputs.update_screenshots }}
+        run: pnpm run test:e2e screenshots --update-snapshots=all
+
+      - name: Upload screenshot baselines
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: src/**/__screenshots__/
+          if-no-files-found: ignore
+
+      - name: Upload screenshot diffs
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-diffs
+          path: test-results/
+          if-no-files-found: ignore
