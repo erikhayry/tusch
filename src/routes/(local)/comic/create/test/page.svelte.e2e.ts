@@ -54,3 +54,24 @@ test('keeps existing comics when creating from a freshly loaded create page', as
 	);
 	expect(after).toBe(before + 1);
 });
+
+test.describe('provider failures', () => {
+	for (const [kind, message] of [
+		['auth', 'API key is invalid or rejected'],
+		['rate-limit', 'AI provider rate limit reached, try again shortly'],
+		['upstream', 'AI provider request failed (HTTP 500): boom'],
+	] as const) {
+		test(`shows a readable message for ${kind} failures`, async ({ page }) => {
+			const createPage = await new CreatePage(page).goto();
+			await page.waitForLoadState('networkidle');
+
+			await createPage.fillUrl(`https://example.com/mock-error:${kind}`);
+			await createPage.submit();
+
+			await expect(createPage.error).toContainText(message);
+			await expect(createPage.error).not.toContainText('{');
+			await expect(createPage.error).not.toContainText('Internal Error');
+			await expect(page).toHaveURL(/\/comic\/create$/);
+		});
+	}
+});
