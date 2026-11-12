@@ -11,6 +11,15 @@ test('navigates to create', { tag: '@REQ-001' }, async ({ page }) => {
 	await expect(page.getByRole('heading', { name: m.createNewComic() })).toBeVisible();
 });
 
+test('navigates to settings', { tag: '@REQ-034' }, async ({ page }) => {
+	const landingPage = await new LandingPage(page).goto();
+
+	await landingPage.settingsLink.click();
+
+	await expect(page).toHaveURL(/\/settings$/);
+	await expect(page.getByRole('heading', { name: m.settings(), level: 1 })).toBeVisible();
+});
+
 test('navigates to comic', { tag: ['@REQ-001', '@REQ-004'] }, async ({ page }) => {
 	const landingPage = await new LandingPage(page).goto();
 

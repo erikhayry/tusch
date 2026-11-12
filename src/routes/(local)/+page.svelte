@@ -34,5 +34,6 @@
 		</ul>
 	</Section>
 
-	<a href={resolve('/comic/create')}>{m.createNewComic()}</a>
+	<p><a href={resolve('/comic/create')}>{m.createNewComic()}</a></p>
+	<p><a href={resolve('/settings')}>{m.settings()}</a></p>
 </Page>

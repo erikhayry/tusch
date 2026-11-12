@@ -6,6 +6,7 @@ import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 export class CreatePage {
 	readonly page: Page;
 	readonly heading: Locator;
+	readonly backLink: Locator;
 	readonly keyInput: Locator;
 	readonly successMessage: Locator;
 	readonly invalidKeyMessage: Locator;
@@ -15,7 +16,8 @@ export class CreatePage {
 
 	constructor(page: Page) {
 		this.page = page;
-		this.heading = page.getByRole('heading', { name: 'TODO', level: 1 });
+		this.heading = page.getByRole('heading', { name: m.settings(), level: 1 });
+		this.backLink = page.getByRole('link', { name: m.back() });
 		this.keyInput = page.getByRole('textbox', { name: m.byok() });
 		this.successMessage = page.getByText(m.keyAdded());
 		this.invalidKeyMessage = page.getByText(m.invalidKey());

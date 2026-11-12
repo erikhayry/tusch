@@ -240,6 +240,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: otherwise a new user can't get started.
 - Proven by: tagged tests
 
+### REQ-034 Settings is reachable from the start page
+
+- Status: active
+- Statement: the start page links to Settings; the Settings page is titled "Settings" and links back to the start page.
+- Why: users must find where to add their key without typing `/settings`.
+- Proven by: tagged tests
+
 ## Feedback
 
 ### REQ-032 Submissions show progress and can't be doubled

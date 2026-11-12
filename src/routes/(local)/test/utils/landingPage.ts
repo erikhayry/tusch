@@ -6,12 +6,16 @@ import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 export class LandingPage {
 	readonly page: Page;
 	readonly createComicButton: Locator;
+	readonly settingsLink: Locator;
+	readonly comicsHeading: Locator;
 	readonly comicLink: (number: number) => Locator;
 	readonly deleteComicButton: (title: string) => Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.createComicButton = page.getByRole('link', { name: 'Create' });
+		this.settingsLink = page.getByRole('link', { name: m.settings() });
+		this.comicsHeading = page.getByRole('heading', { name: m.comics() });
 		this.comicLink = (number: number) => page.getByRole('link', { name: EXAMPLES[number].title });
 		this.deleteComicButton = (title: string) =>
 			page.getByRole('button', {
