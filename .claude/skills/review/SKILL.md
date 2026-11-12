@@ -17,7 +17,10 @@ you don't fix. Follow `docs/rules/agents.md`, especially "Running commands".
 
 ## 1. Check entry
 
-The status label must be `status:needs-review`; otherwise stop. Switch to the
+The status label must be `status:needs-review`; otherwise stop. Also stop and
+report (without changing anything) if the issue is closed or its PR is already
+merged (`gh pr list --head <branch> --state merged`); a human merged it
+mid-loop. Otherwise, switch to the
 branch, `git pull`, and get the change with `git diff origin/main...HEAD`.
 
 ## 2. Review
