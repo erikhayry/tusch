@@ -25,7 +25,7 @@
 						comicId,
 						characterId: character.id,
 						image: panel.image!.landscape.src,
-						crop: panel.image!.landscape.characters![0].head,
+						crop: panel.image!.landscape.characters!.find(({ id }) => id === character.id)!.head,
 					}}
 				/>
 			</li>
