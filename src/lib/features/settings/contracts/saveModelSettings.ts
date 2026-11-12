@@ -1,7 +1,7 @@
 import { readString } from '$lib/forms/form-data';
 import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
-import { ConfigStateSchema, ConfigValuesSchema, type ConfigValues } from '$lib/utils/db/dbTypes';
-import { z, type ZodSafeParseResult } from 'zod';
+import { ConfigStateSchema, ConfigValuesSchema } from '$lib/utils/db/dbTypes';
+import { z } from 'zod';
 
 export const CONFIG_ACTION = 'config' as const;
 
@@ -28,7 +28,3 @@ export const SaveModelSettingsValuesSchema = ConfigValuesSchema.extend({
 	[TEXT_MODEL_KEY]: z.string().min(1),
 	[IMAGE_MODEL_KEY]: z.string().min(1),
 });
-
-export function getConfigValues(formData: FormData): ZodSafeParseResult<ConfigValues> {
-	return SaveModelSettingsValuesSchema.safeParse(decodeConfigValues(formData));
-}

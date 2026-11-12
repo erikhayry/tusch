@@ -16,7 +16,7 @@
 - One issue, one branch, one PR. Branch from `main` as `issue-<n>-<slug>`.
   **Never stack PRs**: `main` deletes merged branches, but a stack merged
   out of order still misses `main`.
-- `main` is protected: CI (`test`: typecheck, lint, requirements check,
+- `main` is protected: CI (`test`: typecheck, lint, requirements check, knip,
   E2E) must pass; no force-push.
 - PR body: what changed and why, `Closes #<n>`, the tests added, anything
   deliberately left out, and follow-ups as new issues (not TODOs).

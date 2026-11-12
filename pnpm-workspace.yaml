@@ -1,4 +1,3 @@
 allowBuilds:
-  '@openrouter/sdk': true
   esbuild: true
   simple-git-hooks: false

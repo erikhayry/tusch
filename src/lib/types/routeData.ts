@@ -12,12 +12,10 @@ import { z } from 'zod';
 export const ComicsPageDataSchema = z.object({
 	comics: z.array(ComicSchema),
 });
-export type ComicsPageData = z.infer<typeof ComicsPageDataSchema>;
 
 export const ComicPageDataSchema = z.object({
 	comic: ComicSchema,
 });
-export type ComicPageData = z.infer<typeof ComicPageDataSchema>;
 
 export const PanelPageDataSchema = z.object({
 	panel: PanelSchema,
@@ -29,18 +27,15 @@ export const PanelPageDataSchema = z.object({
 	style: ComicStyleEnum,
 	characters: z.array(CharacterSchema),
 });
-export type PanelPageData = z.infer<typeof PanelPageDataSchema>;
 
 export const SettingsPageDataSchema = z.object({
 	[TEXT_MODEL_KEY]: z.array(ModelSchema),
 	[IMAGE_MODEL_KEY]: z.array(ModelSchema),
 });
-export type SettingsPageData = z.infer<typeof SettingsPageDataSchema>;
 
 export const AiModelsResponseSchema = z.object({
 	data: z.array(z.object({ id: ModelSchema })),
 });
-export type AiModelsResponse = z.infer<typeof AiModelsResponseSchema>;
 
 export const ComicRouteParamsSchema = z.object({
 	id: ComicSchema.shape.id,

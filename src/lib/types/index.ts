@@ -1,10 +1,8 @@
 import { z } from 'zod';
 
 export const SeasonEnum = z.enum(['spring', 'summer', 'autumn', 'winter']);
-export type Season = z.infer<typeof SeasonEnum>;
 
 export const TimeOfDayEnum = z.enum(['dawn', 'morning', 'noon', 'afternoon', 'dusk', 'night']);
-export type TimeOfDay = z.infer<typeof TimeOfDayEnum>;
 
 export const ComicStyleEnum = z.enum(['anime', 'classic-marvel', 'franco-belgian']);
 export type ComicStyle = z.infer<typeof ComicStyleEnum>;
@@ -30,9 +28,6 @@ export const ComicStyleDescriptionSchema = z.object({
 });
 export type ComicStyleDescription = z.infer<typeof ComicStyleDescriptionSchema>;
 
-export const UrlValue = z.url();
-export type Url = z.infer<typeof UrlValue>;
-
 export const YearSchema = z.number().int();
 
 export const CropSchema = z.object({
@@ -48,7 +43,6 @@ export const CharachterPositionsSchema = z.object({
 	head: CropSchema,
 	full: CropSchema,
 });
-export type CharachterPositions = z.infer<typeof CharachterPositionsSchema>;
 
 export const ImageAssetSchema = z.object({
 	src: z.string(),
@@ -60,16 +54,12 @@ export type ImageAsset = z.infer<typeof ImageAssetSchema>;
 export const PanelImageAssetSchema = ImageAssetSchema.extend({
 	characters: z.optional(z.array(CharachterPositionsSchema)),
 });
-export type PanelImageAsset = z.infer<typeof PanelImageAssetSchema>;
-
-export const CharacterImageAssetSchema = ImageAssetSchema;
-export type CharacterImageAsset = z.infer<typeof CharacterImageAssetSchema>;
 
 export const CharacterImageSchema = z.object({
 	id: z.uuid(),
 	panelId: z.uuid(),
-	head: CharacterImageAssetSchema,
-	full: CharacterImageAssetSchema,
+	head: ImageAssetSchema,
+	full: ImageAssetSchema,
 });
 export type CharacterImage = z.infer<typeof CharacterImageSchema>;
 
@@ -139,13 +129,11 @@ export const SettingSchema = z.object({
 	locations: z.array(z.string()),
 	timeOfDays: z.array(TimeOfDayEnum),
 });
-export type Setting = z.infer<typeof SettingSchema>;
 
 export const DialogueSchema = z.object({
 	characterId: z.uuid(),
 	text: z.string(),
 });
-export type Dialogue = z.infer<typeof DialogueSchema>;
 
 export const PanelSchema = z.object({
 	id: z.uuid(),
@@ -163,7 +151,6 @@ export const PanelSchema = z.object({
 export type Panel = z.infer<typeof PanelSchema>;
 
 export const PanelArraySchema = z.array(PanelSchema);
-export type PanelArray = z.infer<typeof PanelArraySchema>;
 
 export const ComicSchema = z.object({
 	id: z.uuid(),
@@ -186,4 +173,3 @@ export const ConfigSchema = z.object({
 	[TEXT_MODEL_KEY]: ModelSchema,
 	[IMAGE_MODEL_KEY]: ModelSchema,
 });
-export type Config = z.infer<typeof ConfigSchema>;
