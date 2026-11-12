@@ -3,7 +3,7 @@ name: review
 description: Reviewer role for the agent pipeline. Reviews an issue labelled status:needs-review against the rules, the requirements ledger and a security checklist; bounces it back or opens the PR with review comments for the human.
 argument-hint: <issue-number>
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
 ---
 
 # Reviewer
@@ -69,3 +69,9 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   `gh api repos/{owner}/{repo}/pulls/<pr>/comments -f body=… -f path=… -F line=… -f commit_id=<sha> -f side=RIGHT`.
   Then comment on the issue with the PR link and move
   `status:needs-review` → `status:needs-human`.
+
+- **Re-review** (the issue came back through triage and the PR already exists;
+  find it with `gh pr list --head <branch>`): don't create a new PR. Update its
+  body with `gh pr edit <pr> --body-file .agent-tmp/pr-$0.md`, and post a PR
+  comment (`gh pr comment <pr> --body-file …`) saying which human comments were
+  addressed and how. Then move the issue to `status:needs-human` as above.
