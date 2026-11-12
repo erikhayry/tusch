@@ -44,7 +44,19 @@ Drive failures from the UI with markers in submitted text:
 - Before pushing: `pnpm run check`, `pnpm run lint`, and the full E2E suite.
   For flakiness, `rm -rf build && pnpm run test:e2e` (cold) and `--repeat-each`.
 
+## Requirements
+
+- Every E2E test proves one or more requirements from `docs/requirements.md`
+  and carries their ids as Playwright tags:
+  `test('add caption', { tag: ['@REQ-019', '@REQ-022'] }, async ({ page }) => …)`.
+  Tag a `test.describe` to cover all its tests.
+- A new behaviour needs a requirement (the tech lead adds it) and a tagged test
+  in the same PR. Closing a gap: tag the test and delete `gap` from the entry.
+- Skipped tests must not be tagged; they prove nothing.
+- `pnpm run check:requirements` (in CI) fails on unknown or duplicate ids,
+  untested active requirements, stale gaps and tagged skipped tests.
+- Run the tests for one requirement: `pnpm exec playwright test --grep @REQ-019`.
+
 ## Coming with the workflow plan
 
-- AW3: tests carry requirement tags (`{ tag: '@REQ-012' }`), checked in CI.
 - AW6: committed screenshot baselines for every view (`toHaveScreenshot`).

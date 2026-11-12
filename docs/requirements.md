@@ -1,0 +1,250 @@
+# Requirements
+
+The ledger of how Tusch must behave. Owned by the tech lead
+(`docs/agent-workflow-plan.md` §5.2).
+
+- Plans reference requirements by id; PRs that change behaviour update this file.
+- Every active requirement is proven by at least one E2E test tagged with its id:
+  `test('…', { tag: '@REQ-012' }, async ({ page }) => …)`.
+- `Proven by: gap` marks a requirement with no E2E test yet. Gaps are closed by
+  AW4 (#29); add none without a linked issue.
+- Requirements that no longer apply are deleted (git history keeps them).
+- `pnpm run check:requirements` (also in CI) checks ids, tags and gaps.
+
+## Comic library
+
+### REQ-001 The landing page lists local comics
+
+- Status: active
+- Statement: `/` lists every locally stored comic, each linking to its comic page, and links to create a new one.
+- Why: the library is the entry point to everything else.
+- Proven by: tagged tests
+
+### REQ-002 A comic can be deleted from the library
+
+- Status: active
+- Statement: deleting a comic on `/` removes it from the list and from local storage.
+- Why: users manage their own local library.
+- Proven by: tagged tests
+
+### REQ-003 An empty library leads to creating a comic
+
+- Status: active
+- Statement: when no comics remain (e.g. all deleted this session), `/` redirects to `/comic/create`. A reload with no stored comics reseeds the examples (REQ-004).
+- Why: an empty list is a dead end.
+- Proven by: tagged tests
+
+### REQ-004 Example comics are seeded on first visit
+
+- Status: active
+- Statement: with no stored comics, the app seeds the example comics (and persists them).
+- Why: new users see a working comic before they have an API key.
+- Proven by: tagged tests
+
+## Creating a comic
+
+### REQ-005 A comic can be created from a source URL
+
+- Status: active
+- Statement: on `/comic/create`, submitting a valid URL and a style generates a comic (title, characters, panels) and opens its page.
+- Why: the core feature.
+- Proven by: tagged tests
+
+### REQ-006 A new comic gets a generated cover
+
+- Status: active
+- Statement: creating a comic also generates its cover image; the cover is stored locally and shown on the comic page.
+- Why: every comic has a cover from the start.
+- Proven by: gap (#29)
+
+### REQ-007 Invalid input is rejected with a visible message
+
+- Status: active
+- Statement: submitting an invalid URL shows an error and creates nothing; the error clears on the next valid submission.
+- Why: users must know why nothing happened.
+- Proven by: tagged tests
+
+### REQ-008 Creating a comic never discards existing comics
+
+- Status: active
+- Statement: creating a comic, including from a freshly loaded `/comic/create`, keeps every previously stored comic.
+- Why: regression guard for a data-loss bug (fixed in d72a36b).
+- Proven by: tagged tests
+
+### REQ-009 AI provider failures show readable messages
+
+- Status: active
+- Statement: auth, rate-limit and unexpected provider failures show the provider's message in the error region, never raw JSON or "Internal Error", and leave the user where they were.
+- Why: provider problems are common and must be actionable.
+- Proven by: tagged tests
+
+## Comic page
+
+### REQ-010 The comic page shows the comic and its panels
+
+- Status: active
+- Statement: `/comic/<id>` shows the comic's title, cover and panels; each panel links to its panel page.
+- Why: overview and navigation for one comic.
+- Proven by: tagged tests
+
+### REQ-011 A cover can be generated or replaced
+
+- Status: active
+- Statement: on the comic page, the user can generate a new cover (optionally with instructions and the current cover as reference); it replaces the old one.
+- Why: users iterate on the cover.
+- Proven by: tagged tests
+
+### REQ-012 A cover can be deleted
+
+- Status: active
+- Statement: deleting the cover removes it from the comic page.
+- Why: users can start the cover over.
+- Proven by: tagged tests
+
+### REQ-013 A panel can be deleted
+
+- Status: active
+- Statement: deleting a panel removes it from the comic and its panel list.
+- Why: users edit the story.
+- Proven by: tagged tests
+
+### REQ-014 Characters show the panels they appear in
+
+- Status: active
+- Statement: the comic page lists characters with the panels they appear in, and can preview a crop of a character from a panel image.
+- Why: character consistency across panels.
+- Proven by: gap (#29)
+
+## Panel page
+
+### REQ-015 A panel image can be generated
+
+- Status: active
+- Statement: on a panel without an image, the user can generate one (optionally with instructions and a reference image).
+- Why: the comic's visuals.
+- Proven by: tagged tests
+
+### REQ-016 A panel image can be replaced
+
+- Status: active
+- Statement: on a panel with an image, the user can generate a new image that replaces it.
+- Why: users iterate on panels.
+- Proven by: tagged tests
+
+### REQ-017 A panel image can be removed
+
+- Status: active
+- Statement: removing a panel image leaves the panel without an image and offers to generate one.
+- Why: users can start a panel image over.
+- Proven by: tagged tests
+
+### REQ-018 Generated panel images produce character crops
+
+- Status: active
+- Statement: generating a panel image also stores head and full-body crops for each known character in it, and the head crop is shown next to that character's dialogue.
+- Why: character references for later images.
+- Proven by: gap (#29); the existing E2E test is skipped.
+
+### REQ-019 Captions can be added, edited and removed
+
+- Status: active
+- Statement: on a panel, the user can add a caption, edit any caption and remove any caption.
+- Why: text is part of the comic.
+- Proven by: tagged tests
+
+### REQ-020 Dialogue can be edited and removed
+
+- Status: active
+- Statement: on a panel, the user can edit and remove dialogue lines.
+- Why: text is part of the comic.
+- Proven by: tagged tests
+
+### REQ-021 A generated panel can be inserted before a panel
+
+- Status: active
+- Statement: from a panel, the user can generate a new panel that is inserted before it.
+- Why: users extend the story.
+- Proven by: tagged tests
+
+## Persistence and navigation
+
+### REQ-022 Changes persist locally across reloads
+
+- Status: active
+- Statement: comics and every edit to them are stored in the browser (`localStorage` metadata, OPFS images) and survive a reload. Nothing about a comic is stored on the server.
+- Why: local-first; no accounts.
+- Proven by: tagged tests
+
+### REQ-023 Every local comic and panel is directly addressable
+
+- Status: active
+- Statement: opening or reloading `/comic/<id>` or `/comic/<id>/<panel>` works for any locally stored comic, including newly created ones.
+- Why: links and reloads must not lose the user's place.
+- Proven by: tagged tests
+
+### REQ-024 Missing comics and panels show not found
+
+- Status: active
+- Statement: an unknown comic id, an unknown panel id, or a panel id from another comic shows a 404 page.
+- Why: explicit errors instead of broken pages.
+- Proven by: tagged tests
+
+### REQ-025 Image files never leak or dangle
+
+- Status: active
+- Statement: replacing or deleting a cover, panel image or comic removes image files no comic still references (shared example files are kept); a generation that fails part-way leaves no partial metadata and no stray files.
+- Why: OPFS is the user's disk space; metadata must not point at missing files.
+- Proven by: gap (#29); covered by unit tests only.
+
+### REQ-026 Corrupt stored data doesn't break the app
+
+- Status: active
+- Statement: if stored comic data is corrupt or from an unsupported version, the app keeps a copy aside and starts with the examples instead of crashing.
+- Why: recoverable failure instead of a blank app.
+- Proven by: gap (#29); covered by unit tests only.
+
+### REQ-027 The raw view shows the comic data
+
+- Status: active
+- Statement: `/comic/<id>/raw` shows the comic's stored data as JSON.
+- Why: debugging and export.
+- Proven by: gap (#29)
+
+## Settings and API key
+
+### REQ-028 Users bring their own validated OpenAI key
+
+- Status: active
+- Statement: on `/settings`, the user enters an OpenAI API key; it is stored (HTTP-only cookie) only after the provider accepts it. A rejected key shows an error and keeps any previous key.
+- Why: no shared key; an invalid key must never become active.
+- Proven by: tagged tests
+
+### REQ-029 The API key is never exposed to the browser
+
+- Status: active
+- Statement: the key never appears in page HTML, page data or `document.cookie`.
+- Why: security.
+- Proven by: tagged tests
+
+### REQ-030 Users choose the text and image models
+
+- Status: active
+- Statement: `/settings` lists available models; the saved text and image models are stored in cookies, survive reload and are shown as the current selection.
+- Why: users pick models their key can use.
+- Proven by: tagged tests
+
+### REQ-031 Settings work before a key is stored
+
+- Status: active
+- Statement: `/settings` renders (with empty model lists) when no key is stored, so the user can enter one.
+- Why: otherwise a new user can't get started.
+- Proven by: gap (#29); covered by unit tests only.
+
+## Feedback
+
+### REQ-032 Submissions show progress and can't be doubled
+
+- Status: active
+- Statement: while a form submission runs, a loading indicator is shown; submitting the same form again before it finishes does nothing.
+- Why: AI calls are slow; duplicate submits would duplicate work.
+- Proven by: gap (#29); covered by unit tests only.

@@ -26,44 +26,52 @@ async function createComic(page: Page) {
 }
 
 test.describe('direct navigation', () => {
-	test('opens an existing comic', async ({ page }) => {
+	test('opens an existing comic', { tag: '@REQ-023' }, async ({ page }) => {
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
 
 		await expect(page.getByRole('heading', { name: EXAMPLE.title, level: 2 })).toBeVisible();
 	});
 
-	test('shows not found for a missing comic', async ({ page }) => {
+	test('shows not found for a missing comic', { tag: '@REQ-024' }, async ({ page }) => {
 		await gotoHydrated(page, `/comic/${MISSING_ID}`);
 
 		await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
 		await expect(page.getByText('Comic not found')).toBeVisible();
 	});
 
-	test('shows not found for a missing panel', async ({ page }) => {
+	test('shows not found for a missing panel', { tag: '@REQ-024' }, async ({ page }) => {
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}/${MISSING_ID}`);
 
 		await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
 		await expect(page.getByText('Panel not found')).toBeVisible();
 	});
 
-	test('shows not found for a panel that belongs to another comic', async ({ page }) => {
-		const created = await createComic(page);
+	test(
+		'shows not found for a panel that belongs to another comic',
+		{ tag: '@REQ-024' },
+		async ({ page }) => {
+			const created = await createComic(page);
 
-		await gotoHydrated(page, `/comic/${created.id}/${EXAMPLE.panels[0].id}`);
+			await gotoHydrated(page, `/comic/${created.id}/${EXAMPLE.panels[0].id}`);
 
-		await expect(page.getByText('Panel not found')).toBeVisible();
-	});
+			await expect(page.getByText('Panel not found')).toBeVisible();
+		},
+	);
 
-	test('reloads a newly created comic and opens its panels directly', async ({ page }) => {
-		const created = await createComic(page);
+	test(
+		'reloads a newly created comic and opens its panels directly',
+		{ tag: ['@REQ-022', '@REQ-023'] },
+		async ({ page }) => {
+			const created = await createComic(page);
 
-		await page.reload();
-		await expect(page.getByRole('heading', { name: /^Comic:/, level: 1 })).toBeVisible();
+			await page.reload();
+			await expect(page.getByRole('heading', { name: /^Comic:/, level: 1 })).toBeVisible();
 
-		// Previously server-rendered: a locally created panel 404'd on direct load.
-		await gotoHydrated(page, `/comic/${created.id}/${created.panels[0].id}`);
-		await expect(
-			page.getByRole('heading', { name: m.panel({ number: 1 }), level: 1 }),
-		).toBeVisible();
-	});
+			// Previously server-rendered: a locally created panel 404'd on direct load.
+			await gotoHydrated(page, `/comic/${created.id}/${created.panels[0].id}`);
+			await expect(
+				page.getByRole('heading', { name: m.panel({ number: 1 }), level: 1 }),
+			).toBeVisible();
+		},
+	);
 });
