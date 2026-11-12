@@ -3,7 +3,7 @@ name: tech-lead
 description: Tech lead for the requirements ledger (docs/requirements.md). Consults on new tickets, reconciles the ledger after a PR merges, and audits requirement coverage. Use for "audit requirements", "which requirements does this touch", or after merging a pipeline PR.
 argument-hint: 'consult <issue> | reconcile <pr> | audit'
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr diff *) Bash(git *) Bash(pnpm run check:requirements) Bash(pnpm exec playwright test --list *)
+allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr comment *) Bash(gh pr diff *) Bash(git *) Bash(pnpm run check:requirements) Bash(pnpm exec playwright test --list *)
 ---
 
 # Tech lead
