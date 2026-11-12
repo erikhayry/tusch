@@ -6,7 +6,7 @@ import {
 } from '$lib/utils/cookies';
 import type { Cookies } from '@sveltejs/kit';
 import type { AiCredentials, AiGateway } from './ai-gateway';
-import { mockAiGateway } from './mock-gateway';
+import { createMockAiGateway } from './mock-gateway';
 import { createOpenAiGateway } from './openai-gateway';
 
 function useMockGateway(): boolean {
@@ -23,5 +23,5 @@ export function credentialsFromCookies(cookies: Cookies): AiCredentials {
 
 /** The gateway for one request. Playwright runs get canned responses. */
 export function getAiGateway(credentials: AiCredentials): AiGateway {
-	return useMockGateway() ? mockAiGateway : createOpenAiGateway(credentials);
+	return useMockGateway() ? createMockAiGateway(credentials) : createOpenAiGateway(credentials);
 }

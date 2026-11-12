@@ -137,13 +137,49 @@ describe('server actions', () => {
 			expect(credentials.apiKey).toBe('sk-new');
 		});
 
-		it('reports a rejected key as success: false', async () => {
+		it('reports a rejected key as success: false and does not store it', async () => {
 			getAiGateway.mockReturnValue(
 				fakeGateway({ ping: async () => ({ success: false, message: 'rejected' }) }),
 			);
-			const { event } = requestEvent({ key: 'sk-bad' });
+			const { event, cookies } = requestEvent({ key: 'sk-bad' });
 
 			expect(await validateApiKeyAction(event)).toEqual({ success: false, message: 'rejected' });
+			expect(cookies.set).not.toHaveBeenCalled();
+		});
+
+		it('validates before storing the key', async () => {
+			const order: string[] = [];
+			getAiGateway.mockReturnValue(
+				fakeGateway({
+					ping: async () => {
+						order.push('ping');
+						return { success: true, message: 'ok' };
+					},
+				}),
+			);
+			const { event, cookies } = requestEvent({ key: 'sk-new' });
+			cookies.set.mockImplementation(() => order.push('set'));
+
+			await validateApiKeyAction(event);
+
+			expect(order).toEqual(['ping', 'set']);
+		});
+
+		it('stores nothing when validation is rate limited', async () => {
+			getAiGateway.mockReturnValue(
+				fakeGateway({
+					ping: async () => {
+						throw new AiGatewayError('rate-limit', 'slow down', 429);
+					},
+				}),
+			);
+			const { event, cookies } = requestEvent({ key: 'sk-new' });
+
+			expect(await validateApiKeyAction(event)).toMatchObject({
+				status: 429,
+				data: { code: 'rate_limited' },
+			});
+			expect(cookies.set).not.toHaveBeenCalled();
 		});
 
 		it('rejects a missing key with fail(400)', async () => {

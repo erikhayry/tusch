@@ -23,8 +23,8 @@ export class CreatePage {
 		this.saveSettingsButton = page.getByRole('button', { name: m.saveConfig() });
 	}
 
-	async submit() {
-		await this.keyInput.fill('mock key');
+	async submit(key = 'mock key') {
+		await this.keyInput.fill(key);
 		await this.keyInput.press('Enter');
 	}
 

@@ -25,18 +25,21 @@ export async function validateApiKeyAction(event: RequestEvent): ActionResult<Pi
 	const decoded = await decodeForm(event, { decode: decodeByokValues, schema: ByokValuesSchema });
 	if (!decoded.ok) return decoded.failure;
 
-	// Behaviour kept from before WP5: the key is stored before validation (fixed in WP6).
-	event.cookies.set(...getCookieArgs(KEY_COOKIE_NAME, decoded.values.key));
+	const candidate = decoded.values.key;
+	const gateway = getAiGateway({ ...credentialsFromCookies(event.cookies), apiKey: candidate });
 
-	const gateway = getAiGateway({
-		...credentialsFromCookies(event.cookies),
-		apiKey: decoded.values.key,
-	});
+	let result: PingResult;
 	try {
-		return await createGenerationService(gateway).validateApiKey();
+		result = await createGenerationService(gateway).validateApiKey();
 	} catch (cause) {
 		return toActionFailure(cause);
 	}
+
+	// Only a key the provider accepted becomes the active credential; a rejected
+	// candidate leaves any previously stored key in place.
+	if (result.success) event.cookies.set(...getCookieArgs(KEY_COOKIE_NAME, candidate));
+
+	return result;
 }
 
 export async function saveModelSettingsAction({
