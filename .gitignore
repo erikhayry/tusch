@@ -28,3 +28,8 @@ test-results
 # Paraglide
 src/lib/paraglide
 project.inlang/cache/
+
+# Stale paraglide output from an older outdir, and inlang-generated files
+/src/paraglide
+project.inlang/README.md
+project.inlang/.meta.json
