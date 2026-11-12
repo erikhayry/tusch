@@ -79,5 +79,5 @@ test.skip('show character image next to dialogue', async ({ page }) => {
 	await panelPage.createImageButton.click();
 	await panelPage.newImage.waitFor({ state: 'visible' });
 
-	expect(panelPage.dialogueCharacterImage).toBeVisible();
+	await expect(panelPage.dialogueCharacterImage).toBeVisible();
 });
