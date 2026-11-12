@@ -8,7 +8,9 @@
 	import { resolve } from '$app/paths';
 
 	import Section from '$lib/components/relativeHeading/Section.svelte';
-	import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
+	import { workflowDeps } from '$lib/client/workflow-deps';
+	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
+	import { commitGeneratedComic } from '$lib/features/comics/client/workflows/commit-generated-comic';
 	import {
 		CREATE_COMIC_ACTION,
 		type CreateComicResult,
@@ -16,19 +18,10 @@
 	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { m } from '$lib/paraglide/messages';
 	import { STYLES } from '$lib/utils/comicStyles';
-	import { saveBase64Image } from '$lib/utils/storage/storage';
 
 	const handleSubmit = enhanceAction<CreateComicResult>(async ({ data }) => {
-		const comic = data.comic;
-
-		if (comic.cover) {
-			const fileName = await saveBase64Image(comic.cover.landscape.src);
-			comic.cover.landscape.src = fileName;
-			comic.cover.portrait.src = fileName;
-		}
-
-		expectCommitted(comicCommands.addComic(comic));
-		await goto(resolve(`/comic/${comic.id}`));
+		expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
+		await goto(resolve(`/comic/${data.comic.id}`));
 	});
 </script>
 

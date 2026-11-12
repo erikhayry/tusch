@@ -1,6 +1,3 @@
-import { generateId } from '../id';
-import { base64ToBlob } from './utils/base64ToBlob';
-
 async function getFileHandle(fileName: string, create: boolean = false) {
 	const root = await navigator.storage.getDirectory();
 	return await root.getFileHandle(fileName, { create });
@@ -15,10 +12,19 @@ export async function saveBlobImage(fileName: string, imageBlob: Blob) {
 	return fileName;
 }
 
-export async function saveBase64Image(imageData: string) {
-	const imageBlob = base64ToBlob(`data:image/webp;base64,${imageData}`);
+export async function readImage(fileName: string): Promise<Blob> {
+	const fileHandle = await getFileHandle(fileName);
+	return fileHandle.getFile();
+}
 
-	return saveBlobImage(`${generateId()}.webp`, imageBlob);
+export async function deleteImage(fileName: string): Promise<void> {
+	const root = await navigator.storage.getDirectory();
+	try {
+		await root.removeEntry(fileName);
+	} catch (error) {
+		if (error instanceof DOMException && error.name === 'NotFoundError') return;
+		throw error;
+	}
 }
 
 export async function getImageUrl(fileName: string) {
@@ -29,24 +35,4 @@ export async function getImageUrl(fileName: string) {
 	} catch {
 		return '/fallback-placeholder.png'; // Fallback asset URL
 	}
-}
-
-export async function getImage(fileName: string): Promise<string> {
-	const fileHandle = await getFileHandle(fileName);
-	const file = await fileHandle.getFile();
-
-	return new Promise((resolve, reject) => {
-		const reader = new FileReader();
-
-		reader.onload = () => {
-			// reader.result already includes the "data:image/png;base64,..." prefix
-			resolve(reader.result as string);
-		};
-
-		reader.onerror = () => {
-			reject(new Error('Failed to read file'));
-		};
-
-		reader.readAsDataURL(file);
-	});
 }

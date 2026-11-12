@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
+	import { workflowDeps } from '$lib/client/workflow-deps';
+	import { expectCommitted } from '$lib/features/comics/client/comic-commands';
+	import { insertGeneratedPanel } from '$lib/features/panels/client/workflows/insert-generated-panel';
 	import {
 		CREATE_PANEL_ACTION,
 		type CreatePanelResult,
@@ -10,7 +12,7 @@
 	import { type CreatePanelFormProps } from './createPanelFormTypes';
 
 	const handleSubmit = enhanceAction<CreatePanelResult>(async ({ data, update }) => {
-		expectCommitted(comicCommands.insertPanel(data.comicId, data.panel, data.index));
+		expectCommitted(insertGeneratedPanel(workflowDeps.commands, data));
 		await update();
 	});
 

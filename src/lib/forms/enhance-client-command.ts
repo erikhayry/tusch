@@ -7,7 +7,7 @@ import { toFormFailure } from './form-failure';
 
 export function enhanceClientCommand<T>(
 	decode: (formData: FormData) => ZodSafeParseResult<T>,
-	command: (value: T) => void,
+	command: (value: T) => Promise<void> | void,
 	onSuccess?: (parameters: { update: UpdateForm }) => Promise<void> | void,
 ): SubmitFunction {
 	let inFlight = false;
@@ -32,7 +32,7 @@ export function enhanceClientCommand<T>(
 		return async ({ result, update }) => {
 			try {
 				if (result.type === 'success') {
-					command(decoded.data);
+					await command(decoded.data);
 					await onSuccess?.({ update });
 				} else if (result.type === 'error') {
 					globalError.set(result.error.message);

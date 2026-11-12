@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
+	import { readAssetDataUrl } from '$lib/client/assets/read-data-url';
+	import { workflowDeps } from '$lib/client/workflow-deps';
+	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
+	import { commitGeneratedCover } from '$lib/features/comics/client/workflows/commit-generated-cover';
 	import {
 		CREATE_COVER_IMAGE_ACTION,
 		type CreateCoverImageResult,
@@ -13,19 +16,10 @@
 		INCLUDE_IMAGE_VALUE_KEY,
 		INSTRUCTIONS_VALUE_KEY,
 	} from '$lib/utils/db/dbTypes';
-	import { getImage, saveBase64Image } from '$lib/utils/storage/storage';
 	import type { CreateCoverImageFormProps } from './createCoverImageFormTypes';
 
 	const handleSubmit = enhanceAction<CreateCoverImageResult>(async ({ data, update }) => {
-		const { landscape, portrait, alt } = data.image;
-		const fileName = await saveBase64Image(landscape.src);
-		expectCommitted(
-			comicCommands.replaceCover(data.comicId, {
-				alt,
-				landscape: { ...landscape, src: fileName },
-				portrait: { ...portrait, src: fileName },
-			}),
-		);
+		expectWorkflow(await commitGeneratedCover(workflowDeps, data));
 		await update();
 	});
 
@@ -35,7 +29,7 @@
 
 	$effect(() => {
 		if (imageName) {
-			getImage(imageName).then((url) => {
+			readAssetDataUrl(workflowDeps.assets, imageName).then((url) => {
 				imageUrl = url;
 			});
 		}

@@ -1,4 +1,11 @@
-import type { Character, CharacterImage, Comic, Panel, ResponsiveImage } from '$lib/types';
+import type {
+	Character,
+	CharacterImage,
+	Comic,
+	Panel,
+	ResponsiveImage,
+	ResponsivePanelImage,
+} from '$lib/types';
 import {
 	localComicStorage,
 	serializeComicSnapshot,
@@ -157,6 +164,31 @@ export function createComicCommands({ store, storage }: ComicCommandDeps) {
 			return updateComic(comicId, (comic) =>
 				updatePanel(comic, panelId, (panel) => ok({ ...panel, image })),
 			);
+		},
+
+		/**
+		 * Replaces a panel image and appends the character crops taken from it
+		 * as one aggregate commit.
+		 */
+		commitPanelImage(
+			comicId: string,
+			panelId: string,
+			image: ResponsivePanelImage,
+			characterImages: readonly { characterId: string; image: CharacterImage }[],
+		): CommandResult {
+			return updateComic(comicId, (comic) => {
+				const withImage = updatePanel(comic, panelId, (panel) => ok({ ...panel, image }));
+
+				return characterImages.reduce<Outcome<Comic>>(
+					(current, { characterId, image: characterImage }) =>
+						current.ok
+							? updateCharacter(current.value, characterId, (character) =>
+									ok({ ...character, images: [...character.images, characterImage] }),
+								)
+							: current,
+					withImage,
+				);
+			});
 		},
 
 		removePanelImage(comicId: string, panelId: string): CommandResult {

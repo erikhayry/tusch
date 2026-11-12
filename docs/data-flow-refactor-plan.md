@@ -762,11 +762,11 @@ Move multi-step post-action orchestration out of form components and make asset-
 
 ### Target workflows
 
-- [ ] `commitGeneratedComic`
-- [ ] `commitGeneratedCover`
-- [ ] `insertGeneratedPanel`
-- [ ] `commitGeneratedPanelImage`
-- [ ] `createCharacterCrop`
+- [x] `commitGeneratedComic`
+- [x] `commitGeneratedCover`
+- [x] `insertGeneratedPanel`
+- [x] `commitGeneratedPanelImage`
+- [x] `createCharacterCrop`
 
 ### Asset boundary
 
@@ -818,37 +818,37 @@ The panel-image workflow is last because it coordinates:
 
 ### Steps
 
-- [ ] Move storage and crop orchestration into workflow modules.
-- [ ] Remove direct database imports from migrated form components.
-- [ ] Remove direct storage imports from migrated form components.
-- [ ] Remove direct crop and ID generation imports from migrated form components.
-- [ ] Consolidate the duplicated panel-image generation logic currently represented in the form and its utility module.
-- [ ] Keep navigation as a small component/route callback after workflow success.
-- [ ] Add replacement cleanup for old cover and panel assets.
-- [ ] Add deletion cleanup where the corresponding domain item owns an asset.
+- [x] Move storage and crop orchestration into workflow modules.
+- [x] Remove direct database imports from migrated form components.
+- [x] Remove direct storage imports from migrated form components.
+- [x] Remove direct crop and ID generation imports from migrated form components.
+- [x] Consolidate the duplicated panel-image generation logic currently represented in the form and its utility module.
+- [x] Keep navigation as a small component/route callback after workflow success.
+- [x] Add replacement cleanup for old cover and panel assets.
+- [x] Add deletion cleanup where the corresponding domain item owns an asset.
 
 ### Tests
 
 Use an in-memory or fake `AssetStore` with failure injection.
 
-- [ ] Failure before the first write.
-- [ ] Failure after the main image write.
-- [ ] Failure during a character crop.
-- [ ] Failure during a later character write.
-- [ ] Failure before metadata commit.
-- [ ] Domain commit failure after staging.
-- [ ] Successful rollback deletes all staged assets.
-- [ ] Successful replacement removes obsolete assets.
-- [ ] Metadata never references an asset that failed to persist.
-- [ ] Workflow success commits metadata exactly once.
+- [x] Failure before the first write.
+- [x] Failure after the main image write.
+- [x] Failure during a character crop.
+- [x] Failure during a later character write.
+- [x] Failure before metadata commit.
+- [x] Domain commit failure after staging.
+- [x] Successful rollback deletes all staged assets.
+- [x] Successful replacement removes obsolete assets.
+- [x] Metadata never references an asset that failed to persist.
+- [x] Workflow success commits metadata exactly once.
 
 ### Acceptance criteria
 
-- [ ] Migrated forms contain no persistence or image-processing orchestration.
-- [ ] One workflow is the canonical implementation of panel-image processing.
-- [ ] Metadata is committed only after required assets are available.
-- [ ] Failed workflows do not leave committed partial metadata.
-- [ ] Staged assets are cleaned up on failure where possible.
+- [x] Migrated forms contain no persistence or image-processing orchestration.
+- [x] One workflow is the canonical implementation of panel-image processing.
+- [x] Metadata is committed only after required assets are available.
+- [x] Failed workflows do not leave committed partial metadata.
+- [x] Staged assets are cleaned up on failure where possible.
 
 ---
 

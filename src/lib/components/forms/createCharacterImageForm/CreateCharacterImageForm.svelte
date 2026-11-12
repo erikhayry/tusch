@@ -8,9 +8,9 @@
 		CREATE_CHARACTER_IMAGE_ACTION,
 		getCreateCharacterImageValues,
 	} from '$lib/features/panels/contracts/createCharacterImage';
-	import { cropImage } from '$lib/utils/crop/crop';
+	import { workflowDeps } from '$lib/client/workflow-deps';
+	import { createCharacterCrop } from '$lib/features/panels/client/workflows/create-character-crop';
 	import { globalLoading } from '$lib/utils/states/loading.svelte';
-	import { getImageUrl } from '$lib/utils/storage/storage';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
 	import { type CreateCharacterImageFormProps } from './createCharacterImageFormTypes';
@@ -21,10 +21,8 @@
 		globalLoading.start();
 		const characterImageResult = await getCreateCharacterImageValues(formData);
 		if (characterImageResult.success) {
-			const { crop, image } = characterImageResult.data;
-			const url = await getImageUrl(image);
-			const newImage = await cropImage(url, crop);
-			imageSrc = URL.createObjectURL(newImage);
+			const cropped = await createCharacterCrop(workflowDeps, characterImageResult.data);
+			imageSrc = URL.createObjectURL(cropped);
 		}
 
 		return () => {

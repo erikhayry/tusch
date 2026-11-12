@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { comicCommands, expectCommitted } from '$lib/features/comics/client/comic-commands';
-	import { getCharacter, getPanel } from '$lib/features/comics/client/comic-selectors';
-	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
+	import { readAssetDataUrl } from '$lib/client/assets/read-data-url';
+	import { workflowDeps } from '$lib/client/workflow-deps';
+	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
+	import { commitGeneratedPanelImage } from '$lib/features/panels/client/workflows/commit-generated-panel-image';
 	import {
 		CREATE_PANEL_IMAGE_ACTION,
 		type CreatePanelImageResult,
@@ -10,77 +11,15 @@
 	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
-	import { cropImage } from '$lib/utils/crop/crop';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
 		INSTRUCTIONS_VALUE_KEY,
 	} from '$lib/utils/db/dbTypes';
-	import { generateId } from '$lib/utils/id';
-	import {
-		getImage,
-		getImageUrl,
-		saveBase64Image,
-		saveBlobImage,
-	} from '$lib/utils/storage/storage';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
 	const handleSubmit = enhanceAction<CreatePanelImageResult>(async ({ data, update }) => {
-		if (data.image) {
-			const { comicId, panelId, image } = data;
-			const panelImageFileName = await saveBase64Image(image.landscape.src);
-			expectCommitted(
-				comicCommands.replacePanelImage(comicId, panelId, {
-					landscape: {
-						src: panelImageFileName,
-						width: image.landscape.width,
-						height: image.landscape.height,
-						characters: image.landscape.characters,
-					},
-					portrait: {
-						src: panelImageFileName,
-						width: image.landscape.width,
-						height: image.landscape.height,
-						characters: image.landscape.characters,
-					},
-					alt: image.alt,
-				}),
-			);
-
-			const panelImage = getPanel(comicStore.comics, comicId, panelId)?.image;
-			if (panelImage) {
-				const characters = image.landscape.characters || [];
-				for (const character of characters) {
-					// The model can reference characters that are not in this comic; skip those crops.
-					if (!getCharacter(comicStore.comics, comicId, character.id)) continue;
-
-					const url = await getImageUrl(panelImage.landscape.src);
-
-					const head = await cropImage(url, character.head);
-					const charachterHeadImageFileName = await saveBlobImage(`${generateId()}.png`, head);
-
-					const full = await cropImage(url, character.full);
-					const charachterFullImageFileName = await saveBlobImage(`${generateId()}.png`, full);
-
-					expectCommitted(
-						comicCommands.addCharacterImage(comicId, character.id, {
-							id: generateId(),
-							panelId,
-							head: {
-								src: charachterHeadImageFileName,
-								width: character.head.width,
-								height: character.head.height,
-							},
-							full: {
-								src: charachterFullImageFileName,
-								width: character.head.width,
-								height: character.head.height,
-							},
-						}),
-					);
-				}
-			}
-		}
+		expectWorkflow(await commitGeneratedPanelImage(workflowDeps, data));
 		await update();
 	});
 
@@ -90,7 +29,7 @@
 
 	$effect(() => {
 		if (imageName) {
-			getImage(imageName).then((url) => {
+			readAssetDataUrl(workflowDeps.assets, imageName).then((url) => {
 				imageUrl = url;
 			});
 		}
