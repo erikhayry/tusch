@@ -2,7 +2,7 @@
 
 | Metadata     | Value                                                                           |
 | ------------ | ------------------------------------------------------------------------------- |
-| Status       | Proposed                                                                        |
+| Status       | Implemented                                                                     |
 | Scope        | Data flow only                                                                  |
 | Audience     | Implementation agents and reviewers                                             |
 | Architecture | SvelteKit, Svelte 5, Zod, browser-local persistence                             |
@@ -1175,30 +1175,30 @@ Prioritize:
 
 ## 9. Global definition of done
 
-- [ ] Native SvelteKit forms and `use:enhance` remain the standard.
-- [ ] No new form or state-management library is introduced.
-- [ ] Server modules do not import from `src/lib/components`.
-- [ ] Server modules do not import client `.svelte.ts` state.
-- [ ] Migrated forms do not perform persistence or asset orchestration.
-- [ ] Every migrated form field has explicit decoding rules.
-- [ ] Generic whole-form JSON coercion is removed.
-- [ ] Expected validation errors use structured `fail(400, ...)`.
-- [ ] Provider response status is checked.
-- [ ] Client commands use copy-on-write aggregate commits.
-- [ ] One logical command results in one persistence write.
-- [ ] Persisted comic snapshots are versioned and validated.
-- [ ] Demo/example initialization is explicit.
-- [ ] Asset workflows stage files before committing metadata.
-- [ ] Failed asset workflows clean up staged files where possible.
-- [ ] Actions call services directly rather than the app’s own API.
-- [ ] Routes expose only the actions they use.
-- [ ] Browser-only route behavior is declared once.
-- [ ] Missing comics and panels are handled explicitly.
-- [ ] Cookies are the single authority for selected models.
-- [ ] API keys are validated before being committed.
-- [ ] A small feature can be added without editing central dispatchers or switches.
-- [ ] Targeted tests, type checks, and relevant E2E tests pass.
-- [ ] Pre-existing unrelated failures are reported separately.
+- [x] Native SvelteKit forms and `use:enhance` remain the standard.
+- [x] No new form or state-management library is introduced.
+- [x] Server modules do not import from `src/lib/components`.
+- [x] Server modules do not import client `.svelte.ts` state.
+- [x] Migrated forms do not perform persistence or asset orchestration.
+- [x] Every migrated form field has explicit decoding rules.
+- [x] Generic whole-form JSON coercion is removed.
+- [x] Expected validation errors use structured `fail(400, ...)`.
+- [x] Provider response status is checked.
+- [x] Client commands use copy-on-write aggregate commits.
+- [x] One logical command results in one persistence write.
+- [x] Persisted comic snapshots are versioned and validated.
+- [x] Demo/example initialization is explicit.
+- [x] Asset workflows stage files before committing metadata.
+- [x] Failed asset workflows clean up staged files where possible.
+- [x] Actions call services directly rather than the app’s own API.
+- [x] Routes expose only the actions they use.
+- [x] Browser-only route behavior is declared once.
+- [x] Missing comics and panels are handled explicitly.
+- [x] Cookies are the single authority for selected models.
+- [x] API keys are validated before being committed.
+- [x] A small feature can be added without editing central dispatchers or switches.
+- [x] Targeted tests, type checks, and relevant E2E tests pass.
+- [x] Pre-existing unrelated failures are reported separately.
 
 ## 10. Agent execution protocol
 
@@ -1286,3 +1286,5 @@ The following work is intentionally outside this plan unless required to complet
 - Replacing SvelteKit forms with client-only event handlers.
 
 These should be planned separately after the data-flow boundaries are stable.
+
+Audited against the code after WP7 (see #8). Follow-up outside the plan's scope: #21 (two forms still bypass the shared enhancers).
