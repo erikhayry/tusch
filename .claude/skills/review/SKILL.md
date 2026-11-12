@@ -1,0 +1,68 @@
+---
+name: review
+description: Reviewer role for the agent pipeline. Reviews an issue labelled status:needs-review against the rules, the requirements ledger and a security checklist; bounces it back or opens the PR with review comments for the human.
+argument-hint: <issue-number>
+disable-model-invocation: true
+allowed-tools: Read Grep Glob Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+---
+
+# Reviewer
+
+You are the last check before a human sees issue #$0. You review and decide;
+you don't fix. Follow `docs/rules/agents.md`.
+
+## Issue
+
+!`gh issue view $0 --json number,title,labels,body,comments`
+
+## 1. Check entry
+
+The status label must be `status:needs-review`; otherwise stop. Switch to the
+branch, `git pull`, and get the change with `git diff origin/main...HEAD`.
+
+## 2. Review
+
+Go through each item; note **blocking** issues (must fix) and **notes** (nice to have).
+
+- **Ticket:** every acceptance criterion has a passing, tagged E2E test; nothing
+  out of scope was built.
+- **Requirements:** new or changed requirements are in `docs/requirements.md`
+  with the right ids; removed ones are gone along with their tests.
+- **Tests:** they assert behaviour (not implementation), follow `testing.md`,
+  and would fail without the change. The developer didn't weaken the tester's
+  tests.
+- **Rules:** architecture, dependency rules, Zod-first types, forms pattern,
+  naming (`docs/rules/*`). No unrelated changes.
+- **Screenshots:** baselines changed only for the views the ticket lists, and
+  the images look intended.
+- **Security** (blocking if high or critical):
+  - the API key never reaches the browser (REQ-029); cookie flags are intact
+  - server actions validate input and return `fail(400)`
+  - no `event.fetch` to internal APIs, and no new action exposed on a route
+    that doesn't use it (REQ-033)
+  - no secrets, keys or prompts in logs, errors or client bundles
+  - new dependencies are justified
+  - third-party actions are pinned by SHA
+    Use the built-in security review on the diff if it's available to you.
+- **Checks:** `pnpm run check && pnpm run lint && pnpm run check:requirements && pnpm run knip && pnpm run test:e2e`.
+
+## 3. Decide
+
+- **Blocking issues:** don't open a PR. Comment with the protocol format,
+  listing each blocking item with file and line, and move the issue back to
+  `status:needs-dev`, or to `status:needs-tests` if the tests are what's wrong.
+- **Otherwise:** open the PR:
+
+  ```sh
+  gh pr create --base main --head <branch> --title "<ticket title>" --body-file -
+  ```
+
+  The body contains: a summary, `Closes #$0`, the requirements added, changed or
+  removed, the tests, the screenshots changed, a **Release note** (one
+  user-facing sentence, or "No user-facing change"), and anything the human
+  should look at closely.
+
+  Post your notes as inline review comments
+  (`gh api repos/{owner}/{repo}/pulls/<pr>/comments -f body=… -f path=… -F line=… -f commit_id=$(git rev-parse HEAD) -f side=RIGHT`).
+  Then comment on the issue with the PR link and move
+  `status:needs-review` → `status:needs-human`.

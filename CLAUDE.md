@@ -13,6 +13,12 @@ when a convention changes):
 @docs/rules/testing.md
 @docs/rules/workflow.md
 
+## Agent pipeline
+
+Role skills live in `.claude/skills/` (`/plan`, `/test`, `/develop`, `/review`,
+`/triage`, `/tech-lead`). They follow `docs/rules/agents.md` (labels, branches,
+comments, blocking) and `docs/agent-workflow-plan.md`.
+
 ## Commands
 
 | Task            | Command                             |
