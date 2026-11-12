@@ -30,6 +30,9 @@ export class CreatePage {
 
 	async goto(query?: string) {
 		await this.page.goto(`/settings${query ? `?${query}` : ''}`);
+		// Wait for hydration so `use:enhance` is attached before the test submits;
+		// otherwise a fast submit falls back to a native POST and reloads the page.
+		await this.page.waitForLoadState('networkidle');
 
 		return this;
 	}
