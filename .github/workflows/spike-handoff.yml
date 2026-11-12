@@ -1,0 +1,70 @@
+# TEMPORARY: AW1 spike (#27). Remove after the findings are recorded.
+# Proves (1) a label set by claude[bot] triggers another workflow, and
+# (2) an agent run can open a PR. Trigger: add `spike:stage-a` to an issue.
+name: Spike agent hand-off
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  stage-a:
+    if: github.event.label.name == 'spike:stage-a'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            This is a spike for issue #27 on issue #${{ github.event.issue.number }}. Do exactly these
+            steps in order. If a step fails, keep going and record the exact error output.
+            1. Run `gh auth status` and record the output.
+            2. Run `gh issue edit ${{ github.event.issue.number }} --remove-label spike:stage-a --add-label spike:stage-b`.
+            3. Create branch `spike/aw1-pr-${{ github.event.issue.number }}`, write the file `spike/aw1.txt`
+               containing `spike`, commit it, and push the branch.
+            4. Run `gh pr create --base main --head spike/aw1-pr-${{ github.event.issue.number }} --draft --title "Spike AW1 (do not merge)" --body "Throwaway PR for #27."`.
+            5. Run `gh issue comment ${{ github.event.issue.number }} --body "<report>"`, where the report lists
+               each step with OK/FAILED and the exact output or error.
+          claude_args: |
+            --max-turns 20
+            --allowedTools "Bash(gh auth status),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh pr create:*),Bash(git checkout:*),Bash(git switch:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(mkdir:*),Write"
+
+  stage-b:
+    if: github.event.label.name == 'spike:stage-b'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      id-token: write
+    steps:
+      - name: Record who triggered stage B
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment ${{ github.event.issue.number }} --repo ${{ github.repository }} \
+            --body "Stage B triggered by actor \`${{ github.actor }}\` (sender \`${{ github.event.sender.login }}\`)."
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Check the action accepts a bot actor
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          allowed_bots: 'claude[bot]'
+          prompt: |
+            Spike for #27. Run `gh issue comment ${{ github.event.issue.number }} --body "Stage B: claude-code-action accepted the bot-triggered event."`
+            and nothing else.
+          claude_args: |
+            --max-turns 3
+            --allowedTools "Bash(gh issue comment:*)"
