@@ -37,7 +37,7 @@ test('edit caption', async ({ page }) => {
 
 	await panelPage.editCaption('NEW CAPTION');
 
-	await expect(page.getByText('NEW CAPTION')).toBeVisible();
+	await expect(page.getByText('NEW CAPTION', { exact: true })).toBeVisible();
 });
 
 test('remove caption', async ({ page }) => {
