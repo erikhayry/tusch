@@ -151,6 +151,7 @@ derived from the current code:
 - `concurrency: agent-issue-<n>`: one agent per issue at a time.
 - Per role: `--max-turns` and `timeout-minutes`; on failure a step sets
   `status:blocked`.
+- Implemented in AW8 (#33); see `docs/rules/workflow.md` ("Running the pipeline on GitHub").
 - The existing `@claude` workflow stays for ad-hoc requests; the automatic
   `claude-code-review.yml` is removed (the reviewer role replaces it).
 
