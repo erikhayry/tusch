@@ -10,7 +10,7 @@ if [ -n "$(git log "origin/$branch..HEAD" 2>/dev/null)" ] || ! git rev-parse --v
 	exit 1
 fi
 
-echo "Starting CI screenshot update for $branch…"
+echo "Starting CI screenshot update for ${branch}…"
 gh workflow run ci.yml --ref "$branch" -f update_screenshots=true
 sleep 5
 run=$(gh run list --workflow ci.yml --branch "$branch" --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')

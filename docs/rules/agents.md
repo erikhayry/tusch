@@ -47,6 +47,22 @@ Next: `status:<next>`
 
 Keep it short. Link files and commits rather than pasting code.
 
+## Running commands
+
+Skills pre-approve narrow command patterns (e.g. `Bash(gh pr create *)`), and on
+GitHub nobody is there to approve anything else. So:
+
+- **One plain command per Bash call.** No `&&`, `;`, pipes, `$(…)`, heredocs,
+  `sleep` or loops; they don't match the patterns and get denied.
+- **Multi-line text goes into a file.** Write comment and PR bodies to
+  `.agent-tmp/<name>.md` (gitignored), then pass the file:
+  `gh issue comment <n> --body-file .agent-tmp/comment.md`.
+- Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`.
+- Screenshot baselines: `pnpm screenshots:update` renders them in CI and copies
+  them into `src/`; don't download or copy them by hand.
+- **Never wait for approval.** If a command you need is denied twice, block (see
+  below) and include the exact command in your comment.
+
 ## Blocking
 
 Set `status:blocked` (removing the current status) and comment the reason
@@ -72,10 +88,14 @@ Don't guess. A clear block is better than a wrong PR.
 
 ## Checks
 
-Before pushing (`pnpm` scripts; the pre-push hook runs the first three):
+Before pushing, run each of these as its own command (the pre-push hook also
+runs the first three):
 
 ```sh
-pnpm run check && pnpm run lint && pnpm run check:requirements && pnpm run knip
+pnpm run check
+pnpm run lint
+pnpm run check:requirements
+pnpm run knip
 pnpm run test:e2e
 ```
 
