@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../../examples/examples';
 import { CreatePage } from './utils/createPage';
+import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 
 test('has expected title', async ({ page }) => {
 	const createPage = await new CreatePage(page).goto();
@@ -37,7 +38,7 @@ test('error message is removed when submitting with valid URL', async ({ page })
 });
 
 test('keeps existing comics when creating from a freshly loaded create page', async ({ page }) => {
-	await page.goto('/');
+	await gotoHydrated(page, '/');
 	await expect(page.getByRole('link', { name: EXAMPLES[0].title })).toBeVisible();
 	const before = await page.evaluate(
 		() => JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}').comics.length,
@@ -63,7 +64,6 @@ test.describe('provider failures', () => {
 	] as const) {
 		test(`shows a readable message for ${kind} failures`, async ({ page }) => {
 			const createPage = await new CreatePage(page).goto();
-			await page.waitForLoadState('networkidle');
 
 			await createPage.fillUrl(`https://example.com/mock-error:${kind}`);
 			await createPage.submit();

@@ -3,6 +3,7 @@ import type { Comic } from '$lib/types';
 import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import type { Locator, Page } from '@playwright/test';
 import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../../tests/mock/openAi/openAiResponse';
+import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 
 export class ComicPage {
 	readonly page: Page;
@@ -36,13 +37,13 @@ export class ComicPage {
 	}
 
 	async goto() {
-		await this.page.goto(`/comic/${this.comic.id}`);
+		await gotoHydrated(this.page, `/comic/${this.comic.id}`);
 
 		return this;
 	}
 
 	async gotoUnknownComic() {
-		await this.page.goto(`/comic/XXX`);
+		await gotoHydrated(this.page, `/comic/XXX`);
 
 		return this;
 	}

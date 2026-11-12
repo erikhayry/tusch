@@ -1,6 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import type { Locator, Page } from '@playwright/test';
 import { EXAMPLES } from '../../../../examples/examples';
+import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 
 export class LandingPage {
 	readonly page: Page;
@@ -19,7 +20,7 @@ export class LandingPage {
 	}
 
 	async goto() {
-		await this.page.goto('/');
+		await gotoHydrated(this.page, '/');
 
 		return this;
 	}

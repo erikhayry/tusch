@@ -2,9 +2,10 @@ import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../../../examples/examples';
 import { PanelPage } from './utils/panelPage';
+import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 
 test('creates image', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.deleteImageButton.click();
 
@@ -16,7 +17,7 @@ test('creates image', async ({ page }) => {
 });
 
 test('replace image', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.replaceImageButton.click();
 
@@ -24,7 +25,7 @@ test('replace image', async ({ page }) => {
 });
 
 test('removes image', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto(1);
+	const panelPage = await new PanelPage(page).goto(1);
 
 	await panelPage.deleteImageButton.click();
 
@@ -32,7 +33,7 @@ test('removes image', async ({ page }) => {
 });
 
 test('edit caption', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.editCaption('NEW CAPTION');
 
@@ -40,7 +41,7 @@ test('edit caption', async ({ page }) => {
 });
 
 test('remove caption', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto(1);
+	const panelPage = await new PanelPage(page).goto(1);
 
 	await panelPage.removeCaption();
 
@@ -48,7 +49,7 @@ test('remove caption', async ({ page }) => {
 });
 
 test('edit dialogue', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.editDialogue('NEW DIALOGUE');
 
@@ -56,7 +57,7 @@ test('edit dialogue', async ({ page }) => {
 });
 
 test('remove dialogue', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto(1);
+	const panelPage = await new PanelPage(page).goto(1);
 
 	await panelPage.removeDialogue();
 
@@ -64,7 +65,7 @@ test('remove dialogue', async ({ page }) => {
 });
 
 test('add panel before', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.addPanelBefore();
 
@@ -73,7 +74,7 @@ test('add panel before', async ({ page }) => {
 
 //Works, fix test data
 test.skip('show character image next to dialogue', async ({ page }) => {
-	const panelPage = new PanelPage(page).goto();
+	const panelPage = await new PanelPage(page).goto();
 
 	await panelPage.deleteImageButton.click();
 	await panelPage.createImageButton.waitFor({ state: 'visible' });
@@ -84,8 +85,7 @@ test.skip('show character image next to dialogue', async ({ page }) => {
 });
 
 test('add caption', async ({ page }) => {
-	await page.goto(`/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
-	await page.waitForLoadState('networkidle');
+	await gotoHydrated(page, `/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
 	const captions = page.getByRole('list', { name: m.captions() }).getByRole('listitem');
 	const before = await captions.count();
 

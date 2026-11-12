@@ -3,6 +3,7 @@ import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../../../../../examples/examples';
 import { CREATE_PANEL_IMAGE_RESPONSE } from '../../../../../../../tests/mock/openAi/openAiResponse';
+import { gotoHydrated } from '../../../../../../../tests/e2e/gotoHydrated';
 
 export class PanelPage {
 	readonly page: Page;
@@ -78,8 +79,8 @@ export class PanelPage {
 		await expect(this.page.getByText(m.loading())).toBeHidden();
 	}
 
-	goto(panel = 0) {
-		this.page.goto(`/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[panel].id}`);
+	async goto(panel = 0) {
+		await gotoHydrated(this.page, `/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[panel].id}`);
 
 		return this;
 	}
