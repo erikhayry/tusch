@@ -111,7 +111,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-014 Characters show the panels they appear in
 
 - Status: active
-- Statement: the comic page lists characters with the panels they appear in, and can preview a crop of a character from a panel image.
+- Statement: the comic page lists characters with the panels they appear in, and can preview a crop of that character from a panel image.
 - Why: character consistency across panels.
 - Proven by: tagged tests
 
