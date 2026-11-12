@@ -52,6 +52,10 @@ const mockAiGateway: AiGateway = {
 export function createMockAiGateway({ apiKey }: AiCredentials = {}): AiGateway {
 	return {
 		...mockAiGateway,
+		models: async () => {
+			failIfRequested([apiKey ?? '']);
+			return mockAiGateway.models();
+		},
 		ping: async () => {
 			failIfRequested([apiKey ?? '']);
 			return apiKey?.includes(MOCK_INVALID_KEY_MARKER)

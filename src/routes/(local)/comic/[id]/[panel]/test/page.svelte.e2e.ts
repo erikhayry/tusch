@@ -73,16 +73,27 @@ test('add panel before', { tag: '@REQ-021' }, async ({ page }) => {
 });
 
 //Works, fix test data
-test.skip('show character image next to dialogue', async ({ page }) => {
-	const panelPage = await new PanelPage(page).goto();
+test(
+	'shows character crops next to dialogue after generating a panel image',
+	{ tag: '@REQ-018' },
+	async ({ page }) => {
+		const panelPage = await new PanelPage(page).goto();
+		await expect(panelPage.dialogueCharacterImage).toHaveCount(0);
 
-	await panelPage.deleteImageButton.click();
-	await panelPage.createImageButton.waitFor({ state: 'visible' });
-	await panelPage.createImageButton.click();
-	await panelPage.newImage.waitFor({ state: 'visible' });
+		await panelPage.deleteImageButton.click();
+		await panelPage.createImageButton.click();
+		await expect(panelPage.newImage).toBeVisible();
 
-	await expect(panelPage.dialogueCharacterImage).toBeVisible();
-});
+		// One head crop per dialogue line whose character appears in the new image.
+		await expect(panelPage.dialogueCharacterImage).toHaveCount(
+			EXAMPLES[0].panels[0].dialogue.length,
+		);
+		await page.reload();
+		await expect(panelPage.dialogueCharacterImage).toHaveCount(
+			EXAMPLES[0].panels[0].dialogue.length,
+		);
+	},
+);
 
 test('add caption', { tag: ['@REQ-019', '@REQ-022'] }, async ({ page }) => {
 	await gotoHydrated(page, `/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);

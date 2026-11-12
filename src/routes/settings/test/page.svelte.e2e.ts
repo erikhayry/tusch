@@ -114,3 +114,14 @@ test(
 		expect(cookie).toBeUndefined();
 	},
 );
+
+test('renders without a working key', { tag: '@REQ-031' }, async ({ page, context }) => {
+	// The mock gateway fails model listing for this key, like a missing/invalid key.
+	await context.addCookies([
+		{ name: KEY_COOKIE_NAME, value: 'mock-error:auth', url: 'http://localhost:4173' },
+	]);
+	const createPage = await new CreatePage(page).goto();
+
+	await expect(createPage.keyInput).toBeVisible();
+	await expect(createPage.modelsSelect.getByRole('option')).toHaveCount(0);
+});

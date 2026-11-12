@@ -5,9 +5,16 @@ async function getFileHandle(fileName: string, create: boolean = false) {
 
 export async function saveBlobImage(fileName: string, imageBlob: Blob) {
 	const fileHandle = await getFileHandle(fileName, true);
-	const writable = await fileHandle.createWritable();
-	await writable.write(imageBlob);
-	await writable.close();
+	try {
+		const writable = await fileHandle.createWritable();
+		await writable.write(imageBlob);
+		await writable.close();
+	} catch (error) {
+		// The entry already exists; remove it so a failed write leaves no stray file
+		// (the caller never learns its name, so it can't roll it back).
+		await deleteImage(fileName).catch(() => undefined);
+		throw error;
+	}
 
 	return fileName;
 }
