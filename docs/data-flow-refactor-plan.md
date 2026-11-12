@@ -928,7 +928,7 @@ Expected actions:
 - [x] `GenerationService` tests using a fake gateway.
 - [x] Gateway adapter tests.
 - [x] Action contract tests.
-- [ ] API route tests if API routes remain. (Only `/api/ai/models` remains, for the settings load; untested.)
+- [x] API route tests if API routes remain. (Only `/api/ai/models` remains, for the settings load; untested.)
 - [x] Route action-map tests or compile-time checks.
 - [x] Tests proving a route cannot invoke unrelated actions.
 - [x] Tests proving action logic does not make an internal HTTP request.
