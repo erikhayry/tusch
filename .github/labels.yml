@@ -1,0 +1,29 @@
+# Labels for the agent workflow (docs/agent-workflow-plan.md §4).
+# Sync with: scripts/sync-labels.sh
+- name: status:idea
+  color: c5def5
+  description: Raw idea; the planner is asking questions
+- name: status:needs-tests
+  color: fbca04
+  description: Ticket ready; tester writes failing E2E tests
+- name: status:needs-dev
+  color: f9a03f
+  description: Tests exist and fail; developer implements
+- name: status:needs-review
+  color: 1d76db
+  description: Tests pass; reviewer reviews and opens the PR
+- name: status:needs-human
+  color: 0e8a16
+  description: PR open; waiting for human approval or comments
+- name: status:blocked
+  color: b60205
+  description: An agent gave up; needs a human
+- name: type:feature
+  color: a2eeef
+  description: New or changed behaviour
+- name: type:bug
+  color: d73a4a
+  description: Something is broken; starts with a reproducing E2E test
+- name: type:chore
+  color: ededed
+  description: Tooling, docs, refactoring; no user-facing change
