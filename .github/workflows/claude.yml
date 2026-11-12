@@ -18,6 +18,7 @@ jobs:
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: read
@@ -30,6 +31,22 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Same environment as CI, so Claude can run typecheck and tests before pushing.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.6.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide
+
+      - run: pnpm exec playwright install --with-deps chromium
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
@@ -40,11 +57,10 @@ jobs:
           additional_permissions: |
             actions: read
 
-          # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
-          # prompt: 'Update the pull request description to include a summary of changes.'
-
-          # Optional: Add claude_args to customize behavior and configuration
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-          # or https://code.claude.com/docs/en/cli-reference for available options
-          # claude_args: '--allowed-tools Bash(gh pr *)'
+          # The default tool set is read-only plus git; allow editing files and
+          # running the project's checks. No network tools, no arbitrary shell.
+          claude_args: |
+            --max-turns 60
+            --allowedTools "Edit,MultiEdit,Write,Bash(pnpm install:*),Bash(pnpm run check),Bash(pnpm exec vitest:*),Bash(pnpm run test:e2e),Bash(pnpm exec playwright test:*),Bash(pnpm exec prettier:*),Bash(pnpm exec svelte-kit sync),Bash(git status:*),Bash(git diff:*),Bash(git log:*),mcp__github__create_pull_request"
 
