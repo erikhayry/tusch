@@ -1,3 +1,4 @@
+import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../../../examples/examples';
 import { PanelPage } from './utils/panelPage';
@@ -80,4 +81,21 @@ test.skip('show character image next to dialogue', async ({ page }) => {
 	await panelPage.newImage.waitFor({ state: 'visible' });
 
 	await expect(panelPage.dialogueCharacterImage).toBeVisible();
+});
+
+test('add caption', async ({ page }) => {
+	await page.goto(`/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
+	await page.waitForLoadState('networkidle');
+	const captions = page.getByRole('list', { name: m.captions() }).getByRole('listitem');
+	const before = await captions.count();
+
+	await page.getByRole('textbox', { name: m.newCaption() }).fill('A NEW CAPTION');
+	await page.getByRole('button', { name: m.addCaption() }).click();
+
+	await expect(captions).toHaveCount(before + 1);
+	await expect(captions.last()).toContainText('A NEW CAPTION');
+	await expect(page.getByRole('textbox', { name: m.newCaption() })).toHaveValue('');
+
+	await page.reload();
+	await expect(captions.last()).toContainText('A NEW CAPTION');
 });
