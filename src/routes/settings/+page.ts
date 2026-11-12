@@ -6,7 +6,9 @@ export type Props = z.infer<typeof SettingsPageDataSchema>;
 
 export async function load({ fetch }): Promise<Props> {
 	const response = await fetch('/api/ai/models');
-	const models = AiModelsResponseSchema.parse(await response.json());
+	// Without a working key there are no models to list yet; the page must still
+	// render so the key can be entered.
+	const models = response.ok ? AiModelsResponseSchema.parse(await response.json()) : { data: [] };
 	const modelIds = models.data.map(({ id }) => id);
 
 	return SettingsPageDataSchema.parse({

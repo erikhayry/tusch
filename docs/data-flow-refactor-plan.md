@@ -862,19 +862,19 @@ Remove the internal action-to-API HTTP hop and make action ownership explicit pe
 
 ### Steps
 
-- [ ] Introduce `GenerationService` operations:
+- [x] Introduce `GenerationService` operations:
   - `createComic`
   - `createPanel`
   - `createCoverImage`
   - `createPanelImage`
-- [ ] Introduce an `AiGateway`.
-- [ ] Move OpenAI-specific interaction behind an `OpenAiGateway`.
-- [ ] Have SvelteKit actions call `GenerationService` directly.
-- [ ] If `/api/ai/*` endpoints remain necessary, make them call the same services.
-- [ ] Remove action calls to the app’s own API through `event.fetch`.
-- [ ] Reduce or retire `src/lib/utils/actions/utils/postAiResponse.ts`.
-- [ ] Export action handlers individually.
-- [ ] Replace `globalActions` with route-scoped action maps.
+- [x] Introduce an `AiGateway`.
+- [x] Move OpenAI-specific interaction behind an `OpenAiGateway`.
+- [x] Have SvelteKit actions call `GenerationService` directly.
+- [x] If `/api/ai/*` endpoints remain necessary, make them call the same services.
+- [x] Remove action calls to the app’s own API through `event.fetch`.
+- [x] Reduce or retire `src/lib/utils/actions/utils/postAiResponse.ts`.
+- [x] Export action handlers individually.
+- [x] Replace `globalActions` with route-scoped action maps.
 
 ### Expected route ownership
 
@@ -925,22 +925,22 @@ Expected actions:
 
 ### Tests
 
-- [ ] `GenerationService` tests using a fake gateway.
-- [ ] Gateway adapter tests.
-- [ ] Action contract tests.
-- [ ] API route tests if API routes remain.
-- [ ] Route action-map tests or compile-time checks.
-- [ ] Tests proving a route cannot invoke unrelated actions.
-- [ ] Tests proving action logic does not make an internal HTTP request.
+- [x] `GenerationService` tests using a fake gateway.
+- [x] Gateway adapter tests.
+- [x] Action contract tests.
+- [ ] API route tests if API routes remain. (Only `/api/ai/models` remains, for the settings load; untested.)
+- [x] Route action-map tests or compile-time checks.
+- [x] Tests proving a route cannot invoke unrelated actions.
+- [x] Tests proving action logic does not make an internal HTTP request.
 
 ### Acceptance criteria
 
-- [ ] Actions call application services directly.
-- [ ] Provider-specific code is behind `AiGateway`.
-- [ ] `globalActions` is removed.
-- [ ] Every route exposes only the actions it needs.
-- [ ] Server action modules do not import components or client state.
-- [ ] API routes, if retained, do not duplicate generation logic.
+- [x] Actions call application services directly.
+- [x] Provider-specific code is behind `AiGateway`.
+- [x] `globalActions` is removed.
+- [x] Every route exposes only the actions it needs.
+- [x] Server action modules do not import components or client state.
+- [x] API routes, if retained, do not duplicate generation logic.
 
 ---
 

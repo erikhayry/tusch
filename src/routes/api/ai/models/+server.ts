@@ -1,12 +1,14 @@
+import { credentialsFromCookies, getAiGateway } from '$lib/server/ai/gateway';
+import { toAiGatewayError } from '$lib/server/ai/openai-gateway';
 import { AiModelsResponseSchema } from '$lib/types/routeData';
-import { models } from '$lib/utils/ai/sdk/openAi.js';
-import { json } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 
 export const GET = async ({ cookies }) => {
-	const modelsList = await models(cookies);
-	const response = AiModelsResponseSchema.parse({
-		data: modelsList.data.map(({ id }) => ({ id })),
-	});
-
-	return json(response);
+	try {
+		const ids = await getAiGateway(credentialsFromCookies(cookies)).models();
+		return json(AiModelsResponseSchema.parse({ data: ids.map((id) => ({ id })) }));
+	} catch (cause) {
+		const failure = toAiGatewayError(cause);
+		error(failure.status ?? 502, failure.message);
+	}
 };
