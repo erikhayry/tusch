@@ -1,0 +1,104 @@
+import { m } from '$lib/paraglide/messages';
+import { expect, test, type Page } from '@playwright/test';
+import { EXAMPLES } from '../../../examples/examples';
+import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
+
+const EXAMPLE = EXAMPLES[0];
+const PANEL = EXAMPLE.panels[0];
+const PANEL_URL = `/comic/${EXAMPLE.id}/${PANEL.id}`;
+
+/** File names currently stored in OPFS. */
+function storedFiles(page: Page): Promise<string[]> {
+	return page.evaluate(async () => {
+		const root = await navigator.storage.getDirectory();
+		const names: string[] = [];
+		for await (const name of (root as unknown as { keys(): AsyncIterable<string> }).keys()) {
+			names.push(name);
+		}
+		return names.sort();
+	});
+}
+
+/** The stored src of the example panel's image, if any. */
+function panelImageSrc(page: Page): Promise<string | undefined> {
+	return page.evaluate(
+		({ comicId, panelId }) => {
+			const { comics } = JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}');
+			const comic = comics.find((c: { id: string }) => c.id === comicId);
+			return comic?.panels.find((p: { id: string }) => p.id === panelId)?.image?.landscape.src;
+		},
+		{ comicId: EXAMPLE.id, panelId: PANEL.id },
+	);
+}
+
+async function generatePanelImage(page: Page) {
+	await page.getByRole('button', { name: m.removeImage() }).click();
+	await page.getByRole('button', { name: m.addImage() }).click();
+}
+
+test.describe('image files', { tag: '@REQ-025' }, () => {
+	test('replacing a panel image removes the old file', async ({ page }) => {
+		await gotoHydrated(page, PANEL_URL);
+		await generatePanelImage(page);
+		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+		const first = await panelImageSrc(page);
+		expect(await storedFiles(page)).toContain(first);
+
+		await page.getByRole('button', { name: m.generateNewImage() }).click();
+		await expect.poll(() => panelImageSrc(page)).not.toBe(first);
+
+		const files = await storedFiles(page);
+		expect(files).not.toContain(first);
+		expect(files).toContain(await panelImageSrc(page));
+	});
+
+	test('deleting a cover removes its file', async ({ page }) => {
+		await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
+		await page.getByRole('button', { name: m.deleteCover() }).click();
+		await page.getByRole('button', { name: m.addCover() }).click();
+		await expect.poll(async () => (await storedFiles(page)).length).toBe(1);
+
+		await page.getByRole('button', { name: m.deleteCover() }).click();
+
+		await expect.poll(() => storedFiles(page)).toEqual([]);
+	});
+
+	test('a generation that fails part-way leaves no metadata or files', async ({ page }) => {
+		// Fail the second OPFS write (the first character crop, after the main image).
+		await page.addInitScript(() => {
+			let writes = 0;
+			const original = FileSystemFileHandle.prototype.createWritable;
+			FileSystemFileHandle.prototype.createWritable = function (...args) {
+				writes += 1;
+				if (writes === 2) return Promise.reject(new Error('Simulated disk failure'));
+				return original.apply(this, args);
+			};
+		});
+		await gotoHydrated(page, PANEL_URL);
+		await page.getByRole('button', { name: m.removeImage() }).click();
+		await expect(page.getByRole('button', { name: m.addImage() })).toBeVisible();
+
+		await page.getByRole('button', { name: m.addImage() }).click();
+
+		await expect(page.getByTestId('error-test-id')).toContainText('Simulated disk failure');
+		expect(await panelImageSrc(page)).toBeUndefined();
+		await expect.poll(() => storedFiles(page)).toEqual([]);
+	});
+});
+
+test(
+	'recovers from corrupt stored comics and keeps a copy',
+	{ tag: '@REQ-026' },
+	async ({ page }) => {
+		await page.addInitScript(() => {
+			if (sessionStorage.getItem('seeded-corrupt')) return;
+			sessionStorage.setItem('seeded-corrupt', '1');
+			localStorage.setItem('comics_db', '{not json');
+		});
+
+		await gotoHydrated(page, '/');
+
+		await expect(page.getByRole('link', { name: EXAMPLE.title })).toBeVisible();
+		expect(await page.evaluate(() => localStorage.getItem('comics_db_invalid'))).toBe('{not json');
+	},
+);

@@ -1,5 +1,8 @@
+import { m } from '$lib/paraglide/messages';
+import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../../examples/examples';
+import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
 import { CreatePage } from './utils/createPage';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 
@@ -87,3 +90,38 @@ test.describe('provider failures', { tag: '@REQ-009' }, () => {
 		});
 	}
 });
+
+test('a new comic gets a generated cover', { tag: '@REQ-006' }, async ({ page }) => {
+	const createPage = await new CreatePage(page).goto();
+
+	await createPage.fillUrl('https://example.com/article');
+	await createPage.submit();
+
+	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
+	await expect(
+		page.getByRole('img', { name: getImageFromOpenAiResponse(CREATE_COVER_IMAGE_RESPONSE).alt }),
+	).toBeVisible();
+});
+
+test(
+	'shows progress and ignores a second submit while a request runs',
+	{ tag: '@REQ-032' },
+	async ({ page }) => {
+		const createPage = await new CreatePage(page).goto();
+		let posts = 0;
+		await page.route('**/comic/create?/create-comic', async (route) => {
+			posts += 1;
+			await new Promise((resolve) => setTimeout(resolve, 1500));
+			await route.continue();
+		});
+
+		await createPage.fillUrl('https://example.com/article');
+		await createPage.submit();
+		await expect(page.getByTestId('loader-test-id')).toHaveText(m.loading());
+		await createPage.submit();
+
+		await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
+		await expect(page.getByTestId('loader-test-id')).toHaveText('');
+		expect(posts).toBe(1);
+	},
+);

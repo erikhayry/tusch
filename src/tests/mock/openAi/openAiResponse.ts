@@ -361,6 +361,7 @@ export const CREATE_PANEL_RESPONSE: OpenAiOutput = {
 	],
 };
 
+// Character ids match the example comic (src/examples/nirvana.ts) so crops are made.
 const PANEL_IMAGE_DATA = {
 	data: {
 		alt: 'mock alt text',
@@ -368,7 +369,7 @@ const PANEL_IMAGE_DATA = {
 		height: 1536,
 		characters: [
 			{
-				id: 'a3c916f0-539b-4ab5-86e3-8cc3f72b09f4',
+				id: 'a13f10d2-7b86-4b5d-9b3e-42b2c9f865a1',
 				panelId: 'ad01f7ac-b88b-41dd-a94a-37bb307278fa',
 				head: {
 					x: 190,
@@ -384,7 +385,7 @@ const PANEL_IMAGE_DATA = {
 				},
 			},
 			{
-				id: '8d5307a9-0215-4f7e-9c93-f13407d2b960',
+				id: 'b79d4e36-2837-4f4a-9b9f-25d95cde6253',
 				panelId: 'ad01f7ac-b88b-41dd-a94a-37bb307278fa',
 				head: {
 					x: 810,

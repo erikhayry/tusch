@@ -55,7 +55,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: creating a comic also generates its cover image; the cover is stored locally and shown on the comic page.
 - Why: every comic has a cover from the start.
-- Proven by: gap (#29)
+- Proven by: tagged tests
 
 ### REQ-007 Invalid input is rejected with a visible message
 
@@ -113,7 +113,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: the comic page lists characters with the panels they appear in, and can preview a crop of a character from a panel image.
 - Why: character consistency across panels.
-- Proven by: gap (#29)
+- Proven by: tagged tests
 
 ## Panel page
 
@@ -143,7 +143,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: generating a panel image also stores head and full-body crops for each known character in it, and the head crop is shown next to that character's dialogue.
 - Why: character references for later images.
-- Proven by: gap (#29); the existing E2E test is skipped.
+- Proven by: tagged tests
 
 ### REQ-019 Captions can be added, edited and removed
 
@@ -194,21 +194,21 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: replacing or deleting a cover, panel image or comic removes image files no comic still references (shared example files are kept); a generation that fails part-way leaves no partial metadata and no stray files.
 - Why: OPFS is the user's disk space; metadata must not point at missing files.
-- Proven by: gap (#29); covered by unit tests only.
+- Proven by: tagged tests
 
 ### REQ-026 Corrupt stored data doesn't break the app
 
 - Status: active
 - Statement: if stored comic data is corrupt or from an unsupported version, the app keeps a copy aside and starts with the examples instead of crashing.
 - Why: recoverable failure instead of a blank app.
-- Proven by: gap (#29); covered by unit tests only.
+- Proven by: tagged tests
 
 ### REQ-027 The raw view shows the comic data
 
 - Status: active
 - Statement: `/comic/<id>/raw` shows the comic's stored data as JSON.
 - Why: debugging and export.
-- Proven by: gap (#29)
+- Proven by: tagged tests
 
 ## Settings and API key
 
@@ -238,7 +238,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: `/settings` renders (with empty model lists) when no key is stored, so the user can enter one.
 - Why: otherwise a new user can't get started.
-- Proven by: gap (#29); covered by unit tests only.
+- Proven by: tagged tests
 
 ## Feedback
 
@@ -247,4 +247,4 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: while a form submission runs, a loading indicator is shown; submitting the same form again before it finishes does nothing.
 - Why: AI calls are slow; duplicate submits would duplicate work.
-- Proven by: gap (#29); covered by unit tests only.
+- Proven by: tagged tests

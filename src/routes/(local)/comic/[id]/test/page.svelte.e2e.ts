@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 import { EXAMPLES } from '../../../../../examples/examples';
 import { ComicPage } from './utils/comicPage';
 
@@ -43,4 +44,11 @@ test('delete panel', { tag: '@REQ-013' }, async ({ page }) => {
 	await comicPage.deletePanelButton.click();
 
 	await expect(comicPage.listItems).toHaveCount(comicPage.initialNumberOfListItems - 1);
+});
+
+test('shows the stored comic as JSON in the raw view', { tag: '@REQ-027' }, async ({ page }) => {
+	await gotoHydrated(page, `/comic/${EXAMPLES[0].id}/raw`);
+
+	const raw = await page.getByRole('textbox').inputValue();
+	expect(JSON.parse(raw)).toMatchObject({ id: EXAMPLES[0].id, title: EXAMPLES[0].title });
 });
