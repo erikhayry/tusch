@@ -35,4 +35,5 @@
 	</Section>
 
 	<a href={resolve('/comic/create')}>{m.createNewComic()}</a>
+	<a href={resolve('/settings')}>{m.settings()}</a>
 </Page>
