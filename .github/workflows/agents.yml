@@ -14,11 +14,6 @@ on:
   pull_request:
     types: [closed]
 
-# One agent per issue (or PR) at a time; later events queue rather than cancel.
-concurrency:
-  group: agents-${{ github.event.issue.number || github.event.pull_request.number }}
-  cancel-in-progress: false
-
 defaults:
   run:
     shell: bash
@@ -119,6 +114,12 @@ jobs:
   agent:
     needs: route
     if: needs.route.outputs.skill != ''
+    # One agent per issue at a time. Only real stage runs join this queue, so
+    # comments and other no-op events can't displace a pending stage
+    # (GitHub keeps one pending run per group and cancels older ones).
+    concurrency:
+      group: agent-${{ needs.route.outputs.issue || needs.route.outputs.target }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 45
     # Same image as CI so screenshot baselines render identically.
