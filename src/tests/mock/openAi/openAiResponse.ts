@@ -1,4 +1,4 @@
-import type { AiRequest, InitialComic, OpenAiOutput } from '$lib/utils/ai/aiTypes';
+import type { InitialComic, OpenAiOutput } from '$lib/utils/ai/aiTypes';
 
 const COMIC_DATA: { data: InitialComic } = {
 	data: {

@@ -8,7 +8,7 @@ const config = {
 	plugins: ['prettier-plugin-svelte'],
 	svelteSortOrder: 'options-scripts-markup-styles',
 	svelteIndentScriptAndStyle: true,
-	overrides: [{ files: '*.svelte', options: { parser: 'svelte' } }]
+	overrides: [{ files: '*.svelte', options: { parser: 'svelte' } }],
 };
 
 export default config;
