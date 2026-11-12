@@ -14,7 +14,7 @@ test('submits key', async ({ page }) => {
 
 	await expect(createPage.keyInput).toBeHidden();
 
-	expect(createPage.successMessage).toBeVisible();
+	await expect(createPage.successMessage).toBeVisible();
 });
 
 //TODO fix mock failed response
@@ -25,7 +25,7 @@ test.skip('shows error if invalid key', async ({ page }) => {
 
 	await expect(createPage.keyInput).toBeHidden();
 
-	expect(createPage.invalidKeyMessage).toBeVisible();
+	await expect(createPage.invalidKeyMessage).toBeVisible();
 });
 
 test('should set model', async ({ page }) => {
@@ -35,5 +35,5 @@ test('should set model', async ({ page }) => {
 
 	await createPage.saveSettingsButton.click();
 
-	expect(createPage.currentModel).toHaveText('gpt-6-luna');
+	await expect(createPage.currentModel).toHaveText('gpt-6-luna');
 });
