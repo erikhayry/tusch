@@ -24,20 +24,21 @@ defaults:
     shell: bash
 
 jobs:
-  agent:
+  # Routing is cheap: no container, so events that start nothing finish in seconds.
+  route:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    # Same image as CI so screenshot baselines render identically.
-    container: mcr.microsoft.com/playwright:v1.63.0-noble
+    timeout-minutes: 5
     permissions:
-      contents: read
-      issues: write
+      issues: read
       pull-requests: read
-      id-token: write
-      actions: read
     env:
-      PLAYWRIGHT_SCREENSHOTS: '1'
       GH_REPO: ${{ github.repository }}
+    outputs:
+      skill: ${{ steps.route.outputs.skill }}
+      target: ${{ steps.route.outputs.target }}
+      issue: ${{ steps.route.outputs.issue }}
+      turns: ${{ steps.route.outputs.turns }}
+      tools: ${{ steps.route.outputs.tools }}
     steps:
       - name: Route event to a role
         id: route
@@ -115,34 +116,48 @@ jobs:
             echo "tools=$tools"
           } >> "$GITHUB_OUTPUT"
 
+  agent:
+    needs: route
+    if: needs.route.outputs.skill != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # Same image as CI so screenshot baselines render identically.
+    container: mcr.microsoft.com/playwright:v1.63.0-noble
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      id-token: write
+      actions: read
+    env:
+      PLAYWRIGHT_SCREENSHOTS: '1'
+      GH_REPO: ${{ github.repository }}
+    steps:
+      # claude-code-action installs Bun, which needs unzip (not in the Playwright image).
+      - name: Install unzip
+        run: apt-get update -qq && apt-get install -y -qq unzip >/dev/null
+
       - name: Checkout
-        if: steps.route.outputs.skill != ''
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - if: steps.route.outputs.skill != ''
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - if: steps.route.outputs.skill != ''
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 12.6.0
 
-      - if: steps.route.outputs.skill != ''
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
 
-      - if: steps.route.outputs.skill != ''
-        run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
 
-      - if: steps.route.outputs.skill != ''
-        run: pnpm exec paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide
+      - run: pnpm exec paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide
 
-      - name: Run /${{ steps.route.outputs.skill }} ${{ steps.route.outputs.target }}
-        if: steps.route.outputs.skill != ''
+      - name: Run /${{ needs.route.outputs.skill }} ${{ needs.route.outputs.target }}
         uses: anthropics/claude-code-action@8a29bc6f0ae11a363721054b6739feba6adabe57 # v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -150,18 +165,18 @@ jobs:
           allowed_bots: 'claude[bot]'
           additional_permissions: |
             actions: read
-          prompt: /${{ steps.route.outputs.skill }} ${{ steps.route.outputs.target }}
+          prompt: /${{ needs.route.outputs.skill }} ${{ needs.route.outputs.target }}
           claude_args: |
-            --max-turns ${{ steps.route.outputs.turns }}
-            --allowedTools "${{ steps.route.outputs.tools }}"
+            --max-turns ${{ needs.route.outputs.turns }}
+            --allowedTools "${{ needs.route.outputs.tools }}"
 
       - name: Block the issue on failure
-        if: failure() && steps.route.outputs.issue != ''
+        if: failure() && needs.route.outputs.issue != ''
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE: ${{ steps.route.outputs.issue }}
+          ISSUE: ${{ needs.route.outputs.issue }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          SKILL: ${{ steps.route.outputs.skill }}
+          SKILL: ${{ needs.route.outputs.skill }}
         run: |
           for label in status:idea status:needs-tests status:needs-dev status:needs-review status:needs-human; do
             gh issue edit "$ISSUE" --remove-label "$label" >/dev/null 2>&1 || true
