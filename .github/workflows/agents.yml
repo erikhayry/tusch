@@ -133,9 +133,17 @@ jobs:
       PLAYWRIGHT_SCREENSHOTS: '1'
       GH_REPO: ${{ github.repository }}
     steps:
-      # claude-code-action installs Bun, which needs unzip (not in the Playwright image).
-      - name: Install unzip
-        run: apt-get update -qq && apt-get install -y -qq unzip >/dev/null
+      # The Playwright image lacks unzip (claude-code-action's Bun setup needs it)
+      # and the GitHub CLI (every skill uses gh), so install both.
+      - name: Install gh and unzip
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq curl gpg unzip >/dev/null
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list
+          apt-get update -qq
+          apt-get install -y -qq gh >/dev/null
+          gh --version
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -170,8 +178,19 @@ jobs:
             --max-turns ${{ needs.route.outputs.turns }}
             --allowedTools "${{ needs.route.outputs.tools }}"
 
+  # Runs on the plain runner (gh is preinstalled) so it works even if the
+  # container or the agent setup fails.
+  block:
+    needs: [route, agent]
+    if: failure() && needs.route.outputs.issue != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_REPO: ${{ github.repository }}
+    steps:
       - name: Block the issue on failure
-        if: failure() && needs.route.outputs.issue != ''
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE: ${{ needs.route.outputs.issue }}
