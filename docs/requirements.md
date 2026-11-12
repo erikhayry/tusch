@@ -248,3 +248,12 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: while a form submission runs, a loading indicator is shown; submitting the same form again before it finishes does nothing.
 - Why: AI calls are slow; duplicate submits would duplicate work.
 - Proven by: tagged tests
+
+## Security
+
+### REQ-033 Routes accept only the actions their forms use
+
+- Status: active
+- Statement: each page accepts POSTs only to the form actions its own forms use; any other action name returns 404.
+- Why: limits what a crafted request can trigger (e.g. no AI generation from the settings page).
+- Proven by: tagged tests

@@ -1,4 +1,5 @@
 import type { Locator, Page } from '@playwright/test';
+import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 
 export class CreatePage {
 	readonly page: Page;
@@ -10,7 +11,7 @@ export class CreatePage {
 	}
 
 	async goto() {
-		await this.page.goto(`/{{camelCase name}}`);
+		await gotoHydrated(this.page, `/{{camelCase name}}`);
 
 		return this;
 	}

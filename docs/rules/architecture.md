@@ -37,7 +37,7 @@ new feature code goes under `features/`.
   or `error(404, …)`. Example: `(local)/comic/[id]/[panel]/+page.ts`.
 - Each `+page.server.ts` exports **only** the actions its forms post to, as a
   map keyed by the contract's action name. Example: `(local)/comic/[id]/+page.server.ts`.
-  A test in `src/lib/server/actions/test/actions.spec.ts` enforces each route's map.
+  `(local)/test/actions.svelte.e2e.ts` (REQ-033) checks every route's map.
 - `/settings` and `/api/ai/models` are outside the group and render on the server.
 
 ## Dependency rules
