@@ -4,7 +4,6 @@ import { SelectedModelsSchema } from './saveModelSettings';
 
 /** Server load data for /settings: the cookie-backed selection only, never the API key. */
 export const SettingsServerDataSchema = z.object({ config: SelectedModelsSchema });
-export type SettingsServerData = z.infer<typeof SettingsServerDataSchema>;
 
 /** Full /settings page data: available models plus the committed selection. */
 export const SettingsRouteDataSchema = SettingsPageDataSchema.extend({

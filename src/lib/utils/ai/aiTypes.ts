@@ -36,12 +36,6 @@ export type CreatedImage = z.infer<typeof CreatedImageSchema>;
 export const CreatePanelSchema = INITAL_PANEL_SCHEMA;
 export type CreatePanel = z.infer<typeof CreatePanelSchema>;
 
-export const PingSchema = z.object({
-	success: z.boolean(),
-	message: z.string(),
-});
-export type Ping = z.infer<typeof PingSchema>;
-
 export const SchemaName = z.enum(['initComic', 'createImage', 'createPanel']);
 export type SchemaName = z.infer<typeof SchemaName>;
 
@@ -58,12 +52,6 @@ export const AiImageRequestSchema = z.object({
 	imageUrl: z.string().optional(),
 });
 export type AiImageRequest = z.infer<typeof AiImageRequestSchema>;
-
-export const AiRequestSchema = z.discriminatedUnion('schemaName', [
-	AiTextRequestSchema,
-	AiImageRequestSchema,
-]);
-export type AiRequest = z.infer<typeof AiRequestSchema>;
 
 export const SCHEMA: Record<SchemaName, z.ZodType> = {
 	initComic: InitialComicSchema,
@@ -89,9 +77,3 @@ export const OpenAiOutputSchema = z.object({
 });
 
 export type OpenAiOutput = z.infer<typeof OpenAiOutputSchema>;
-
-export const OpenAiPingSchema = z.object({
-	status: z.boolean(),
-	message: z.string(),
-});
-export type OpenAiPingOutput = z.infer<typeof OpenAiPingSchema>;

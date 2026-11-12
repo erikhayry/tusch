@@ -431,20 +431,6 @@ export const CREATE_PANEL_IMAGE_RESPONSE: OpenAiOutput = {
 	],
 };
 
-export const PING_RESPONSE: OpenAiOutput = {
-	output: [
-		{
-			type: 'message',
-			content: [
-				{
-					type: 'output_text',
-					text: '{"data":{"success":true, "message": "test"}}',
-				},
-			],
-		},
-	],
-};
-
 export const MODELS_RESPONSE = {
 	options: { method: 'get', path: '/models', __security: { bearerAuth: true } },
 	response: {},

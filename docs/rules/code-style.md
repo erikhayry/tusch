@@ -44,6 +44,12 @@ trailing commas, width 100) and ESLint. Run `pnpm run lint`; fix with
   `error(502, message)` with an actionable message.
 - Never surface raw JSON or "Internal Error" to the user.
 
+## Unused code
+
+`pnpm run knip` (in CI) fails on unused files, exports, types and
+dependencies. Export only what another module imports (exports used only inside
+their own file are ignored); delete dead code instead of keeping it "for later".
+
 ## Comments
 
 Comment the _why_: constraints, ordering, non-obvious trade-offs (see the

@@ -7,7 +7,6 @@ export const STORAGE = {
 } as const;
 
 export const ComicEntriesSchema = z.array(z.tuple([z.string(), ComicSchema]));
-export type ComicEntries = z.infer<typeof ComicEntriesSchema>;
 
 export const DB_ITEM_TYPE = z.enum([
 	'dialogue',
@@ -17,7 +16,6 @@ export const DB_ITEM_TYPE = z.enum([
 	'panelImage',
 	'coverImage',
 ]);
-export type DbItemType = z.infer<typeof DB_ITEM_TYPE>;
 
 export const CreateCharacterImageValueSchema = z.object({
 	comicId: z.string(),
@@ -76,7 +74,5 @@ export const INCLUDE_IMAGE_VALUE_KEY = 'includeImage';
 export const IMAGE_VALUE_KEY = 'imageUrl';
 
 export const ConfigValuesSchema = ConfigSchema;
-export type ConfigValues = z.infer<typeof ConfigValuesSchema>;
 
 export const ConfigStateSchema = ConfigSchema.partial();
-export type ConfigState = z.infer<typeof ConfigStateSchema>;

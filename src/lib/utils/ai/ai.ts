@@ -3,13 +3,11 @@ import {
 	CreateImageSchema,
 	CreatePanelSchema,
 	InitialComicSchema,
-	PingSchema,
 	type CreatedImage,
 	type CreateImage,
 	type CreatePanel,
 	type InitialComic,
 	type OpenAiOutput,
-	type Ping,
 } from './aiTypes';
 
 function getOutputText(response: OpenAiOutput): string | undefined {
@@ -46,10 +44,4 @@ export function getPanelFromOpenAiResponse(response: OpenAiOutput): CreatePanel 
 	const output = parseOutputText(response);
 
 	return CreatePanelSchema.parse(output);
-}
-
-export function getPingResultFromOpenAiResponse(response: OpenAiOutput): Ping {
-	const output = parseOutputText(response);
-
-	return PingSchema.parse(output);
 }
