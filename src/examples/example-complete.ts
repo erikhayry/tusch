@@ -11,7 +11,7 @@ export const EXAMPLE_COMPLETE: Comic = {
 	style: 'anime',
 	source: 'https://example.com/lighthouse-keepers',
 	title: 'Example: The Lighthouse Keepers',
-	cover: exampleCover('cover-a', 'A flat blue cover labelled "Cover A".'),
+	cover: exampleCover('cover-a', 'A flat dark slate cover labelled "Comic A · cover".'),
 	characters: [
 		exampleCharacter(MARA, 'Mara', 'yellow raincoat'),
 		exampleCharacter(TOBIAS, 'Tobias', 'grey wool sweater'),
@@ -30,7 +30,7 @@ export const EXAMPLE_COMPLETE: Comic = {
 			season: 'autumn',
 			timeOfDay: 'dusk',
 			year: 1952,
-			image: examplePanelImage('a1', 'A flat green panel labelled "A1".', {
+			image: examplePanelImage('a1', 'A flat blue panel labelled "A · panel 1".', {
 				landscape: [
 					{
 						id: MARA,
@@ -67,7 +67,7 @@ export const EXAMPLE_COMPLETE: Comic = {
 			season: 'autumn',
 			timeOfDay: 'night',
 			year: 1952,
-			image: examplePanelImage('a2', 'A flat orange panel labelled "A2".', {
+			image: examplePanelImage('a2', 'A flat light blue panel labelled "A · panel 2".', {
 				landscape: [
 					{
 						id: MARA,
@@ -94,7 +94,7 @@ export const EXAMPLE_COMPLETE: Comic = {
 			season: 'autumn',
 			timeOfDay: 'morning',
 			year: 1952,
-			image: examplePanelImage('a3', 'A flat purple panel labelled "A3".', {
+			image: examplePanelImage('a3', 'A flat green panel labelled "A · panel 3".', {
 				landscape: [
 					{
 						id: TOBIAS,

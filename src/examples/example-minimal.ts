@@ -9,7 +9,7 @@ export const EXAMPLE_MINIMAL: Comic = {
 	style: 'franco-belgian',
 	source: 'https://example.com/one-small-step',
 	title: 'Example: One Small Step',
-	cover: exampleCover('cover-c', 'A flat red cover labelled "Cover C".'),
+	cover: exampleCover('cover-c', 'A flat plum cover labelled "Comic C · cover".'),
 	characters: [exampleCharacter(OLIVER, 'Oliver', 'white spacesuit')],
 	panels: [
 		{
@@ -22,7 +22,7 @@ export const EXAMPLE_MINIMAL: Comic = {
 			season: 'summer',
 			timeOfDay: 'noon',
 			year: 1969,
-			image: examplePanelImage('c1', 'A flat teal panel labelled "C1".'),
+			image: examplePanelImage('c1', 'A flat rose panel labelled "C · panel 1".'),
 		},
 	],
 };
