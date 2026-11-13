@@ -1,4 +1,4 @@
-const DONE_VISIBLE_MS = 1000;
+const DONE_VISIBLE_MS = 3000;
 
 type Submission = { id: number; label: string; startedAt: number };
 

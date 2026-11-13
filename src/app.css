@@ -212,6 +212,40 @@ button:disabled {
 	color: var(--color-muted);
 }
 
+/* Indeterminate bar: grey track, black fill. Never the focus accent. */
+progress {
+	appearance: none;
+	display: block;
+	inline-size: 100%;
+	block-size: var(--space-2);
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--radius);
+	color: var(--color-text);
+	background: var(--color-surface);
+}
+
+progress::-webkit-progress-bar {
+	background: var(--color-surface);
+}
+
+progress::-webkit-progress-value {
+	background: var(--color-text);
+}
+
+progress::-moz-progress-bar {
+	background: var(--color-text);
+}
+
+/* Reachable by screen readers, invisible on screen. */
+.visually-hidden {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
 /* Wide screens */
 @media (min-width: 48em) {
 	main {
