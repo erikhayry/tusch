@@ -12,8 +12,9 @@ test(
 	{ tag: ['@REQ-051', '@REQ-009'] },
 	async ({ page }) => {
 		await saveGlobalInstructions(page, RATE_LIMIT_MARKER);
-		const before = await storedComicCount(page);
 		const createPage = await new CreatePage(page).goto();
+		// Read after navigating: /settings is outside (local), so examples are seeded only now.
+		const before = await storedComicCount(page);
 
 		await createPage.fillUrl('https://example.com/article');
 		await createPage.submit();
