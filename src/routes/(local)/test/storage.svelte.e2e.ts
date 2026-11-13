@@ -127,4 +127,28 @@ test.describe('missing images', { tag: '@REQ-036' }, () => {
 			'/missing-image.svg',
 		);
 	});
+
+	test('the placeholder has a dark version in the dark colour scheme', async ({ page }) => {
+		await page.emulateMedia({ colorScheme: 'light' });
+		await gotoHydrated(page, PANEL_URL);
+		await generatePanelImage(page);
+		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+
+		const src = await panelImageSrc(page);
+		await page.evaluate(async (name) => {
+			const root = await navigator.storage.getDirectory();
+			await root.removeEntry(name!);
+		}, src);
+		await page.reload();
+
+		const placeholder = page.getByRole('img', { name: 'mock alt text' });
+		await expect(placeholder).toHaveAttribute('src', '/missing-image.svg');
+		await expect(placeholder).toHaveJSProperty('complete', true);
+		const light = await placeholder.screenshot();
+
+		await page.emulateMedia({ colorScheme: 'dark' });
+		await expect
+			.poll(async () => (await placeholder.screenshot()).equals(light), { timeout: 5000 })
+			.toBe(false);
+	});
 });

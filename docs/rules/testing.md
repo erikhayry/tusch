@@ -67,7 +67,8 @@ Drive failures from the UI with markers in submitted text:
 ## Accessibility
 
 - `src/tests/e2e/a11y.e2e.ts` runs axe (`@axe-core/playwright`) on every view
-  in `src/tests/e2e/views.ts` and fails on **any** violation (REQ-035). It runs
+  in `src/tests/e2e/views.ts`, in both the light and the dark colour scheme, and
+  fails on **any** violation (REQ-035). It runs
   locally too, unlike the screenshots.
 - A new view goes in `views.ts`, which gives it both a screenshot and an axe
   scan.
@@ -112,6 +113,7 @@ Drive failures from the UI with markers in submitted text:
 
 - `src/tests/e2e/screenshots.e2e.ts` captures every view in `views.ts` with
   `toHaveScreenshot()`. **A new view gets a screenshot test in the same PR.**
+  `landing`, `comic` and `settings` also have dark baselines (`*-dark.png`).
 - Baselines live in `src/tests/e2e/__screenshots__/` and are **Linux-only**: CI
   runs inside `mcr.microsoft.com/playwright:<version>-noble` (keep the tag in
   sync with `@playwright/test`). Locally the screenshot tests are skipped unless
