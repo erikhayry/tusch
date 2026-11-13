@@ -115,7 +115,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: character consistency across panels.
 - Proven by: tagged tests
 
-### REQ-041 Deleting a panel removes its character images
+### REQ-047 Deleting a panel removes its character images
 
 - Status: active
 - Statement: deleting a panel also removes every character image (head and full crop) taken from that panel, and their image files. The characters stay, as do their images from other panels.
@@ -259,6 +259,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: the start page links to Settings; the Settings page is titled "Settings" and links back to the start page.
 - Why: users must find where to add their key without typing `/settings`.
+- Proven by: tagged tests
+
+### REQ-044 Global instructions can be saved in the browser
+
+- Status: active
+- Statement: on `/settings` the user can save global instructions (up to 1000 characters) in a labelled text field; they are stored only in the browser (`localStorage`), are shown in the field after a reload, and saving an empty field clears them.
+- Why: users want standing instructions (tone, language) without retyping them for every generation, and nothing about them should leave the device except inside a generation request.
+- Proven by: tagged tests
+
+### REQ-045 Global instructions are added to every AI generation
+
+- Status: active
+- Statement: saved global instructions are added to the prompt of every AI generation (create comic and its cover, generate cover, generate panel image, insert panel), after the app's built-in rules and before any per-request instruction; with none saved, prompts are unchanged.
+- Why: the instructions only help if every generation honours them.
+- Proven by: tagged tests
+
+### REQ-046 Too-long global instructions are rejected
+
+- Status: active
+- Statement: saving global instructions longer than 1000 characters shows an error and keeps the previously saved instructions.
+- Why: an unbounded value would bloat every request; a failed save must not lose what the user had.
 - Proven by: tagged tests
 
 ## Feedback

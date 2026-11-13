@@ -14,5 +14,8 @@
 	"loadingEdit": "Sparar ändringar...",
 	"loadingDelete": "Tar bort...",
 	"elapsedSeconds": "{seconds} s",
-	"done": "Klart"
+	"done": "Klart",
+	"globalInstructions": "Globala instruktioner",
+	"saveGlobalInstructions": "Spara globala instruktioner",
+	"globalInstructionsTooLong": "Globala instruktioner får vara högst 1000 tecken"
 }

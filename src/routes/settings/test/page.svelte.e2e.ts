@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test';
+import { m } from '$lib/paraglide/messages';
 import { KEY_COOKIE_NAME, TEXT_MODEL_COOKIE_NAME } from '$lib/utils/cookies';
 import { LandingPage } from '../../(local)/test/utils/landingPage';
-import { activate, chooseOption } from '../../../tests/e2e/keyboard';
+import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
+import { activate, chooseOption, typeInto } from '../../../tests/e2e/keyboard';
 import { CreatePage } from './utils/createPage';
 
 test('is titled Settings', { tag: '@REQ-034' }, async ({ page }) => {
@@ -136,4 +138,81 @@ test('renders without a working key', { tag: '@REQ-031' }, async ({ page, contex
 
 	await expect(createPage.keyInput).toBeVisible();
 	await expect(createPage.modelsSelect.getByRole('option')).toHaveCount(0);
+});
+
+test.describe('global instructions', () => {
+	test(
+		'shows an empty labelled field and a save button without a key',
+		{ tag: ['@REQ-044', '@REQ-031'] },
+		async ({ page }) => {
+			const createPage = await new CreatePage(page).goto();
+
+			await expect(createPage.globalInstructionsInput).toBeVisible();
+			await expect(createPage.globalInstructionsInput).toHaveValue('');
+			await expect(createPage.saveGlobalInstructionsButton).toBeVisible();
+		},
+	);
+
+	test('shows the saved instructions after a reload', { tag: '@REQ-044' }, async ({ page }) => {
+		const createPage = await new CreatePage(page).goto();
+
+		await createPage.saveGlobalInstructions('Keep dialogue short, write in Swedish');
+		await page.reload();
+
+		await expect(createPage.globalInstructionsInput).toHaveValue(
+			'Keep dialogue short, write in Swedish',
+		);
+	});
+
+	test(
+		'stores the instructions only in the browser',
+		{ tag: ['@REQ-044', '@REQ-022'] },
+		async ({ page, context }) => {
+			const createPage = await new CreatePage(page).goto();
+
+			await createPage.saveGlobalInstructions('standing instruction');
+			await page.reload();
+			await expect(createPage.globalInstructionsInput).toHaveValue('standing instruction');
+
+			const stored = await page.evaluate(() => Object.values(localStorage).join('\n'));
+			expect(stored).toContain('standing instruction');
+			expect(JSON.stringify(await context.cookies())).not.toContain('standing instruction');
+		},
+	);
+
+	test(
+		'clears the instructions when saving an empty field, and generation works as before',
+		{ tag: ['@REQ-044', '@REQ-045'] },
+		async ({ page }) => {
+			const createPage = await new CreatePage(page).goto();
+			// The marker would fail every generation if it were still saved.
+			await createPage.saveGlobalInstructions('mock-error:rate-limit');
+			await createPage.saveGlobalInstructions('');
+			await page.reload();
+			await expect(createPage.globalInstructionsInput).toHaveValue('');
+
+			await gotoHydrated(page, '/comic/create');
+			await typeInto(page, page.getByRole('textbox', { name: m.url() }), 'https://example.com/a');
+			await activate(page, page.getByRole('button', { name: m.submit() }));
+
+			await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
+		},
+	);
+
+	test(
+		'rejects instructions over 1000 characters and keeps the previous ones',
+		{ tag: '@REQ-046' },
+		async ({ page }) => {
+			const createPage = await new CreatePage(page).goto();
+			await createPage.saveGlobalInstructions('A');
+			await expect(createPage.globalInstructionsInput).toHaveValue('A');
+
+			// The field must accept the 1001st character so the error comes from validation.
+			await createPage.saveGlobalInstructions('x'.repeat(1001));
+
+			await expect(createPage.error).toContainText(m.globalInstructionsTooLong());
+			await page.reload();
+			await expect(createPage.globalInstructionsInput).toHaveValue('A');
+		},
+	);
 });
