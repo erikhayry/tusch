@@ -36,6 +36,18 @@ sonar() {
 	echo
 	echo "The SonarCloud quality gate failed on PR #$pr: https://sonarcloud.io/summary/new_code?id=$SONAR_PROJECT&pullRequest=$pr"
 	echo
+	echo '**Failed gate conditions**'
+	echo
+	sonar "qualitygates/project_status?projectKey=$SONAR_PROJECT&pullRequest=$pr" |
+		jq -r '(.projectStatus.conditions // [])[] | select(.status != "OK") |
+			"- `\(.metricKey)`: \(.actualValue) (limit \(.comparator) \(.errorThreshold))"'
+	# A condition like duplication or coverage has no issues; name the files behind it.
+	sonar "measures/component_tree?component=$SONAR_PROJECT&pullRequest=$pr&metricKeys=new_duplicated_lines&qualifiers=FIL&ps=100" |
+		jq -r '(.components // [])[] | {path, v: ([.measures[]? | (.period.value // .periods[0].value // "0") | tonumber] | add // 0)} |
+			select(.v > 0) | "  - duplicated new lines in `\(.path)`: \(.v)"'
+	echo
+	echo 'Duplication in fixtures or generated data is better excluded (`sonar.cpd.exclusions` in `.sonarcloud.properties`) than refactored.'
+	echo
 	echo '**Issues**'
 	echo
 	sonar "issues/search?componentKeys=$SONAR_PROJECT&pullRequest=$pr&resolved=false&ps=100" |
