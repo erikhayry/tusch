@@ -7,7 +7,7 @@ import { VIEWS } from './views';
  * axe scan of every view (docs/rules/testing.md, "Accessibility"). Any
  * violation fails, whatever its impact; the summary names the rule and nodes.
  */
-test.describe('accessibility', { tag: '@REQ-035' }, () => {
+function scanEveryView() {
 	for (const [name, url] of Object.entries(VIEWS)) {
 		test(name, async ({ page }) => {
 			await gotoHydrated(page, url);
@@ -21,4 +21,11 @@ test.describe('accessibility', { tag: '@REQ-035' }, () => {
 			expect(summary).toEqual([]);
 		});
 	}
+}
+
+test.describe('accessibility', { tag: '@REQ-035' }, scanEveryView);
+
+test.describe('accessibility in the dark colour scheme', { tag: '@REQ-035' }, () => {
+	test.use({ colorScheme: 'dark' });
+	scanEveryView();
 });
