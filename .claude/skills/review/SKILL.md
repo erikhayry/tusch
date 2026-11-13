@@ -67,6 +67,18 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   user-facing sentence, or "No user-facing change"), and anything the human
   should look at closely.
 
+  **Try it:** add the Vercel preview to the body (see "Vercel previews" in
+  `docs/rules/workflow.md`). Check the `Vercel` status for HEAD
+  (`gh api repos/{owner}/{repo}/commits/<sha>/statuses`). Once the PR exists,
+  take the Preview URL from Vercel's PR comment
+  (`gh api repos/{owner}/{repo}/issues/<pr>/comments`), falling back to the
+  branch URL from `workflow.md`. Add a **Try it** section that links each view in
+  the ticket's "Views affected" (e.g. `<preview>/comic/<example-id>/<panel-id>`,
+  using the ids in `src/examples/examples.ts`), and note that AI features need
+  the visitor's own API key in Settings. If the deployment failed or is still
+  pending, say so instead of linking. Update the body with
+  `gh pr edit <pr> --body-file .agent-tmp/pr-$0.md`.
+
   Post your notes as inline review comments. First get the commit with
   `git rev-parse HEAD`, then, for each note:
   `gh api repos/{owner}/{repo}/pulls/<pr>/comments -f body=… -f path=… -F line=… -f commit_id=<sha> -f side=RIGHT`.
