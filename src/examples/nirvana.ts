@@ -7,12 +7,12 @@ export const NIRVANA: Comic = {
 	title: 'EXMPALE: Nirvana: från Aberdeen till världsscenen',
 	cover: {
 		landscape: {
-			src: '/examples/nirvana/1.png',
+			src: '/examples/nirvana/1.jpg',
 			width: 1024,
 			height: 1536,
 		},
 		portrait: {
-			src: '/examples/nirvana/1.png',
+			src: '/examples/nirvana/1.jpg',
 			width: 1024,
 			height: 1536,
 		},
@@ -126,7 +126,7 @@ export const NIRVANA: Comic = {
 			year: 1987,
 			image: {
 				landscape: {
-					src: '/examples/nirvana/1.png',
+					src: '/examples/nirvana/1.jpg',
 					width: 1024,
 					height: 1536,
 					characters: [
@@ -163,7 +163,7 @@ export const NIRVANA: Comic = {
 					],
 				},
 				portrait: {
-					src: '/examples/nirvana/1.png',
+					src: '/examples/nirvana/1.jpg',
 					width: 1024,
 					height: 1536,
 					characters: [
@@ -226,7 +226,7 @@ export const NIRVANA: Comic = {
 			year: 1989,
 			image: {
 				landscape: {
-					src: '/examples/nirvana/2.png',
+					src: '/examples/nirvana/2.jpg',
 					width: 1024,
 					height: 1536,
 					characters: [
@@ -263,7 +263,7 @@ export const NIRVANA: Comic = {
 					],
 				},
 				portrait: {
-					src: '/examples/nirvana/2.png',
+					src: '/examples/nirvana/2.jpg',
 					width: 1024,
 					height: 1536,
 					characters: [
@@ -326,7 +326,7 @@ export const NIRVANA: Comic = {
 			year: 1990,
 			image: {
 				landscape: {
-					src: '/examples/nirvana/3.png',
+					src: '/examples/nirvana/3.jpg',
 					width: 1024,
 					height: 1536,
 					characters: [
@@ -378,7 +378,7 @@ export const NIRVANA: Comic = {
 					],
 				},
 				portrait: {
-					src: '/examples/nirvana/3.png',
+					src: '/examples/nirvana/3.jpg',
 					width: 1024,
 					height: 1536,
 					characters: [

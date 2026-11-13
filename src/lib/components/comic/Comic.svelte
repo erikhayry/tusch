@@ -21,7 +21,12 @@
 	<Section>
 		<Heading>{m.settings()}</Heading>
 		{#if comic.cover}
-			<Image image={comic.cover.landscape} alt={comic.cover.alt} />
+			<Image
+				image={comic.cover.landscape}
+				alt={comic.cover.alt}
+				fetchpriority="high"
+				decoding="async"
+			/>
 			<DeleteItemForm
 				label={m.deleteCover()}
 				values={{
