@@ -42,6 +42,15 @@ until it reports no issues, and look up Svelte or SvelteKit APIs with
 - Svelte 5 runes only (`$props`, `$state`, `$derived`, `$effect`); no legacy
   `export let` or stores.
 
+## No non-null assertions
+
+- Never use the `!` operator. Narrow with a guard (`?.`, `if`, `{#if}`) and
+  render or return nothing when data is missing. ESLint enforces it
+  (`@typescript-eslint/no-non-null-assertion`).
+- Exception: E2E tests and their helpers (`*.e2e.ts`, `test/utils/`,
+  `src/tests/`) may use `!`; a wrong assumption fails the test instead of
+  crashing the app. The rule is turned off for those files in `eslint.config.js`.
+
 ## Results and errors
 
 - Domain commands return `CommandResult` (`{ ok: true } | { ok: false, code, message }`)
