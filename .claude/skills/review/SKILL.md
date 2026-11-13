@@ -3,6 +3,7 @@ name: review
 description: Reviewer role for the agent pipeline. Reviews an issue labelled status:needs-review against the rules, the requirements ledger and a security checklist; bounces it back or opens the PR with review comments for the human.
 argument-hint: <issue-number>
 disable-model-invocation: true
+model: opus
 allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh pr create *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
 ---
 
@@ -43,6 +44,10 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
 - **Accessibility:** if the diff touches `.svelte` files, CSS or `messages/`,
   run the `a11y-reviewer` subagent (Agent tool) on the branch. Its
   **critical** and **serious** findings are blocking; post the rest as notes.
+- **Pipeline:** if the diff touches `.github/`, `.claude/`, `scripts/` or
+  `docs/rules/agents.md`, run the `pipeline-expert` subagent on the branch.
+  Same rule: critical and serious findings block. Put its savings in the PR
+  body.
 - **Security** (blocking if high or critical):
   - the API key never reaches the browser (REQ-029); cookie flags are intact
   - server actions validate input and return `fail(400)`

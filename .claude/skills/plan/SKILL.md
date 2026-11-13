@@ -3,6 +3,7 @@ name: plan
 description: Turn an idea into a ready GitHub ticket for the agent pipeline. Asks clarifying questions, maps the idea to requirements in docs/requirements.md, and creates or updates the issue with status:needs-tests. Use when the user describes a feature, change or bug to build.
 argument-hint: '"<idea>" | <issue-number>'
 disable-model-invocation: true
+model: opus
 allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue create *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *)
 ---
 

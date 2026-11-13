@@ -3,6 +3,7 @@ name: test
 description: Tester role for the agent pipeline. Writes failing, requirement-tagged Playwright E2E tests for an issue labelled status:needs-tests, adds new requirements to the ledger, then hands the issue to the developer.
 argument-hint: <issue-number>
 disable-model-invocation: true
+model: sonnet
 allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(git *) Bash(pnpm *)
 ---
 
