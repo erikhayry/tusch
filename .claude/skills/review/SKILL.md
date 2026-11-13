@@ -36,6 +36,8 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   tests.
 - **Rules:** architecture, dependency rules, Zod-first types, forms pattern,
   naming (`docs/rules/*`). No unrelated changes.
+- **Lessons:** every entry in `docs/rules/review-lessons.md` (what human
+  reviewers caught before). A hit is blocking unless the lesson says otherwise.
 - **Screenshots:** baselines changed only for the views the ticket lists, and
   the images look intended.
 - **Security** (blocking if high or critical):

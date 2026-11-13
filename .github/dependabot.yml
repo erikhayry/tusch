@@ -1,0 +1,26 @@
+# Weekly dependency updates, grouped to keep the PR count low.
+version: 2
+updates:
+  - package-ecosystem: npm # pnpm-lock.yaml is detected
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+      dependencies:
+        dependency-type: production
+        update-types: [minor, patch]
+    ignore:
+      # Must move together with the CI container tag and the screenshot
+      # baselines (docs/rules/testing.md, "Screenshots"); bump by hand.
+      - dependency-name: '@playwright/test'
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
