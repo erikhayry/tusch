@@ -199,7 +199,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-025 Image files never leak or dangle
 
 - Status: active
-- Statement: replacing or deleting a cover, panel image or comic removes image files no comic still references (shared example files are kept); a generation that fails part-way leaves no partial metadata and no stray files.
+- Statement: replacing or deleting a cover, panel image, panel (with its character images) or comic removes image files no comic still references (shared example files are kept); a generation that fails part-way leaves no partial metadata and no stray files.
 - Why: OPFS is the user's disk space; metadata must not point at missing files.
 - Proven by: tagged tests
 

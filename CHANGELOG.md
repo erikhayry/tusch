@@ -5,6 +5,10 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 ## Unreleased
 
+### Features
+
+- Deleting a panel now also removes the character images taken from it, so they no longer take up storage. ([#158](https://github.com/erikhayry/tusch/pull/158))
+
 ### Fixes
 
 - Example comics now show their own panel images, and a missing image shows a clear placeholder instead of an unrelated picture. ([#138](https://github.com/erikhayry/tusch/pull/138))
