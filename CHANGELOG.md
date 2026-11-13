@@ -8,6 +8,7 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 ### Features
 
 - Tusch now switches to a dark theme automatically when your system or browser is set to dark mode. ([#170](https://github.com/erikhayry/tusch/pull/170))
+- After generating a new panel image, you can restore the previous one with "Restore previous image". ([#167](https://github.com/erikhayry/tusch/pull/167))
 - Deleting a panel now also removes the character images taken from it, so they no longer take up storage. ([#158](https://github.com/erikhayry/tusch/pull/158))
 - While an action runs, Tusch now shows what it is doing, a progress bar and the seconds elapsed. ([#161](https://github.com/erikhayry/tusch/pull/161))
 - The app now has a clean black-and-white style that is readable on small screens, with a clear blue focus outline for keyboard users. ([#159](https://github.com/erikhayry/tusch/pull/159))
