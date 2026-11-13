@@ -1,0 +1,34 @@
+# Weekly dependency updates, grouped to keep the PR count low.
+version: 2
+updates:
+  - package-ecosystem: npm # pnpm-lock.yaml is detected
+    directory: /
+    schedule:
+      interval: weekly
+    # Same 7-day cooldown as pnpm's minimumReleaseAge (pnpm-workspace.yaml).
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+      dependencies:
+        dependency-type: production
+        update-types: [minor, patch]
+    ignore:
+      # Must move together with the CI container tag and the screenshot
+      # baselines (docs/rules/testing.md, "Screenshots"); bump by hand.
+      - dependency-name: '@playwright/test'
+      # Types follow the Node runtime (24 in CI, agents and Vercel); move both together.
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ['*']

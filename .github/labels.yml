@@ -18,6 +18,9 @@
 - name: status:blocked
   color: b60205
   description: An agent gave up; needs a human
+- name: backlog
+  color: 9058ae
+  description: Idea not yet planned; run /plan (or add status:idea) to start it
 - name: type:feature
   color: a2eeef
   description: New or changed behaviour
@@ -27,3 +30,6 @@
 - name: type:chore
   color: ededed
   description: Tooling, docs, refactoring; no user-facing change
+- name: queued
+  color: d4c5f9
+  description: Waiting for a free pipeline slot (WIP limit); starts automatically

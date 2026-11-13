@@ -7,6 +7,6 @@
 
 {#if data.comic}
 	<Page title="Raw comic">
-		<textarea>{JSON.stringify(data.comic, null, 2)}</textarea>
+		<textarea aria-label="Comic JSON">{JSON.stringify(data.comic, null, 2)}</textarea>
 	</Page>
 {/if}

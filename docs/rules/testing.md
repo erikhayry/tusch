@@ -18,6 +18,14 @@
 - Navigate with `gotoHydrated(page, url)` (`src/tests/e2e/gotoHydrated.ts`), or
   a page object's async `goto()` that uses it. It waits for `<html data-hydrated>`;
   interacting earlier can turn a submit into a native POST.
+- Drive the UI by keyboard only (REQ-037): no `.click()`, `.fill()`, `.check()`
+  or `.selectOption()` on controls. Use the helpers in
+  `src/tests/e2e/keyboard.ts`: `tabTo` (Tab until focused, asserted with
+  `toBeFocused()`), `activate` (Enter/Space), `typeInto`, `chooseOption`
+  (`<select>`). The one exception is file inputs, which may use
+  `setInputFiles` because a native file dialog can't be driven. Wait for
+  `gotoHydrated` before pressing keys. A lint rule is deliberately not used;
+  this is a convention.
 - Select by role and accessible name using the translation, not raw strings:
   `page.getByRole('button', { name: m.addCaption() })`. Use `{ exact: true }`
   when text could also match a label (`getByText` is case-insensitive).
@@ -46,6 +54,17 @@ Drive failures from the UI with markers in submitted text:
 - Before pushing: `pnpm run check`, `pnpm run lint`, and the full E2E suite.
   For flakiness, `rm -rf build && pnpm run test:e2e` (cold) and `--repeat-each`.
 
+## Accessibility
+
+- `src/tests/e2e/a11y.e2e.ts` runs axe (`@axe-core/playwright`) on every view
+  in `src/tests/e2e/views.ts` and fails on **any** violation (REQ-035). It runs
+  locally too, unlike the screenshots.
+- A new view goes in `views.ts`, which gives it both a screenshot and an axe
+  scan.
+- Pages render through `Page.svelte`, which sets the document title and the
+  `<main>` landmark. Every form control needs a label (a visible `<label>`, or
+  `aria-label` when there's no room for one).
+
 ## Requirements
 
 - Every E2E test proves one or more requirements from `docs/requirements.md`
@@ -61,8 +80,8 @@ Drive failures from the UI with markers in submitted text:
 
 ## Screenshots
 
-- `src/tests/e2e/screenshots.e2e.ts` captures every view with `toHaveScreenshot()`.
-  **A new view gets a screenshot test in the same PR.**
+- `src/tests/e2e/screenshots.e2e.ts` captures every view in `views.ts` with
+  `toHaveScreenshot()`. **A new view gets a screenshot test in the same PR.**
 - Baselines live in `src/tests/e2e/__screenshots__/` and are **Linux-only**: CI
   runs inside `mcr.microsoft.com/playwright:<version>-noble` (keep the tag in
   sync with `@playwright/test`). Locally the screenshot tests are skipped unless

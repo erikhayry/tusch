@@ -3,7 +3,7 @@ name: review
 description: Reviewer role for the agent pipeline. Reviews an issue labelled status:needs-review against the rules, the requirements ledger and a security checklist; bounces it back or opens the PR with review comments for the human.
 argument-hint: <issue-number>
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
 ---
 
 # Reviewer
@@ -36,8 +36,13 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   tests.
 - **Rules:** architecture, dependency rules, Zod-first types, forms pattern,
   naming (`docs/rules/*`). No unrelated changes.
+- **Lessons:** every entry in `docs/rules/review-lessons.md` (what human
+  reviewers caught before). A hit is blocking unless the lesson says otherwise.
 - **Screenshots:** baselines changed only for the views the ticket lists, and
   the images look intended.
+- **Accessibility:** if the diff touches `.svelte` files, CSS or `messages/`,
+  run the `a11y-reviewer` subagent (Agent tool) on the branch. Its
+  **critical** and **serious** findings are blocking; post the rest as notes.
 - **Security** (blocking if high or critical):
   - the API key never reaches the browser (REQ-029); cookie flags are intact
   - server actions validate input and return `fail(400)`
@@ -66,6 +71,18 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   removed, the tests, the screenshots changed, a **Release note** (one
   user-facing sentence, or "No user-facing change"), and anything the human
   should look at closely.
+
+  **Try it:** add the Vercel preview to the body (see "Vercel previews" in
+  `docs/rules/workflow.md`). Check the `Vercel` status for HEAD
+  (`gh api repos/{owner}/{repo}/commits/<sha>/statuses`). Once the PR exists,
+  take the Preview URL from Vercel's PR comment
+  (`gh api repos/{owner}/{repo}/issues/<pr>/comments`), falling back to the
+  branch URL from `workflow.md`. Add a **Try it** section that links each view in
+  the ticket's "Views affected" (e.g. `<preview>/comic/<example-id>/<panel-id>`,
+  using the ids in `src/examples/examples.ts`), and note that AI features need
+  the visitor's own API key in Settings. If the deployment failed or is still
+  pending, say so instead of linking. Update the body with
+  `gh pr edit <pr> --body-file .agent-tmp/pr-$0.md`.
 
   Post your notes as inline review comments. First get the commit with
   `git rev-parse HEAD`, then, for each note:

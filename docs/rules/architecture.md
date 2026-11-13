@@ -42,6 +42,9 @@ new feature code goes under `features/`.
 
 ## Dependency rules
 
+Enforced by dependency-cruiser (`.dependency-cruiser.cjs`, `pnpm run lint:deps`,
+part of `pnpm run lint`). Change a rule there in the same PR as here.
+
 - `src/lib/server/**` must not import from `src/lib/components`, any
   `features/*/client`, `src/lib/client`, or `*.svelte.ts` state.
 - Contracts must not import server or client code; both sides import contracts.

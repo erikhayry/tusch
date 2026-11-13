@@ -15,18 +15,31 @@
 
 `.github/workflows/agents.yml` runs the role skills automatically:
 
-| You do                                                                     | Runs                                                                             |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Add `status:idea` to an issue, or answer the planner's questions there     | `/plan <n>`                                                                      |
-| Add `status:needs-tests` (or a skill hands off to it)                      | `/test <n>` → `/develop` → `/review`, each started by the previous stage's label |
-| Comment or review on a pipeline PR while the issue is `status:needs-human` | `/triage <n>`                                                                    |
-| Merge a pipeline PR (branch `issue-<n>-…`)                                 | `/tech-lead reconcile <pr>`                                                      |
+| You do                                                                             | Runs                                                                             |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Add `status:idea` to an issue, or answer the planner's questions there             | `/plan <n>`                                                                      |
+| Add `status:needs-tests` (or a skill hands off to it)                              | `/test <n>` → `/develop` → `/review`, each started by the previous stage's label |
+| Comment or review on a pipeline PR while the issue is `status:needs-human`         | `/triage <n>`                                                                    |
+| Merge a pipeline PR (branch `issue-<n>-…`)                                         | `/tech-lead reconcile <pr>`                                                      |
+| Nothing: SonarCloud fails on a pipeline PR while the issue is `status:needs-human` | `/develop <n>` with the findings (blocked after 2 rounds)                        |
+| Nothing: Mondays 06:00 UTC, or dispatch `agents.yml` with `audit` ticked           | `/tech-lead audit`                                                               |
 
 - Bare approvals, bot comments and `@claude` mentions don't start a stage
   (`@claude` goes to `claude.yml`).
 - One agent runs per issue at a time. A failed or timed-out run sets
   `status:blocked` and links the run.
+- **WIP limit: two issues in progress** (open and labelled `needs-tests`,
+  `needs-dev`, `needs-review` or `needs-human`). A third `status:needs-tests`
+  issue gets the `queued` label and a comment instead of a `/test` run. When an
+  issue is merged, closed or blocked (and every 30 minutes), the oldest queued
+  issue starts. `scripts/pipeline-wip.sh` holds the rule; local runs ignore it.
 - To take over by hand, run the same skill locally (`/develop 42`) or move the label yourself.
+- **Bookkeeping:** every agent run on GitHub appends a row (skill, model,
+  turns, tokens, estimated cost, run link) to `costs.csv` on the `bookkeeping`
+  branch and updates one "Cost so far" comment on the issue. The cost is an
+  API-price estimate, not the subscription bill. `scripts/costs.mjs` reads the
+  rows and totals them; the weekly audit copies them to `docs/costs.csv`.
+  Local runs aren't recorded.
 
 ## Branches and PRs
 
@@ -36,7 +49,9 @@
 - `main` is protected: CI (`test`: typecheck, lint, requirements check, knip,
   E2E) must pass; no force-push.
 - PR body: what changed and why, `Closes #<n>`, the tests added, anything
-  deliberately left out, and follow-ups as new issues (not TODOs).
+  deliberately left out, follow-ups as new issues (not TODOs), and a
+  **Release note**: one user-facing sentence, or "No user-facing change". After
+  a pipeline PR merges, the tech lead copies the note into `CHANGELOG.md`.
 - Keep PRs focused: no unrelated formatting or refactors. File an issue instead.
 - Commit messages: imperative subject; body explains why.
 - Never commit secrets or `.env*` files.
@@ -51,6 +66,28 @@ Installed automatically by `pnpm install` (`simple-git-hooks`, configured in `pa
 | pre-push   | `pnpm run check`, `pnpm run lint`, `pnpm run check:requirements` |
 
 E2E runs in CI, not in hooks. Use `--no-verify` only in an emergency, and say so in the PR.
+
+## Vercel previews
+
+Vercel deploys every pushed branch and comments the Preview link on its PR.
+The branch URL is `https://tusch-git-<branch>-erik-hyrys-projects.vercel.app`
+(Vercel shortens it with a hash when it exceeds 63 characters, so prefer the
+link in Vercel's comment). Previews have no server API key: AI features need
+the visitor's own key in Settings. The reviewer links the affected views in
+the PR's **Try it** section.
+
+## Dependencies
+
+Dependabot (`.github/dependabot.yml`) opens grouped weekly PRs for npm
+packages and GitHub Actions. They go through CI like any PR; the agents ignore
+them (bot sender). `@playwright/test` is excluded: bump it by hand together
+with the CI container tag and the screenshot baselines.
+
+**Cooldown:** pnpm installs only versions published at least 7 days ago
+(`minimumReleaseAge` in `pnpm-workspace.yaml`; `pnpm install --frozen-lockfile`
+rejects a lockfile that breaks it), and Dependabot waits 7 days before
+proposing a release. To add a newer package, pick a version older than 7 days
+(`npm view <pkg> time`); don't relax the policy.
 
 ## Before pushing
 

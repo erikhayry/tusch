@@ -2,6 +2,7 @@ import { m } from '$lib/paraglide/messages';
 import { TEXT_MODEL_KEY } from '$lib/types';
 import type { Locator, Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
+import { typeInto } from '../../../../tests/e2e/keyboard';
 
 export class CreatePage {
 	readonly page: Page;
@@ -27,8 +28,8 @@ export class CreatePage {
 	}
 
 	async submit(key = 'mock key') {
-		await this.keyInput.fill(key);
-		await this.keyInput.press('Enter');
+		await typeInto(this.page, this.keyInput, key);
+		await this.page.keyboard.press('Enter');
 	}
 
 	async goto(query?: string) {

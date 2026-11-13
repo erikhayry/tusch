@@ -196,4 +196,4 @@ derived from the current code:
 - **Screenshot flakiness.** Mitigated by Linux-only baselines and determinism;
   any flaky view is masked or removed, not retried.
 - **Cost.** Caps per role, one agent per issue, and a WIP limit (at most two
-  issues past `status:needs-tests` at once).
+  issues in progress; the rest wait with the `queued` label, #77).
