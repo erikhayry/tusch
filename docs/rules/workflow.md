@@ -26,6 +26,11 @@
   (`@claude` goes to `claude.yml`).
 - One agent runs per issue at a time. A failed or timed-out run sets
   `status:blocked` and links the run.
+- **WIP limit: two issues in progress** (open and labelled `needs-tests`,
+  `needs-dev`, `needs-review` or `needs-human`). A third `status:needs-tests`
+  issue gets the `queued` label and a comment instead of a `/test` run. When an
+  issue is merged, closed or blocked (and every 30 minutes), the oldest queued
+  issue starts. `scripts/pipeline-wip.sh` holds the rule; local runs ignore it.
 - To take over by hand, run the same skill locally (`/develop 42`) or move the label yourself.
 
 ## Branches and PRs
