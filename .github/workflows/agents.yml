@@ -16,12 +16,18 @@ on:
   # WIP limit: start queued issues when capacity frees up (issue #77).
   schedule:
     - cron: '*/30 * * * *'
+    # Weekly tech-lead audit (issue #38): Mondays 06:00 UTC.
+    - cron: '0 6 * * 1'
   # Used by the release job (events from GITHUB_TOKEN start no runs, dispatches do).
   workflow_dispatch:
     inputs:
       issue:
         description: Issue to start /test on (must be labelled status:needs-tests)
-        required: true
+        required: false
+      audit:
+        description: Run the weekly /tech-lead audit now instead
+        type: boolean
+        default: false
 
 defaults:
   run:
@@ -65,6 +71,8 @@ jobs:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           MERGED: ${{ github.event.pull_request.merged }}
           DISPATCH_ISSUE: ${{ github.event.inputs.issue }}
+          DISPATCH_AUDIT: ${{ github.event.inputs.audit }}
+          SCHEDULE: ${{ github.event.schedule }}
         run: |
           set -euo pipefail
           skill='' ; target='' ; queued=''
@@ -105,8 +113,11 @@ jobs:
               if [ "$MERGED" = true ] && [ -n "$(issue_from_ref "$HEAD_REF")" ]; then
                 skill=tech-lead; target="reconcile $PR"
               fi ;;
+            schedule)
+              if [ "$SCHEDULE" = '0 6 * * 1' ]; then skill=tech-lead; target=audit; fi ;;
             workflow_dispatch)
-              if issue_has_label "$DISPATCH_ISSUE" status:needs-tests; then skill=test; target=$DISPATCH_ISSUE; fi ;;
+              if [ "$DISPATCH_AUDIT" = true ]; then skill=tech-lead; target=audit
+              elif [ -n "$DISPATCH_ISSUE" ] && issue_has_label "$DISPATCH_ISSUE" status:needs-tests; then skill=test; target=$DISPATCH_ISSUE; fi ;;
             *) ;;
           esac
 
@@ -121,9 +132,10 @@ jobs:
             develop)   turns=100; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh workflow run:*),Bash(gh run:*),Bash(git:*),Bash(pnpm:*)' ;;
             review)    turns=60;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*)' ;;
             triage)    turns=30;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)' ;;
-            tech-lead) turns=30;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh api:*),Bash(git:*),Bash(pnpm run check:requirements),Bash(pnpm exec playwright test --list:*)' ;;
+            tech-lead) turns=30;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh api:*),Bash(git:*),Bash(pnpm run check:requirements),Bash(pnpm exec playwright test --list:*)' ;;
             *)         turns=0;   tools='' ;;
           esac
+          if [ "$target" = audit ]; then turns=60; fi  # reads every requirement
 
           echo "Route: event=$EVENT action=$ACTION label=$LABEL → skill='${skill:-none}' target='$target'"
           {
@@ -194,6 +206,13 @@ jobs:
 
       # The agent may switch to an issue branch that predates the script.
       - run: cp scripts/costs.mjs "$RUNNER_TEMP/costs.mjs"
+
+      # Facts for the audit (costs, CI re-runs, stuck issues), gathered without AI.
+      - name: Gather audit inputs
+        if: needs.route.outputs.target == 'audit'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/audit-inputs.sh
 
       - name: Run /${{ needs.route.outputs.skill }} ${{ needs.route.outputs.target }}
         id: claude
