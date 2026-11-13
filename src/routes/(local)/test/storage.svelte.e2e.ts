@@ -102,3 +102,28 @@ test(
 		expect(await page.evaluate(() => localStorage.getItem('comics_db_invalid'))).toBe('{not json');
 	},
 );
+
+test.describe('missing images', { tag: '@REQ-036' }, () => {
+	test('example comics show their bundled images', async ({ page }) => {
+		await gotoHydrated(page, PANEL_URL);
+		await expect(page.locator(`img[src="${PANEL.image!.landscape.src}"]`).first()).toBeVisible();
+	});
+
+	test('a stored image whose file is gone shows the placeholder', async ({ page }) => {
+		await gotoHydrated(page, PANEL_URL);
+		await generatePanelImage(page);
+		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+
+		const src = await panelImageSrc(page);
+		await page.evaluate(async (name) => {
+			const root = await navigator.storage.getDirectory();
+			await root.removeEntry(name!);
+		}, src);
+		await page.reload();
+
+		await expect(page.getByRole('img', { name: 'mock alt text' })).toHaveAttribute(
+			'src',
+			'/missing-image.svg',
+		);
+	});
+});

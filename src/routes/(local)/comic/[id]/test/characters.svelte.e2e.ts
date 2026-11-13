@@ -11,7 +11,7 @@ test(
 	'lists the panels a character appears in and previews a crop',
 	{ tag: '@REQ-014' },
 	async ({ page }) => {
-		// Give the panel a stored image with character positions (example images aren't in OPFS).
+		// Give the panel a freshly generated image (stored in OPFS) with character positions.
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}/${PANEL.id}`);
 		await page.getByRole('button', { name: m.removeImage() }).click();
 		await page.getByRole('button', { name: m.addImage() }).click();
@@ -29,3 +29,17 @@ test(
 		await expect(entry.locator('img[src^="blob:"]')).toBeVisible();
 	},
 );
+
+test('previews a crop on an untouched example panel', { tag: '@REQ-014' }, async ({ page }) => {
+	// Example images ship in static/, not OPFS; the preview must still read them.
+	await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
+	const entry = page
+		.getByRole('heading', { name: CHARACTER.name })
+		.locator('xpath=following-sibling::ul[1]')
+		.getByRole('listitem')
+		.filter({ hasText: PANEL.editorialTitle });
+
+	await entry.getByRole('button', { name: 'create' }).click();
+
+	await expect(entry.locator('img[src^="blob:"]')).toBeVisible();
+});

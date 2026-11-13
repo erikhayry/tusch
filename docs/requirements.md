@@ -203,6 +203,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: recoverable failure instead of a blank app.
 - Proven by: tagged tests
 
+### REQ-036 A missing image file shows a placeholder
+
+- Status: active
+- Statement: if a comic references an image file that is no longer stored, the view shows a neutral "missing image" placeholder instead of a broken image or another comic's picture; example comics show their bundled images.
+- Why: a missing file must be visible, not disguised as a real image.
+- Proven by: tagged tests
+
 ### REQ-027 The raw view shows the comic data
 
 - Status: active

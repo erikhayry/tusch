@@ -40,6 +40,7 @@ export async function getImageUrl(fileName: string) {
 		const file = await fileHandle.getFile();
 		return URL.createObjectURL(file);
 	} catch {
-		return '/fallback-placeholder.png'; // Fallback asset URL
+		// Neutral placeholder, so a missing image is obvious rather than looking like a real one.
+		return '/missing-image.svg';
 	}
 }
