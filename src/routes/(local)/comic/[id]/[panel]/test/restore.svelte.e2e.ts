@@ -71,7 +71,7 @@ async function replace(panelPage: PanelPage): Promise<string> {
 
 test(
 	'offers no restore for an image that was never replaced',
-	{ tag: '@REQ-044' },
+	{ tag: '@REQ-048' },
 	async ({ page }) => {
 		const panelPage = await new PanelPage(page).goto();
 
@@ -85,7 +85,7 @@ test(
 	},
 );
 
-test('offers to restore after the image is replaced', { tag: '@REQ-044' }, async ({ page }) => {
+test('offers to restore after the image is replaced', { tag: '@REQ-048' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 
 	await replace(panelPage);
@@ -95,7 +95,7 @@ test('offers to restore after the image is replaced', { tag: '@REQ-044' }, async
 	await expect(panelPage.restoreImageButton).toBeVisible();
 });
 
-test('restores the previous image with the keyboard', { tag: '@REQ-044' }, async ({ page }) => {
+test('restores the previous image with the keyboard', { tag: '@REQ-048' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 	await replace(panelPage);
 
@@ -111,7 +111,7 @@ test('restores the previous image with the keyboard', { tag: '@REQ-044' }, async
 
 test(
 	'keeps the restorable image across a reload',
-	{ tag: ['@REQ-044', '@REQ-022'] },
+	{ tag: ['@REQ-048', '@REQ-022'] },
 	async ({ page }) => {
 		const panelPage = await new PanelPage(page).goto();
 		await replace(panelPage);
@@ -130,7 +130,7 @@ test(
 
 test(
 	'restores only one step back and deletes the older file',
-	{ tag: ['@REQ-044', '@REQ-025'] },
+	{ tag: ['@REQ-048', '@REQ-025'] },
 	async ({ page }) => {
 		const panelPage = await new PanelPage(page).goto();
 		const a = await generateFirstImage(panelPage);
@@ -153,7 +153,7 @@ test(
 
 test(
 	'removing the image drops the kept previous image too',
-	{ tag: ['@REQ-025', '@REQ-044', '@REQ-017'] },
+	{ tag: ['@REQ-025', '@REQ-048', '@REQ-017'] },
 	async ({ page }) => {
 		const panelPage = await new PanelPage(page).goto();
 		const a = await generateFirstImage(panelPage);
@@ -200,7 +200,7 @@ for (const { title, url, button } of DELETIONS) {
 
 test(
 	'restoring removes the crops of the replaced image and keeps the earlier ones',
-	{ tag: ['@REQ-045', '@REQ-018', '@REQ-025'] },
+	{ tag: ['@REQ-049', '@REQ-018', '@REQ-025'] },
 	async ({ page }) => {
 		const panelPage = await new PanelPage(page).goto();
 		await generateFirstImage(panelPage);
