@@ -7,6 +7,7 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 ### Features
 
+- Tusch now switches to a dark theme automatically when your system or browser is set to dark mode. ([#170](https://github.com/erikhayry/tusch/pull/170))
 - The app now has a clean black-and-white style that is readable on small screens, with a clear blue focus outline for keyboard users. ([#159](https://github.com/erikhayry/tusch/pull/159))
 
 ### Fixes
