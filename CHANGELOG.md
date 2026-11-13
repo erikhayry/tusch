@@ -8,6 +8,7 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 ### Features
 
 - Deleting a panel now also removes the character images taken from it, so they no longer take up storage. ([#158](https://github.com/erikhayry/tusch/pull/158))
+- The app now has a clean black-and-white style that is readable on small screens, with a clear blue focus outline for keyboard users. ([#159](https://github.com/erikhayry/tusch/pull/159))
 
 ### Fixes
 
