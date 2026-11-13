@@ -20,6 +20,9 @@ updates:
       # Must move together with the CI container tag and the screenshot
       # baselines (docs/rules/testing.md, "Screenshots"); bump by hand.
       - dependency-name: '@playwright/test'
+      # Types follow the Node runtime (24 in CI, agents and Vercel); move both together.
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
   - package-ecosystem: github-actions
     directory: /
     schedule:
