@@ -3,33 +3,27 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../../../../examples/examples';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../../../../tests/e2e/keyboard';
+import {
+	panelImageSrc as storedPanelImageSrc,
+	storedFiles,
+} from '../../../../../../tests/e2e/storage';
 import { PanelPage } from './utils/panelPage';
 
 const EXAMPLE = EXAMPLES[0];
 const PANEL = EXAMPLE.panels[0];
 
-/** File names currently stored in OPFS. */
-function storedFiles(page: Page): Promise<string[]> {
-	return page.evaluate(async () => {
-		const root = await navigator.storage.getDirectory();
-		const names: string[] = [];
-		for await (const name of (root as unknown as { keys(): AsyncIterable<string> }).keys()) {
-			names.push(name);
-		}
-		return names.sort();
-	});
+function panelImageSrc(page: Page): Promise<string | undefined> {
+	return storedPanelImageSrc(page, EXAMPLE.id, PANEL.id);
 }
 
-/** The stored src of the example panel's current image, if any. */
-function panelImageSrc(page: Page): Promise<string | undefined> {
-	return page.evaluate(
-		({ comicId, panelId }) => {
-			const { comics } = JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}');
-			const comic = comics.find((c: { id: string }) => c.id === comicId);
-			return comic?.panels.find((p: { id: string }) => p.id === panelId)?.image?.landscape.src;
-		},
-		{ comicId: EXAMPLE.id, panelId: PANEL.id },
-	);
+/** Wait until none of the given files remain in OPFS. */
+async function expectFilesGone(page: Page, names: string[]) {
+	await expect
+		.poll(async () => {
+			const files = await storedFiles(page);
+			return names.some((name) => files.includes(name));
+		})
+		.toBe(false);
 }
 
 type StoredCrop = { id: string; head: string; full: string };
@@ -177,39 +171,32 @@ test(
 	},
 );
 
-test('deleting the panel removes both image files', { tag: '@REQ-025' }, async ({ page }) => {
-	const panelPage = await new PanelPage(page).goto();
-	const a = await generateFirstImage(panelPage);
-	const b = await replace(panelPage);
-	expect(await storedFiles(page)).toContain(a);
+const DELETIONS = [
+	{
+		title: 'deleting the panel removes both image files',
+		url: `/comic/${EXAMPLE.id}`,
+		button: () => m.deletePanel({ number: 1 }),
+	},
+	{
+		title: 'deleting the comic removes both image files',
+		url: '/',
+		button: () => m.deleteComic({ title: EXAMPLE.title }),
+	},
+];
 
-	await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
-	await activate(page, page.getByRole('button', { name: m.deletePanel({ number: 1 }) }));
+for (const { title, url, button } of DELETIONS) {
+	test(title, { tag: '@REQ-025' }, async ({ page }) => {
+		const panelPage = await new PanelPage(page).goto();
+		const a = await generateFirstImage(panelPage);
+		const b = await replace(panelPage);
+		expect(await storedFiles(page)).toContain(a);
 
-	await expect
-		.poll(async () => {
-			const files = await storedFiles(page);
-			return files.includes(a) || files.includes(b);
-		})
-		.toBe(false);
-});
+		await gotoHydrated(page, url);
+		await activate(page, page.getByRole('button', { name: button() }));
 
-test('deleting the comic removes both image files', { tag: '@REQ-025' }, async ({ page }) => {
-	const panelPage = await new PanelPage(page).goto();
-	const a = await generateFirstImage(panelPage);
-	const b = await replace(panelPage);
-	expect(await storedFiles(page)).toContain(a);
-
-	await gotoHydrated(page, '/');
-	await activate(page, page.getByRole('button', { name: m.deleteComic({ title: EXAMPLE.title }) }));
-
-	await expect
-		.poll(async () => {
-			const files = await storedFiles(page);
-			return files.includes(a) || files.includes(b);
-		})
-		.toBe(false);
-});
+		await expectFilesGone(page, [a, b]);
+	});
+}
 
 test(
 	'restoring removes the crops of the replaced image and keeps the earlier ones',
