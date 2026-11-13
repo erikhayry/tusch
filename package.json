@@ -48,8 +48,8 @@
 		"vite": "^8.0.16"
 	},
 	"dependencies": {
-		"openai": "^7.27.0",
-		"zod": "^4.6.5"
+		"openai": "^7.52.0",
+		"zod": "^4.6.7"
 	},
 	"simple-git-hooks": {
 		"pre-commit": "pnpm exec lint-staged",
