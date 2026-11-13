@@ -5,6 +5,10 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 ## Unreleased
 
+### Features
+
+- While an action runs, Tusch now shows what it is doing, a progress bar and the seconds elapsed. ([#161](https://github.com/erikhayry/tusch/pull/161))
+
 ### Fixes
 
 - Example comics now show their own panel images, and a missing image shows a clear placeholder instead of an unrelated picture. ([#138](https://github.com/erikhayry/tusch/pull/138))
