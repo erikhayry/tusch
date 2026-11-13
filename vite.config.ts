@@ -18,6 +18,10 @@ export default defineConfig({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
 			emitTsDeclarations: true,
+			// v3 defaults the Vite plugin to virtual message modules. E2E tests import
+			// `$lib/paraglide/messages` in plain Node (Playwright), which can't load
+			// `virtual:` URLs, so keep real files on disk.
+			outputStructure: 'message-modules',
 		}),
 	],
 });
