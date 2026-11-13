@@ -77,7 +77,7 @@ export class PanelPage {
 
 	async addPanelBefore() {
 		await activate(this.page, this.addPanelBeforeButton);
-		await expect(this.page.getByText(m.loading())).toBeHidden();
+		await expect(this.page.getByRole('progressbar')).toBeHidden();
 	}
 
 	async goto(panel = 0) {

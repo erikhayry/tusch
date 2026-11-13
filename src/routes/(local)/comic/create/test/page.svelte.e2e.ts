@@ -117,7 +117,7 @@ test(
 
 		await createPage.fillUrl('https://example.com/article');
 		await createPage.submit();
-		await expect(page.getByTestId('loader-test-id')).toHaveText(m.loading());
+		await expect(page.getByTestId('loader-test-id')).toContainText(m.loadingCreateComic());
 		await createPage.submit();
 
 		await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
