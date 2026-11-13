@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { opfsAssetStore } from '$lib/client/assets/opfs-asset-store';
 	import { ImageAssetSchema } from '$lib/types';
-	import { getImageUrl } from '$lib/utils/storage/storage';
 	import type { SvelteHTMLElements } from 'svelte/elements';
 	import { z } from 'zod';
 	import { getImageSrc } from '../panel/utils/image';
@@ -18,7 +18,7 @@
 
 	$effect(() => {
 		if (imageData.image) {
-			getImageUrl(getImageSrc(imageData.image)).then((url) => {
+			opfsAssetStore.readUrl(getImageSrc(imageData.image)).then((url) => {
 				src = url;
 			});
 		} else {
