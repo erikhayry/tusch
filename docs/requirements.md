@@ -295,6 +295,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: keyboard users must see where they are (WCAG 2.4.7); axe doesn't check it.
 - Proven by: tagged tests
 
+### REQ-040 No view scrolls horizontally at 320 px
+
+- Status: active
+- Statement: at a viewport 320 CSS px wide, no view (landing, create, comic, panel, raw, not found, settings) scrolls horizontally: the document is no wider than the viewport, and long content such as the raw JSON wraps or scrolls inside its own box.
+- Why: WCAG 1.4.10 (Reflow); users on narrow screens or at high zoom must not have to scroll in two directions.
+- Proven by: tagged tests
+
 ## Performance
 
 ### REQ-039 Core views meet the web vitals budget
