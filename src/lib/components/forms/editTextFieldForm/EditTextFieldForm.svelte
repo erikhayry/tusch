@@ -9,10 +9,15 @@
 	//TODO a11y
 	let editable = $state(false);
 
-	const handleSubmit = enhanceClientCommand(getEditValues, applyItemEdit, async ({ update }) => {
-		editable = false;
-		await update();
-	});
+	const handleSubmit = enhanceClientCommand(
+		m.loadingEdit(),
+		getEditValues,
+		applyItemEdit,
+		async ({ update }) => {
+			editable = false;
+			await update();
+		},
+	);
 
 	const toggleEditing = () => {
 		editable = !editable;

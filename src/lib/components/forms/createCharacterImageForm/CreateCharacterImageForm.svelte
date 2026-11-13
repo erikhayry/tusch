@@ -12,6 +12,7 @@
 		type CreateCharacterImageValue,
 	} from '$lib/features/panels/contracts/createCharacterImage';
 	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
+	import { m } from '$lib/paraglide/messages';
 	import { encodeFormValue } from '$lib/forms/form-data';
 
 	import { type CreateCharacterImageFormProps } from './createCharacterImageFormTypes';
@@ -25,7 +26,11 @@
 		imageSrc = URL.createObjectURL(cropped);
 	}
 
-	const handleSubmit = enhanceClientCommand(getCreateCharacterImageValues, showCrop);
+	const handleSubmit = enhanceClientCommand(
+		m.loadingCreateCharacterImage(),
+		getCreateCharacterImageValues,
+		showCrop,
+	);
 
 	let { label, values }: CreateCharacterImageFormProps = $props();
 </script>

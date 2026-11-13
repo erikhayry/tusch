@@ -18,7 +18,7 @@
 
 	// Failures (invalid input, rate limits, provider errors) surface in the global
 	// error region via the shared enhancer.
-	const handleSubmit = enhanceAction<ValidateApiKeyResult>(({ data }) => {
+	const handleSubmit = enhanceAction<ValidateApiKeyResult>(m.loadingValidateKey(), ({ data }) => {
 		success = data.success;
 	});
 </script>

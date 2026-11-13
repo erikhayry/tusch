@@ -5,6 +5,14 @@
 	"newCaption": "Ny bildtext",
 	"loadingCreateComic": "Skapar serie...",
 	"loadingCreatePanelImage": "Skapar rutans bild...",
+	"loadingCreatePanel": "Skapar ruta...",
+	"loadingCreateCoverImage": "Skapar omslagsbild...",
+	"loadingCreateCharacterImage": "Förbereder karaktärsbild...",
+	"loadingValidateKey": "Kontrollerar API-nyckel...",
+	"loadingSaveSettings": "Sparar inställningar...",
+	"loadingAddCaption": "Lägger till bildtext...",
+	"loadingEdit": "Sparar ändringar...",
+	"loadingDelete": "Tar bort...",
 	"elapsedSeconds": "{seconds} s",
 	"done": "Klart"
 }

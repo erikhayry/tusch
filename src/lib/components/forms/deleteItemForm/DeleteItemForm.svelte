@@ -4,9 +4,11 @@
 	import { deleteItemWithAssets } from '$lib/features/comics/client/workflows/delete-item';
 	import { DELETE_ITEM_ACTION, getDeleteValues } from '$lib/features/comics/contracts/deleteItem';
 	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
+	import { m } from '$lib/paraglide/messages';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
 
 	const handleSubmit = enhanceClientCommand(
+		m.loadingDelete(),
 		getDeleteValues,
 		async (values) => {
 			const cleanup = await deleteItemWithAssets(workflowDeps, values);
