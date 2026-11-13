@@ -96,6 +96,29 @@ test('keyboard: a select changes value by typing', { tag: '@REQ-037' }, async ({
 	await expect(model).toHaveValue('gpt-6-luna');
 });
 
+test(
+	'keyboard: the focus outline uses the accent colour',
+	{ tag: '@REQ-038' },
+	async ({ page }) => {
+		await gotoHydrated(page, VIEWS.create);
+		const [control] = await visibleControls(page);
+		await tabTo(page, control);
+
+		// Resolve --color-focus through a probe so any colour syntax compares as rgb().
+		const { token, accent, outline } = await control.evaluate((el) => {
+			const token = getComputedStyle(document.documentElement).getPropertyValue('--color-focus');
+			const probe = document.createElement('span');
+			probe.style.color = 'var(--color-focus)';
+			document.body.append(probe);
+			const accent = getComputedStyle(probe).color;
+			probe.remove();
+			return { token: token.trim(), accent, outline: getComputedStyle(el).outlineColor };
+		});
+		expect(token).not.toBe('');
+		expect(outline).toBe(accent);
+	},
+);
+
 test.describe('keyboard: the focused control shows a focus indicator', { tag: '@REQ-038' }, () => {
 	for (const [name, url] of Object.entries(VIEWS)) {
 		test(name, async ({ page }) => {

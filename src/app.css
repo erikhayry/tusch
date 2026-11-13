@@ -1,0 +1,228 @@
+/*
+ * Global baseline. See docs/rules/styling.md.
+ *
+ * Every value is declared once in the token block below; everything else uses
+ * var(--…). Order: semantic elements, then narrow screens (the base styles
+ * target 320 px), then wide screens with min-width queries only.
+ *
+ * Breakpoints (media queries can't read custom properties, so this is the one
+ * place they are defined):
+ *   wide: 48em
+ */
+:root {
+	--color-text: #000;
+	--color-background: #fff;
+	--color-muted: #595959;
+	--color-border: #000;
+	--color-surface: #f2f2f2;
+	/* Accent: used only for the focus indicator. 3:1+ against white. */
+	--color-focus: #0057d8;
+
+	--font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--font-family-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+	--font-size-base: 1rem;
+	--font-size-small: 0.875rem;
+	--font-size-h1: 1.75rem;
+	--font-size-h1-wide: 2.25rem;
+	--font-size-h2: 1.375rem;
+	--font-size-h3: 1.125rem;
+	--line-height-base: 1.5;
+	--line-height-heading: 1.25;
+
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 1rem;
+	--space-4: 1.5rem;
+	--space-5: 2rem;
+
+	--border-width: 1px;
+	--focus-width: 3px;
+	--focus-offset: 2px;
+	--radius: 0.25rem;
+	--content-width: 60rem;
+	--control-min-size: 2.75rem;
+}
+
+/* Semantic baseline (narrow first) */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	font-family: var(--font-family);
+	font-size: 100%;
+	line-height: var(--line-height-base);
+	color: var(--color-text);
+	background: var(--color-background);
+}
+
+body {
+	margin: 0;
+	font-size: var(--font-size-base);
+	overflow-wrap: anywhere;
+}
+
+main {
+	display: block;
+	max-inline-size: var(--content-width);
+	margin-inline: auto;
+	padding: var(--space-3);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	line-height: var(--line-height-heading);
+	margin-block: var(--space-4) var(--space-2);
+}
+
+h1 {
+	font-size: var(--font-size-h1);
+	margin-block-start: 0;
+}
+
+h2 {
+	font-size: var(--font-size-h2);
+}
+
+h3,
+h4,
+h5,
+h6 {
+	font-size: var(--font-size-h3);
+}
+
+p,
+ul,
+ol,
+figure {
+	margin-block: 0 var(--space-3);
+}
+
+ul,
+ol {
+	padding-inline-start: var(--space-4);
+}
+
+a {
+	color: var(--color-text);
+	text-decoration: underline;
+}
+
+img {
+	display: block;
+	max-inline-size: 100%;
+	block-size: auto;
+}
+
+pre {
+	max-inline-size: 100%;
+	margin-block: 0 var(--space-3);
+	padding: var(--space-3);
+	overflow-x: auto;
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-small);
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	background: var(--color-surface);
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--radius);
+}
+
+form {
+	margin-block: 0 var(--space-4);
+}
+
+label {
+	display: block;
+	margin-block: var(--space-3) var(--space-1);
+	font-weight: bold;
+}
+
+input,
+select,
+textarea,
+button {
+	font: inherit;
+	color: var(--color-text);
+	max-inline-size: 100%;
+	min-block-size: var(--control-min-size);
+	padding: var(--space-2) var(--space-3);
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--radius);
+	background: var(--color-background);
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='file']),
+select,
+textarea {
+	display: block;
+	inline-size: 100%;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+	min-block-size: 0;
+	padding: 0;
+}
+
+input::placeholder,
+textarea::placeholder {
+	color: var(--color-muted);
+}
+
+textarea {
+	min-block-size: calc(var(--control-min-size) * 2);
+}
+
+button {
+	margin-block-start: var(--space-3);
+	cursor: pointer;
+	font-weight: bold;
+	color: var(--color-background);
+	background: var(--color-text);
+}
+
+button:disabled {
+	cursor: not-allowed;
+	color: var(--color-muted);
+	background: var(--color-surface);
+}
+
+/* `outline` (not only box-shadow) so the focus test sees it. Only on
+   :focus-visible: a resting outline would make before/after focus equal. */
+:focus-visible {
+	outline: var(--focus-width) solid var(--color-focus);
+	outline-offset: var(--focus-offset);
+}
+
+/* Loader and Error status regions: an empty region is 0 px tall. Never hide
+   them (display/visibility): a live region must stay in the accessibility
+   tree for its content changes to be announced. */
+[role='status'] {
+	max-inline-size: var(--content-width);
+	margin-inline: auto;
+	padding-inline: var(--space-3);
+	font-size: var(--font-size-small);
+	color: var(--color-muted);
+}
+
+/* Wide screens */
+@media (min-width: 48em) {
+	main {
+		padding: var(--space-5);
+	}
+
+	h1 {
+		font-size: var(--font-size-h1-wide);
+	}
+
+	[role='status'] {
+		padding-inline: var(--space-5);
+	}
+}
