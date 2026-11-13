@@ -82,6 +82,12 @@ packages and GitHub Actions. They go through CI like any PR; the agents ignore
 them (bot sender). `@playwright/test` is excluded: bump it by hand together
 with the CI container tag and the screenshot baselines.
 
+**Cooldown:** pnpm installs only versions published at least 7 days ago
+(`minimumReleaseAge` in `pnpm-workspace.yaml`; `pnpm install --frozen-lockfile`
+rejects a lockfile that breaks it), and Dependabot waits 7 days before
+proposing a release. To add a newer package, pick a version older than 7 days
+(`npm view <pkg> time`); don't relax the policy.
+
 ## Before pushing
 
 ```sh

@@ -33,7 +33,7 @@
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.19.0",
 		"globals": "^17.6.0",
-		"knip": "^6.45.1",
+		"knip": "^6.44.1",
 		"lint-staged": "^17.6.0",
 		"plop": "^4.0.5",
 		"prettier": "^3.9.9",
