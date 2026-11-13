@@ -30,3 +30,6 @@
 - name: type:chore
   color: ededed
   description: Tooling, docs, refactoring; no user-facing change
+- name: queued
+  color: d4c5f9
+  description: Waiting for a free pipeline slot (WIP limit); starts automatically
