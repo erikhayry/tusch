@@ -63,6 +63,20 @@ GitHub nobody is there to approve anything else. So:
 - **Never wait for approval.** If a command you need is denied twice, block (see
   below) and include the exact command in your comment.
 
+## Follow-ups
+
+Anything you find that is outside the ticket (a slow view, a flaky test, a
+rule that should change) becomes a new issue, never a TODO in code:
+
+1. Search first (`gh issue list --search "<words>" --state open`) and link an
+   existing issue instead of duplicating it.
+2. Otherwise write the body to `.agent-tmp/followup-<n>.md` and run
+   `gh issue create --title "…" --label type:bug|type:feature|type:chore --body-file .agent-tmp/followup-<n>.md`.
+   Say where it was found (`Found while working on #<n>`). Don't add a
+   `status:*` label; a human decides when it enters the pipeline.
+3. Reference the new issue where it matters (a code comment next to a
+   temporary workaround, the PR body, your protocol comment).
+
 ## Blocking
 
 Set `status:blocked` (removing the current status) and comment the reason

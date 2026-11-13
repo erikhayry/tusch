@@ -47,3 +47,9 @@ if the reviewer's checklist (`review/SKILL.md`, `docs/rules/*`,
 that would have; otherwise **Missed by review: no**. The tech lead turns these
 into review lessons after the merge. Then update the label as decided. If a comment is unclear,
 ask on the PR and leave the status unchanged.
+
+**Always comment, even when nothing changes.** If every new comment is an
+approval, information or a question you answered, post
+`### Triage: no action needed` with one line per comment saying why, and
+`Next: status:needs-human (unchanged)`. A run without a comment looks like a
+failure to the human.
