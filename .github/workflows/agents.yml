@@ -138,6 +138,8 @@ jobs:
   agent:
     needs: route
     if: needs.route.outputs.skill != ''
+    outputs:
+      cost_row: ${{ steps.cost.outputs.row }}
     # One agent per issue at a time. Only real stage runs join this queue, so
     # comments and other no-op events can't displace a pending stage
     # (GitHub keeps one pending run per group and cancels older ones).
@@ -190,7 +192,11 @@ jobs:
 
       - run: pnpm exec paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide
 
+      # The agent may switch to an issue branch that predates the script.
+      - run: cp scripts/costs.mjs "$RUNNER_TEMP/costs.mjs"
+
       - name: Run /${{ needs.route.outputs.skill }} ${{ needs.route.outputs.target }}
+        id: claude
         uses: anthropics/claude-code-action@8a29bc6f0ae11a363721054b6739feba6adabe57 # v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -202,6 +208,87 @@ jobs:
           claude_args: |
             --max-turns ${{ needs.route.outputs.turns }}
             --allowedTools "${{ needs.route.outputs.tools }}"
+
+      # Bookkeeping (#50): one costs.csv row per run, also when the agent failed.
+      - name: Record cost
+        id: cost
+        if: always() && steps.claude.outcome != 'skipped'
+        continue-on-error: true # bookkeeping must never fail or block a stage
+        env:
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+          ISSUE: ${{ needs.route.outputs.issue }}
+          SKILL: ${{ needs.route.outputs.skill }}
+          TARGET: ${{ needs.route.outputs.target }}
+          CONCLUSION: ${{ steps.claude.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: echo "row=$(node "$RUNNER_TEMP/costs.mjs" row "$EXECUTION_FILE")" >> "$GITHUB_OUTPUT"
+
+  # Appends the row to costs.csv on the unprotected `bookkeeping` branch (pushes
+  # to main need a PR; the weekly audit copies the file there, #38) and keeps
+  # one "Cost so far" comment on the issue up to date.
+  bookkeep:
+    needs: [route, agent]
+    if: always() && needs.agent.outputs.cost_row != ''
+    concurrency:
+      group: agent-bookkeeping
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      issues: write
+    env:
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+          path: main
+
+      - name: Append to costs.csv
+        env:
+          ROW: ${{ needs.agent.outputs.cost_row }}
+        run: |
+          set -euo pipefail
+          cp main/scripts/costs.mjs costs.mjs  # the bookkeeping branch has no scripts
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          cd main
+          if git fetch -q origin bookkeeping; then
+            git switch -q -c bookkeeping FETCH_HEAD
+          else
+            git switch -q --orphan bookkeeping
+            node ../costs.mjs header > costs.csv
+            echo '{ "git": { "deploymentEnabled": false } }' > vercel.json  # no Vercel previews
+            git add vercel.json
+          fi
+          # Runs are serialised by the concurrency group; retry only for a manual push.
+          for attempt in 1 2 3; do
+            printf '%s\n' "$ROW" >> costs.csv
+            git add costs.csv
+            git commit -qm "Bookkeeping: $(printf '%s' "$ROW" | cut -d, -f2-4)"
+            if git push -q origin HEAD:bookkeeping; then exit 0; fi
+            echo "Push attempt $attempt failed; retrying on top of the remote branch"
+            git fetch -q origin bookkeeping
+            git reset -q --hard FETCH_HEAD
+          done
+          exit 1
+
+      - name: Update the Cost so far comment
+        if: needs.route.outputs.issue != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ needs.route.outputs.issue }}
+        run: |
+          set -euo pipefail
+          node costs.mjs summary main/costs.csv "$ISSUE" > summary.md
+          id=$(gh api "repos/$GH_REPO/issues/$ISSUE/comments" --paginate \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- cost-so-far -->"))) | .id' | head -n1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GH_REPO/issues/comments/$id" -F body=@summary.md > /dev/null
+          else
+            gh issue comment "$ISSUE" --body-file summary.md
+          fi
 
   queue:
     needs: route

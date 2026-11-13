@@ -32,6 +32,12 @@
   issue is merged, closed or blocked (and every 30 minutes), the oldest queued
   issue starts. `scripts/pipeline-wip.sh` holds the rule; local runs ignore it.
 - To take over by hand, run the same skill locally (`/develop 42`) or move the label yourself.
+- **Bookkeeping:** every agent run on GitHub appends a row (skill, model,
+  turns, tokens, estimated cost, run link) to `costs.csv` on the `bookkeeping`
+  branch and updates one "Cost so far" comment on the issue. The cost is an
+  API-price estimate, not the subscription bill. `scripts/costs.mjs` reads the
+  rows and totals them; the weekly audit copies them to `docs/costs.csv`.
+  Local runs aren't recorded.
 
 ## Branches and PRs
 
