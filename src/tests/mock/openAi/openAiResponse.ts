@@ -361,7 +361,7 @@ export const CREATE_PANEL_RESPONSE: OpenAiOutput = {
 	],
 };
 
-// Character ids match the example comic (src/examples/nirvana.ts) so crops are made.
+// Default character ids match the example comic (src/examples/nirvana.ts).
 const PANEL_IMAGE_DATA = {
 	data: {
 		alt: 'mock alt text',
@@ -430,6 +430,32 @@ export const CREATE_PANEL_IMAGE_RESPONSE: OpenAiOutput = {
 		},
 	],
 };
+
+/**
+ * The panel image with crop positions for the given characters. A comic made
+ * through the UI has its own character ids, so the canned ids alone would
+ * produce no crops for it. The two canned positions are reused in turn.
+ */
+export function createPanelImageResponse(characterIds: string[]): OpenAiOutput {
+	const positions = PANEL_IMAGE_DATA.data.characters;
+	const data = {
+		data: {
+			...PANEL_IMAGE_DATA.data,
+			characters: characterIds.map((id, index) => ({
+				...positions[index % positions.length],
+				id,
+			})),
+		},
+	};
+
+	return {
+		output: CREATE_PANEL_IMAGE_RESPONSE.output.map((item) =>
+			item.type === 'message'
+				? { ...item, content: [{ type: 'output_text' as const, text: JSON.stringify(data) }] }
+				: item,
+		),
+	};
+}
 
 export const MODELS_RESPONSE = {
 	options: { method: 'get', path: '/models', __security: { bearerAuth: true } },
