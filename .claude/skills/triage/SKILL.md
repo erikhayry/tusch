@@ -3,6 +3,7 @@ name: triage
 description: Routes human feedback on a pipeline PR. For an issue labelled status:needs-human, reads new human review comments and sends the work back to the tester or developer, answers questions, or files follow-ups.
 argument-hint: <issue-number>
 disable-model-invocation: true
+model: sonnet
 allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr list *) Bash(gh api *)
 ---
 

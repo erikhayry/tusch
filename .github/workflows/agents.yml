@@ -53,6 +53,7 @@ jobs:
       issue: ${{ steps.route.outputs.issue }}
       queued: ${{ steps.route.outputs.queued }}
       turns: ${{ steps.route.outputs.turns }}
+      model: ${{ steps.route.outputs.model }}
       tools: ${{ steps.route.outputs.tools }}
     steps:
       - uses: actions/checkout@v7
@@ -144,7 +145,15 @@ jobs:
             tech-lead) turns=50;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh api:*),Bash(git:*),Bash(pnpm run check:requirements),Bash(pnpm exec playwright test --list:*)' ;;
             *)         turns=0;   tools='' ;;
           esac
-          if [ "$target" = audit ]; then turns=100; fi  # reads every requirement
+
+          # Model per role (docs/rules/agents.md, "Models"): the strongest model where
+          # judgement matters most (planning, review, the weekly audit), the cheaper
+          # one for implementation and routine bookkeeping.
+          case "$skill" in
+            plan|review) model=opus ;;
+            *)           model=sonnet ;;
+          esac
+          if [ "$target" = audit ]; then turns=100; model=opus; fi  # reads every requirement
 
           echo "Route: event=$EVENT action=$ACTION label=$LABEL → skill='${skill:-none}' target='$target'"
           {
@@ -153,6 +162,7 @@ jobs:
             echo "issue=$(printf '%s' "$target" | grep -Eo '^[0-9]+' || true)"
             echo "queued=$queued"
             echo "turns=$turns"
+            echo "model=$model"
             echo "tools=$tools"
           } >> "$GITHUB_OUTPUT"
 
@@ -242,6 +252,7 @@ jobs:
             actions: read
           prompt: /${{ needs.route.outputs.skill }} ${{ needs.route.outputs.target }}
           claude_args: |
+            --model ${{ needs.route.outputs.model }}
             --max-turns ${{ needs.route.outputs.turns }}
             --allowedTools "${{ needs.route.outputs.tools }}"
 

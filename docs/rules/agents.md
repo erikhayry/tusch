@@ -63,6 +63,25 @@ GitHub nobody is there to approve anything else. So:
 - **Never wait for approval.** If a command you need is denied twice, block (see
   below) and include the exact command in your comment.
 
+## Models
+
+Use the cheapest model that does the job well; tokens are the pipeline's main
+cost (`costs.csv`, the "Cost so far" comment on each issue).
+
+| Role                                   | Model    | Why                                                     |
+| -------------------------------------- | -------- | ------------------------------------------------------- |
+| `/plan`, `/review`, `/tech-lead audit` | `opus`   | Judgement: scoping, catching what others missed         |
+| `/test`, `/develop`                    | `sonnet` | Implementation against a clear ticket and failing tests |
+| `/triage`, `/tech-lead reconcile`      | `sonnet` | Routine classification and bookkeeping                  |
+| `a11y-reviewer`, `pipeline-expert`     | as set   | `inherit` and `opus` (in `.claude/agents/`)             |
+
+The model is set twice and must match: `model:` in each skill's frontmatter
+(local runs) and the `model` case in `agents.yml` (GitHub). One exception: a skill has
+one model, so `/tech-lead audit` runs on `sonnet` locally (switch with
+`/model opus` first if you want the GitHub behaviour). Anything that needs
+no judgement (gathering facts, formatting, label moves, fixed check lists) is a
+script or workflow step, not an agent turn; `pipeline-expert` looks for these.
+
 ## Follow-ups
 
 Anything you find that is outside the ticket (a slow view, a flaky test, a
