@@ -3,7 +3,7 @@ name: tech-lead
 description: Tech lead for the requirements ledger (docs/requirements.md). Consults on new tickets, reconciles the ledger after a PR merges, and audits requirement coverage. Use for "audit requirements", "which requirements does this touch", or after merging a pipeline PR.
 argument-hint: 'consult <issue> | reconcile <pr> | audit'
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr comment *) Bash(gh pr diff *) Bash(git *) Bash(pnpm run check:requirements) Bash(pnpm exec playwright test --list *)
+allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr comment *) Bash(gh pr diff *) Bash(gh api *) Bash(git *) Bash(pnpm run check:requirements) Bash(pnpm exec playwright test --list *)
 ---
 
 # Tech lead
@@ -33,8 +33,17 @@ After a pipeline PR merges, read its diff (`gh pr diff <pr>`) and check:
 - removed behaviour has no leftover requirement,
 - no requirement became untrue as a side effect.
 
-If the ledger needs edits, make them on a branch `ledger-<pr>` from `main` and
-open a small PR (`type:chore`). Otherwise comment "Ledger consistent" on the PR.
+Then collect **review lessons**: read the triage comments on the PR's issue
+(`gh issue view <issue> --comments`) and the human comments on the PR
+(`gh pr view <pr> --comments`, and
+`gh api repos/{owner}/{repo}/pulls/<pr>/comments` for inline ones). For each
+"Missed by review: yes", or a human change request the reviewer should have
+caught, add a lesson to `docs/rules/review-lessons.md` following that file's
+rules. Merge it into an existing lesson or rule rather than duplicating.
+
+If the ledger or the lessons need edits, make them on a branch `ledger-<pr>`
+from `main` and open a small PR (`type:chore`). Otherwise comment "Ledger
+consistent, no new review lessons" on the PR.
 
 ## audit
 
