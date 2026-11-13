@@ -1,0 +1,110 @@
+[
+	{
+		"type": "system",
+		"subtype": "init",
+		"model": "claude-sonnet-5-5"
+	},
+	{
+		"type": "assistant",
+		"message": {
+			"content": [
+				{ "type": "text", "text": "PROMPT-TEXT-MUST-NOT-LEAK" },
+				{
+					"type": "tool_use",
+					"id": "t1",
+					"name": "Read",
+					"input": { "file_path": "src/lib/x.ts" }
+				},
+				{
+					"type": "tool_use",
+					"id": "t2",
+					"name": "Bash",
+					"input": { "command": "pnpm run check" }
+				},
+				{
+					"type": "tool_use",
+					"id": "t3",
+					"name": "Bash",
+					"input": { "command": "gh issue view 84 --comments" }
+				}
+			]
+		}
+	},
+	{
+		"type": "user",
+		"message": {
+			"content": [
+				{ "type": "tool_result", "tool_use_id": "t1", "content": "FILE-CONTENT-MUST-NOT-LEAK" },
+				{
+					"type": "tool_result",
+					"tool_use_id": "t2",
+					"is_error": true,
+					"content": "Error: type check failed"
+				},
+				{ "type": "tool_result", "tool_use_id": "t3", "content": "issue text" }
+			]
+		}
+	},
+	{
+		"type": "assistant",
+		"message": {
+			"content": [
+				{
+					"type": "tool_use",
+					"id": "t4",
+					"name": "Read",
+					"input": { "file_path": "src/lib/x.ts" }
+				},
+				{
+					"type": "tool_use",
+					"id": "t5",
+					"name": "Bash",
+					"input": { "command": "pnpm run check" }
+				},
+				{
+					"type": "tool_use",
+					"id": "t6",
+					"name": "Bash",
+					"input": { "command": "gh issue comment 84 --body \"BODY-MUST-NOT-LEAK\"" }
+				},
+				{
+					"type": "tool_use",
+					"id": "t7",
+					"name": "Grep",
+					"input": { "pattern": "SECRET-PATTERN-MUST-NOT-LEAK" }
+				},
+				{
+					"type": "tool_use",
+					"id": "t8",
+					"name": "Edit",
+					"input": { "file_path": "src/lib/y.ts", "old_string": "a", "new_string": "b" }
+				}
+			]
+		}
+	},
+	{
+		"type": "user",
+		"message": {
+			"content": [
+				{ "type": "tool_result", "tool_use_id": "t4", "content": "FILE-CONTENT-MUST-NOT-LEAK" },
+				{ "type": "tool_result", "tool_use_id": "t5", "content": "ok" },
+				{ "type": "tool_result", "tool_use_id": "t7", "content": "no matches" },
+				{ "type": "tool_result", "tool_use_id": "t8", "content": "edited" }
+			]
+		}
+	},
+	{
+		"type": "result",
+		"subtype": "success",
+		"num_turns": 4,
+		"total_cost_usd": 0.1234,
+		"modelUsage": { "claude-sonnet-5-5": {} },
+		"permission_denials": [
+			{
+				"tool_name": "Bash",
+				"tool_use_id": "t6",
+				"tool_input": { "command": "gh issue comment 84 --body \"BODY-MUST-NOT-LEAK\"" }
+			}
+		]
+	}
+]
