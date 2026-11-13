@@ -112,9 +112,12 @@ Don't guess. A clear block is better than a wrong PR.
 ## Requirements ledger
 
 - `docs/requirements.md` is the source of truth for behaviour; tickets cite
-  `REQ-nnn` ids.
+  its ids. REQ-001 … REQ-052 are legacy sequential ids. Every new requirement
+  is scoped to the issue that adds it: `REQ-<issue>-<n>` (REQ-98-1, REQ-98-2),
+  so tickets running in parallel can't take the same id (#165).
+  `check:requirements` rejects new sequential ids.
 - The **planner** proposes new requirements in the ticket (`REQ-NEW: …`).
-- The **tester** adds them to the ledger with the next free id and tags the
+- The **tester** adds them to the ledger as `REQ-<issue>-<n>` and tags the
   tests that prove them, so `pnpm run check:requirements` passes.
 - The **tech lead** edits wording, removes obsolete requirements, and audits
   coverage; it never weakens a requirement to make a test pass.
