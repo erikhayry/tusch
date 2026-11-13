@@ -8,7 +8,8 @@ The global baseline lives in `src/app.css`, imported once in
 - Every colour, spacing, font size and family, line height, border width,
   radius and content width is a CSS custom property declared once in the
   `:root` token block of `src/app.css`. Everything outside that block uses
-  `var(--…)`.
+  `var(--…)`. Exception: the one `prefers-color-scheme: dark` block in
+  `app.css` redeclares colour tokens only.
 - Keyword values (`display: none`, `0`, `auto`, `100%`, `inherit`) are not
   "values" for this rule.
 - Media queries can't read custom properties, so breakpoints are defined once,
@@ -16,10 +17,12 @@ The global baseline lives in `src/app.css`, imported once in
 
 ## Palette
 
-- Black and white, plus greys derived from them if needed. Light theme only.
+- Black and white, plus greys derived from them if needed. Light and dark, from the
+  same tokens: the dark scheme (`prefers-color-scheme`, no toggle) only
+  overrides colour tokens in one block in `app.css`.
 - The one accent colour, `--color-focus`, is used **only** for the focus
   indicator (`:focus-visible` `outline`). Never for text, links, buttons or
-  state. Keep it at 3:1 contrast or better against white.
+  state. Keep it at 3:1 contrast or better against both the white and the black background.
 - Text colours must pass axe `color-contrast` (REQ-035).
 
 ## Order of work

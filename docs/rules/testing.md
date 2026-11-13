@@ -30,6 +30,9 @@
   `page.getByRole('button', { name: m.addCaption() })`. Use `{ exact: true }`
   when text could also match a label (`getByText` is case-insensitive).
 - Always `await expect(locator)…` web-first assertions.
+- Share helpers instead of copying them between test files: put them in
+  `src/tests/e2e/` (e.g. `storage.ts` for OPFS and stored-panel reads), and
+  loop over cases that differ in one step (see `code-style.md`, "Duplication").
 - Each test starts from fresh storage (Playwright context); examples are seeded
   by the app. Create data through the UI when a test needs a user-made comic
   (see `createComic` in `(local)/test/navigation.svelte.e2e.ts`).
@@ -67,7 +70,8 @@ Drive failures from the UI with markers in submitted text:
 ## Accessibility
 
 - `src/tests/e2e/a11y.e2e.ts` runs axe (`@axe-core/playwright`) on every view
-  in `src/tests/e2e/views.ts` and fails on **any** violation (REQ-035). It runs
+  in `src/tests/e2e/views.ts`, in both the light and the dark colour scheme, and
+  fails on **any** violation (REQ-035). It runs
   locally too, unlike the screenshots.
 - A new view goes in `views.ts`, which gives it both a screenshot and an axe
   scan.
@@ -99,14 +103,20 @@ Drive failures from the UI with markers in submitted text:
 - A new behaviour needs a requirement (the tech lead adds it) and a tagged test
   in the same PR. Closing a gap: tag the test and delete `gap` from the entry.
 - Skipped tests must not be tagged; they prove nothing.
-- `pnpm run check:requirements` (in CI) fails on unknown or duplicate ids,
-  untested active requirements, stale gaps and tagged skipped tests.
+- Ids: REQ-001 … REQ-052 are legacy; new requirements are
+  `REQ-<issue>-<n>` (e.g. `@REQ-98-1`), so parallel tickets can't collide.
+- `pnpm run check:requirements` (in CI) fails on unknown, duplicate, malformed or
+  new sequential ids, untested active requirements, stale gaps and tagged skipped
+  tests.
 - Run the tests for one requirement: `pnpm exec playwright test --grep @REQ-019`.
+  For an issue-scoped id, anchor the end so `@REQ-98-1` doesn't also match
+  `@REQ-98-10`: `--grep "@REQ-98-1(?!\d)"`.
 
 ## Screenshots
 
 - `src/tests/e2e/screenshots.e2e.ts` captures every view in `views.ts` with
   `toHaveScreenshot()`. **A new view gets a screenshot test in the same PR.**
+  `landing`, `comic` and `settings` also have dark baselines (`*-dark.png`).
 - Baselines live in `src/tests/e2e/__screenshots__/` and are **Linux-only**: CI
   runs inside `mcr.microsoft.com/playwright:<version>-noble` (keep the tag in
   sync with `@playwright/test`). Locally the screenshot tests are skipped unless

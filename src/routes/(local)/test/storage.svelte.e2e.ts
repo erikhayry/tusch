@@ -3,33 +3,14 @@ import { expect, test, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../examples/examples';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../tests/e2e/keyboard';
+import { panelImageSrc as storedPanelImageSrc, storedFiles } from '../../../tests/e2e/storage';
 
 const EXAMPLE = EXAMPLES[0];
 const PANEL = EXAMPLE.panels[0];
 const PANEL_URL = `/comic/${EXAMPLE.id}/${PANEL.id}`;
 
-/** File names currently stored in OPFS. */
-function storedFiles(page: Page): Promise<string[]> {
-	return page.evaluate(async () => {
-		const root = await navigator.storage.getDirectory();
-		const names: string[] = [];
-		for await (const name of (root as unknown as { keys(): AsyncIterable<string> }).keys()) {
-			names.push(name);
-		}
-		return names.sort();
-	});
-}
-
-/** The stored src of the example panel's image, if any. */
 function panelImageSrc(page: Page): Promise<string | undefined> {
-	return page.evaluate(
-		({ comicId, panelId }) => {
-			const { comics } = JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}');
-			const comic = comics.find((c: { id: string }) => c.id === comicId);
-			return comic?.panels.find((p: { id: string }) => p.id === panelId)?.image?.landscape.src;
-		},
-		{ comicId: EXAMPLE.id, panelId: PANEL.id },
-	);
+	return storedPanelImageSrc(page, EXAMPLE.id, PANEL.id);
 }
 
 async function generatePanelImage(page: Page) {
@@ -38,7 +19,9 @@ async function generatePanelImage(page: Page) {
 }
 
 test.describe('image files', { tag: '@REQ-025' }, () => {
-	test('replacing a panel image removes the old file', async ({ page }) => {
+	test('replacing a panel image keeps the old file until it is replaced again', async ({
+		page,
+	}) => {
 		await gotoHydrated(page, PANEL_URL);
 		await generatePanelImage(page);
 		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
@@ -47,9 +30,17 @@ test.describe('image files', { tag: '@REQ-025' }, () => {
 
 		await activate(page, page.getByRole('button', { name: m.generateNewImage() }));
 		await expect.poll(() => panelImageSrc(page)).not.toBe(first);
+		const second = await panelImageSrc(page);
+
+		// The previous image is kept so it can be restored.
+		expect(await storedFiles(page)).toContain(first);
+
+		await activate(page, page.getByRole('button', { name: m.generateNewImage() }));
+		await expect.poll(() => panelImageSrc(page)).not.toBe(second);
 
 		const files = await storedFiles(page);
 		expect(files).not.toContain(first);
+		expect(files).toContain(second);
 		expect(files).toContain(await panelImageSrc(page));
 	});
 
@@ -126,5 +117,29 @@ test.describe('missing images', { tag: '@REQ-036' }, () => {
 			'src',
 			'/missing-image.svg',
 		);
+	});
+
+	test('the placeholder has a dark version in the dark colour scheme', async ({ page }) => {
+		await page.emulateMedia({ colorScheme: 'light' });
+		await gotoHydrated(page, PANEL_URL);
+		await generatePanelImage(page);
+		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+
+		const src = await panelImageSrc(page);
+		await page.evaluate(async (name) => {
+			const root = await navigator.storage.getDirectory();
+			await root.removeEntry(name!);
+		}, src);
+		await page.reload();
+
+		const placeholder = page.getByRole('img', { name: 'mock alt text' });
+		await expect(placeholder).toHaveAttribute('src', '/missing-image.svg');
+		await expect(placeholder).toHaveJSProperty('complete', true);
+		const light = await placeholder.screenshot();
+
+		await page.emulateMedia({ colorScheme: 'dark' });
+		await expect
+			.poll(async () => (await placeholder.screenshot()).equals(light), { timeout: 5000 })
+			.toBe(false);
 	});
 });

@@ -67,6 +67,13 @@ until it reports no issues, and look up Svelte or SvelteKit APIs with
 dependencies. Export only what another module imports (exports used only inside
 their own file are ignored); delete dead code instead of keeping it "for later".
 
+## Duplication
+
+Keep duplication as low as possible, in app and test code alike (SonarCloud
+gates new duplicated lines at 3%). Share a helper instead of copying one, and
+parametrise tests that differ in one step. Never fix duplication with
+`sonar.cpd.exclusions`; it is only for fixture data (`src/examples/**`).
+
 ## Comments
 
 Comment the _why_: constraints, ordering, non-obvious trade-offs (see the
