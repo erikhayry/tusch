@@ -18,11 +18,21 @@
 			<span class="visually-hidden">{m.done()}</span>
 		{/if}
 	</div>
-	<!-- Never announces (aria-live off); only gives the bar and timer a container axe's `region` rule accepts. -->
-	<div aria-live="off" role="status">
-		{#if globalLoading.isLoading}
+	<!-- A named landmark (satisfies axe `region`), rendered only while running. Not a live region, so the ticking seconds are never announced. -->
+	{#if globalLoading.isLoading}
+		<section aria-labelledby={labelId}>
 			<progress aria-labelledby={labelId}></progress>
 			<span>{m.elapsedSeconds({ seconds: globalLoading.elapsedSeconds })}</span>
-		{/if}
-	</div>
+		</section>
+	{/if}
 </div>
+
+<style>
+	section {
+		max-inline-size: var(--content-width);
+		margin-inline: auto;
+		padding-inline: var(--space-3);
+		font-size: var(--font-size-small);
+		color: var(--color-muted);
+	}
+</style>
