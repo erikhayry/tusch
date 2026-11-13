@@ -1,10 +1,9 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
-import { EXAMPLES } from '../../../../../examples/examples';
+import { EXAMPLE_COMPLETE as EXAMPLE } from '../../../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../../../tests/e2e/keyboard';
 
-const EXAMPLE = EXAMPLES[0];
 const PANEL = EXAMPLE.panels[0];
 const CHARACTER = EXAMPLE.characters[0];
 

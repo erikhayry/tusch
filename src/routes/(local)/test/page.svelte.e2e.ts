@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
-import { EXAMPLES } from '../../../examples/examples';
+import { EXAMPLE_COMPLETE as EXAMPLE } from '../../../tests/e2e/examples';
 import { activate } from '../../../tests/e2e/keyboard';
 import { LandingPage } from './utils/landingPage';
 
@@ -24,19 +24,19 @@ test('navigates to settings', { tag: '@REQ-034' }, async ({ page }) => {
 test('navigates to comic', { tag: ['@REQ-001', '@REQ-004'] }, async ({ page }) => {
 	const landingPage = await new LandingPage(page).goto();
 
-	await activate(page, landingPage.comicLink(0));
+	await activate(page, landingPage.comicLink(EXAMPLE.title));
 
-	await expect(page.getByRole('heading', { name: EXAMPLES[0].title, level: 2 })).toBeVisible();
+	await expect(page.getByRole('heading', { name: EXAMPLE.title, level: 2 })).toBeVisible();
 });
 
 test('removes comic', { tag: '@REQ-002' }, async ({ page }) => {
 	const landingPage = await new LandingPage(page).goto();
 
-	await expect(landingPage.comicLink(0)).toBeVisible();
+	await expect(landingPage.comicLink(EXAMPLE.title)).toBeVisible();
 
-	await activate(page, landingPage.deleteComicButton(EXAMPLES[0].title));
+	await activate(page, landingPage.deleteComicButton(EXAMPLE.title));
 
-	await expect(landingPage.comicLink(0)).toBeHidden();
+	await expect(landingPage.comicLink(EXAMPLE.title)).toBeHidden();
 });
 
 test('redirects to create once every comic is deleted', { tag: '@REQ-003' }, async ({ page }) => {

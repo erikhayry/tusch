@@ -37,8 +37,8 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-004 Example comics are seeded on first visit
 
 - Status: active
-- Statement: with no stored comics, the app seeds the example comics (and persists them).
-- Why: new users see a working comic before they have an API key.
+- Statement: with no stored comics, the app seeds three lightweight example comics (one complete, one without a cover or panel images, one with a single panel) and persists them.
+- Why: development and tests start from a small library that covers the main data shapes without heavy assets.
 - Proven by: tagged tests
 
 ## Creating a comic
