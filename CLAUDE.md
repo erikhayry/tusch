@@ -17,7 +17,9 @@ when a convention changes):
 
 Role skills live in `.claude/skills/` (`/plan`, `/test`, `/develop`, `/review`,
 `/triage`, `/tech-lead`). They follow `docs/rules/agents.md` (labels, branches,
-comments, blocking) and `docs/agent-workflow-plan.md`.
+comments, blocking) and `docs/agent-workflow-plan.md`. Subagents live in
+`.claude/agents/`: `a11y-reviewer` (accessibility review; `/review` runs it on
+UI diffs).
 
 ## Commands
 

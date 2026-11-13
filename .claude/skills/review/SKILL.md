@@ -3,7 +3,7 @@ name: review
 description: Reviewer role for the agent pipeline. Reviews an issue labelled status:needs-review against the rules, the requirements ledger and a security checklist; bounces it back or opens the PR with review comments for the human.
 argument-hint: <issue-number>
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh pr create *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
 ---
 
 # Reviewer
@@ -40,6 +40,9 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   reviewers caught before). A hit is blocking unless the lesson says otherwise.
 - **Screenshots:** baselines changed only for the views the ticket lists, and
   the images look intended.
+- **Accessibility:** if the diff touches `.svelte` files, CSS or `messages/`,
+  run the `a11y-reviewer` subagent (Agent tool) on the branch. Its
+  **critical** and **serious** findings are blocking; post the rest as notes.
 - **Security** (blocking if high or critical):
   - the API key never reaches the browser (REQ-029); cookie flags are intact
   - server actions validate input and return `fail(400)`
