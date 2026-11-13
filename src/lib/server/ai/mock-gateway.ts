@@ -5,6 +5,7 @@ import {
 	CREATE_COVER_IMAGE_RESPONSE,
 	CREATE_PANEL_IMAGE_RESPONSE,
 	CREATE_PANEL_RESPONSE,
+	createPanelImageResponse,
 	MODELS_RESPONSE,
 } from '../../../tests/mock/openAi/openAiResponse';
 import { AiGatewayError, type AiCredentials, type AiGateway } from './ai-gateway';
@@ -33,6 +34,25 @@ function failIfRequested(messages: string[]): void {
 	}
 }
 
+/**
+ * Ids of the comic's characters from the panel image prompt, so crops are made
+ * for any comic (created or example), like the real model does.
+ */
+function charactersInPrompt(messages: string[]): string[] | undefined {
+	const prefix = 'Characters in comic: ';
+	const line = messages.find((message) => message.startsWith(prefix));
+	if (!line) return undefined;
+	try {
+		const parsed: unknown = JSON.parse(line.slice(prefix.length));
+		if (!Array.isArray(parsed)) return undefined;
+		return parsed.flatMap((character) =>
+			typeof character?.id === 'string' ? [character.id as string] : [],
+		);
+	} catch {
+		return undefined;
+	}
+}
+
 const mockAiGateway: AiGateway = {
 	text: async ({ schemaName, messages }) => {
 		failIfRequested(messages);
@@ -40,9 +60,9 @@ const mockAiGateway: AiGateway = {
 	},
 	image: async ({ messages }) => {
 		failIfRequested(messages);
-		return messages[0] === COVER_IMAGE.WHAT
-			? CREATE_COVER_IMAGE_RESPONSE
-			: CREATE_PANEL_IMAGE_RESPONSE;
+		if (messages[0] === COVER_IMAGE.WHAT) return CREATE_COVER_IMAGE_RESPONSE;
+		const characterIds = charactersInPrompt(messages);
+		return characterIds ? createPanelImageResponse(characterIds) : CREATE_PANEL_IMAGE_RESPONSE;
 	},
 	ping: async () => ({ success: true, message: 'test' }),
 	models: async () => MODELS_RESPONSE.data.map(({ id }) => id),
