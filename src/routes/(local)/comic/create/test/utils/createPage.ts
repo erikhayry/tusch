@@ -1,6 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import type { Locator, Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
+import { activate, typeInto } from '../../../../../../tests/e2e/keyboard';
 
 export class CreatePage {
 	readonly page: Page;
@@ -18,13 +19,13 @@ export class CreatePage {
 	}
 
 	async fillUrl(url: string) {
-		await this.urlInput.fill(url);
+		await typeInto(this.page, this.urlInput, url);
 
 		return this;
 	}
 
 	async submit() {
-		await this.submitButton.click();
+		await activate(this.page, this.submitButton);
 
 		return this;
 	}
