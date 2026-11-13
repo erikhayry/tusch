@@ -294,3 +294,12 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: when a control receives focus by keyboard, it shows a visible indicator (non-zero outline or box-shadow, distinct from its unfocused state).
 - Why: keyboard users must see where they are (WCAG 2.4.7); axe doesn't check it.
 - Proven by: tagged tests
+
+## Performance
+
+### REQ-039 Core views meet the web vitals budget
+
+- Status: active
+- Statement: the landing, comic and panel views, audited by Lighthouse (desktop preset) on the production build, meet LCP ≤ 2.5 s, CLS ≤ 0.1 and TBT ≤ 200 ms (median of 3 runs). A view that exceeds a budget fails the check, and the failure names the view and the metric.
+- Why: nothing else stops a change from making the app slow or visually unstable. TBT is the lab proxy for INP, which Lighthouse navigation audits can't measure.
+- Proven by: tagged tests
