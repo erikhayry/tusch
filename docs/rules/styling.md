@@ -42,6 +42,9 @@ The global baseline lives in `src/app.css`, imported once in
 
 ## Tests
 
+`/review` runs the `css-reviewer` subagent on diffs that touch `.svelte` files
+or CSS. It checks the conventions here that a linter can't judge.
+
 REQ-035, REQ-037, REQ-038, REQ-039 and REQ-040 (no horizontal scroll at 320 px)
 must pass. Every visual change updates the screenshot baselines
 (`testing.md`, "Screenshots").
