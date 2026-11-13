@@ -15,16 +15,16 @@
 		CREATE_COMIC_ACTION,
 		type CreateComicResult,
 	} from '$lib/features/comics/contracts/createComic';
+	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
 	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { m } from '$lib/paraglide/messages';
 	import { STYLES } from '$lib/utils/comicStyles';
 
-	const handleSubmit = enhanceAction<CreateComicResult>(
-		m.loadingCreateComic(),
-		async ({ data }) => {
+	const handleSubmit = withGlobalInstructions(
+		enhanceAction<CreateComicResult>(m.loadingCreateComic(), async ({ data }) => {
 			expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
 			await goto(resolve(`/comic/${data.comic.id}`));
-		},
+		}),
 	);
 </script>
 

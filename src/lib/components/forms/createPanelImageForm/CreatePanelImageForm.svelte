@@ -8,6 +8,7 @@
 		CREATE_PANEL_IMAGE_ACTION,
 		type CreatePanelImageResult,
 	} from '$lib/features/panels/contracts/createPanelImage';
+	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
 	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
@@ -18,12 +19,11 @@
 	} from '$lib/utils/db/dbTypes';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
-	const handleSubmit = enhanceAction<CreatePanelImageResult>(
-		m.loadingCreatePanelImage(),
-		async ({ data, update }) => {
+	const handleSubmit = withGlobalInstructions(
+		enhanceAction<CreatePanelImageResult>(m.loadingCreatePanelImage(), async ({ data, update }) => {
 			expectWorkflow(await commitGeneratedPanelImage(workflowDeps, data));
 			await update();
-		},
+		}),
 	);
 
 	let { label, values, imageName }: CreatePanelImageFormProps = $props();
