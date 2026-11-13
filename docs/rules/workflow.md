@@ -74,6 +74,21 @@ and PRs get no preview deployments. Production has no server API key: AI
 features need the visitor's own key in Settings. Try a branch locally with
 `pnpm run dev`.
 
+## Error monitoring (Sentry)
+
+`@sentry/sveltekit` reports errors from the browser (`src/hooks.client.ts`) and
+the server (`src/instrumentation.server.ts`, `handleError` in
+`src/hooks.server.ts`) to the Sentry project `erik-portin-vz/tusch`.
+
+- It's on only where `PUBLIC_SENTRY_DSN` is set: Vercel production. Local dev,
+  CI and E2E runs send nothing.
+- Privacy (`src/lib/sentry-options.ts`): no cookies, headers, request bodies,
+  query params, local variables, user info or AI inputs/outputs. Anything that
+  looks like an OpenAI key is masked. Keep it that way: the key must never leave
+  the server (REQ-029).
+- Readable stack traces need source maps: set `SENTRY_AUTH_TOKEN` in Vercel and
+  the build uploads them (optional).
+
 ## Dependencies
 
 Dependabot (`.github/dependabot.yml`) opens grouped weekly PRs for npm
