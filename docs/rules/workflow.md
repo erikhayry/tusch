@@ -22,7 +22,7 @@
 | Comment or review on a pipeline PR while the issue is `status:needs-human`         | `/triage <n>`                                                                    |
 | Merge a pipeline PR (branch `issue-<n>-…`)                                         | `/tech-lead reconcile <pr>`                                                      |
 | Nothing: SonarCloud fails on a pipeline PR while the issue is `status:needs-human` | `/develop <n>` with the findings (blocked after 2 rounds)                        |
-| Nothing: Mondays 06:00 UTC, or dispatch `agents.yml` with `audit` ticked           | `/tech-lead audit`                                                               |
+| Nothing: Mondays 06:00 UTC, or dispatch `agents.yml` with `audit` ticked           | `/tech-lead audit`, then `/automate` (files token-saving `type:chore` issues)    |
 
 - Bare approvals, bot comments and `@claude` mentions don't start a stage
   (`@claude` goes to `claude.yml`).

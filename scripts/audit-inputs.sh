@@ -6,6 +6,8 @@
 #   .agent-tmp/audit-ci.md          CI runs of the last 7 days that failed or were re-run
 #   .agent-tmp/audit-issues.md      pipeline issues stuck > 3 days, and blocked ones
 #
+#   .agent-tmp/audit-actions.md     repeated actions, denials and re-reads from run digests (#84)
+#
 # Needs gh (GH_REPO set or run in the repo) and node. Never fails on missing data.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -49,3 +51,13 @@ fi
 			select(.s != "" and (.s == "status:blocked" or .u < "'"$stale"'")) |
 			"- #\(.n) \(.t): `\(.s)`, last update \(.u)"'
 } > .agent-tmp/audit-issues.md
+
+# Agent actions: the digests agents.yml uploads (`agent-digest`) per run, last 7 days.
+# Runs without one (older, expired, or failed before the step) are skipped.
+rm -rf .agent-tmp/digests
+mkdir -p .agent-tmp/digests
+for id in $(gh run list --workflow agents.yml --limit 200 --created ">=$since" \
+	--json databaseId --jq '.[].databaseId' 2>/dev/null || true); do
+	gh run download "$id" -n agent-digest -D ".agent-tmp/digests/$id" >/dev/null 2>&1 || true
+done
+node scripts/costs.mjs actions .agent-tmp/digests > .agent-tmp/audit-actions.md
