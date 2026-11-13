@@ -6,7 +6,7 @@
 </script>
 
 {#if panel.image}
-	<Image image={panel.image.landscape} alt={panel.editorialTitle} />
+	<Image image={panel.image.landscape} alt={panel.editorialTitle} loading="lazy" decoding="async" />
 {:else}
 	{panel.editorialTitle || '??'}
 {/if}
