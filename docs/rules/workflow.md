@@ -52,6 +52,13 @@ Installed automatically by `pnpm install` (`simple-git-hooks`, configured in `pa
 
 E2E runs in CI, not in hooks. Use `--no-verify` only in an emergency, and say so in the PR.
 
+## Dependencies
+
+Dependabot (`.github/dependabot.yml`) opens grouped weekly PRs for npm
+packages and GitHub Actions. They go through CI like any PR; the agents ignore
+them (bot sender). `@playwright/test` is excluded: bump it by hand together
+with the CI container tag and the screenshot baselines.
+
 ## Before pushing
 
 ```sh
