@@ -67,14 +67,12 @@ Installed automatically by `pnpm install` (`simple-git-hooks`, configured in `pa
 
 E2E runs in CI, not in hooks. Use `--no-verify` only in an emergency, and say so in the PR.
 
-## Vercel previews
+## Vercel
 
-Vercel deploys every pushed branch and comments the Preview link on its PR.
-The branch URL is `https://tusch-git-<branch>-erik-hyrys-projects.vercel.app`
-(Vercel shortens it with a hash when it exceeds 63 characters, so prefer the
-link in Vercel's comment). Previews have no server API key: AI features need
-the visitor's own key in Settings. The reviewer links the affected views in
-the PR's **Try it** section.
+Vercel deploys `main` only (`vercel.json`, `git.deploymentEnabled`); branches
+and PRs get no preview deployments. Production has no server API key: AI
+features need the visitor's own key in Settings. Try a branch locally with
+`pnpm run dev`.
 
 ## Dependencies
 

@@ -157,22 +157,22 @@ derived from the current code:
 
 ## 7. Work packages
 
-| WP   | Work                                                                                 | Depends on |
-| ---- | ------------------------------------------------------------------------------------ | ---------- |
-| AW0  | Repo guardrails: labels, auto-delete branches, branch protection, remove auto-review | —          |
-| AW1  | Spike: agent label hand-off and PR creation on GitHub                                | AW0        |
-| AW2  | Agent rules derived from the current code (`docs/rules/`)                            | —          |
-| AW3  | Requirements ledger seeded from the current app, plus REQ↔test CI check              | AW2        |
-| AW4  | E2E coverage for every REQ                                                           | AW3        |
-| AW5  | Remove unit/component tests and Vitest                                               | AW4        |
-| AW6  | Screenshot baselines for every view                                                  | AW2        |
-| AW7  | Skills: `/plan`, `/test`, `/develop`, `/review`, `/triage`, `/tech-lead`             | AW2, AW3   |
-| AW8  | `agents.yml` orchestration                                                           | AW1, AW7   |
-| AW10 | Accessibility: axe scan on every view, fail on serious/critical (#37)                | AW6        |
-| AW11 | Release notes in every PR, collected in `CHANGELOG.md` (#39)                         | AW7        |
-| AW12 | Vercel preview links to affected views in the reviewer's PR summary (#40)            | AW7        |
-| AW13 | Weekly tech-lead audit: stale REQs, flaky tests, stuck issues (#38)                  | AW8        |
-| AW9  | Pilot one small feature end to end; fix what breaks; document                        | all        |
+| WP   | Work                                                                                  | Depends on |
+| ---- | ------------------------------------------------------------------------------------- | ---------- |
+| AW0  | Repo guardrails: labels, auto-delete branches, branch protection, remove auto-review  | —          |
+| AW1  | Spike: agent label hand-off and PR creation on GitHub                                 | AW0        |
+| AW2  | Agent rules derived from the current code (`docs/rules/`)                             | —          |
+| AW3  | Requirements ledger seeded from the current app, plus REQ↔test CI check               | AW2        |
+| AW4  | E2E coverage for every REQ                                                            | AW3        |
+| AW5  | Remove unit/component tests and Vitest                                                | AW4        |
+| AW6  | Screenshot baselines for every view                                                   | AW2        |
+| AW7  | Skills: `/plan`, `/test`, `/develop`, `/review`, `/triage`, `/tech-lead`              | AW2, AW3   |
+| AW8  | `agents.yml` orchestration                                                            | AW1, AW7   |
+| AW10 | Accessibility: axe scan on every view, fail on serious/critical (#37)                 | AW6        |
+| AW11 | Release notes in every PR, collected in `CHANGELOG.md` (#39)                          | AW7        |
+| AW12 | ~~Vercel preview links in the reviewer's PR summary (#40)~~ removed: previews are off | AW7        |
+| AW13 | Weekly tech-lead audit: stale REQs, flaky tests, stuck issues (#38)                   | AW8        |
+| AW9  | Pilot one small feature end to end; fix what breaks; document                         | all        |
 
 ## 8. Repository settings
 
