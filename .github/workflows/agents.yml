@@ -117,9 +117,9 @@ jobs:
 
           case "$skill" in
             plan)      turns=40;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue create:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*)' ;;
-            test)      turns=60;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(git:*),Bash(pnpm:*)' ;;
-            develop)   turns=100; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh workflow run:*),Bash(gh run:*),Bash(git:*),Bash(pnpm:*)' ;;
-            review)    turns=60;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*)' ;;
+            test)      turns=60;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
+            develop)   turns=100; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh workflow run:*),Bash(gh run:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
+            review)    turns=60;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
             triage)    turns=30;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)' ;;
             tech-lead) turns=30;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh api:*),Bash(git:*),Bash(pnpm run check:requirements),Bash(pnpm exec playwright test --list:*)' ;;
             *)         turns=0;   tools='' ;;
@@ -202,6 +202,9 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # Agents hand off by setting labels as claude[bot]; let those events run the next role.
           allowed_bots: 'claude[bot]'
+          # The Svelte MCP (docs + svelte-autofixer), same plugin as .claude/settings.json.
+          plugin_marketplaces: https://github.com/sveltejs/ai-tools.git
+          plugins: svelte@svelte
           additional_permissions: |
             actions: read
           prompt: /${{ needs.route.outputs.skill }} ${{ needs.route.outputs.target }}

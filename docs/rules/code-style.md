@@ -24,6 +24,14 @@ trailing commas, width 100) and ESLint. Run `pnpm run lint`; fix with
 - Behaviour contracts (`AiGateway`, `AssetStore`) are TypeScript interfaces;
   the data they pass is still Zod.
 
+## Svelte MCP
+
+The Svelte plugin (`svelte@svelte`) is enabled in `.claude/settings.json`, and
+`agents.yml` installs it for agents on GitHub. When you write or edit a
+`.svelte` or `.svelte.ts` file, run its `svelte-autofixer` tool on the file
+until it reports no issues, and look up Svelte or SvelteKit APIs with
+`list-sections` / `get-documentation` instead of guessing.
+
 ## Naming
 
 - Newer modules use kebab-case file names (`comic-commands.ts`,
