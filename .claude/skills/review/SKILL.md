@@ -44,6 +44,8 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
 - **Accessibility:** if the diff touches `.svelte` files, CSS or `messages/`,
   run the `a11y-reviewer` subagent (Agent tool) on the branch. Its
   **critical** and **serious** findings are blocking; post the rest as notes.
+- **CSS:** if the diff touches `.svelte` files or CSS, also run the
+  `css-reviewer` subagent. Same rule: critical and serious findings block.
 - **Pipeline:** if the diff touches `.github/`, `.claude/`, `scripts/` or
   `docs/rules/agents.md`, run the `pipeline-expert` subagent on the branch.
   Same rule: critical and serious findings block. Put its savings in the PR

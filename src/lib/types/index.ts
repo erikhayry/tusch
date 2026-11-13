@@ -135,6 +135,12 @@ export const DialogueSchema = z.object({
 	text: z.string(),
 });
 
+export const PreviousPanelImageSchema = z.object({
+	image: ResponsivePanelImageSchema,
+	/** Ids of the character crops taken from that image. */
+	cropIds: z.array(z.string()),
+});
+
 export const PanelSchema = z.object({
 	id: z.uuid(),
 	editorialTitle: z.string(),
@@ -147,6 +153,10 @@ export const PanelSchema = z.object({
 	season: SeasonEnum,
 	style: z.optional(ComicStyleDescriptionSchema),
 	image: z.optional(ResponsivePanelImageSchema),
+	/** Ids of the character crops taken from `image`, so a restore can drop them. */
+	imageCropIds: z.optional(z.array(z.string())),
+	/** One step of undo: the image shown before the latest replacement. */
+	previousImage: z.optional(PreviousPanelImageSchema),
 });
 export type Panel = z.infer<typeof PanelSchema>;
 

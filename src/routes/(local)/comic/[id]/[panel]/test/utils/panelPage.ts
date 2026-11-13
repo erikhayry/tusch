@@ -21,6 +21,7 @@ export class PanelPage {
 	readonly deleteDialogueButton: Locator;
 	readonly createImageButton: Locator;
 	readonly replaceImageButton: Locator;
+	readonly restoreImageButton: Locator;
 	readonly initialNumberOfPanels: number;
 	readonly numberOfPanels: () => Promise<number>;
 	readonly addPanelBeforeButton: Locator;
@@ -31,6 +32,7 @@ export class PanelPage {
 		this.createImageButton = page.getByRole('button', { name: m.addImage() });
 		this.deleteImageButton = page.getByRole('button', { name: m.removeImage() });
 		this.replaceImageButton = page.getByRole('button', { name: m.generateNewImage() });
+		this.restoreImageButton = page.getByRole('button', { name: m.restorePreviousImage() });
 		this.initialImage = page.getByRole('img', { name: EXAMPLE_COMPLETE.panels[0].image?.alt });
 		this.newImage = page.getByRole('img', {
 			name: getImageFromOpenAiResponse(CREATE_PANEL_IMAGE_RESPONSE).alt,

@@ -1,24 +1,10 @@
 import { m } from '$lib/paraglide/messages';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 import { activate, typeInto } from '../../../../../tests/e2e/keyboard';
+import { storedFileSizes } from '../../../../../tests/e2e/storage';
 
 const MAX_IMAGE_BYTES = 100 * 1024;
-
-/** Size in bytes of every file in OPFS (generated covers, panel images, crops). */
-function storedFileSizes(page: Page): Promise<number[]> {
-	return page.evaluate(async () => {
-		const root = await navigator.storage.getDirectory();
-		const sizes: number[] = [];
-		const entries = (
-			root as unknown as { entries(): AsyncIterable<[string, FileSystemFileHandle]> }
-		).entries();
-		for await (const [, handle] of entries) {
-			sizes.push((await handle.getFile()).size);
-		}
-		return sizes;
-	});
-}
 
 test(
 	'a created comic gets small mock cover and panel images and still gets character crops',
