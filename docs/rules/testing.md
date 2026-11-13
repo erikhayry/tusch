@@ -65,6 +65,21 @@ Drive failures from the UI with markers in submitted text:
   `<main>` landmark. Every form control needs a label (a visible `<label>`, or
   `aria-label` when there's no room for one).
 
+## Performance
+
+- `src/tests/e2e/webVitals.e2e.ts` (REQ-039) audits `landing`, `comic` and
+  `panel` from `views.ts` with Lighthouse CI (`@lhci/cli`, desktop preset,
+  Playwright's Chromium, median of 3 runs) against the preview server on port
+  4173 and fails on any metric over budget. This is the one place a non-
+  Playwright tool runs, and it is still driven from a tagged Playwright test
+  (`webVitals/audit.ts`), so `check:requirements` sees it.
+- The budget (LCP 2500 ms, CLS 0.1, TBT 200 ms) lives in
+  `src/tests/e2e/webVitals/budget.ts`. A view that misses it gets a temporary
+  entry in `VIEW_BUDGET_OVERRIDES` above its measured median, linking the ticket
+  that fixes it. If CI variance causes flakes, widen headroom; don't retry.
+- It always runs in CI. Locally it is skipped unless `PLAYWRIGHT_WEB_VITALS=1`
+  (it takes about 2 minutes).
+
 ## Requirements
 
 - Every E2E test proves one or more requirements from `docs/requirements.md`
