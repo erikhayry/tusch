@@ -263,6 +263,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: AI calls are slow; duplicate submits would duplicate work.
 - Proven by: tagged tests
 
+### REQ-041 A running submission shows what is running
+
+- Status: active
+- Statement: while a form submission runs, the global loader shows an indeterminate progress bar (a `<progress>` with no value, named by the label) and a label naming the action, e.g. "Generating panel image...".
+- Why: AI calls take seconds to half a minute; users can't tell what is running or whether it is stuck.
+- Proven by: tagged tests
+
+### REQ-042 A running submission shows the seconds elapsed
+
+- Status: active
+- Statement: while a form submission runs, the global loader shows the whole seconds elapsed since submit ("0 s", "1 s", …), updated every second; the bar, label and timer disappear when the submission finishes, whether it succeeds or fails.
+- Why: a ticking counter shows the action is alive and how long it has taken.
+- Proven by: tagged tests
+
+### REQ-043 Screen readers hear the start and the end, not the ticks
+
+- Status: active
+- Statement: a screen reader hears the action's label when a submission starts and "Done" when it succeeds; the elapsed seconds are not inside a live region, and "Done" is not announced when the submission fails (the error is).
+- Why: a counter inside a live region would be read out every second.
+- Proven by: tagged tests
+
 ## Security
 
 ### REQ-033 Routes accept only the actions their forms use

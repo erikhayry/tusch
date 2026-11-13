@@ -18,10 +18,13 @@
 	} from '$lib/utils/db/dbTypes';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
-	const handleSubmit = enhanceAction<CreatePanelImageResult>(async ({ data, update }) => {
-		expectWorkflow(await commitGeneratedPanelImage(workflowDeps, data));
-		await update();
-	});
+	const handleSubmit = enhanceAction<CreatePanelImageResult>(
+		m.loadingCreatePanelImage(),
+		async ({ data, update }) => {
+			expectWorkflow(await commitGeneratedPanelImage(workflowDeps, data));
+			await update();
+		},
+	);
 
 	let { label, values, imageName }: CreatePanelImageFormProps = $props();
 

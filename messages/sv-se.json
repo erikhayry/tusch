@@ -2,5 +2,17 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"hello_world": "Hello, {name} from sv-se!",
 	"addCaption": "Lägg till bildtext",
-	"newCaption": "Ny bildtext"
+	"newCaption": "Ny bildtext",
+	"loadingCreateComic": "Skapar serie...",
+	"loadingCreatePanelImage": "Skapar rutans bild...",
+	"loadingCreatePanel": "Skapar ruta...",
+	"loadingCreateCoverImage": "Skapar omslagsbild...",
+	"loadingCreateCharacterImage": "Förbereder karaktärsbild...",
+	"loadingValidateKey": "Kontrollerar API-nyckel...",
+	"loadingSaveSettings": "Sparar inställningar...",
+	"loadingAddCaption": "Lägger till bildtext...",
+	"loadingEdit": "Sparar ändringar...",
+	"loadingDelete": "Tar bort...",
+	"elapsedSeconds": "{seconds} s",
+	"done": "Klart"
 }

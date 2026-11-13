@@ -41,6 +41,7 @@
 	--radius: 0.25rem;
 	--content-width: 60rem;
 	--control-min-size: 2.75rem;
+	--progress-duration: 1s;
 }
 
 /* Semantic baseline (narrow first) */
@@ -210,6 +211,70 @@ button:disabled {
 	padding-inline: var(--space-3);
 	font-size: var(--font-size-small);
 	color: var(--color-muted);
+}
+
+/* Indeterminate bar: moving black/grey hatch, never the focus accent. Blink
+   draws no fill for a value-less progress once appearance is none, so the
+   hatch goes on the track itself. */
+progress {
+	appearance: none;
+	display: block;
+	inline-size: 100%;
+	block-size: var(--space-3);
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--radius);
+	color: var(--color-text);
+	background: var(--color-surface);
+}
+
+progress::-webkit-progress-bar {
+	background: var(--color-surface);
+}
+
+progress::-webkit-progress-value {
+	background: var(--color-text);
+}
+
+progress::-moz-progress-bar {
+	background: var(--color-text);
+}
+
+progress:indeterminate,
+progress:indeterminate::-webkit-progress-bar,
+progress:indeterminate::-moz-progress-bar {
+	background: repeating-linear-gradient(
+		-45deg,
+		var(--color-text) 0,
+		var(--color-text) var(--space-2),
+		var(--color-surface) var(--space-2),
+		var(--color-surface) var(--space-3)
+	);
+	background-size: var(--space-4) 100%;
+	animation: progress-slide var(--progress-duration) linear infinite;
+}
+
+@keyframes progress-slide {
+	to {
+		background-position-x: var(--space-4);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	progress:indeterminate,
+	progress:indeterminate::-webkit-progress-bar,
+	progress:indeterminate::-moz-progress-bar {
+		animation: none;
+	}
+}
+
+/* Reachable by screen readers, invisible on screen. */
+.visually-hidden {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
 }
 
 /* Wide screens */

@@ -8,13 +8,17 @@
 		type CreatePanelResult,
 	} from '$lib/features/panels/contracts/createPanel';
 	import { enhanceAction } from '$lib/forms/enhance-action';
+	import { m } from '$lib/paraglide/messages';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { type CreatePanelFormProps } from './createPanelFormTypes';
 
-	const handleSubmit = enhanceAction<CreatePanelResult>(async ({ data, update }) => {
-		expectCommitted(insertGeneratedPanel(workflowDeps.commands, data));
-		await update();
-	});
+	const handleSubmit = enhanceAction<CreatePanelResult>(
+		m.loadingCreatePanel(),
+		async ({ data, update }) => {
+			expectCommitted(insertGeneratedPanel(workflowDeps.commands, data));
+			await update();
+		},
+	);
 
 	let { label, values }: CreatePanelFormProps = $props();
 </script>

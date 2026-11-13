@@ -11,6 +11,7 @@ export type ActionSuccessHandler<T> = (parameters: {
 }) => Promise<void> | void;
 
 export function enhanceAction<T extends Record<string, unknown>>(
+	label: string,
 	onSuccess: ActionSuccessHandler<T>,
 	options: { onFailure?: (failure: FormFailure) => void } = {},
 ): SubmitFunction<T> {
@@ -24,12 +25,14 @@ export function enhanceAction<T extends Record<string, unknown>>(
 
 		inFlight = true;
 		globalError.reset();
-		globalLoading.start();
+		const loadingId = globalLoading.start(label);
+		let succeeded = false;
 
 		return async ({ result, update }) => {
 			try {
 				if (result.type === 'success' && result.data !== undefined) {
 					await onSuccess({ data: result.data as T, update });
+					succeeded = true;
 				} else if (result.type === 'error') {
 					globalError.set(result.error.message);
 				} else if (result.type === 'failure') {
@@ -44,7 +47,7 @@ export function enhanceAction<T extends Record<string, unknown>>(
 				globalError.set(error instanceof Error ? error.message : 'Submission failed');
 			} finally {
 				inFlight = false;
-				globalLoading.stop();
+				globalLoading.stop(loadingId, succeeded);
 			}
 		};
 	};

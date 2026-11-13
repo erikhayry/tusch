@@ -6,6 +6,7 @@ import type { UpdateForm } from './enhance-action';
 import { toFormFailure } from './form-failure';
 
 export function enhanceClientCommand<T>(
+	label: string,
 	decode: (formData: FormData) => ZodSafeParseResult<T>,
 	command: (value: T) => Promise<void> | void,
 	onSuccess?: (parameters: { update: UpdateForm }) => Promise<void> | void,
@@ -27,13 +28,15 @@ export function enhanceClientCommand<T>(
 		}
 
 		inFlight = true;
-		globalLoading.start();
+		const loadingId = globalLoading.start(label);
+		let succeeded = false;
 
 		return async ({ result, update }) => {
 			try {
 				if (result.type === 'success') {
 					await command(decoded.data);
 					await onSuccess?.({ update });
+					succeeded = true;
 				} else if (result.type === 'error') {
 					globalError.set(result.error.message);
 				} else if (result.type === 'failure') {
@@ -43,7 +46,7 @@ export function enhanceClientCommand<T>(
 				globalError.set(error instanceof Error ? error.message : 'Command failed');
 			} finally {
 				inFlight = false;
-				globalLoading.stop();
+				globalLoading.stop(loadingId, succeeded);
 			}
 		};
 	};

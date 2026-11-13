@@ -13,8 +13,11 @@
 	let { comicId, panelId }: AddCaptionFormProps = $props();
 
 	// `update()` resets the native form, clearing the input after a successful add.
-	const handleSubmit = enhanceClientCommand(getAddCaptionValues, addCaption, ({ update }) =>
-		update(),
+	const handleSubmit = enhanceClientCommand(
+		m.loadingAddCaption(),
+		getAddCaptionValues,
+		addCaption,
+		({ update }) => update(),
 	);
 </script>
 

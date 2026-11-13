@@ -19,10 +19,13 @@
 	import { m } from '$lib/paraglide/messages';
 	import { STYLES } from '$lib/utils/comicStyles';
 
-	const handleSubmit = enhanceAction<CreateComicResult>(async ({ data }) => {
-		expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
-		await goto(resolve(`/comic/${data.comic.id}`));
-	});
+	const handleSubmit = enhanceAction<CreateComicResult>(
+		m.loadingCreateComic(),
+		async ({ data }) => {
+			expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
+			await goto(resolve(`/comic/${data.comic.id}`));
+		},
+	);
 </script>
 
 <Section data-testId={createComicFormTestId}>

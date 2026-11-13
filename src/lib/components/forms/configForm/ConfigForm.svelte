@@ -19,7 +19,10 @@
 
 	// The server writes both model cookies; the UI only changes once the reloaded
 	// page data reflects the committed settings.
-	const handleSubmit = enhanceAction<SaveModelSettingsResult>(({ update }) => update());
+	const handleSubmit = enhanceAction<SaveModelSettingsResult>(
+		m.loadingSaveSettings(),
+		({ update }) => update(),
+	);
 
 	let { models, config }: ConfigFormProps = $props();
 </script>

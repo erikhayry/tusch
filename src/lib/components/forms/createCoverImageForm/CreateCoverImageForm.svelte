@@ -18,10 +18,13 @@
 	} from '$lib/utils/db/dbTypes';
 	import type { CreateCoverImageFormProps } from './createCoverImageFormTypes';
 
-	const handleSubmit = enhanceAction<CreateCoverImageResult>(async ({ data, update }) => {
-		expectWorkflow(await commitGeneratedCover(workflowDeps, data));
-		await update();
-	});
+	const handleSubmit = enhanceAction<CreateCoverImageResult>(
+		m.loadingCreateCoverImage(),
+		async ({ data, update }) => {
+			expectWorkflow(await commitGeneratedCover(workflowDeps, data));
+			await update();
+		},
+	);
 
 	let { label, values, imageName }: CreateCoverImageFormProps = $props();
 
