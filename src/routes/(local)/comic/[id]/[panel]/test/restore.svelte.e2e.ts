@@ -217,8 +217,10 @@ test(
 		await expect(panelPage.restoreImageButton).toBeHidden();
 
 		await expect
-			.poll(async () => (await panelCrops(page)).map((crop) => crop.id).sort())
-			.toEqual(cropsFromA.map((crop) => crop.id).sort());
+			.poll(async () =>
+				(await panelCrops(page)).map((crop) => crop.id).sort((a, b) => a.localeCompare(b)),
+			)
+			.toEqual(cropsFromA.map((crop) => crop.id).sort((a, b) => a.localeCompare(b)));
 		const files = await storedFiles(page);
 		for (const crop of cropsFromB) {
 			expect(files).not.toContain(crop.head);

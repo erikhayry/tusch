@@ -8,7 +8,7 @@ export function storedFiles(page: Page): Promise<string[]> {
 		for await (const name of (root as unknown as { keys(): AsyncIterable<string> }).keys()) {
 			names.push(name);
 		}
-		return names.sort();
+		return names.sort((a, b) => a.localeCompare(b));
 	});
 }
 
