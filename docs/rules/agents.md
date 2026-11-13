@@ -82,6 +82,24 @@ one model, so `/tech-lead audit` runs on `sonnet` locally (switch with
 no judgement (gathering facts, formatting, label moves, fixed check lists) is a
 script or workflow step, not an agent turn; `pipeline-expert` looks for these.
 
+## Workflow files
+
+Agents never change `.github/workflows/`. The agents' GitHub App has no
+`workflows` permission on purpose, so a push that touches it is rejected.
+This keeps agents from changing their own permissions, models, turn caps or CI
+gates.
+
+When a ticket needs a workflow change:
+
+1. Do everything else first, and push it.
+2. Put the exact change in your protocol comment as a ```diff block per file,
+   plus one line on why.
+3. Set `status:blocked` with the decision "apply the workflow diff". A human
+   applies it on the branch, pushes, and moves the label back to your stage.
+
+The planner flags workflow changes in the ticket ("needs a human-applied
+workflow change"), so it's expected rather than a surprise.
+
 ## Follow-ups
 
 Anything you find that is outside the ticket (a slow view, a flaky test, a
