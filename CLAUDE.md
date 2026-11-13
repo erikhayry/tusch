@@ -10,6 +10,7 @@ when a convention changes):
 @docs/rules/architecture.md
 @docs/rules/code-style.md
 @docs/rules/forms.md
+@docs/rules/styling.md
 @docs/rules/testing.md
 @docs/rules/workflow.md
 
