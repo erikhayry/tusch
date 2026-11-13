@@ -18,6 +18,9 @@
 - name: status:blocked
   color: b60205
   description: An agent gave up; needs a human
+- name: backlog
+  color: 9058ae
+  description: Idea not yet planned; run /plan (or add status:idea) to start it
 - name: type:feature
   color: a2eeef
   description: New or changed behaviour
