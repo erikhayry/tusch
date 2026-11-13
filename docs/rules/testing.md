@@ -30,6 +30,9 @@
   `page.getByRole('button', { name: m.addCaption() })`. Use `{ exact: true }`
   when text could also match a label (`getByText` is case-insensitive).
 - Always `await expect(locator)…` web-first assertions.
+- Share helpers instead of copying them between test files: put them in
+  `src/tests/e2e/` (e.g. `storage.ts` for OPFS and stored-panel reads), and
+  loop over cases that differ in one step (see `code-style.md`, "Duplication").
 - Each test starts from fresh storage (Playwright context); examples are seeded
   by the app. Create data through the UI when a test needs a user-made comic
   (see `createComic` in `(local)/test/navigation.svelte.e2e.ts`).

@@ -152,6 +152,20 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: character references for later images.
 - Proven by: tagged tests
 
+### REQ-048 A replaced panel image can be restored
+
+- Status: active
+- Statement: after a panel image is replaced, the panel page offers "Restore previous image", which brings back the image shown just before the latest replacement. It is a single step: once restored, or once the panel image is replaced again, removed, or the panel or comic deleted, only the newest previous image or none is kept. It survives a reload. A panel image that was never replaced offers nothing to restore.
+- Why: a worse new image shouldn't destroy the one the user had.
+- Proven by: tagged tests
+
+### REQ-049 Restoring a panel image drops the crops of the replaced image
+
+- Status: active
+- Statement: restoring a previous panel image removes the character crops created from the replaced image and keeps the crops from earlier images, so dialogue heads match the image that's shown.
+- Why: crops of an image that is gone would be stray files and wrong references.
+- Proven by: tagged tests
+
 ### REQ-019 Captions can be added, edited and removed
 
 - Status: active
@@ -199,7 +213,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-025 Image files never leak or dangle
 
 - Status: active
-- Statement: replacing or deleting a cover, panel image or comic removes image files no comic still references (shared example files are kept); a generation that fails part-way leaves no partial metadata and no stray files.
+- Statement: replacing or deleting a cover, panel image or comic removes image files no comic still references; a panel's kept previous image (and its character crops) counts as referenced (shared example files are kept); a generation that fails part-way leaves no partial metadata and no stray files.
 - Why: OPFS is the user's disk space; metadata must not point at missing files.
 - Proven by: tagged tests
 

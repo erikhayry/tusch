@@ -12,20 +12,24 @@ export interface AssetStore {
 
 export type CleanupResult = { ok: true } | { ok: false; failed: string[] };
 
+function addImageIds(
+	ids: Set<string>,
+	image?: { landscape: { src: string }; portrait: { src: string } },
+) {
+	if (!image) return;
+	ids.add(image.landscape.src);
+	ids.add(image.portrait.src);
+}
+
 /** Every asset id referenced by the given comics. */
 export function collectAssetIds(comics: readonly Comic[]): Set<string> {
 	const ids = new Set<string>();
 
 	for (const comic of comics) {
-		if (comic.cover) {
-			ids.add(comic.cover.landscape.src);
-			ids.add(comic.cover.portrait.src);
-		}
+		addImageIds(ids, comic.cover);
 		for (const panel of comic.panels) {
-			if (panel.image) {
-				ids.add(panel.image.landscape.src);
-				ids.add(panel.image.portrait.src);
-			}
+			addImageIds(ids, panel.image);
+			addImageIds(ids, panel.previousImage?.image);
 		}
 		for (const character of comic.characters) {
 			for (const image of character.images) {
@@ -43,15 +47,16 @@ export async function deleteAssets(
 	assets: AssetStore,
 	assetIds: Iterable<string>,
 ): Promise<CleanupResult> {
-	const failed: string[] = [];
-
-	for (const assetId of new Set(assetIds)) {
-		try {
-			await assets.delete(assetId);
-		} catch {
-			failed.push(assetId);
-		}
-	}
+	// Independent files: delete concurrently so many crops don't make the user wait per file.
+	const results = await Promise.all(
+		[...new Set(assetIds)].map((assetId) =>
+			assets.delete(assetId).then(
+				() => undefined,
+				() => assetId,
+			),
+		),
+	);
+	const failed = results.filter((assetId) => assetId !== undefined);
 
 	return failed.length === 0 ? { ok: true } : { ok: false, failed };
 }
