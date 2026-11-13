@@ -30,6 +30,10 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 1
+          # Claude pushes as claude[bot] through claude-code-action's credential helper.
+          # checkout v5+ persists GITHUB_TOKEN (read-only here) in a way that takes
+          # precedence, so pushes failed with 403 (#72; same fix as agents.yml, #145).
+          persist-credentials: false
 
       # Same environment as CI, so Claude can run typecheck and tests before pushing.
       - uses: pnpm/action-setup@v6
