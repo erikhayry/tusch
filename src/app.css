@@ -1,8 +1,8 @@
 /*
  * Global baseline. See docs/rules/styling.md.
  *
- * Every value is declared once in the token block below; everything else uses
- * var(--…). Order: semantic elements, then narrow screens (the base styles
+ * Every value is declared once in the token block below (the dark block only
+ * redeclares colour tokens); everything else uses var(--…). Order: semantic elements, then narrow screens (the base styles
  * target 320 px), then wide screens with min-width queries only.
  *
  * Breakpoints (media queries can't read custom properties, so this is the one
@@ -15,7 +15,8 @@
 	--color-muted: #595959;
 	--color-border: #000;
 	--color-surface: #f2f2f2;
-	/* Accent: used only for the focus indicator. 3:1+ against white. */
+	/* Accent: used only for the focus indicator. 3:1+ against white; the dark
+	   block overrides it for black and --color-surface. */
 	--color-focus: #0057d8;
 
 	--font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -46,8 +47,9 @@
 	color-scheme: light dark;
 }
 
-/* Dark scheme: follows the OS/browser. Overrides colour tokens only. The focus
-   accent stays: #0057d8 is about 3.35:1 on black and 6.3:1 on white. */
+/* Dark scheme: follows the OS/browser. Overrides colour tokens only. The light
+   accent #0057d8 is 3.35:1 on black but 2.78:1 on --color-surface, so the focus
+   colour is lighter here (about 6.7:1 on black, 5.5:1 on surface). */
 @media (prefers-color-scheme: dark) {
 	:root {
 		--color-text: #fff;
@@ -55,6 +57,7 @@
 		--color-muted: #a6a6a6;
 		--color-border: #fff;
 		--color-surface: #1a1a1a;
+		--color-focus: #4d8fff;
 	}
 }
 

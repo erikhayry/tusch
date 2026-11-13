@@ -22,7 +22,8 @@ The global baseline lives in `src/app.css`, imported once in
   overrides colour tokens in one block in `app.css`.
 - The one accent colour, `--color-focus`, is used **only** for the focus
   indicator (`:focus-visible` `outline`). Never for text, links, buttons or
-  state. Keep it at 3:1 contrast or better against both the white and the black background.
+  state. Keep it at 3:1 contrast or better against the white and the black
+  background and `--color-surface`; the dark block overrides it with a lighter blue.
 - Text colours must pass axe `color-contrast` (REQ-035).
 
 ## Order of work
