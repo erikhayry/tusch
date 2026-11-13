@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Heading from '$lib/components/relativeHeading/Heading.svelte';
+	import Section from '$lib/components/relativeHeading/Section.svelte';
 	import {
 		readGlobalInstructions,
 		saveGlobalInstructions,
@@ -20,14 +22,32 @@
 		text = readGlobalInstructions();
 	});
 
+	let saved = $state(false);
+
 	// Nothing here needs the server (REQ-022, REQ-033).
-	const handleSubmit = enhanceLocalCommand(getSaveGlobalInstructionsValues, saveGlobalInstructions);
+	const handleSubmit = enhanceLocalCommand(
+		getSaveGlobalInstructionsValues,
+		saveGlobalInstructions,
+		{
+			onStart: () => (saved = false),
+			onSuccess: () => (saved = true),
+		},
+	);
 </script>
 
-<form method="POST" use:enhance={handleSubmit}>
-	<label>
-		<span>{m.globalInstructions()}</span>
-		<textarea name={GLOBAL_INSTRUCTIONS_VALUE_KEY} rows={5} bind:value={text}></textarea>
-	</label>
-	<button type="submit">{m.saveGlobalInstructions()}</button>
-</form>
+<Section>
+	<Heading>{m.globalInstructions()}</Heading>
+	<form method="POST" use:enhance={handleSubmit}>
+		<label for="global-instructions">{m.globalInstructions()}</label>
+		<p id="global-instructions-hint">{m.globalInstructionsHint()}</p>
+		<textarea
+			id="global-instructions"
+			name={GLOBAL_INSTRUCTIONS_VALUE_KEY}
+			rows={5}
+			aria-describedby="global-instructions-hint"
+			bind:value={text}></textarea>
+		<button type="submit">{m.saveGlobalInstructions()}</button>
+		<!-- Always rendered so screen readers announce the text when it appears. -->
+		<p role="status">{saved ? m.globalInstructionsSaved() : ''}</p>
+	</form>
+</Section>

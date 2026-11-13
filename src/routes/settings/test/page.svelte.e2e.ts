@@ -157,6 +157,9 @@ test.describe('global instructions', () => {
 		const createPage = await new CreatePage(page).goto();
 
 		await createPage.saveGlobalInstructions('Keep dialogue short, write in Swedish');
+		await expect(
+			page.getByRole('status').filter({ hasText: m.globalInstructionsSaved() }),
+		).toBeVisible();
 		await page.reload();
 
 		await expect(createPage.globalInstructionsInput).toHaveValue(

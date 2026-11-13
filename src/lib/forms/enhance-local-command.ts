@@ -10,12 +10,16 @@ import type { ZodSafeParseResult } from 'zod';
 export function enhanceLocalCommand<T>(
 	decode: (formData: FormData) => ZodSafeParseResult<T>,
 	command: (value: T) => void,
+	{ onStart, onSuccess }: { onStart?: () => void; onSuccess?: () => void } = {},
 ): SubmitFunction {
 	return ({ formData, cancel }) => {
 		cancel();
 		globalError.reset();
+		onStart?.();
 		const decoded = decode(formData);
-		if (decoded.success) command(decoded.data);
-		else globalError.set(decoded.error.issues.map((issue) => issue.message).join(' '));
+		if (decoded.success) {
+			command(decoded.data);
+			onSuccess?.();
+		} else globalError.set(decoded.error.issues.map((issue) => issue.message).join(' '));
 	};
 }
