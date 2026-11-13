@@ -38,7 +38,9 @@ async function generatePanelImage(page: Page) {
 }
 
 test.describe('image files', { tag: '@REQ-025' }, () => {
-	test('replacing a panel image removes the old file', async ({ page }) => {
+	test('replacing a panel image keeps the old file until it is replaced again', async ({
+		page,
+	}) => {
 		await gotoHydrated(page, PANEL_URL);
 		await generatePanelImage(page);
 		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
@@ -47,9 +49,17 @@ test.describe('image files', { tag: '@REQ-025' }, () => {
 
 		await activate(page, page.getByRole('button', { name: m.generateNewImage() }));
 		await expect.poll(() => panelImageSrc(page)).not.toBe(first);
+		const second = await panelImageSrc(page);
+
+		// The previous image is kept so it can be restored.
+		expect(await storedFiles(page)).toContain(first);
+
+		await activate(page, page.getByRole('button', { name: m.generateNewImage() }));
+		await expect.poll(() => panelImageSrc(page)).not.toBe(second);
 
 		const files = await storedFiles(page);
 		expect(files).not.toContain(first);
+		expect(files).toContain(second);
 		expect(files).toContain(await panelImageSrc(page));
 	});
 

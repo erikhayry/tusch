@@ -22,9 +22,10 @@ export function collectAssetIds(comics: readonly Comic[]): Set<string> {
 			ids.add(comic.cover.portrait.src);
 		}
 		for (const panel of comic.panels) {
-			if (panel.image) {
-				ids.add(panel.image.landscape.src);
-				ids.add(panel.image.portrait.src);
+			for (const image of [panel.image, panel.previousImage?.image]) {
+				if (!image) continue;
+				ids.add(image.landscape.src);
+				ids.add(image.portrait.src);
 			}
 		}
 		for (const character of comic.characters) {
@@ -43,15 +44,16 @@ export async function deleteAssets(
 	assets: AssetStore,
 	assetIds: Iterable<string>,
 ): Promise<CleanupResult> {
-	const failed: string[] = [];
-
-	for (const assetId of new Set(assetIds)) {
-		try {
-			await assets.delete(assetId);
-		} catch {
-			failed.push(assetId);
-		}
-	}
+	// Independent files: delete concurrently so many crops don't make the user wait per file.
+	const results = await Promise.all(
+		[...new Set(assetIds)].map((assetId) =>
+			assets.delete(assetId).then(
+				() => undefined,
+				() => assetId,
+			),
+		),
+	);
+	const failed = results.filter((assetId) => assetId !== undefined);
 
 	return failed.length === 0 ? { ok: true } : { ok: false, failed };
 }

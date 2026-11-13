@@ -186,7 +186,17 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			characterImages: readonly { characterId: string; image: CharacterImage }[],
 		): CommandResult {
 			return updateComic(comicId, (comic) => {
-				const withImage = updatePanel(comic, panelId, (panel) => ok({ ...panel, image }));
+				const withImage = updatePanel(comic, panelId, (panel) =>
+					ok({
+						...panel,
+						image,
+						imageCropIds: characterImages.map(({ image: crop }) => crop.id),
+						// Only a replacement keeps something to restore; the older one is dropped.
+						previousImage: panel.image
+							? { image: panel.image, cropIds: panel.imageCropIds ?? [] }
+							: undefined,
+					}),
+				);
 
 				return characterImages.reduce<Outcome<Comic>>(
 					(current, { characterId, image: characterImage }) =>
@@ -202,8 +212,39 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 
 		removePanelImage(comicId: string, panelId: string): CommandResult {
 			return updateComic(comicId, (comic) =>
-				updatePanel(comic, panelId, (panel) => ok({ ...panel, image: undefined })),
+				updatePanel(comic, panelId, (panel) =>
+					ok({ ...panel, image: undefined, imageCropIds: undefined, previousImage: undefined }),
+				),
 			);
+		},
+
+		/** Brings back the kept previous image and drops the crops of the image it replaces. */
+		restorePanelImage(comicId: string, panelId: string): CommandResult {
+			return updateComic(comicId, (comic) => {
+				const panel = comic.panels.find(({ id }) => id === panelId);
+				if (!panel) return fail('panel-not-found', `Panel ${panelId} not found`);
+				const previous = panel.previousImage;
+				if (!previous) return fail('image-not-found', `Panel ${panelId} has no previous image`);
+
+				const dropped = new Set(panel.imageCropIds ?? []);
+				const restored = updatePanel(comic, panelId, (current) =>
+					ok({
+						...current,
+						image: previous.image,
+						imageCropIds: previous.cropIds,
+						previousImage: undefined,
+					}),
+				);
+				if (!restored.ok) return restored;
+
+				return ok({
+					...restored.value,
+					characters: restored.value.characters.map((character) => ({
+						...character,
+						images: character.images.filter(({ id }) => !dropped.has(id)),
+					})),
+				});
+			});
 		},
 
 		addCaption(comicId: string, panelId: string, caption: string): CommandResult {
