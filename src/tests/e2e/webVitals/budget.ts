@@ -12,7 +12,6 @@ export const DEFAULT_BUDGET = { lcp: 2500, cls: 0.1, tbt: 200 } as const;
 export const VIEW_BUDGET_OVERRIDES: Partial<
 	Record<string, Partial<Record<keyof typeof DEFAULT_BUDGET, number>>>
 > = {
-	// Measured median 5.3 s. Fix is a follow-up from issue #81 (no ticket
-	// filed yet: the developer agent could not create issues; link it here once it exists).
+	// Measured median 5.3 s. Remove when #149 is fixed.
 	comic: { lcp: 7500 },
 };
