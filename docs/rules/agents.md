@@ -60,6 +60,12 @@ GitHub nobody is there to approve anything else. So:
 - Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`.
 - Screenshot baselines: `pnpm screenshots:update` renders them in CI and copies
   them into `src/`; don't download or copy them by hand.
+- **Inspect files with Read, Glob and Grep**, not `ls`, `cat`, `du`, `file`,
+  `find` or `wc`; those aren't on any role's allow list.
+- **A denial doesn't end your run.** Split the command into allowed single
+  commands (or use Read/Glob/Grep) and carry on. Every run ends with your
+  protocol comment and a label move; a run that just stops is blocked
+  automatically ("ended without handing off").
 - **Never wait for approval.** If a command you need is denied twice, block (see
   below) and include the exact command in your comment.
 
