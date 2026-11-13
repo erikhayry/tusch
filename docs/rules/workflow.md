@@ -41,7 +41,9 @@
 - `main` is protected: CI (`test`: typecheck, lint, requirements check, knip,
   E2E) must pass; no force-push.
 - PR body: what changed and why, `Closes #<n>`, the tests added, anything
-  deliberately left out, and follow-ups as new issues (not TODOs).
+  deliberately left out, follow-ups as new issues (not TODOs), and a
+  **Release note**: one user-facing sentence, or "No user-facing change". After
+  a pipeline PR merges, the tech lead copies the note into `CHANGELOG.md`.
 - Keep PRs focused: no unrelated formatting or refactors. File an issue instead.
 - Commit messages: imperative subject; body explains why.
 - Never commit secrets or `.env*` files.
