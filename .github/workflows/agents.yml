@@ -54,6 +54,7 @@ jobs:
       queued: ${{ steps.route.outputs.queued }}
       turns: ${{ steps.route.outputs.turns }}
       model: ${{ steps.route.outputs.model }}
+      automate_tools: ${{ steps.route.outputs.automate_tools }}
       tools: ${{ steps.route.outputs.tools }}
     steps:
       - uses: actions/checkout@v7
@@ -155,6 +156,10 @@ jobs:
           esac
           if [ "$target" = audit ]; then turns=100; model=opus; fi  # reads every requirement
 
+          # /automate runs after the audit in the same job (#84). Keep this list equal to
+          # `allowed-tools` in .claude/skills/automate/SKILL.md.
+          automate_tools='Read,Grep,Glob,Write,Bash(gh issue list:*),Bash(gh issue view:*),Bash(gh issue create:*),Bash(gh issue comment:*)'
+
           echo "Route: event=$EVENT action=$ACTION label=$LABEL → skill='${skill:-none}' target='$target'"
           {
             echo "skill=$skill"
@@ -164,6 +169,7 @@ jobs:
             echo "turns=$turns"
             echo "model=$model"
             echo "tools=$tools"
+            echo "automate_tools=$automate_tools"
           } >> "$GITHUB_OUTPUT"
 
   agent:
@@ -171,6 +177,7 @@ jobs:
     if: needs.route.outputs.skill != ''
     outputs:
       cost_row: ${{ steps.cost.outputs.row }}
+      cost_row_automate: ${{ steps.cost_automate.outputs.row }}
     # One agent per issue at a time. Only real stage runs join this queue, so
     # comments and other no-op events can't displace a pending stage
     # (GitHub keeps one pending run per group and cancels older ones).
@@ -178,7 +185,7 @@ jobs:
       group: agent-${{ needs.route.outputs.issue || needs.route.outputs.target }}
       cancel-in-progress: false
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60 # audit (up to 100 turns) plus /automate (30 turns), #84
     # Same image as CI so screenshot baselines render identically.
     container: mcr.microsoft.com/playwright:v1.63.0-noble
     permissions:
@@ -272,6 +279,60 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: echo "row=$(node "$RUNNER_TEMP/costs.mjs" row "$EXECUTION_FILE")" >> "$GITHUB_OUTPUT"
 
+      - name: Digest of the run
+        if: always() && steps.claude.outcome != 'skipped'
+        continue-on-error: true # never fail the job
+        env:
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+          SKILL: ${{ needs.route.outputs.skill }}
+          TARGET: ${{ needs.route.outputs.target }}
+          CONCLUSION: ${{ steps.claude.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/agent-digest"
+          node "$RUNNER_TEMP/costs.mjs" digest "$EXECUTION_FILE" > "$RUNNER_TEMP/agent-digest/${SKILL}.json"
+
+      # The weekly automater (#84): finds repeated actions in last week's digests and files issues.
+      - name: Run /automate
+        id: automate
+        if: always() && needs.route.outputs.target == 'audit' && steps.claude.outcome != 'skipped'
+        uses: anthropics/claude-code-action@8a29bc6f0ae11a363721054b6739feba6adabe57 # v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          allowed_bots: 'claude[bot],github-actions[bot]'
+          additional_permissions: |
+            actions: read
+          prompt: /automate
+          claude_args: |
+            --model sonnet
+            --max-turns 30
+            --allowedTools "${{ needs.route.outputs.automate_tools }}"
+
+      - name: Record cost (automate)
+        id: cost_automate
+        if: always() && steps.automate.outcome != 'skipped' && steps.automate.outcome != ''
+        continue-on-error: true
+        env:
+          EXECUTION_FILE: ${{ steps.automate.outputs.execution_file }}
+          ISSUE: ''
+          SKILL: automate
+          TARGET: audit
+          CONCLUSION: ${{ steps.automate.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          echo "row=$(node "$RUNNER_TEMP/costs.mjs" row "$EXECUTION_FILE")" >> "$GITHUB_OUTPUT"
+          SKILL=automate node "$RUNNER_TEMP/costs.mjs" digest "$EXECUTION_FILE" > "$RUNNER_TEMP/agent-digest/automate.json"
+
+      - name: Upload digests
+        if: always() && steps.claude.outcome != 'skipped'
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: agent-digest
+          path: ${{ runner.temp }}/agent-digest
+          retention-days: 14
+          if-no-files-found: ignore
+
   # Appends the row to costs.csv on the unprotected `bookkeeping` branch (pushes
   # to main need a PR; the weekly audit copies the file there, #38) and keeps
   # one "Cost so far" comment on the issue up to date.
@@ -297,6 +358,7 @@ jobs:
       - name: Append to costs.csv
         env:
           ROW: ${{ needs.agent.outputs.cost_row }}
+          ROW_AUTOMATE: ${{ needs.agent.outputs.cost_row_automate }}
         run: |
           set -euo pipefail
           cp main/scripts/costs.mjs costs.mjs  # the bookkeeping branch has no scripts
@@ -314,6 +376,7 @@ jobs:
           # Runs are serialised by the concurrency group; retry only for a manual push.
           for attempt in 1 2 3; do
             printf '%s\n' "$ROW" >> costs.csv
+            if [[ -n "$ROW_AUTOMATE" ]]; then printf '%s\n' "$ROW_AUTOMATE" >> costs.csv; fi
             git add costs.csv
             git commit -qm "Bookkeeping: $(printf '%s' "$ROW" | cut -d, -f2-4)"
             if git push -q origin HEAD:bookkeeping; then exit 0; fi
