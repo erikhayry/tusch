@@ -12,21 +12,24 @@ export interface AssetStore {
 
 export type CleanupResult = { ok: true } | { ok: false; failed: string[] };
 
+function addImageIds(
+	ids: Set<string>,
+	image?: { landscape: { src: string }; portrait: { src: string } },
+) {
+	if (!image) return;
+	ids.add(image.landscape.src);
+	ids.add(image.portrait.src);
+}
+
 /** Every asset id referenced by the given comics. */
 export function collectAssetIds(comics: readonly Comic[]): Set<string> {
 	const ids = new Set<string>();
 
 	for (const comic of comics) {
-		if (comic.cover) {
-			ids.add(comic.cover.landscape.src);
-			ids.add(comic.cover.portrait.src);
-		}
+		addImageIds(ids, comic.cover);
 		for (const panel of comic.panels) {
-			for (const image of [panel.image, panel.previousImage?.image]) {
-				if (!image) continue;
-				ids.add(image.landscape.src);
-				ids.add(image.portrait.src);
-			}
+			addImageIds(ids, panel.image);
+			addImageIds(ids, panel.previousImage?.image);
 		}
 		for (const character of comic.characters) {
 			for (const image of character.images) {

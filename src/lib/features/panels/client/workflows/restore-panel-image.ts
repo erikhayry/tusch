@@ -20,6 +20,7 @@ export function restorePanelImage(
 ): Promise<WorkflowResult> {
 	return runAssetWorkflow(
 		deps,
-		async () => () => deps.commands.restorePanelImage(comicId, panelId),
+		// Nothing to stage: the restore only moves metadata and frees assets.
+		() => Promise.resolve(() => deps.commands.restorePanelImage(comicId, panelId)),
 	);
 }

@@ -1,9 +1,8 @@
-import { CLIENT_ACTION_NAME } from '$lib/forms/action-names';
 import { readString } from '$lib/forms/form-data';
 import { z, type ZodSafeParseResult } from 'zod';
 
 /** Client-only: the image is restored in the browser after the no-op action succeeds. */
-export const RESTORE_PANEL_IMAGE_ACTION = CLIENT_ACTION_NAME;
+export { CLIENT_ACTION_NAME as RESTORE_PANEL_IMAGE_ACTION } from '$lib/forms/action-names';
 
 export const RestorePanelImageValuesSchema = z.object({
 	comicId: z.string().min(1),
