@@ -157,7 +157,16 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 					return fail('panel-not-found', `Panel ${panelId} not found`);
 				}
 
-				return ok({ ...comic, panels: comic.panels.filter(({ id }) => id !== panelId) });
+				// Same update as the panel removal so the crops and the panel go in one commit;
+				// the asset workflow then deletes the crop files that are no longer referenced.
+				return ok({
+					...comic,
+					panels: comic.panels.filter(({ id }) => id !== panelId),
+					characters: comic.characters.map((character) => ({
+						...character,
+						images: character.images.filter((image) => image.panelId !== panelId),
+					})),
+				});
 			});
 		},
 

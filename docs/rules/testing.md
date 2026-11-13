@@ -49,6 +49,16 @@ Drive failures from the UI with markers in submitted text:
   throws that error (any request whose messages, or API key, contain the marker)
 - an API key containing `invalid`: key validation returns `success: false`
 
+## Build for real usage
+
+- Features and tests must work for what users actually do: comics they create,
+  not only the bundled examples.
+- A test setup must not use a shortcut real users can't reach (e.g. seeded
+  example data when the feature must also work on a created comic). If the mock
+  blocks a real-usage scenario, fix the mock instead of working around it.
+- When a test deviates from the ticket's setup, the real-usage scenario must
+  still be covered.
+
 ## Running
 
 - `pnpm run test:e2e` builds and runs everything (Chromium).
