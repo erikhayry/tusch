@@ -2,6 +2,7 @@ import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../../examples/examples';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
+import { activate } from '../../../../../tests/e2e/keyboard';
 
 const EXAMPLE = EXAMPLES[0];
 const PANEL = EXAMPLE.panels[0];
@@ -13,8 +14,8 @@ test(
 	async ({ page }) => {
 		// Give the panel a freshly generated image (stored in OPFS) with character positions.
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}/${PANEL.id}`);
-		await page.getByRole('button', { name: m.removeImage() }).click();
-		await page.getByRole('button', { name: m.addImage() }).click();
+		await activate(page, page.getByRole('button', { name: m.removeImage() }));
+		await activate(page, page.getByRole('button', { name: m.addImage() }));
 		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
 
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
@@ -24,7 +25,7 @@ test(
 		const entry = panelsOfCharacter.getByRole('listitem').filter({ hasText: PANEL.editorialTitle });
 		await expect(entry).toContainText('Is generated: true');
 
-		await entry.getByRole('button', { name: 'create' }).click();
+		await activate(page, entry.getByRole('button', { name: 'create' }));
 
 		await expect(entry.locator('img[src^="blob:"]')).toBeVisible();
 	},
@@ -39,7 +40,7 @@ test('previews a crop on an untouched example panel', { tag: '@REQ-014' }, async
 		.getByRole('listitem')
 		.filter({ hasText: PANEL.editorialTitle });
 
-	await entry.getByRole('button', { name: 'create' }).click();
+	await activate(page, entry.getByRole('button', { name: 'create' }));
 
 	await expect(entry.locator('img[src^="blob:"]')).toBeVisible();
 });

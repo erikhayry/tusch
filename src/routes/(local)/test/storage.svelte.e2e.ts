@@ -2,6 +2,7 @@ import { m } from '$lib/paraglide/messages';
 import { expect, test, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../examples/examples';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
+import { activate } from '../../../tests/e2e/keyboard';
 
 const EXAMPLE = EXAMPLES[0];
 const PANEL = EXAMPLE.panels[0];
@@ -32,8 +33,8 @@ function panelImageSrc(page: Page): Promise<string | undefined> {
 }
 
 async function generatePanelImage(page: Page) {
-	await page.getByRole('button', { name: m.removeImage() }).click();
-	await page.getByRole('button', { name: m.addImage() }).click();
+	await activate(page, page.getByRole('button', { name: m.removeImage() }));
+	await activate(page, page.getByRole('button', { name: m.addImage() }));
 }
 
 test.describe('image files', { tag: '@REQ-025' }, () => {
@@ -44,7 +45,7 @@ test.describe('image files', { tag: '@REQ-025' }, () => {
 		const first = await panelImageSrc(page);
 		expect(await storedFiles(page)).toContain(first);
 
-		await page.getByRole('button', { name: m.generateNewImage() }).click();
+		await activate(page, page.getByRole('button', { name: m.generateNewImage() }));
 		await expect.poll(() => panelImageSrc(page)).not.toBe(first);
 
 		const files = await storedFiles(page);
@@ -54,11 +55,11 @@ test.describe('image files', { tag: '@REQ-025' }, () => {
 
 	test('deleting a cover removes its file', async ({ page }) => {
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
-		await page.getByRole('button', { name: m.deleteCover() }).click();
-		await page.getByRole('button', { name: m.addCover() }).click();
+		await activate(page, page.getByRole('button', { name: m.deleteCover() }));
+		await activate(page, page.getByRole('button', { name: m.addCover() }));
 		await expect.poll(async () => (await storedFiles(page)).length).toBe(1);
 
-		await page.getByRole('button', { name: m.deleteCover() }).click();
+		await activate(page, page.getByRole('button', { name: m.deleteCover() }));
 
 		await expect.poll(() => storedFiles(page)).toEqual([]);
 	});
@@ -75,10 +76,10 @@ test.describe('image files', { tag: '@REQ-025' }, () => {
 			};
 		});
 		await gotoHydrated(page, PANEL_URL);
-		await page.getByRole('button', { name: m.removeImage() }).click();
+		await activate(page, page.getByRole('button', { name: m.removeImage() }));
 		await expect(page.getByRole('button', { name: m.addImage() })).toBeVisible();
 
-		await page.getByRole('button', { name: m.addImage() }).click();
+		await activate(page, page.getByRole('button', { name: m.addImage() }));
 
 		await expect(page.getByTestId('error-test-id')).toContainText('Simulated disk failure');
 		expect(await panelImageSrc(page)).toBeUndefined();

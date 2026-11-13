@@ -4,6 +4,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../../../../../examples/examples';
 import { CREATE_PANEL_IMAGE_RESPONSE } from '../../../../../../../tests/mock/openAi/openAiResponse';
 import { gotoHydrated } from '../../../../../../../tests/e2e/gotoHydrated';
+import { activate, typeInto } from '../../../../../../../tests/e2e/keyboard';
 
 export class PanelPage {
 	readonly page: Page;
@@ -55,27 +56,27 @@ export class PanelPage {
 	}
 
 	async removeCaption() {
-		await this.deleteCaptionButton.click();
+		await activate(this.page, this.deleteCaptionButton);
 	}
 
 	async editCaption(newCaption: string) {
-		await this.editCaptionButton.click();
-		await this.editCaptionInput.fill(newCaption);
-		await this.saveCaptionButton.click();
+		await activate(this.page, this.editCaptionButton);
+		await typeInto(this.page, this.editCaptionInput, newCaption);
+		await activate(this.page, this.saveCaptionButton);
 	}
 
 	async removeDialogue() {
-		await this.deleteDialogueButton.click();
+		await activate(this.page, this.deleteDialogueButton);
 	}
 
 	async editDialogue(newDialogue: string) {
-		await this.editDialogueButton.click();
-		await this.editDialogueInput.fill(newDialogue);
-		await this.saveDialogueButton.click();
+		await activate(this.page, this.editDialogueButton);
+		await typeInto(this.page, this.editDialogueInput, newDialogue);
+		await activate(this.page, this.saveDialogueButton);
 	}
 
 	async addPanelBefore() {
-		await this.addPanelBeforeButton.click();
+		await activate(this.page, this.addPanelBeforeButton);
 		await expect(this.page.getByText(m.loading())).toBeHidden();
 	}
 

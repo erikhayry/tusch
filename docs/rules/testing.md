@@ -18,6 +18,14 @@
 - Navigate with `gotoHydrated(page, url)` (`src/tests/e2e/gotoHydrated.ts`), or
   a page object's async `goto()` that uses it. It waits for `<html data-hydrated>`;
   interacting earlier can turn a submit into a native POST.
+- Drive the UI by keyboard only (REQ-037): no `.click()`, `.fill()`, `.check()`
+  or `.selectOption()` on controls. Use the helpers in
+  `src/tests/e2e/keyboard.ts`: `tabTo` (Tab until focused, asserted with
+  `toBeFocused()`), `activate` (Enter/Space), `typeInto`, `chooseOption`
+  (`<select>`). The one exception is file inputs, which may use
+  `setInputFiles` because a native file dialog can't be driven. Wait for
+  `gotoHydrated` before pressing keys. A lint rule is deliberately not used;
+  this is a convention.
 - Select by role and accessible name using the translation, not raw strings:
   `page.getByRole('button', { name: m.addCaption() })`. Use `{ exact: true }`
   when text could also match a label (`getByText` is case-insensitive).

@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { KEY_COOKIE_NAME, TEXT_MODEL_COOKIE_NAME } from '$lib/utils/cookies';
 import { LandingPage } from '../../(local)/test/utils/landingPage';
+import { activate, chooseOption } from '../../../tests/e2e/keyboard';
 import { CreatePage } from './utils/createPage';
 
 test('is titled Settings', { tag: '@REQ-034' }, async ({ page }) => {
@@ -13,7 +14,7 @@ test('is titled Settings', { tag: '@REQ-034' }, async ({ page }) => {
 test('links back to the start page', { tag: '@REQ-034' }, async ({ page }) => {
 	const createPage = await new CreatePage(page).goto();
 
-	await createPage.backLink.click();
+	await activate(page, createPage.backLink);
 
 	await expect(page).toHaveURL(/\/$/);
 	await expect(new LandingPage(page).comicsHeading).toBeVisible();
@@ -73,9 +74,9 @@ test('never exposes the API key in page data', { tag: '@REQ-029' }, async ({ pag
 test('should set model', { tag: '@REQ-030' }, async ({ page }) => {
 	const createPage = await new CreatePage(page).goto();
 
-	await createPage.modelsSelect.selectOption('gpt-6-luna');
+	await chooseOption(page, createPage.modelsSelect, 'gpt-6-luna');
 
-	await createPage.saveSettingsButton.click();
+	await activate(page, createPage.saveSettingsButton);
 
 	await expect(createPage.currentModel).toHaveText('gpt-6-luna');
 });
@@ -99,8 +100,8 @@ test(
 	{ tag: ['@REQ-030', '@REQ-022'] },
 	async ({ page }) => {
 		const createPage = await new CreatePage(page).goto();
-		await createPage.modelsSelect.selectOption('gpt-6-luna');
-		await createPage.saveSettingsButton.click();
+		await chooseOption(page, createPage.modelsSelect, 'gpt-6-luna');
+		await activate(page, createPage.saveSettingsButton);
 		await expect(createPage.currentModel).toHaveText('gpt-6-luna');
 
 		await page.reload();
