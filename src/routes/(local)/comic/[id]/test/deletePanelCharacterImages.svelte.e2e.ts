@@ -78,7 +78,7 @@ async function createComicWithPanelImages(page: Page, count: 1 | 2) {
 test.describe('deleting a panel removes its character images', () => {
 	test(
 		'removes the character images of the panel but keeps the characters',
-		{ tag: ['@REQ-040', '@REQ-013'] },
+		{ tag: ['@REQ-041', '@REQ-013'] },
 		async ({ page }) => {
 			const { comicId, first } = await createComicWithPanelImages(page, 1);
 			const before = await storedComic(page, comicId);
@@ -94,7 +94,7 @@ test.describe('deleting a panel removes its character images', () => {
 
 	test(
 		'removes the crop files and the panel image file',
-		{ tag: ['@REQ-040', '@REQ-025'] },
+		{ tag: ['@REQ-041', '@REQ-025'] },
 		async ({ page }) => {
 			const { comicId, first } = await createComicWithPanelImages(page, 1);
 			const comic = await storedComic(page, comicId);
@@ -117,7 +117,7 @@ test.describe('deleting a panel removes its character images', () => {
 
 	test(
 		'keeps the character images and files from other panels',
-		{ tag: '@REQ-040' },
+		{ tag: '@REQ-041' },
 		async ({ page }) => {
 			const { comicId, first, second } = await createComicWithPanelImages(page, 2);
 			const comic = await storedComic(page, comicId);
@@ -145,7 +145,7 @@ test.describe('deleting a panel removes its character images', () => {
 		},
 	);
 
-	test('stays removed after a reload', { tag: ['@REQ-040', '@REQ-022'] }, async ({ page }) => {
+	test('stays removed after a reload', { tag: ['@REQ-041', '@REQ-022'] }, async ({ page }) => {
 		const { comicId, first } = await createComicWithPanelImages(page, 1);
 		await deletePanel(page, comicId, 1);
 		await expect
