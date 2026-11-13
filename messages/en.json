@@ -52,6 +52,7 @@
 	"panels": "Panels",
 	"characterPanels": "Panels with charachter",
 	"removeImage": "Remove Image",
+	"restorePreviousImage": "Restore previous image",
 	"saveCaption": "Save Caption {number}",
 	"saveDialogue": "Save Dialogue {number}",
 	"seasons": "Seasons",
