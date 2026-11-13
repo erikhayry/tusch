@@ -99,9 +99,14 @@ Drive failures from the UI with markers in submitted text:
 - A new behaviour needs a requirement (the tech lead adds it) and a tagged test
   in the same PR. Closing a gap: tag the test and delete `gap` from the entry.
 - Skipped tests must not be tagged; they prove nothing.
-- `pnpm run check:requirements` (in CI) fails on unknown or duplicate ids,
-  untested active requirements, stale gaps and tagged skipped tests.
+- Ids: REQ-001 … REQ-052 are legacy; new requirements are
+  `REQ-<issue>-<n>` (e.g. `@REQ-98-1`), so parallel tickets can't collide.
+- `pnpm run check:requirements` (in CI) fails on unknown, duplicate, malformed or
+  new sequential ids, untested active requirements, stale gaps and tagged skipped
+  tests.
 - Run the tests for one requirement: `pnpm exec playwright test --grep @REQ-019`.
+  For an issue-scoped id, anchor the end so `@REQ-98-1` doesn't also match
+  `@REQ-98-10`: `--grep "@REQ-98-1(?!\d)"`.
 
 ## Screenshots
 
