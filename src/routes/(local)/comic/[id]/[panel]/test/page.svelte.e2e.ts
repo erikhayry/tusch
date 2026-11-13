@@ -3,15 +3,16 @@ import { expect, test } from '@playwright/test';
 import { EXAMPLES } from '../../../../../../examples/examples';
 import { PanelPage } from './utils/panelPage';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
+import { activate, typeInto } from '../../../../../../tests/e2e/keyboard';
 
 test('creates image', { tag: '@REQ-015' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 
-	await panelPage.deleteImageButton.click();
+	await activate(page, panelPage.deleteImageButton);
 
 	await panelPage.createImageButton.waitFor({ state: 'visible' });
 
-	await panelPage.createImageButton.click();
+	await activate(page, panelPage.createImageButton);
 
 	await expect(panelPage.newImage).toBeVisible();
 });
@@ -19,7 +20,7 @@ test('creates image', { tag: '@REQ-015' }, async ({ page }) => {
 test('replace image', { tag: '@REQ-016' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto();
 
-	await panelPage.replaceImageButton.click();
+	await activate(page, panelPage.replaceImageButton);
 
 	await expect(panelPage.newImage).toBeVisible();
 });
@@ -27,7 +28,7 @@ test('replace image', { tag: '@REQ-016' }, async ({ page }) => {
 test('removes image', { tag: '@REQ-017' }, async ({ page }) => {
 	const panelPage = await new PanelPage(page).goto(1);
 
-	await panelPage.deleteImageButton.click();
+	await activate(page, panelPage.deleteImageButton);
 
 	await expect(panelPage.initialImage).toBeHidden();
 });
@@ -80,8 +81,8 @@ test(
 		const panelPage = await new PanelPage(page).goto();
 		await expect(panelPage.dialogueCharacterImage).toHaveCount(0);
 
-		await panelPage.deleteImageButton.click();
-		await panelPage.createImageButton.click();
+		await activate(page, panelPage.deleteImageButton);
+		await activate(page, panelPage.createImageButton);
 		await expect(panelPage.newImage).toBeVisible();
 
 		// One head crop per dialogue line whose character appears in the new image.
@@ -100,8 +101,8 @@ test('add caption', { tag: ['@REQ-019', '@REQ-022'] }, async ({ page }) => {
 	const captions = page.getByRole('list', { name: m.captions() }).getByRole('listitem');
 	const before = await captions.count();
 
-	await page.getByRole('textbox', { name: m.newCaption() }).fill('A NEW CAPTION');
-	await page.getByRole('button', { name: m.addCaption() }).click();
+	await typeInto(page, page.getByRole('textbox', { name: m.newCaption() }), 'A NEW CAPTION');
+	await activate(page, page.getByRole('button', { name: m.addCaption() }));
 
 	await expect(captions).toHaveCount(before + 1);
 	await expect(captions.last()).toContainText('A NEW CAPTION');

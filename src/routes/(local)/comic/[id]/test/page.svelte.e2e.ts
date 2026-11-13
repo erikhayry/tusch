@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
+import { activate } from '../../../../../tests/e2e/keyboard';
 import { EXAMPLES } from '../../../../../examples/examples';
 import { ComicPage } from './utils/comicPage';
 
@@ -12,7 +13,7 @@ test('has expected title', { tag: '@REQ-010' }, async ({ page }) => {
 test('opens panel view', { tag: '@REQ-010' }, async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 
-	await comicPage.link.click();
+	await activate(page, comicPage.link);
 
 	await page.waitForURL(`**/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
 });
@@ -22,7 +23,7 @@ test('delete cover', { tag: '@REQ-012' }, async ({ page }) => {
 
 	await expect(comicPage.initialCoverImage).toBeVisible();
 
-	await comicPage.deleteCoverButton.click();
+	await activate(page, comicPage.deleteCoverButton);
 
 	await expect(comicPage.initialCoverImage).not.toBeVisible();
 });
@@ -30,8 +31,8 @@ test('delete cover', { tag: '@REQ-012' }, async ({ page }) => {
 test('create cover', { tag: '@REQ-011' }, async ({ page }) => {
 	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
 
-	await comicPage.deleteCoverButton.click();
-	await comicPage.addCoverButton.click();
+	await activate(page, comicPage.deleteCoverButton);
+	await activate(page, comicPage.addCoverButton);
 
 	await expect(comicPage.newCoverImage).toBeVisible();
 });
@@ -41,7 +42,7 @@ test('delete panel', { tag: '@REQ-013' }, async ({ page }) => {
 
 	await expect(comicPage.listItems).toHaveCount(comicPage.initialNumberOfListItems);
 
-	await comicPage.deletePanelButton.click();
+	await activate(page, comicPage.deletePanelButton);
 
 	await expect(comicPage.listItems).toHaveCount(comicPage.initialNumberOfListItems - 1);
 });

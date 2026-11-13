@@ -1,6 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test, type Page } from '@playwright/test';
 import { gotoHydrated } from './gotoHydrated';
+import { typeInto } from './keyboard';
 import { VIEWS } from './views';
 
 /**
@@ -40,8 +41,8 @@ test.describe('screenshots', () => {
 
 	test('settings after adding a key', async ({ page }) => {
 		await gotoHydrated(page, '/settings');
-		await page.getByRole('textbox', { name: m.byok() }).fill('mock key');
-		await page.getByRole('textbox', { name: m.byok() }).press('Enter');
+		await typeInto(page, page.getByRole('textbox', { name: m.byok() }), 'mock key');
+		await page.keyboard.press('Enter');
 		await expect(page.getByText(m.keyAdded())).toBeVisible();
 		await settle(page);
 		await expect(page).toHaveScreenshot('settings-key-added.png', { fullPage: true });

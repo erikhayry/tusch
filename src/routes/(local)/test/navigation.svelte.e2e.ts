@@ -2,6 +2,7 @@ import { m } from '$lib/paraglide/messages';
 import { expect, test, type Page } from '@playwright/test';
 import { EXAMPLES } from '../../../examples/examples';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
+import { activate, typeInto } from '../../../tests/e2e/keyboard';
 
 const EXAMPLE = EXAMPLES[0];
 const MISSING_ID = '00000000-0000-4000-8000-000000000000';
@@ -15,8 +16,8 @@ async function storedComics(page: Page): Promise<{ id: string; panels: { id: str
 /** Create a comic through the UI (mock AI) and return it as stored locally. */
 async function createComic(page: Page) {
 	await gotoHydrated(page, '/comic/create');
-	await page.getByRole('textbox', { name: /url/i }).fill('https://example.com/article');
-	await page.getByRole('button', { name: /submit/i }).click();
+	await typeInto(page, page.getByRole('textbox', { name: /url/i }), 'https://example.com/article');
+	await activate(page, page.getByRole('button', { name: /submit/i }));
 	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 
 	const id = page.url().split('/').at(-1)!;

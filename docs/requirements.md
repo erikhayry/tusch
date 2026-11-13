@@ -280,3 +280,17 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: every view (landing, create, comic, panel, raw, not found, settings) has no axe violations: each has a page title, a main landmark, and labelled form controls.
 - Why: screen-reader and keyboard users must be able to use every view; tests select by role and name, so missing labels break both.
 - Proven by: tagged tests
+
+### REQ-037 Every control can be operated with the keyboard alone
+
+- Status: active
+- Statement: every interactive control (links, buttons, form fields, selects) can be reached with Tab, in a sensible order, and operated with the keyboard alone (Enter/Space, typing, arrow keys).
+- Why: keyboard-only users must be able to use every view; axe doesn't check operability. The E2E suite itself drives the UI by keyboard, so it doubles as this check.
+- Proven by: tagged tests
+
+### REQ-038 The focused control has a visible focus indicator
+
+- Status: active
+- Statement: when a control receives focus by keyboard, it shows a visible indicator (non-zero outline or box-shadow, distinct from its unfocused state).
+- Why: keyboard users must see where they are (WCAG 2.4.7); axe doesn't check it.
+- Proven by: tagged tests
