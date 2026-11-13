@@ -115,6 +115,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: character consistency across panels.
 - Proven by: tagged tests
 
+### REQ-040 Deleting a panel removes its character images
+
+- Status: active
+- Statement: deleting a panel also removes every character image (head and full crop) taken from that panel, and their image files. The characters stay, as do their images from other panels.
+- Why: the comic must not keep crops of a panel that no longer exists, and the files must not stay on disk (REQ-025).
+- Proven by: tagged tests
+
 ## Panel page
 
 ### REQ-015 A panel image can be generated
