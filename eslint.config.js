@@ -36,6 +36,11 @@ export default defineConfig(
 		},
 	},
 	{
+		// A wrong `!` in a test fails the test, so it can't hide a runtime crash.
+		files: ['**/*.e2e.{ts,js}', '**/test/utils/**', 'src/tests/**'],
+		rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
+	},
+	{
 		// Override or add rule settings here, such as:
 		// 'svelte/button-has-type': 'error'
 		rules: {},
