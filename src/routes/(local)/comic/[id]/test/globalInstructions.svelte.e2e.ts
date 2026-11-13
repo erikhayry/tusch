@@ -9,7 +9,7 @@ import {
 } from '../../../../../tests/e2e/globalInstructions';
 import { activate } from '../../../../../tests/e2e/keyboard';
 
-test('global instructions reach the cover prompt', { tag: '@REQ-045' }, async ({ page }) => {
+test('global instructions reach the cover prompt', { tag: '@REQ-051' }, async ({ page }) => {
 	// A comic the user made, without a cover so "Add Cover" is offered.
 	const { comicId } = await createComicThroughUi(page);
 	await activate(page, page.getByRole('button', { name: m.deleteCover() }));

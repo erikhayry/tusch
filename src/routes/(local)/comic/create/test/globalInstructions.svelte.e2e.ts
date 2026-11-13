@@ -9,7 +9,7 @@ import { CreatePage } from './utils/createPage';
 
 test(
 	'global instructions reach the create comic prompt',
-	{ tag: ['@REQ-045', '@REQ-009'] },
+	{ tag: ['@REQ-051', '@REQ-009'] },
 	async ({ page }) => {
 		await saveGlobalInstructions(page, RATE_LIMIT_MARKER);
 		const before = await storedComicCount(page);
@@ -26,7 +26,7 @@ test(
 
 test(
 	'creates a comic as usual with harmless global instructions',
-	{ tag: '@REQ-045' },
+	{ tag: '@REQ-051' },
 	async ({ page }) => {
 		await saveGlobalInstructions(page, 'Keep it short');
 		const createPage = await new CreatePage(page).goto();

@@ -9,7 +9,7 @@ import {
 } from '../../../../../../tests/e2e/globalInstructions';
 import { activate } from '../../../../../../tests/e2e/keyboard';
 
-test('global instructions reach the panel image prompt', { tag: '@REQ-045' }, async ({ page }) => {
+test('global instructions reach the panel image prompt', { tag: '@REQ-051' }, async ({ page }) => {
 	const { comicId, panelId } = await createComicThroughUi(page);
 	await saveGlobalInstructions(page, RATE_LIMIT_MARKER);
 
@@ -21,7 +21,7 @@ test('global instructions reach the panel image prompt', { tag: '@REQ-045' }, as
 	await expect(page.getByRole('button', { name: m.removeImage() })).toBeHidden();
 });
 
-test('global instructions reach the insert panel prompt', { tag: '@REQ-045' }, async ({ page }) => {
+test('global instructions reach the insert panel prompt', { tag: '@REQ-051' }, async ({ page }) => {
 	const { comicId, panelId } = await createComicThroughUi(page);
 	await saveGlobalInstructions(page, RATE_LIMIT_MARKER);
 

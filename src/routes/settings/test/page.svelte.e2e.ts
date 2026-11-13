@@ -143,7 +143,7 @@ test('renders without a working key', { tag: '@REQ-031' }, async ({ page, contex
 test.describe('global instructions', () => {
 	test(
 		'shows an empty labelled field and a save button without a key',
-		{ tag: ['@REQ-044', '@REQ-031'] },
+		{ tag: ['@REQ-050', '@REQ-031'] },
 		async ({ page }) => {
 			const createPage = await new CreatePage(page).goto();
 
@@ -153,7 +153,7 @@ test.describe('global instructions', () => {
 		},
 	);
 
-	test('shows the saved instructions after a reload', { tag: '@REQ-044' }, async ({ page }) => {
+	test('shows the saved instructions after a reload', { tag: '@REQ-050' }, async ({ page }) => {
 		const createPage = await new CreatePage(page).goto();
 
 		await createPage.saveGlobalInstructions('Keep dialogue short, write in Swedish');
@@ -166,7 +166,7 @@ test.describe('global instructions', () => {
 
 	test(
 		'stores the instructions only in the browser',
-		{ tag: ['@REQ-044', '@REQ-022'] },
+		{ tag: ['@REQ-050', '@REQ-022'] },
 		async ({ page, context }) => {
 			const createPage = await new CreatePage(page).goto();
 
@@ -182,7 +182,7 @@ test.describe('global instructions', () => {
 
 	test(
 		'clears the instructions when saving an empty field, and generation works as before',
-		{ tag: ['@REQ-044', '@REQ-045'] },
+		{ tag: ['@REQ-050', '@REQ-051'] },
 		async ({ page }) => {
 			const createPage = await new CreatePage(page).goto();
 			// The marker would fail every generation if it were still saved.
@@ -201,7 +201,7 @@ test.describe('global instructions', () => {
 
 	test(
 		'rejects instructions over 1000 characters and keeps the previous ones',
-		{ tag: '@REQ-046' },
+		{ tag: '@REQ-052' },
 		async ({ page }) => {
 			const createPage = await new CreatePage(page).goto();
 			await createPage.saveGlobalInstructions('A');
