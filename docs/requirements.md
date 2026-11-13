@@ -264,3 +264,12 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: each page accepts POSTs only to the form actions its own forms use; any other action name returns 404.
 - Why: limits what a crafted request can trigger (e.g. no AI generation from the settings page).
 - Proven by: tagged tests
+
+## Accessibility
+
+### REQ-035 Every view passes an axe scan
+
+- Status: active
+- Statement: every view (landing, create, comic, panel, raw, not found, settings) has no axe violations: each has a page title, a main landmark, and labelled form controls.
+- Why: screen-reader and keyboard users must be able to use every view; tests select by role and name, so missing labels break both.
+- Proven by: tagged tests

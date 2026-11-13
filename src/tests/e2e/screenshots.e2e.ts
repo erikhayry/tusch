@@ -1,7 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test, type Page } from '@playwright/test';
-import { EXAMPLES } from '../../examples/examples';
 import { gotoHydrated } from './gotoHydrated';
+import { VIEWS } from './views';
 
 /**
  * Visual baselines for every view (docs/rules/testing.md, "Screenshots").
@@ -12,9 +12,6 @@ test.skip(
 	process.env.PLAYWRIGHT_SCREENSHOTS !== '1',
 	'Screenshots run in CI (Linux container); see pnpm screenshots:update',
 );
-
-const EXAMPLE = EXAMPLES[0];
-const MISSING_ID = '00000000-0000-4000-8000-000000000000';
 
 async function settle(page: Page) {
 	await page.waitForLoadState('networkidle');
@@ -35,33 +32,11 @@ async function snapshot(page: Page, url: string, name: string) {
 }
 
 test.describe('screenshots', () => {
-	test('landing', async ({ page }) => {
-		await snapshot(page, '/', 'landing');
-	});
-
-	test('create comic', async ({ page }) => {
-		await snapshot(page, '/comic/create', 'create');
-	});
-
-	test('comic', async ({ page }) => {
-		await snapshot(page, `/comic/${EXAMPLE.id}`, 'comic');
-	});
-
-	test('panel', async ({ page }) => {
-		await snapshot(page, `/comic/${EXAMPLE.id}/${EXAMPLE.panels[0].id}`, 'panel');
-	});
-
-	test('raw comic', async ({ page }) => {
-		await snapshot(page, `/comic/${EXAMPLE.id}/raw`, 'raw');
-	});
-
-	test('not found', async ({ page }) => {
-		await snapshot(page, `/comic/${MISSING_ID}`, 'not-found');
-	});
-
-	test('settings', async ({ page }) => {
-		await snapshot(page, '/settings', 'settings');
-	});
+	for (const [name, url] of Object.entries(VIEWS)) {
+		test(name, async ({ page }) => {
+			await snapshot(page, url, name);
+		});
+	}
 
 	test('settings after adding a key', async ({ page }) => {
 		await gotoHydrated(page, '/settings');
