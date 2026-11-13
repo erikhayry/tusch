@@ -19,7 +19,7 @@ async function createComic(page: Page) {
 	await page.getByRole('button', { name: /submit/i }).click();
 	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 
-	const id = page.url().split('/').at(-1) ?? '';
+	const id = page.url().split('/').at(-1)!;
 	const comic = (await storedComics(page)).find((stored) => stored.id === id);
 	if (!comic) throw new Error('created comic was not persisted');
 	return comic;
