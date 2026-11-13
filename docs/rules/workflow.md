@@ -21,6 +21,7 @@
 | Add `status:needs-tests` (or a skill hands off to it)                      | `/test <n>` → `/develop` → `/review`, each started by the previous stage's label |
 | Comment or review on a pipeline PR while the issue is `status:needs-human` | `/triage <n>`                                                                    |
 | Merge a pipeline PR (branch `issue-<n>-…`)                                 | `/tech-lead reconcile <pr>`                                                      |
+| Nothing: Mondays 06:00 UTC, or dispatch `agents.yml` with `audit` ticked   | `/tech-lead audit`                                                               |
 
 - Bare approvals, bot comments and `@claude` mentions don't start a stage
   (`@claude` goes to `claude.yml`).

@@ -3,7 +3,7 @@ name: tech-lead
 description: Tech lead for the requirements ledger (docs/requirements.md). Consults on new tickets, reconciles the ledger after a PR merges, and audits requirement coverage. Use for "audit requirements", "which requirements does this touch", or after merging a pipeline PR.
 argument-hint: 'consult <issue> | reconcile <pr> | audit'
 disable-model-invocation: true
-allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr comment *) Bash(gh pr diff *) Bash(gh api *) Bash(git *) Bash(pnpm run check:requirements) Bash(pnpm exec playwright test --list *)
+allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue list *) Bash(gh issue comment *) Bash(gh issue create *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr comment *) Bash(gh pr diff *) Bash(gh api *) Bash(git *) Bash(pnpm run check:requirements) Bash(pnpm exec playwright test --list *)
 ---
 
 # Tech lead
@@ -59,9 +59,24 @@ If the ledger, the lessons or the changelog need edits, make them on a branch
    statement (`pnpm exec playwright test --list --grep @REQ-nnn`) and that
    the code still behaves that way.
 3. Look for behaviour in the code that no requirement covers.
-4. Report the findings as one issue comment or, when run on a schedule, in the
-   "Weekly tech-lead audit" issue. File `type:chore` issues for anything that
-   needs work. Fix wording-only problems in a ledger PR.
+4. On GitHub, `scripts/audit-inputs.sh` has already run (locally, ask the
+   human to run it first). Read its output:
+   - `.agent-tmp/audit-ci.md`: CI failures and re-runs of the last week. A
+     re-run that passed is a flaky-test candidate; open the run to find the test.
+   - `.agent-tmp/audit-issues.md`: blocked issues, and issues stuck in one
+     `status:*` for more than 3 days.
+   - `docs/costs.csv` and `docs/costs.md`: costs copied from the `bookkeeping`
+     branch, with totals per issue, skill and week.
+5. Report in **one** issue titled "Weekly tech-lead audit". Find it with
+   `gh issue list --search "Weekly tech-lead audit in:title" --state open`;
+   create it (`type:chore`) only if none is open. Add one comment per audit
+   with sections: Requirements, Flaky tests, Stuck issues, Costs (the week's
+   totals), and the issues filed. Never open a second audit issue.
+6. File a `type:chore` issue for each actionable finding, unless an open issue
+   already covers it (search first). Don't change code.
+7. Open one PR on a branch `audit-<yyyy-mm-dd>` from `main` with
+   `docs/costs.csv`, `docs/costs.md` and any wording-only ledger fixes. Skip
+   it if nothing changed.
 
 ## Rules
 
