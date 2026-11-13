@@ -4,6 +4,9 @@ Tusch is a local-first SvelteKit (Svelte 5) app that turns a source article into
 a comic using OpenAI. Comic metadata lives in `localStorage`, images in OPFS;
 the server only proxies AI generation.
 
+Build for real usage: features and tests must work for comics users create, not
+only the bundled examples (`docs/rules/testing.md`, "Build for real usage").
+
 Follow these rules (derived from the current code; update them in the same PR
 when a convention changes):
 
