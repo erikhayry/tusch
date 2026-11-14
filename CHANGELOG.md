@@ -17,3 +17,7 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 - Example comics now show their own panel images, and a missing image shows a clear placeholder instead of an unrelated picture. ([#138](https://github.com/erikhayry/tusch/pull/138))
 - Every page now has a proper title and a main landmark, so screen readers and browser tabs show where you are. ([#115](https://github.com/erikhayry/tusch/pull/115))
+
+### Chores
+
+- The example comics shown on first visit are now three small, simple comics instead of the Nirvana example. ([#191](https://github.com/erikhayry/tusch/pull/191))
