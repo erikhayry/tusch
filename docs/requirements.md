@@ -141,8 +141,22 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-015 A panel image can be generated
 
 - Status: active
-- Statement: on a panel without an image, the user can generate one (optionally with instructions and a reference image).
+- Statement: on a panel without an image, the user can generate one (optionally with instructions, and with character references from other panels as in REQ-100-1).
 - Why: the comic's visuals.
+- Proven by: tagged tests
+
+### REQ-100-1 A panel image form offers character references from other panels
+
+- Status: active
+- Statement: on a panel's image form (generate or replace), for each character in that panel's dialogue that has a stored crop from a different panel, the user can choose one of those panels as the character's reference, or none (the default); characters without such a crop aren't listed, and if no character qualifies the picker isn't shown.
+- Why: characters stay consistent across panels (same clothes, hair colour, face).
+- Proven by: tagged tests
+
+### REQ-100-2 Chosen character references are sent to the image model
+
+- Status: active
+- Statement: generating a panel image with chosen character references sends each chosen character's full-body crop to the image model together with the prompt (and the current image, if "include current image" is ticked); with no reference chosen, the request is the same as today.
+- Why: the model can only keep a character consistent if it sees the earlier look.
 - Proven by: tagged tests
 
 ### REQ-016 A panel image can be replaced

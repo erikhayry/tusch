@@ -74,7 +74,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			],
 			schemaName: SchemaName.enum.createImage,
 			size: IMAGE_SIZE.PORTRAIT,
-			imageUrl: includeImage ? imageUrl : undefined,
+			imageUrls: includeImage && imageUrl ? [imageUrl] : [],
 		});
 
 		return interpret(() =>
@@ -154,6 +154,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			style,
 			includeImage,
 			imageUrl,
+			referenceImages,
 		}: CreatePanelImageValues): Promise<CreatePanelImageResult> {
 			const output = await gateway.image({
 				messages: buildPanelImageMessages({
@@ -165,7 +166,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 				}),
 				schemaName: SchemaName.enum.createImage,
 				size: IMAGE_SIZE.PORTRAIT,
-				imageUrl: includeImage ? imageUrl : undefined,
+				imageUrls: [...(includeImage && imageUrl ? [imageUrl] : []), ...referenceImages],
 			});
 
 			return interpret(() =>

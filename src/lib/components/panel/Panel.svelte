@@ -5,6 +5,7 @@
 <script lang="ts">
 	import {
 		getCharacterImageForPanel,
+		getCharacterReferenceGroups,
 		getCharacterName,
 	} from '$lib/features/comics/client/comic-selectors';
 	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
@@ -22,6 +23,10 @@
 	import { type PanelProps } from './panelTypes';
 
 	let { number, totalNumberOfPanels, panel, comicId, style, characters }: PanelProps = $props();
+
+	const characterReferences = $derived(
+		getCharacterReferenceGroups(comicStore.comics, comicId, panel.id),
+	);
 </script>
 
 <Section data-testId={PanelTestId}>
@@ -30,6 +35,7 @@
 	{#if panel.image === undefined}
 		<CreatePanelImageForm
 			label={m.addImage()}
+			{characterReferences}
 			values={toCreatePanelImageValues(comicId, panel, characters, style)}
 		/>
 	{:else}
@@ -37,6 +43,7 @@
 		<CreatePanelImageForm
 			label={m.generateNewImage()}
 			imageName={panel.image?.landscape.src}
+			{characterReferences}
 			values={toCreatePanelImageValues(comicId, panel, characters, style)}
 		/>
 		<DeleteItemForm
