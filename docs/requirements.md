@@ -419,6 +419,29 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: limits what a crafted request can trigger (e.g. no AI generation from the settings page).
 - Proven by: tagged tests
 
+## Generation API
+
+### REQ-71-1 Generation steps are available as stateless JSON endpoints
+
+- Status: active
+- Statement: `POST /api/generate/comic`, `/api/generate/cover-image`, `/api/generate/panel` and `/api/generate/panel-image` accept a JSON body with the same fields as the matching form contract and return the same result as the matching form action, as JSON with status 200; they store nothing on the server.
+- Why: scripts (e.g. a nightly comic, #230) need to drive generation without the UI (#71).
+- Proven by: tagged tests
+
+### REQ-71-2 Generation endpoints take the OpenAI key only from the Authorization header
+
+- Status: active
+- Statement: each generation endpoint reads the OpenAI key only from an `Authorization: Bearer <key>` header; a request without one (or with a non-Bearer one, even with a key cookie) gets 401 with a JSON `{ code, message }` and no AI request is made, and the key never appears in a response.
+- Why: no server key or cookie fallback, so nobody can spend someone else's credits, and a cross-site page can't trigger generation (#71).
+- Proven by: tagged tests
+
+### REQ-71-3 Generation endpoint failures are readable JSON
+
+- Status: active
+- Statement: generation endpoint failures are JSON `{ code, message }` (plus `fieldErrors` for invalid input) with the same codes and HTTP statuses as the form actions (400 `invalid_input`, 401 `provider_auth`, 429 `rate_limited`, 502 `ai_no_image` / `invalid_ai_response`, 502 for unexpected provider failures), never HTML, raw provider JSON or "Internal Error".
+- Why: scripts need stable codes to react to, and the failures must stay as readable as in the forms (#71).
+- Proven by: tagged tests
+
 ## Accessibility
 
 ### REQ-035 Every view passes an axe scan
