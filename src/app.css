@@ -216,18 +216,6 @@ button:disabled {
 	outline-offset: var(--focus-offset);
 }
 
-/* Loader and Error status regions: an empty region is 0 px tall. Never hide
-   them (display/visibility): a live region must stay in the accessibility
-   tree for its content changes to be announced. Regions inside `main` (the
-   settings save confirmation) are not page-wide, so they skip this rule. */
-[role='status']:not(main [role='status']) {
-	max-inline-size: var(--content-width);
-	margin-inline: auto;
-	padding-inline: var(--space-3);
-	font-size: var(--font-size-small);
-	color: var(--color-muted);
-}
-
 /* Indeterminate bar: moving black/grey hatch, never the focus accent. Blink
    draws no fill for a value-less progress once appearance is none, so the
    hatch goes on the track itself. */
@@ -300,9 +288,5 @@ progress:indeterminate::-moz-progress-bar {
 
 	h1 {
 		font-size: var(--font-size-h1-wide);
-	}
-
-	[role='status']:not(main [role='status']) {
-		padding-inline: var(--space-5);
 	}
 }
