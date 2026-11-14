@@ -80,7 +80,7 @@ cost (`costs.csv`, the "Cost so far" comment on each issue).
 | `/test`, `/develop`                    | `sonnet` | Implementation against a clear ticket and failing tests |
 | `/triage`, `/tech-lead reconcile`      | `sonnet` | Routine classification and bookkeeping                  |
 | `a11y-reviewer`, `css-reviewer`        | inherit  | Run inside `/review`, so they use its model             |
-| `pipeline-expert`                      | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
+| `pipeline-expert`, `db-expert`         | `opus`   | Set in their files in `.claude/agents/`                 |
 
 The model is set twice and must match: `model:` in each skill's frontmatter
 (local runs) and the `model` case in `agents.yml` (GitHub). One exception: a skill has
