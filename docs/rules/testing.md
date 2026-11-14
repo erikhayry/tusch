@@ -54,6 +54,8 @@ Drive failures from the UI with markers in submitted text:
   image; the server's retry succeeds
 - `mock-error:invalid-text`: a text request gets a response whose data doesn't
   match the schema
+- `mock-error:invalid-crop`: a crop fix gets boxes outside the image, so the server
+  rejects them (in the API key too, since the crop request has no user text)
 
 The response markers are read per request, never from shared state, since tests
 run in parallel against one server.

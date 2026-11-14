@@ -88,6 +88,26 @@ function updateCharacter(
 	});
 }
 
+function updateCharacterImage(
+	comic: Comic,
+	characterId: string,
+	imageId: string,
+	change: (image: CharacterImage) => Outcome<CharacterImage>,
+): Outcome<Comic> {
+	return updateCharacter(comic, characterId, (character) => {
+		const image = character.images.find(({ id }) => id === imageId);
+		if (!image) return fail('image-not-found', `Character image ${imageId} not found`);
+
+		const next = change(image);
+		if (!next.ok) return next;
+
+		return ok({
+			...character,
+			images: character.images.map((current) => (current.id === imageId ? next.value : current)),
+		});
+	});
+}
+
 export function createComicCommands({ store, storage, ensureLoaded }: ComicCommandDeps) {
 	/** Current comics, loading persisted state first so a write never drops unloaded comics. */
 	function current(): Comic[] {
@@ -348,6 +368,46 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 				updateCharacter(comic, characterId, (character) =>
 					ok({ ...character, images: [...character.images, image] }),
 				),
+			);
+		},
+
+		/**
+		 * Replaces both crops of a character image. The version it replaces becomes
+		 * the one undo step, so a second fix drops the first fix's previous version.
+		 */
+		fixCharacterCrop(
+			comicId: string,
+			characterId: string,
+			imageId: string,
+			crops: Pick<CharacterImage, 'head' | 'full'>,
+		): CommandResult {
+			return updateComic(comicId, (comic) =>
+				updateCharacterImage(comic, characterId, imageId, (image) =>
+					ok({
+						...image,
+						head: crops.head,
+						full: crops.full,
+						previous: { head: image.head, full: image.full },
+					}),
+				),
+			);
+		},
+
+		/** Brings back the crops from before the latest fix; the fixed ones go with the commit. */
+		undoCharacterCropFix(comicId: string, characterId: string, imageId: string): CommandResult {
+			return updateComic(comicId, (comic) =>
+				updateCharacterImage(comic, characterId, imageId, (image) => {
+					if (!image.previous) {
+						return fail('image-not-found', `Character image ${imageId} has no crop fix to undo`);
+					}
+
+					return ok({
+						...image,
+						head: image.previous.head,
+						full: image.previous.full,
+						previous: undefined,
+					});
+				}),
 			);
 		},
 

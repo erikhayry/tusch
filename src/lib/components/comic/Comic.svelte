@@ -71,7 +71,8 @@
 			{#if comic.characters}
 				<Heading id="characters">{m.characters()}</Heading>
 				<ul aria-labelledby="characters">
-					{#each comic.characters as character (character)}
+					<!-- Keyed by id: the store copies the character on every update, and an object key would remount the gallery and close its open crops. -->
+					{#each comic.characters as character (character.id)}
 						<li>
 							<Character {character} comicId={comic.id} />
 						</li>

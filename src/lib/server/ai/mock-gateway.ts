@@ -1,5 +1,11 @@
-import { SchemaName } from '$lib/utils/ai/aiTypes';
-import { COVER_IMAGE } from '$lib/utils/ai/utils/messages';
+import type { Crop } from '$lib/types';
+import {
+	CharacterBoxesSchema,
+	SchemaName,
+	type CharacterBoxes,
+	type OpenAiOutput,
+} from '$lib/utils/ai/aiTypes';
+import { COVER_IMAGE, CURRENT_BOXES_PREFIX } from '$lib/utils/ai/utils/messages';
 import {
 	CREATE_COMIC_RESPONSE,
 	CREATE_COVER_IMAGE_RESPONSE,
@@ -36,6 +42,14 @@ export const MOCK_ERRORS = {
 const NO_IMAGE = 'mock-error:no-image';
 const NO_IMAGE_ONCE = 'mock-error:no-image-once';
 const INVALID_TEXT = 'mock-error:invalid-text';
+/** A crop fix answered with boxes outside the image (REQ-219-4). Read from the API key too. */
+const INVALID_CROP = 'mock-error:invalid-crop';
+
+/** Used when the request has no boxes to start from (a character the panel image doesn't place). */
+const DEFAULT_BOXES: CharacterBoxes = {
+	head: { x: 190, y: 220, width: 170, height: 200 },
+	full: { x: 32, y: 220, width: 445, height: 1290 },
+};
 
 function failIfRequested(messages: string[]): void {
 	const text = messages.join('\n');
@@ -63,6 +77,51 @@ function charactersInPrompt(messages: string[]): string[] | undefined {
 	}
 }
 
+/** The boxes the request says are current (the hint from `buildFixCharacterCropMessages`). */
+function currentBoxes(messages: string[]): CharacterBoxes | undefined {
+	const line = messages.find((message) => message.startsWith(CURRENT_BOXES_PREFIX));
+	if (!line) return undefined;
+
+	const parsed = CharacterBoxesSchema.safeParse(
+		JSON.parse(line.slice(CURRENT_BOXES_PREFIX.length)),
+	);
+	return parsed.success ? parsed.data : undefined;
+}
+
+/**
+ * A box 10% smaller on every side, moved a little: the sizes change on every fix,
+ * and it stays inside the box it started from, so inside the image too.
+ */
+function shrink({ x, y, width, height }: Crop): Crop {
+	return {
+		x: x + Math.round(width * 0.1),
+		y: y + Math.round(height * 0.1),
+		width: Math.round(width * 0.8),
+		height: Math.round(height * 0.8),
+	};
+}
+
+function cropOutput(boxes: CharacterBoxes): OpenAiOutput {
+	return {
+		output: [
+			{
+				type: 'message',
+				content: [{ type: 'output_text', text: JSON.stringify({ data: boxes }) }],
+			},
+		],
+	};
+}
+
+function fixCropResponse(messages: string[]): OpenAiOutput {
+	if (messages.join('\n').includes(INVALID_CROP)) {
+		const outside: Crop = { x: 5000, y: 5000, width: 100, height: 100 };
+		return cropOutput({ head: outside, full: outside });
+	}
+
+	const boxes = currentBoxes(messages) ?? DEFAULT_BOXES;
+	return cropOutput({ head: shrink(boxes.head), full: shrink(boxes.full) });
+}
+
 const mockAiGateway: AiGateway = {
 	text: async ({ schemaName, messages }) => {
 		failIfRequested(messages);
@@ -86,6 +145,13 @@ export function createMockAiGateway({ apiKey }: AiCredentials = {}): AiGateway {
 
 	return {
 		...mockAiGateway,
+		text: async (request) => {
+			// The API key is part of the scope too, as documented in testing.md.
+			const scope = [apiKey ?? '', ...request.messages];
+			failIfRequested(scope);
+			if (request.schemaName === SchemaName.enum.fixCharacterCrop) return fixCropResponse(scope);
+			return mockAiGateway.text(request);
+		},
 		image: async (request) => {
 			failIfRequested(request.messages);
 			const text = request.messages.join('\n');
