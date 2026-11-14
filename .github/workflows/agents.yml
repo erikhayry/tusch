@@ -149,12 +149,12 @@ jobs:
             *)         turns=0;   tools='' ;;
           esac
 
-          # Model per role (docs/rules/agents.md, "Models"): the strongest model where
-          # judgement matters most (planning, review, the weekly audit), the cheaper
-          # one for implementation and routine bookkeeping.
+          # Model per role (docs/rules/agents.md, "Models"): opus for planning (and the
+          # weekly audit, below), haiku for implementation, sonnet for everything else.
           case "$skill" in
-            plan|reviewer) model=opus ;;
-            *)           model=sonnet ;;
+            plan)    model=opus ;;
+            develop) model=haiku ;;
+            *)       model=sonnet ;;
           esac
           if [ "$target" = audit ]; then turns=100; model=opus; fi  # reads every requirement
 
