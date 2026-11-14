@@ -59,3 +59,9 @@ Write the ticket with the Write tool to `.agent-tmp/ticket.md` first.
   add the `type:*` label, and move `status:idea` → `status:needs-tests`.
 - End with the protocol comment (for a new issue, the ticket itself is enough)
   and give the user the issue link.
+- **Trust marker.** If the human answered your earlier questions, put one hidden
+  line in the protocol comment: `<!-- trust:plan asked=<n> accepted=<n> changed=<n> -->`.
+  Count each answered question, not each comment. An answer that matches your
+  suggestion is accepted, anything else is changed; "all suggestions" / "do
+  suggested" accepts every one. `accepted + changed` must equal `asked`. Add no
+  marker when you only asked questions or skipped step 2 (see `docs/rules/agents.md`).

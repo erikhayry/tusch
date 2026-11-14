@@ -26,6 +26,8 @@ follow `docs/rules/agents.md` (labels, branches, comments, blocking) and `docs/a
 UI diffs), `css-reviewer` (styling conventions; `/reviewer` runs it on UI diffs),
 `db-expert` (local storage, schemas and OPFS; `/reviewer` runs it on storage
 diffs) and `pipeline-expert` (pipeline changes and token savings; `/reviewer` runs it on
+`ux-reviewer` (flow, states, copy; advisory, `/reviewer` runs it on UI diffs)
+and `pipeline-expert` (pipeline changes and token savings; `/reviewer` runs it on
 pipeline diffs). Models per role: `docs/rules/agents.md`, "Models".
 
 ## Commands
