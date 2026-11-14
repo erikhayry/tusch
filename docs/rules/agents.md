@@ -83,14 +83,14 @@ GitHub nobody is there to approve anything else. So:
 Use the cheapest model that does the job well; tokens are the pipeline's main
 cost (`costs.csv`, the "Cost so far" comment on each issue).
 
-| Role                                     | Model    | Why                                                     |
-| ---------------------------------------- | -------- | ------------------------------------------------------- |
-| `/plan`, `/reviewer`, `/tech-lead audit` | `opus`   | Judgement: scoping, catching what others missed         |
-| `/test`, `/develop`                      | `sonnet` | Implementation against a clear ticket and failing tests |
-| `/triage`, `/tech-lead reconcile`        | `sonnet` | Routine classification and bookkeeping                  |
-| `/automate`                              | `sonnet` | Works from a pre-aggregated digest; 40 turns at most    |
-| `a11y-reviewer`, `css-reviewer`          | inherit  | Run inside `/reviewer`, so they use its model           |
-| `pipeline-expert`                        | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
+| Role                                           | Model    | Why                                                     |
+| ---------------------------------------------- | -------- | ------------------------------------------------------- |
+| `/plan`, `/reviewer`, `/tech-lead audit`       | `opus`   | Judgement: scoping, catching what others missed         |
+| `/test`, `/develop`                            | `sonnet` | Implementation against a clear ticket and failing tests |
+| `/triage`, `/tech-lead reconcile`              | `sonnet` | Routine classification and bookkeeping                  |
+| `/automate`                                    | `sonnet` | Works from a pre-aggregated digest; 40 turns at most    |
+| `a11y-reviewer`, `css-reviewer`, `ux-reviewer` | inherit  | Run inside `/reviewer`, so they use its model           |
+| `pipeline-expert`                              | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
 
 The model is set twice and must match: `model:` in each skill's frontmatter
 (local runs) and the `model` case in `agents.yml` (GitHub). One exception: a skill has
