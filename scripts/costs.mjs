@@ -147,6 +147,7 @@ function summary(csv, issue) {
 // names and file paths survive; never arguments, prompts or tool output.
 
 const WORD = /^[A-Za-z][\w.-]*$/;
+const SUBCOMMAND_TOOLS = new Set(['gh', 'git', 'pnpm', 'node', 'npm', 'npx']);
 const byName = ([a], [b]) => (a < b ? -1 : a > b ? 1 : 0);
 
 // First two words of a command, e.g. `pnpm run`. A second word that isn't a plain
@@ -156,7 +157,9 @@ function prefixOf(command) {
 		.trim()
 		.split(/\s+/);
 	if (!first || !/^[\w./-]+$/.test(first)) return '(other)';
-	return second && WORD.test(second) ? `${first} ${second}` : first;
+	// Only these tools take a subcommand; after any other word (`echo sk-…`) the
+	// second word may be a secret.
+	return second && SUBCOMMAND_TOOLS.has(first) && WORD.test(second) ? `${first} ${second}` : first;
 }
 
 const sortedCounts = (counts) => Object.fromEntries([...counts].sort(byName));
@@ -244,7 +247,8 @@ function readDigests(dir) {
 		.sort()
 		.flatMap((name) => {
 			try {
-				return [JSON.parse(readFileSync(join(dir, name), 'utf8'))];
+				const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+				return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? [parsed] : [];
 			} catch {
 				return [];
 			}
@@ -276,7 +280,7 @@ function markdownTable(headers, rows) {
 			.slice(1)
 			.map(() => '---:')
 			.join(' | ')} |`,
-		...rows.map((cells) => `| ${cells.join(' | ')} |`),
+		...rows.map((cells) => `| ${cells.map((c) => String(c).replaceAll('|', '\\|')).join(' | ')} |`),
 		'',
 	].join('\n');
 }

@@ -78,6 +78,12 @@
 					"id": "t8",
 					"name": "Edit",
 					"input": { "file_path": "src/lib/y.ts", "old_string": "a", "new_string": "b" }
+				},
+				{
+					"type": "tool_use",
+					"id": "t9",
+					"name": "Bash",
+					"input": { "command": "echo sk-proj-AbC123-MUST-NOT-LEAK" }
 				}
 			]
 		}
@@ -89,7 +95,8 @@
 				{ "type": "tool_result", "tool_use_id": "t4", "content": "FILE-CONTENT-MUST-NOT-LEAK" },
 				{ "type": "tool_result", "tool_use_id": "t5", "content": "ok" },
 				{ "type": "tool_result", "tool_use_id": "t7", "content": "no matches" },
-				{ "type": "tool_result", "tool_use_id": "t8", "content": "edited" }
+				{ "type": "tool_result", "tool_use_id": "t8", "content": "edited" },
+				{ "type": "tool_result", "tool_use_id": "t9", "content": "ok" }
 			]
 		}
 	},

@@ -11,12 +11,13 @@
     "gh issue": 1
   },
   "tool_calls": {
-    "Bash": 4,
+    "Bash": 5,
     "Edit": 1,
     "Grep": 1,
     "Read": 2
   },
   "bash_prefixes": {
+    "echo": 1,
     "gh issue": 2,
     "pnpm run": 2
   },

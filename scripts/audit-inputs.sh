@@ -56,8 +56,10 @@ fi
 # Runs without one (older, expired, or failed before the step) are skipped.
 rm -rf .agent-tmp/digests
 mkdir -p .agent-tmp/digests
-for id in $(gh run list --workflow agents.yml --limit 200 --created ">=$since" \
-	--json databaseId --jq '.[].databaseId' 2>/dev/null || true); do
+# List artifacts, not runs: the */30 schedule alone makes 336 agents.yml runs a week,
+# most of them route-only no-ops without a digest.
+for id in $(gh api "repos/${GH_REPO:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}/actions/artifacts?name=agent-digest&per_page=100" \
+	--paginate --jq '.artifacts[] | select(.created_at >= "'"$since"'" and (.expired | not)) | .workflow_run.id' 2>/dev/null || true); do
 	gh run download "$id" -n agent-digest -D ".agent-tmp/digests/$id" >/dev/null 2>&1 || true
 done
 node scripts/costs.mjs actions .agent-tmp/digests > .agent-tmp/audit-actions.md
