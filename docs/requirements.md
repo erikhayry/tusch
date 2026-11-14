@@ -194,6 +194,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: crops of an image that is gone would be stray files and wrong references.
 - Proven by: tagged tests
 
+### REQ-162-1 Dialogue heads show the crop from the current panel image
+
+- Status: active
+- Statement: after a panel image is replaced, the head crop shown next to each dialogue line is the one created from the current panel image, not one from an earlier image of that panel.
+- Why: the head must match the image that's shown.
+- Proven by: tagged tests
+
 ### REQ-019 Captions can be added, edited and removed
 
 - Status: active
