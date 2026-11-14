@@ -1,67 +1,16 @@
-import { m } from '$lib/paraglide/messages';
-import { ComicSchema, type Comic } from '$lib/types';
 import { expect, test, type Page } from '@playwright/test';
-import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
-import { activate, typeInto } from '../../../../../tests/e2e/keyboard';
-
-type CharacterImage = Comic['characters'][number]['images'][number];
-
-/** Create a comic through the UI (mock AI), as a user does, and return its id. */
-async function createComic(page: Page): Promise<string> {
-	await gotoHydrated(page, '/comic/create');
-	await typeInto(page, page.getByRole('textbox', { name: /url/i }), 'https://example.com/article');
-	await activate(page, page.getByRole('button', { name: /submit/i }));
-	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
-	const id = page.url().split('/').at(-1);
-	if (!id) throw new Error('created comic has no id');
-	return id;
-}
-
-async function storedComic(page: Page, comicId: string): Promise<Comic> {
-	const stored = await page.evaluate((id) => {
-		const { comics } = JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}');
-		return comics.find((comic: { id: string }) => comic.id === id);
-	}, comicId);
-	return ComicSchema.parse(stored);
-}
-
-function storedFiles(page: Page): Promise<string[]> {
-	return page.evaluate(async () => {
-		const root = await navigator.storage.getDirectory();
-		const names: string[] = [];
-		for await (const name of (root as unknown as { keys(): AsyncIterable<string> }).keys()) {
-			names.push(name);
-		}
-		return names.sort();
-	});
-}
-
-function imagesFromPanel(comic: Comic, panelId: string): CharacterImage[] {
-	return comic.characters.flatMap((character) =>
-		character.images.filter((image) => image.panelId === panelId),
-	);
-}
+import {
+	createComic,
+	deletePanel,
+	generatePanelImage,
+	imagesFromPanel,
+	storedComic,
+	type CharacterImage,
+} from '../../../../../tests/e2e/createdComic';
+import { storedFiles } from '../../../../../tests/e2e/storage';
 
 function filesOf(images: CharacterImage[]) {
 	return images.flatMap((image) => [image.head.src, image.full.src]);
-}
-
-/** Generate the panel's image through the UI; the mock returns crops for the comic's characters. */
-async function generatePanelImage(page: Page, comicId: string, panelId: string) {
-	await gotoHydrated(page, `/comic/${comicId}/${panelId}`);
-	await activate(page, page.getByRole('button', { name: m.addImage() }));
-	await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
-	await expect
-		.poll(async () => imagesFromPanel(await storedComic(page, comicId), panelId))
-		.not.toEqual([]);
-}
-
-async function deletePanel(page: Page, comicId: string, number: number) {
-	await gotoHydrated(page, `/comic/${comicId}`);
-	const panels = page.locator('ul[aria-labelledby="panels"] > li');
-	const before = await panels.count();
-	await activate(page, page.getByRole('button', { name: m.deletePanel({ number }) }));
-	await expect(panels).toHaveCount(before - 1);
 }
 
 /** A user-created comic whose first panel (and optionally the second) has a generated image. */
