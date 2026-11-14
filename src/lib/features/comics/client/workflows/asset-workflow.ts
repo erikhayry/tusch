@@ -13,9 +13,11 @@ export interface AssetWorkflowDeps {
 	store: Pick<ComicStoreState, 'comics'>;
 }
 
+const ASSET_FAILED_CODE = 'asset-failed' as const;
+
 export type WorkflowFailure = {
 	ok: false;
-	code: CommandFailureCode | 'asset-failed';
+	code: CommandFailureCode | typeof ASSET_FAILED_CODE;
 	message: string;
 	/** Present when staged assets had to be rolled back. */
 	rollback?: CleanupResult;
@@ -48,7 +50,7 @@ export async function runAssetWorkflow(
 	} catch (error) {
 		return {
 			ok: false,
-			code: 'asset-failed',
+			code: ASSET_FAILED_CODE,
 			message: error instanceof Error ? error.message : 'Could not store image',
 			rollback: await staging.rollback(),
 		};

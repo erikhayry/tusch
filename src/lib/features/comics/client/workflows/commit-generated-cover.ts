@@ -1,5 +1,5 @@
 import type { CreateCoverImageResult } from '$lib/features/comics/contracts/createCoverImage';
-import type { ComicCommands } from '../comic-commands';
+import { CommandFailureCodes, type ComicCommands } from '../comic-commands';
 import { getComic } from '../comic-selectors';
 import {
 	base64ImageToBlob,
@@ -18,7 +18,11 @@ export function commitGeneratedCover(
 ): Promise<WorkflowResult> {
 	return runAssetWorkflow(deps, async (stage) => {
 		if (!getComic(deps.store.comics, comicId)) {
-			return { ok: false, code: 'comic-not-found', message: `Comic ${comicId} not found` };
+			return {
+				ok: false,
+				code: CommandFailureCodes['comic-not-found'],
+				message: `Comic ${comicId} not found`,
+			};
 		}
 
 		const src = await stage(base64ImageToBlob(image.landscape.src));
