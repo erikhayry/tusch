@@ -75,5 +75,10 @@
 	"includeImage": "Include Image in instructions",
 	"deleteCover": "Delete Cover",
 	"addCaption": "Add caption",
-	"newCaption": "New caption"
+	"newCaption": "New caption",
+	"globalInstructions": "Global instructions",
+	"saveGlobalInstructions": "Save global instructions",
+	"globalInstructionsTooLong": "Global instructions can be at most 1000 characters",
+	"globalInstructionsSaved": "Global instructions saved",
+	"globalInstructionsHint": "Up to 1000 characters. Added to every AI prompt."
 }

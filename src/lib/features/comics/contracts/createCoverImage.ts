@@ -1,3 +1,8 @@
+import {
+	GLOBAL_INSTRUCTIONS_VALUE_KEY,
+	GlobalInstructionsSchema,
+	decodeGlobalInstructions,
+} from '$lib/features/settings/contracts/globalInstructions';
 import { readCheckbox, readJsonField, readString } from '$lib/forms/form-data';
 import { ComicSchema, ResponsiveImageSchema, type Comic } from '$lib/types';
 import { OpenAiOutputSchema } from '$lib/utils/ai/aiTypes';
@@ -34,10 +39,11 @@ export function toCoverPrompt(comic: Comic): CoverPrompt {
 export const CreateCoverImageValuesSchema = z.object({
 	comic: CoverPromptSchema,
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
+	[GLOBAL_INSTRUCTIONS_VALUE_KEY]: GlobalInstructionsSchema,
 	[IMAGE_VALUE_KEY]: z.string().optional(),
 	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
 });
-export type CreateCoverImageValues = z.infer<typeof CreateCoverImageValuesSchema>;
+export type CreateCoverImageValues = z.output<typeof CreateCoverImageValuesSchema>;
 
 export const CreateCoverImageResultSchema = z.object({
 	comicId: z.string(),
@@ -50,6 +56,7 @@ export function decodeCreateCoverImageValues(formData: FormData) {
 	return {
 		comic: readJsonField(formData, 'comic'),
 		[INSTRUCTIONS_VALUE_KEY]: readString(formData, INSTRUCTIONS_VALUE_KEY),
+		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: decodeGlobalInstructions(formData),
 		[IMAGE_VALUE_KEY]: readString(formData, IMAGE_VALUE_KEY),
 		[INCLUDE_IMAGE_VALUE_KEY]: readCheckbox(formData, INCLUDE_IMAGE_VALUE_KEY),
 	};

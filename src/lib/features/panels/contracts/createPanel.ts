@@ -1,3 +1,8 @@
+import {
+	GLOBAL_INSTRUCTIONS_VALUE_KEY,
+	GlobalInstructionsSchema,
+	decodeGlobalInstructions,
+} from '$lib/features/settings/contracts/globalInstructions';
 import { readInteger, readJsonField, readString } from '$lib/forms/form-data';
 import { PanelSchema, type Panel } from '$lib/types';
 import { OpenAiOutputSchema } from '$lib/utils/ai/aiTypes';
@@ -10,14 +15,16 @@ export const CreatePanelValuesSchema = z.object({
 	comicId: z.string(),
 	panels: z.array(PanelPromptSchema),
 	index: z.number().int(),
+	[GLOBAL_INSTRUCTIONS_VALUE_KEY]: GlobalInstructionsSchema,
 });
-export type CreatePanelValues = z.infer<typeof CreatePanelValuesSchema>;
+export type CreatePanelValues = z.output<typeof CreatePanelValuesSchema>;
 
+/** The global instructions are added by the form at submit time. */
 export function toCreatePanelValues(
 	comicId: string,
 	panels: Panel[],
 	index: number,
-): CreatePanelValues {
+): Omit<CreatePanelValues, typeof GLOBAL_INSTRUCTIONS_VALUE_KEY> {
 	return { comicId, index, panels: panels.map(toPanelPrompt) };
 }
 
@@ -34,5 +41,6 @@ export function decodeCreatePanelValues(formData: FormData) {
 		comicId: readString(formData, 'comicId'),
 		panels: readJsonField(formData, 'panels'),
 		index: readInteger(formData, 'index'),
+		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: decodeGlobalInstructions(formData),
 	};
 }

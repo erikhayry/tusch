@@ -2,7 +2,7 @@ import { m } from '$lib/paraglide/messages';
 import { TEXT_MODEL_KEY } from '$lib/types';
 import type { Locator, Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
-import { typeInto } from '../../../../tests/e2e/keyboard';
+import { activate, typeInto } from '../../../../tests/e2e/keyboard';
 
 export class CreatePage {
 	readonly page: Page;
@@ -14,9 +14,17 @@ export class CreatePage {
 	readonly modelsSelect: Locator;
 	readonly currentModel: Locator;
 	readonly saveSettingsButton: Locator;
+	readonly globalInstructionsInput: Locator;
+	readonly saveGlobalInstructionsButton: Locator;
+	readonly error: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
+		this.globalInstructionsInput = page.getByRole('textbox', { name: m.globalInstructions() });
+		this.saveGlobalInstructionsButton = page.getByRole('button', {
+			name: m.saveGlobalInstructions(),
+		});
+		this.error = page.getByTestId('error-test-id');
 		this.heading = page.getByRole('heading', { name: m.settings(), level: 1 });
 		this.backLink = page.getByRole('link', { name: m.back() });
 		this.keyInput = page.getByRole('textbox', { name: m.byok() });
@@ -25,6 +33,14 @@ export class CreatePage {
 		this.modelsSelect = page.getByRole('combobox', { name: m.selectTextModel() });
 		this.currentModel = page.getByRole('listitem', { name: TEXT_MODEL_KEY });
 		this.saveSettingsButton = page.getByRole('button', { name: m.saveConfig() });
+	}
+
+	/** Save global instructions through the UI, as a user does (empty clears them). */
+	async saveGlobalInstructions(text: string) {
+		await typeInto(this.page, this.globalInstructionsInput, text);
+		await activate(this.page, this.saveGlobalInstructionsButton);
+
+		return this;
 	}
 
 	async submit(key = 'mock key') {

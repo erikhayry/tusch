@@ -63,11 +63,15 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 	async function createCoverImage({
 		comic,
 		instructions,
+		globalInstructions,
 		imageUrl,
 		includeImage,
 	}: CreateCoverImageValues): Promise<CreateCoverImageResult> {
 		const output = await gateway.image({
-			messages: [...buildCoverImageMessages({ comic }), `USER INSTRUCTION: ${instructions}`],
+			messages: [
+				...buildCoverImageMessages({ comic, globalInstructions }),
+				`USER INSTRUCTION: ${instructions}`,
+			],
 			schemaName: SchemaName.enum.createImage,
 			size: IMAGE_SIZE.PORTRAIT,
 			imageUrl: includeImage ? imageUrl : undefined,
@@ -85,9 +89,13 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 	return {
 		createCoverImage,
 
-		async createComic({ url, style }: CreateComicValues): Promise<CreateComicResult> {
+		async createComic({
+			url,
+			style,
+			globalInstructions,
+		}: CreateComicValues): Promise<CreateComicResult> {
 			const output: OpenAiOutput = await gateway.text({
-				messages: buildInitialMessages(url, style),
+				messages: buildInitialMessages(url, style, globalInstructions),
 				schemaName: SchemaName.enum.initComic,
 			});
 
@@ -102,7 +110,11 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			});
 
 			const cover: ResponsiveImage = (
-				await createCoverImage({ comic: toCoverPrompt(comic), [INSTRUCTIONS_VALUE_KEY]: '' })
+				await createCoverImage({
+					comic: toCoverPrompt(comic),
+					[INSTRUCTIONS_VALUE_KEY]: '',
+					globalInstructions,
+				})
 			).image;
 
 			return interpret(() =>
@@ -110,9 +122,14 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			);
 		},
 
-		async createPanel({ comicId, panels, index }: CreatePanelValues): Promise<CreatePanelResult> {
+		async createPanel({
+			comicId,
+			panels,
+			index,
+			globalInstructions,
+		}: CreatePanelValues): Promise<CreatePanelResult> {
 			const output = await gateway.text({
-				messages: buildPanelMessages(index, panels),
+				messages: buildPanelMessages(index, panels, globalInstructions),
 				schemaName: SchemaName.enum.createPanel,
 			});
 
@@ -131,12 +148,19 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			panel,
 			characters,
 			instructions,
+			globalInstructions,
 			style,
 			includeImage,
 			imageUrl,
 		}: CreatePanelImageValues): Promise<CreatePanelImageResult> {
 			const output = await gateway.image({
-				messages: buildPanelImageMessages({ panel, characters, instructions, style }),
+				messages: buildPanelImageMessages({
+					panel,
+					characters,
+					instructions,
+					globalInstructions,
+					style,
+				}),
 				schemaName: SchemaName.enum.createImage,
 				size: IMAGE_SIZE.PORTRAIT,
 				imageUrl: includeImage ? imageUrl : undefined,

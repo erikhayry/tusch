@@ -20,5 +20,10 @@
 	"characterHeadAlt": "{name} i ruta {number}: {title}",
 	"characterFullAlt": "{name}, hel kropp, i ruta {number}: {title}",
 	"elapsedSeconds": "{seconds} s",
-	"done": "Klart"
+	"done": "Klart",
+	"globalInstructions": "Globala instruktioner",
+	"saveGlobalInstructions": "Spara globala instruktioner",
+	"globalInstructionsTooLong": "Globala instruktioner får vara högst 1000 tecken",
+	"globalInstructionsSaved": "Globala instruktioner sparade",
+	"globalInstructionsHint": "Högst 1000 tecken. Läggs till i varje AI-prompt."
 }
