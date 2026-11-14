@@ -143,7 +143,7 @@ jobs:
             plan)      turns=60;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue create:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*)' ;;
             test)      turns=120; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
             develop)   turns=150; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh workflow run:*),Bash(gh run:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
-            reviewer)    turns=100; tools='Read,Grep,Glob,Write,Agent,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
+            reviewer)    turns=100; tools='Read,Grep,Glob,Write,Agent,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh pr create:*),Bash(gh pr checks:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
             triage)    turns=50;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)' ;;
             tech-lead) turns=50;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh api:*),Bash(git:*),Bash(pnpm run check:requirements),Bash(pnpm exec playwright test --list:*)' ;;
             *)         turns=0;   tools='' ;;
@@ -372,6 +372,7 @@ jobs:
             --jq '.[] | select(.event == "labeled" and .label.name == "'"$stage"'") | .created_at' | tail -n1)
           earlier=$(awk -F'\t' -v since="${entered:-0}" '$1 == "github-actions[bot]" && $3 == 1 && $2 >= since' "$RUNNER_TEMP/comments.tsv" | wc -l)
           denied=$(node "$RUNNER_TEMP/costs.mjs" denials "$EXECUTION_FILE")
+          last=$(node "$RUNNER_TEMP/costs.mjs" final "$EXECUTION_FILE")
           {
             printf '%s\n\n' "$marker"
             printf 'The run finished without an issue comment or label change: %s\n\n' "$RUN_URL"
@@ -379,6 +380,9 @@ jobs:
               printf 'Tool calls the run was not allowed to make:\n\n%s\n\n' "$denied"
             else
               printf 'No tool calls were denied; see the run summary for Claude'"'"'s report.\n\n'
+            fi
+            if [[ -n "$last" ]]; then
+              printf 'What the agent said last:\n\n%s\n\n' "$(printf '%s\n' "$last" | sed -e 's/@claude/claude/g' -e 's/^/> /')"
             fi
             if [[ "$earlier" -eq 0 ]]; then
               printf 'Retrying `/%s` once.\n' "$SKILL"

@@ -15,28 +15,34 @@
 		CREATE_COMIC_ACTION,
 		type CreateComicResult,
 	} from '$lib/features/comics/contracts/createComic';
+	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
 	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { m } from '$lib/paraglide/messages';
 	import { STYLES } from '$lib/utils/comicStyles';
 
-	const handleSubmit = enhanceAction<CreateComicResult>(
-		m.loadingCreateComic(),
-		async ({ data }) => {
+	const handleSubmit = withGlobalInstructions(
+		enhanceAction<CreateComicResult>(m.loadingCreateComic(), async ({ data }) => {
 			expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
 			await goto(resolve(`/comic/${data.comic.id}`));
-		},
+		}),
 	);
 </script>
 
 <Section data-testId={createComicFormTestId}>
 	<form method="post" action={`?/${CREATE_COMIC_ACTION}`} use:enhance={handleSubmit}>
+		<p id="create-comic-hint">{m.createComicSourceHint()}</p>
 		<label>
-			Url to source
+			{m.urlToSource()}
 			<input
 				type="text"
 				name="url"
+				aria-describedby="create-comic-hint"
 				placeholder="https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna"
 			/>
+		</label>
+		<label>
+			{m.yourStory()}
+			<textarea name="story" rows="6" aria-describedby="create-comic-hint"></textarea>
 		</label>
 		<label>
 			{m.comicStyles()}

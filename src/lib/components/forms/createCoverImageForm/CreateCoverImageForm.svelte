@@ -8,6 +8,7 @@
 		CREATE_COVER_IMAGE_ACTION,
 		type CreateCoverImageResult,
 	} from '$lib/features/comics/contracts/createCoverImage';
+	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
 	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
@@ -18,12 +19,11 @@
 	} from '$lib/utils/db/dbTypes';
 	import type { CreateCoverImageFormProps } from './createCoverImageFormTypes';
 
-	const handleSubmit = enhanceAction<CreateCoverImageResult>(
-		m.loadingCreateCoverImage(),
-		async ({ data, update }) => {
+	const handleSubmit = withGlobalInstructions(
+		enhanceAction<CreateCoverImageResult>(m.loadingCreateCoverImage(), async ({ data, update }) => {
 			expectWorkflow(await commitGeneratedCover(workflowDeps, data));
 			await update();
-		},
+		}),
 	);
 
 	let { label, values, imageName }: CreateCoverImageFormProps = $props();

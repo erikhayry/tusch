@@ -27,6 +27,13 @@ export function storedFileSizes(page: Page): Promise<number[]> {
 	});
 }
 
+/** The comics currently stored in localStorage, as raw JSON objects. */
+export function storedComics(page: Page): Promise<Record<string, unknown>[]> {
+	return page.evaluate(
+		() => JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}').comics,
+	);
+}
+
 /** The stored src of a panel's current image, if any. */
 export function panelImageSrc(
 	page: Page,
