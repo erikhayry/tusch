@@ -258,6 +258,38 @@ test(
 );
 
 test(
+	'moves focus to "Generate new image" after restoring the previous image',
+	{ tag: ['@REQ-176-1', '@REQ-048', '@REQ-037'] },
+	async ({ page }) => {
+		const panelPage = await new PanelPage(page).goto();
+		await replace(panelPage);
+
+		await activate(page, panelPage.restoreImageButton);
+
+		await expect(panelPage.initialImage).toBeVisible();
+		await expect(panelPage.restoreImageButton).toBeHidden();
+		await expect(panelPage.replaceImageButton).toBeFocused();
+	},
+);
+
+test(
+	'moves focus to "Add image" after removing the image, and it can generate one',
+	{ tag: ['@REQ-176-2', '@REQ-037'] },
+	async ({ page }) => {
+		const panelPage = await new PanelPage(page).goto();
+
+		await activate(page, panelPage.deleteImageButton);
+
+		await expect(panelPage.initialImage).toBeHidden();
+		await expect(panelPage.createImageButton).toBeFocused();
+
+		// Enter on the focused button, with no Tab first, proves the focus is real.
+		await page.keyboard.press('Enter');
+		await expect(panelPage.newImage).toBeVisible();
+	},
+);
+
+test(
 	'shows the loader while restoring and ignores a second activation',
 	{ tag: '@REQ-032' },
 	async ({ page }) => {

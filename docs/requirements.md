@@ -229,6 +229,20 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: the head must match the image that's shown.
 - Proven by: tagged tests
 
+### REQ-176-1 Focus moves to "Generate new image" after restoring a panel image
+
+- Status: active
+- Statement: after "Restore previous image" succeeds on the panel page, keyboard focus moves to that panel's "Generate new image" button instead of falling to the document body. If the restore fails, nothing changes and focus stays on the restore button.
+- Why: WCAG 2.4.3 (Focus Order); the restore button unmounts, and keyboard and screen-reader users must keep their place.
+- Proven by: tagged tests
+
+### REQ-176-2 Focus moves to "Add image" after removing a panel image
+
+- Status: active
+- Statement: after "Remove Image" succeeds on the panel page, keyboard focus moves to that panel's "Add image" button instead of falling to the document body. If the removal fails, nothing changes and focus stays on the remove button.
+- Why: WCAG 2.4.3 (Focus Order); the image block is replaced by the "Add image" form, and keyboard and screen-reader users must keep their place.
+- Proven by: tagged tests
+
 ### REQ-019 Captions can be added, edited and removed
 
 - Status: active
