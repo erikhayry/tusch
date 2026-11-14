@@ -260,3 +260,4 @@ date,issue,skill,target,model,turns,input_tokens,output_tokens,cache_read_tokens
 2026-11-14,172,test,172,claude-sonnet-5-5,33,46,8856,1280826,52507,0.4268,147,success,https://github.com/erikhayry/tusch/actions/runs/43615138153
 2026-11-14,162,reviewer,162,claude-sonnet-5-5,2,4,239,55276,26393,0.1135,4,success,https://github.com/erikhayry/tusch/actions/runs/43615378156
 2026-11-14,219,plan,219,claude-opus-5-5,2,2,168,14790,19948,0.1659,6,failure,https://github.com/erikhayry/tusch/actions/runs/43616160102
+2026-11-14,168,reviewer,168,claude-sonnet-5-5,14,26,5155,692943,46055,0.3051,255,success,https://github.com/erikhayry/tusch/actions/runs/43619776591
