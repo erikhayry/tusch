@@ -116,8 +116,9 @@ test.describe('character gallery', () => {
 		async ({ page }) => {
 			await generatePanelImage(page);
 			const section = characterSection(page, CHARACTER.name);
-			const head = section.getByRole('img', { name: headAlt(CHARACTER.name) });
-			const control = section.locator('summary, button').filter({ has: head });
+			const control = section
+				.locator('summary, button')
+				.filter({ has: page.getByRole('img', { name: headAlt(CHARACTER.name) }) });
 			const full = section.getByRole('img', { name: fullAlt(CHARACTER.name) });
 			await expect(full).toBeHidden();
 
