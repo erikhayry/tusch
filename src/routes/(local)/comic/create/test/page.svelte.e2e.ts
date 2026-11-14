@@ -1,10 +1,17 @@
 import { m } from '$lib/paraglide/messages';
 import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
-import { expect, test } from '@playwright/test';
-import { EXAMPLES } from '../../../../../examples/examples';
+import { expect, test, type Page } from '@playwright/test';
+import { EXAMPLE_COMPLETE } from '../../../../../tests/e2e/examples';
+import { storedComics } from '../../../../../tests/e2e/storage';
 import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
 import { CreatePage } from './utils/createPage';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
+
+const STORY_FIRST_LINE = 'A lighthouse keeper finds a message in a bottle.';
+const STORY = `${STORY_FIRST_LINE}\nIt leads her to a hidden cove.`;
+const SOURCE_URL = 'https://example.com/article';
+const MOCK_TITLE = 'Ådalshändelserna: Vägen till Lunde';
+const COMIC_URL = /\/comic\/[0-9a-f-]{36}$/;
 
 test('has expected title', { tag: '@REQ-005' }, async ({ page }) => {
 	const createPage = await new CreatePage(page).goto();
@@ -53,7 +60,7 @@ test(
 	{ tag: '@REQ-008' },
 	async ({ page }) => {
 		await gotoHydrated(page, '/');
-		await expect(page.getByRole('link', { name: EXAMPLES[0].title })).toBeVisible();
+		await expect(page.getByRole('link', { name: EXAMPLE_COMPLETE.title })).toBeVisible();
 		const before = await page.evaluate(
 			() => JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}').comics.length,
 		);
@@ -123,5 +130,119 @@ test(
 		await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 		await expect(page.getByTestId('loader-test-id')).toHaveText('');
 		expect(posts).toBe(1);
+	},
+);
+
+test('creates a comic from a story only', { tag: '@REQ-005' }, async ({ page }) => {
+	const createPage = await new CreatePage(page).goto();
+
+	await createPage.pasteStory(STORY);
+	await createPage.submit();
+
+	await expect(page).toHaveURL(COMIC_URL);
+	await expect(page.getByRole('heading', { name: MOCK_TITLE, exact: true })).toBeVisible();
+	await expect(page.locator('ul[aria-labelledby="panels"] > li').first()).toBeVisible();
+});
+
+test(
+	'creates a comic from a URL and a story and shows both',
+	{ tag: ['@REQ-005', '@REQ-105-1'] },
+	async ({ page }) => {
+		const createPage = await new CreatePage(page).goto();
+
+		await createPage.fillUrl(SOURCE_URL);
+		await createPage.pasteStory(STORY);
+		await createPage.submit();
+
+		await expect(page).toHaveURL(COMIC_URL);
+		await expect(page.getByRole('link', { name: SOURCE_URL })).toBeVisible();
+		await expect(page.getByText(STORY_FIRST_LINE)).toBeVisible();
+	},
+);
+
+test('a URL-only comic shows the link and no story', { tag: '@REQ-005' }, async ({ page }) => {
+	const createPage = await new CreatePage(page).goto();
+
+	await createPage.fillUrl(SOURCE_URL);
+	await createPage.submit();
+
+	await expect(page).toHaveURL(COMIC_URL);
+	await expect(page.getByRole('link', { name: SOURCE_URL })).toBeVisible();
+	const comics = await storedComics(page);
+	expect(comics.find((comic) => comic.source === SOURCE_URL)).not.toHaveProperty('story');
+});
+
+test.describe('rejected input creates nothing', { tag: '@REQ-007' }, () => {
+	const cases: [string, string | undefined][] = [
+		['neither a URL nor a story', undefined],
+		['a story shorter than 20 characters', 'Too short story'],
+		['a story longer than 10,000 characters', 'x'.repeat(10_001)],
+	];
+
+	for (const [name, story] of cases) {
+		test(`shows an error for ${name}`, async ({ page }) => {
+			const createPage = await new CreatePage(page).goto();
+			const before = (await storedComics(page)).length;
+
+			if (story !== undefined) await createPage.pasteStory(story);
+			await createPage.submit();
+
+			await expect(createPage.error).toBeVisible();
+			await expect(createPage.error).not.toContainText('{');
+			await expect(createPage.error).not.toContainText('Internal Error');
+			await expect(page).toHaveURL(/\/comic\/create$/);
+			expect((await storedComics(page)).length).toBe(before);
+		});
+	}
+});
+
+test.describe('a story-only comic', { tag: '@REQ-105-1' }, () => {
+	async function createStoryComic(page: Page) {
+		const createPage = await new CreatePage(page).goto();
+		await createPage.pasteStory(STORY);
+		await createPage.submit();
+		await expect(page).toHaveURL(COMIC_URL);
+	}
+
+	test('keeps its story after a reload and has no source link', async ({ page }) => {
+		await createStoryComic(page);
+
+		await page.reload();
+
+		await expect(page.getByRole('heading', { name: m.source() })).toBeVisible();
+		await expect(page.getByText(STORY_FIRST_LINE)).toBeVisible();
+		await expect(page.getByRole('link', { name: /^https?:\/\// })).toHaveCount(0);
+	});
+
+	test('shows the story and no source in the raw view', { tag: '@REQ-027' }, async ({ page }) => {
+		await createStoryComic(page);
+
+		await gotoHydrated(page, `${new URL(page.url()).pathname}/raw`);
+
+		const raw = JSON.parse(await page.getByRole('textbox').inputValue());
+		expect(raw.story).toBe(STORY);
+		expect(raw).not.toHaveProperty('source');
+	});
+});
+
+test(
+	'comics stored before stories existed load normally and show their link',
+	{ tag: ['@REQ-026', '@REQ-105-1'] },
+	async ({ page }) => {
+		const legacy = {
+			...EXAMPLE_COMPLETE,
+			id: '6f1c2d3e-4b5a-4c7d-8e9f-0a1b2c3d4e5f',
+			source: 'https://example.com/old',
+		};
+		await page.addInitScript((comic) => {
+			if (sessionStorage.getItem('seeded-legacy')) return;
+			sessionStorage.setItem('seeded-legacy', '1');
+			localStorage.setItem('comics_db', JSON.stringify({ version: 1, comics: [comic] }));
+		}, legacy);
+
+		await gotoHydrated(page, `/comic/${legacy.id}`);
+
+		await expect(page.getByRole('link', { name: legacy.source })).toBeVisible();
+		expect(await page.evaluate(() => localStorage.getItem('comics_db_invalid'))).toBeNull();
 	},
 );

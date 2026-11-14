@@ -5,13 +5,17 @@
 //   node scripts/costs.mjs row <execution-file>   context from env: ISSUE, SKILL,
 //                                                 TARGET, CONCLUSION, RUN_URL
 //   node scripts/costs.mjs summary <costs.csv> [issue]
+//   node scripts/costs.mjs digest <execution-file>  compact, privacy-safe run digest (JSON);
+//                                                   context from env as for `row`
+//   node scripts/costs.mjs actions <digest-dir>     Markdown of repeated actions across digests
 //
 // `row` reads claude-code-action's execution file: a JSON array (or JSON lines)
 // of SDK messages whose last `type: result` message carries cost, turns and
 // usage. Missing fields stay empty rather than failing: bookkeeping must never
 // block the pipeline. total_cost_usd is an API-price estimate, not what a
 // subscription is billed.
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const COLUMNS = [
 	'date',
@@ -138,6 +142,205 @@ function summary(csv, issue) {
 	].join('\n');
 }
 
+// --- Digest (#84): what a run did, without what it said or read. ---------------
+// Artifacts of this public repo are public, so only a command's first words, tool
+// names and file paths survive; never arguments, prompts or tool output.
+
+const WORD = /^[A-Za-z][\w.-]*$/;
+const SUBCOMMAND_TOOLS = new Set(['gh', 'git', 'pnpm', 'node', 'npm', 'npx']);
+const byName = ([a], [b]) => (a < b ? -1 : a > b ? 1 : 0);
+
+// First two words of a command, e.g. `pnpm run`. A second word that isn't a plain
+// subcommand (a path, flag, quoted text) is dropped, as it may carry content.
+function prefixOf(command) {
+	const [first, second] = String(command ?? '')
+		.trim()
+		.split(/\s+/);
+	if (!first || !/^[\w./-]+$/.test(first)) return '(other)';
+	// Only these tools take a subcommand; after any other word (`echo sk-…`) the
+	// second word may be a secret.
+	return second && SUBCOMMAND_TOOLS.has(first) && WORD.test(second) ? `${first} ${second}` : first;
+}
+
+const sortedCounts = (counts) => Object.fromEntries([...counts].sort(byName));
+
+function increment(counts, key) {
+	counts.set(key, (counts.get(key) ?? 0) + 1);
+}
+
+function digest(file) {
+	let messages = [];
+	try {
+		messages = parseMessages(readFileSync(file, 'utf8'));
+	} catch {
+		// No execution file: still emit a digest with empty counts.
+	}
+	const result = messages.findLast((message) => message?.type === 'result') ?? {};
+	const init = messages.find((message) => message?.type === 'system' && message.subtype === 'init');
+	const denials = Array.isArray(result.permission_denials) ? result.permission_denials : [];
+	const denied = new Set(denials.map((d) => d.tool_use_id));
+	const blocks = (type) =>
+		messages
+			.filter((message) => message?.type === type)
+			.flatMap((message) => message.message?.content ?? [])
+			.filter((block) => block && typeof block === 'object');
+
+	const toolCalls = new Map();
+	const bashPrefixes = new Map();
+	const reads = new Map();
+	const bashIds = new Map();
+	const workspace = `${process.cwd()}/`;
+	for (const block of blocks('assistant').filter((b) => b.type === 'tool_use')) {
+		increment(toolCalls, block.name);
+		if (block.name === 'Bash') {
+			const prefix = prefixOf(block.input?.command);
+			increment(bashPrefixes, prefix);
+			bashIds.set(block.id, prefix);
+		} else if (block.name === 'Read' && typeof block.input?.file_path === 'string') {
+			increment(reads, block.input.file_path.replace(workspace, ''));
+		}
+	}
+
+	const failedBash = new Map();
+	for (const block of blocks('user').filter((b) => b.type === 'tool_result')) {
+		if (block.is_error && bashIds.has(block.tool_use_id) && !denied.has(block.tool_use_id)) {
+			increment(failedBash, bashIds.get(block.tool_use_id));
+		}
+	}
+
+	const deniedCommands = new Map();
+	for (const d of denials) {
+		increment(
+			deniedCommands,
+			d.tool_name === 'Bash' ? prefixOf(d.tool_input?.command) : d.tool_name,
+		);
+	}
+
+	const env = process.env;
+	return `${JSON.stringify(
+		{
+			skill: env.SKILL ?? '',
+			target: env.TARGET ?? '',
+			conclusion: env.CONCLUSION ?? '',
+			run_url: env.RUN_URL ?? '',
+			model: Object.keys(result.modelUsage ?? {}).join('+') || init?.model || '',
+			turns: result.num_turns ?? 0,
+			cost_usd: typeof result.total_cost_usd === 'number' ? result.total_cost_usd : 0,
+			permission_denials_count: denials.length,
+			permission_denials: sortedCounts(deniedCommands),
+			tool_calls: sortedCounts(toolCalls),
+			bash_prefixes: sortedCounts(bashPrefixes),
+			files_read_more_than_once: sortedCounts(new Map([...reads].filter(([, n]) => n > 1))),
+			failed_bash: sortedCounts(failedBash),
+		},
+		null,
+		2,
+	)}\n`;
+}
+
+// --- Actions: aggregate digests for the weekly audit. ---------------------------
+
+function readDigests(dir) {
+	return readdirSync(dir, { recursive: true })
+		.map(String)
+		.filter((name) => name.endsWith('.json'))
+		.sort()
+		.flatMap((name) => {
+			try {
+				const parsed = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+				return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? [parsed] : [];
+			} catch {
+				return [];
+			}
+		});
+}
+
+// Rows of [key, { total, runs }], most total first, ties by name.
+function ranked(digests, pick, minimum) {
+	const totals = new Map();
+	for (const d of digests) {
+		for (const [key, n] of Object.entries(pick(d) ?? {})) {
+			const t = totals.get(key) ?? { total: 0, runs: 0 };
+			t.total += n;
+			t.runs += 1;
+			totals.set(key, t);
+		}
+	}
+	return [...totals]
+		.filter(([, t]) => t.total >= minimum)
+		.sort((a, b) => b[1].total - a[1].total || byName(a, b))
+		.slice(0, 10);
+}
+
+function markdownTable(headers, rows) {
+	if (rows.length === 0) return 'None.\n';
+	return [
+		`| ${headers.join(' | ')} |`,
+		`| --- | ${headers
+			.slice(1)
+			.map(() => '---:')
+			.join(' | ')} |`,
+		...rows.map((cells) => `| ${cells.map((c) => String(c).replaceAll('|', '\\|')).join(' | ')} |`),
+		'',
+	].join('\n');
+}
+
+function actions(dir) {
+	const digests = readDigests(dir);
+	if (digests.length === 0) return '# Agent actions\n\nNo digests.\n';
+
+	const skills = new Map();
+	for (const d of digests) {
+		const name = d.skill || '(none)';
+		const s = skills.get(name) ?? { runs: 0, turns: 0, cost: 0 };
+		s.runs += 1;
+		s.turns += Number(d.turns) || 0;
+		s.cost += Number(d.cost_usd) || 0;
+		skills.set(name, s);
+	}
+	const skillRows = [...skills]
+		.sort(byName)
+		.map(([name, s]) => [
+			name,
+			s.runs,
+			(s.turns / s.runs).toFixed(1),
+			`$${(s.cost / s.runs).toFixed(2)}`,
+		]);
+
+	const section = (title, headers, rows) => `## ${title}\n\n${markdownTable(headers, rows)}`;
+	const counts = ([key, t]) => [key, t.total, t.runs];
+	return [
+		'# Agent actions',
+		'',
+		`${digests.length} run digests.`,
+		'',
+		section('Runs per skill', ['Skill', 'Runs', 'Avg turns', 'Avg cost'], skillRows),
+		section(
+			'Repeated Bash command prefixes',
+			['Prefix', 'Calls', 'Runs'],
+			ranked(digests, (d) => d.bash_prefixes, 2).map(counts),
+		),
+		section(
+			'Denied commands',
+			['Command', 'Denials', 'Runs'],
+			ranked(digests, (d) => d.permission_denials, 1).map(counts),
+		),
+		section(
+			'Files read more than once in a run',
+			['File', 'Runs', 'Reads'],
+			ranked(digests, (d) => d.files_read_more_than_once, 1).map(([key, t]) => [
+				key,
+				t.runs,
+				t.total,
+			]),
+		),
+		'## Runs',
+		'',
+		...digests.map((d) => `- ${d.skill} ${d.target} (${d.conclusion}): ${d.run_url}`),
+		'',
+	].join('\n');
+}
+
 // The tool calls the run's permissions refused, one line each (shortened), so a
 // silent run can be explained without the full transcript (agents.yml hand-off check).
 function denials(file) {
@@ -158,14 +361,33 @@ function denials(file) {
 		.join('\n');
 }
 
+// The agent's last message, shortened. When a run ends without handing off, this is
+// usually the explanation (or the review it never posted), and a run summary needs a
+// GitHub login to read while an issue comment does not.
+function finalMessage(file) {
+	let messages;
+	try {
+		messages = parseMessages(readFileSync(file, 'utf8'));
+	} catch {
+		return '';
+	}
+	const result = messages.findLast((message) => message?.type === 'result') ?? {};
+	return String(result.result ?? '')
+		.trim()
+		.slice(0, 3000);
+}
+
 const [command, arg, issue] = process.argv.slice(2);
 if (command === 'header') console.log(COLUMNS.join(','));
 else if (command === 'row') console.log(row(arg));
+else if (command === 'digest') process.stdout.write(digest(arg));
+else if (command === 'actions') process.stdout.write(actions(arg));
 else if (command === 'summary') console.log(summary(arg, issue));
 else if (command === 'denials') console.log(denials(arg));
+else if (command === 'final') console.log(finalMessage(arg));
 else {
 	console.error(
-		'usage: costs.mjs header | row <execution-file> | summary <costs.csv> [issue] | denials <execution-file>',
+		'usage: costs.mjs header | row <execution-file> | summary <costs.csv> [issue] | digest <execution-file> | actions <digest-dir> | denials <execution-file> | final <execution-file>',
 	);
 	process.exit(2);
 }

@@ -1,7 +1,6 @@
 import { expect, test, type APIRequestContext } from '@playwright/test';
-import { EXAMPLES } from '../../../examples/examples';
+import { EXAMPLE_COMPLETE as EXAMPLE } from '../../../tests/e2e/examples';
 
-const EXAMPLE = EXAMPLES[0];
 const ORIGIN = 'http://localhost:4173';
 
 /** POST a form action the way `use:enhance` does and return SvelteKit's result. */

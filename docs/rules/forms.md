@@ -25,12 +25,18 @@ that owns:
 
 Hidden inputs are written with `encodeFormValue(value)`.
 
-## Two enhancers
+## Three enhancers
 
-| Kind          | Use                                                           | Example                                                                |
-| ------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Server-backed | `enhanceAction<Result>(({ data, update }) => …)`              | `CreatePanelImageForm.svelte`, `LoginForm.svelte`, `ConfigForm.svelte` |
-| Client-only   | `enhanceClientCommand(getValues, command, ({ update }) => …)` | `AddCaptionForm.svelte`, `DeleteItemForm.svelte`                       |
+| Kind          | Use                                                               | Example                                                                |
+| ------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Server-backed | `enhanceAction<Result>(({ data, update }) => …)`                  | `CreatePanelImageForm.svelte`, `LoginForm.svelte`, `ConfigForm.svelte` |
+| Client-only   | `enhanceClientCommand(getValues, command, ({ update }) => …)`     | `AddCaptionForm.svelte`, `DeleteItemForm.svelte`                       |
+| Local-only    | `enhanceLocalCommand(getValues, command, { onStart, onSuccess })` | `GlobalInstructionsForm.svelte`                                        |
+
+Use `enhanceLocalCommand` only for browser-only state with no server step and no
+route action (REQ-033). It validates, runs the command synchronously and cancels
+the request, so a reload right after Save can't lose the change. The form has no
+`?/<action>`; show feedback in an always-rendered `role="status"` element.
 
 The enhancers own loading (a request counter), error display, duplicate-submit
 protection and failure handling. Components never touch `globalLoading` or

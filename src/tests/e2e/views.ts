@@ -1,6 +1,5 @@
-import { EXAMPLES } from '../../examples/examples';
+import { EXAMPLE_COMPLETE as EXAMPLE } from './examples';
 
-const EXAMPLE = EXAMPLES[0];
 const MISSING_ID = '00000000-0000-4000-8000-000000000000';
 
 /**

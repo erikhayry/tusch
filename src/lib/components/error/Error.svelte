@@ -14,3 +14,21 @@
 		<p>{globalError.error.message}</p>
 	{/if}
 </div>
+
+<style>
+	/* An empty region is 0 px tall. Never hide it (display/visibility): a live
+	   region must stay in the accessibility tree for its changes to be announced. */
+	[role='status'] {
+		max-inline-size: var(--content-width);
+		margin-inline: auto;
+		padding-inline: var(--space-3);
+		font-size: var(--font-size-small);
+		color: var(--color-muted);
+	}
+
+	@media (min-width: 48em) {
+		[role='status'] {
+			padding-inline: var(--space-5);
+		}
+	}
+</style>

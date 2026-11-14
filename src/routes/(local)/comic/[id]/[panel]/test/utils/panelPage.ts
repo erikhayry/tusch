@@ -1,7 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import { expect, type Locator, type Page } from '@playwright/test';
-import { EXAMPLES } from '../../../../../../../examples/examples';
+import { EXAMPLE_COMPLETE } from '../../../../../../../tests/e2e/examples';
 import { CREATE_PANEL_IMAGE_RESPONSE } from '../../../../../../../tests/mock/openAi/openAiResponse';
 import { gotoHydrated } from '../../../../../../../tests/e2e/gotoHydrated';
 import { activate, typeInto } from '../../../../../../../tests/e2e/keyboard';
@@ -33,12 +33,12 @@ export class PanelPage {
 		this.deleteImageButton = page.getByRole('button', { name: m.removeImage() });
 		this.replaceImageButton = page.getByRole('button', { name: m.generateNewImage() });
 		this.restoreImageButton = page.getByRole('button', { name: m.restorePreviousImage() });
-		this.initialImage = page.getByRole('img', { name: EXAMPLES[0].panels[0].image?.alt });
+		this.initialImage = page.getByRole('img', { name: EXAMPLE_COMPLETE.panels[0].image?.alt });
 		this.newImage = page.getByRole('img', {
 			name: getImageFromOpenAiResponse(CREATE_PANEL_IMAGE_RESPONSE).alt,
 		});
 		this.addPanelBeforeButton = page.getByRole('button', { name: m.addPanelBefore({ number: 2 }) });
-		this.initialNumberOfPanels = EXAMPLES[0].panels.length;
+		this.initialNumberOfPanels = EXAMPLE_COMPLETE.panels.length;
 		this.numberOfPanels = async () =>
 			page.getByRole('list', { name: m.panels() }).getByRole('listitem').count();
 
@@ -83,7 +83,10 @@ export class PanelPage {
 	}
 
 	async goto(panel = 0) {
-		await gotoHydrated(this.page, `/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[panel].id}`);
+		await gotoHydrated(
+			this.page,
+			`/comic/${EXAMPLE_COMPLETE.id}/${EXAMPLE_COMPLETE.panels[panel].id}`,
+		);
 
 		return this;
 	}
