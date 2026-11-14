@@ -1,10 +1,9 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test, type Page } from '@playwright/test';
-import { EXAMPLES } from '../../../examples/examples';
+import { EXAMPLE_COMPLETE as EXAMPLE } from '../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
 import { activate, typeInto } from '../../../tests/e2e/keyboard';
 
-const EXAMPLE = EXAMPLES[0];
 const MISSING_ID = '00000000-0000-4000-8000-000000000000';
 
 async function storedComics(page: Page): Promise<{ id: string; panels: { id: string }[] }[]> {

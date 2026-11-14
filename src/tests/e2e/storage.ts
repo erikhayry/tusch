@@ -12,6 +12,21 @@ export function storedFiles(page: Page): Promise<string[]> {
 	});
 }
 
+/** Size in bytes of every file in OPFS (generated covers, panel images, crops). */
+export function storedFileSizes(page: Page): Promise<number[]> {
+	return page.evaluate(async () => {
+		const root = await navigator.storage.getDirectory();
+		const sizes: number[] = [];
+		const entries = (
+			root as unknown as { entries(): AsyncIterable<[string, FileSystemFileHandle]> }
+		).entries();
+		for await (const [, handle] of entries) {
+			sizes.push((await handle.getFile()).size);
+		}
+		return sizes;
+	});
+}
+
 /** The stored src of a panel's current image, if any. */
 export function panelImageSrc(
 	page: Page,

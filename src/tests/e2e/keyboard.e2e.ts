@@ -1,12 +1,10 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { EXAMPLES } from '../../examples/examples';
 import { contrastRatio } from './contrast';
+import { EXAMPLE_COMPLETE as EXAMPLE } from './examples';
 import { gotoHydrated } from './gotoHydrated';
 import { activate, chooseOption, focusableControls, tabTo, typeInto } from './keyboard';
 import { VIEWS } from './views';
-
-const EXAMPLE = EXAMPLES[0];
 
 /** The visible links, buttons and form controls of the current view, in document order. */
 async function visibleControls(page: Page): Promise<Locator[]> {

@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { EXAMPLES } from '../../../../../../examples/examples';
+import { EXAMPLE_COMPLETE } from '../../../../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../../../../tests/e2e/keyboard';
 import {
@@ -9,7 +9,7 @@ import {
 } from '../../../../../../tests/e2e/storage';
 import { PanelPage } from './utils/panelPage';
 
-const EXAMPLE = EXAMPLES[0];
+const EXAMPLE = EXAMPLE_COMPLETE;
 const PANEL = EXAMPLE.panels[0];
 
 function panelImageSrc(page: Page): Promise<string | undefined> {
