@@ -68,6 +68,8 @@ If the ledger, the lessons or the changelog need edits, make them on a branch
      `status:*` for more than 3 days.
    - `docs/costs.csv` and `docs/costs.md`: costs copied from the `bookkeeping`
      branch, with totals per issue, skill and week.
+   - `.agent-tmp/audit-actions.md` is for `/automate`, which runs after this
+     audit in the same job; don't analyse it here.
 5. Report in **one** issue titled "Weekly tech-lead audit". Find it with
    `gh issue list --search "Weekly tech-lead audit in:title" --state open`;
    create it (`type:chore`) only if none is open. Add one comment per audit

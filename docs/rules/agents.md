@@ -1,7 +1,7 @@
 # Agent protocol
 
 Shared rules for the role skills in `.claude/skills/` (`/plan`, `/test`,
-`/develop`, `/reviewer`, `/triage`, `/tech-lead`). The pipeline itself is
+`/develop`, `/reviewer`, `/triage`, `/tech-lead`, `/automate`). The pipeline itself is
 described in `docs/agent-workflow-plan.md`. These rules apply both locally
 and on GitHub.
 
@@ -14,14 +14,15 @@ and on GitHub.
 - Never skip a state. Never set `status:needs-human` yourself unless you are the
   reviewer and the PR exists.
 
-| Skill        | Entry label                  | Exit label(s)                                                           |
-| ------------ | ---------------------------- | ----------------------------------------------------------------------- |
-| `/plan`      | none or `status:idea`        | `status:needs-tests` (or stays `status:idea` while waiting for answers) |
-| `/test`      | `status:needs-tests`         | `status:needs-dev`                                                      |
-| `/develop`   | `status:needs-dev`           | `status:needs-review`                                                   |
-| `/reviewer`  | `status:needs-review`        | `status:needs-human`, or back to `needs-dev` / `needs-tests`            |
-| `/triage`    | `status:needs-human`         | `status:needs-dev`, `status:needs-tests`, or unchanged                  |
-| `/tech-lead` | any (it doesn't move issues) | none                                                                    |
+| Skill        | Entry label                    | Exit label(s)                                                           |
+| ------------ | ------------------------------ | ----------------------------------------------------------------------- |
+| `/plan`      | none or `status:idea`          | `status:needs-tests` (or stays `status:idea` while waiting for answers) |
+| `/test`      | `status:needs-tests`           | `status:needs-dev`                                                      |
+| `/develop`   | `status:needs-dev`             | `status:needs-review`                                                   |
+| `/reviewer`  | `status:needs-review`          | `status:needs-human`, or back to `needs-dev` / `needs-tests`            |
+| `/triage`    | `status:needs-human`           | `status:needs-dev`, `status:needs-tests`, or unchanged                  |
+| `/tech-lead` | any (it doesn't move issues)   | none                                                                    |
+| `/automate`  | none (weekly, after the audit) | none; files `type:chore` issues, never moves labels                     |
 
 ## Branches
 
@@ -87,6 +88,7 @@ cost (`costs.csv`, the "Cost so far" comment on each issue).
 | `/plan`, `/reviewer`, `/tech-lead audit` | `opus`   | Judgement: scoping, catching what others missed         |
 | `/test`, `/develop`                      | `sonnet` | Implementation against a clear ticket and failing tests |
 | `/triage`, `/tech-lead reconcile`        | `sonnet` | Routine classification and bookkeeping                  |
+| `/automate`                              | `sonnet` | Works from a pre-aggregated digest; 40 turns at most    |
 | `a11y-reviewer`, `css-reviewer`          | inherit  | Run inside `/reviewer`, so they use its model           |
 | `pipeline-expert`                        | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
 

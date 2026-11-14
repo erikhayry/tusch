@@ -1,0 +1,31 @@
+{
+  "skill": "develop",
+  "target": "85",
+  "conclusion": "success",
+  "run_url": "https://github.com/erikhayry/tusch/actions/runs/1002",
+  "model": "claude-sonnet-5-5",
+  "turns": 10,
+  "cost_usd": 0.5,
+  "permission_denials_count": 2,
+  "permission_denials": {
+    "gh issue": 1,
+    "pnpm exec": 1
+  },
+  "tool_calls": {
+    "Bash": 6,
+    "Edit": 2,
+    "Read": 5
+  },
+  "bash_prefixes": {
+    "gh issue": 1,
+    "pnpm exec": 2,
+    "pnpm run": 3
+  },
+  "files_read_more_than_once": {
+    "src/lib/x.ts": 3,
+    "src/routes/y.ts": 2
+  },
+  "failed_bash": {
+    "pnpm exec": 1
+  }
+}

@@ -8,6 +8,9 @@ bun.lockb
 # Miscellaneous
 /static/
 
+# Byte-exact expected outputs of scripts/costs.mjs (compared with diff in CI)
+/scripts/fixtures/
+
 # Templates and tool-managed config
 plop-templates/
 project.inlang/
