@@ -7,6 +7,7 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 ### Features
 
+- The comic page now shows every character's generated images, one per panel, and you can open each one to see the full-body crop. ([#195](https://github.com/erikhayry/tusch/pull/195))
 - Tusch now switches to a dark theme automatically when your system or browser is set to dark mode. ([#170](https://github.com/erikhayry/tusch/pull/170))
 - After generating a new panel image, you can restore the previous one with "Restore previous image". ([#167](https://github.com/erikhayry/tusch/pull/167))
 - Deleting a panel now also removes the character images taken from it, so they no longer take up storage. ([#158](https://github.com/erikhayry/tusch/pull/158))
