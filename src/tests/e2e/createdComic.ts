@@ -17,6 +17,15 @@ export async function createComic(page: Page): Promise<string> {
 	return id;
 }
 
+/** Create a comic through the UI and open its first panel, which has no image yet. */
+export async function createComicAtFirstPanel(page: Page) {
+	const comicId = await createComic(page);
+	const panel = (await storedComic(page, comicId)).panels[0];
+	if (!panel) throw new Error('created comic has no panel');
+	await gotoHydrated(page, `/comic/${comicId}/${panel.id}`);
+	return { comicId, panelId: panel.id };
+}
+
 /** The comic as persisted in `localStorage`, validated. */
 export async function storedComic(page: Page, comicId: string): Promise<Comic> {
 	const stored = await page.evaluate((id) => {

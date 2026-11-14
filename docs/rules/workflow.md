@@ -15,15 +15,16 @@
 
 `.github/workflows/agents.yml` runs the role skills automatically:
 
-| You do                                                                             | Runs                                                                               |
-| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Add `status:idea` to an issue, or answer the planner's questions there             | `/plan <n>`                                                                        |
-| Add `type:bug` to an issue that has no `status:*` label yet                        | `/plan <n>` (the workflow adds `status:idea` first)                                |
-| Add `status:needs-tests` (or a skill hands off to it)                              | `/test <n>` → `/develop` → `/reviewer`, each started by the previous stage's label |
-| Comment or review on a pipeline PR while the issue is `status:needs-human`         | `/triage <n>`                                                                      |
-| Merge a pipeline PR (branch `issue-<n>-…`)                                         | `/tech-lead reconcile <pr>`                                                        |
-| Nothing: SonarCloud fails on a pipeline PR while the issue is `status:needs-human` | `/develop <n>` with the findings (blocked after 2 rounds)                          |
-| Nothing: Mondays 06:00 UTC, or dispatch `agents.yml` with `audit` ticked           | `/tech-lead audit`, then `/automate` (files token-saving `type:chore` issues)      |
+| You do                                                                               | Runs                                                                               |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Add `status:idea` to an issue, or answer the planner's questions there               | `/plan <n>`                                                                        |
+| Add `type:bug` to an issue that has no `status:*` label yet                          | `/plan <n>` (the workflow adds `status:idea` first)                                |
+| Add `status:needs-tests` (or a skill hands off to it)                                | `/test <n>` → `/develop` → `/reviewer`, each started by the previous stage's label |
+| Comment or review on a pipeline PR while the issue is `status:needs-human`           | `/triage <n>`                                                                      |
+| Merge a pipeline PR (branch `issue-<n>-…`)                                           | `/tech-lead reconcile <pr>`                                                        |
+| Nothing: SonarCloud fails on a pipeline PR while the issue is `status:needs-human`   | `/develop <n>` with the findings (blocked after 2 rounds)                          |
+| Nothing: a pipeline PR conflicts with `main` while the issue is `status:needs-human` | `/develop <n>` merges `main` into the branch (blocked after 2 rounds)              |
+| Nothing: Mondays 06:00 UTC, or dispatch `agents.yml` with `audit` ticked             | `/tech-lead audit`, then `/automate` (files token-saving `type:chore` issues)      |
 
 - Only a **human** adding `type:bug` starts the planner. Bugs that agents file as
   follow-ups wait for you to add a `status:*` label. To skip planning for a bug

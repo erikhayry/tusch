@@ -1,0 +1,4 @@
+DRY_RUN: gh issue comment 7 --body-file conflict-comment.md
+| ### Pipeline: merge conflict with main (round 1 of 2)
+DRY_RUN: gh issue edit 7 --remove-label status:needs-human --add-label status:needs-dev
+DRY_RUN: gh workflow run agents.yml --ref main -f issue=7

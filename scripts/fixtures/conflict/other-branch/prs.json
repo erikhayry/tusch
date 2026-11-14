@@ -1,0 +1,4 @@
+[
+	{ "number": 12, "headRefName": "dependabot/npm_and_yarn/vite-9", "mergeable": "CONFLICTING" },
+	{ "number": 13, "headRefName": "fix-typo", "mergeable": "CONFLICTING" }
+]

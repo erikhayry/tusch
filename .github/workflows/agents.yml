@@ -604,6 +604,37 @@ jobs:
           if [[ -z "$issue" || -z "$PR" ]]; then echo "No pipeline issue or PR for $HEAD_BRANCH"; exit 0; fi
           scripts/sonar-bounce.sh "$issue" "$PR"
 
+  # A pipeline PR that conflicts with main sends its issue back to /develop, which
+  # merges main (scripts/conflict-bounce.sh, #168). Runs when a pipeline PR merges
+  # and on the schedule, and scans every open PR. No AI in this job.
+  conflict:
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged)
+    concurrency:
+      group: agent-conflict
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      actions: write
+    env:
+      GH_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+      BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # merge-tree needs the history of main and of every open branch.
+          fetch-depth: 0
+          sparse-checkout: scripts
+
+      - name: Send conflicting pipeline PRs back to the developer
+        run: scripts/conflict-bounce.sh
+
   # Runs on the plain runner (gh is preinstalled) so it works even if the
   # container or the agent setup fails.
   block:

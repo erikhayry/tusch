@@ -1,7 +1,7 @@
 import { globalError } from '$lib/utils/states/error.svelte';
 import { globalLoading } from '$lib/utils/states/loading.svelte';
 import type { SubmitFunction } from '@sveltejs/kit';
-import { toFormFailure, type FormFailure } from './form-failure';
+import { toFormFailure, toUserMessage, type FormFailure } from './form-failure';
 
 export type UpdateForm = () => Promise<void>;
 
@@ -40,7 +40,8 @@ export function enhanceAction<T extends Record<string, unknown>>(
 					if (options.onFailure) {
 						options.onFailure(failure);
 					} else {
-						globalError.set(failure.message);
+						const shown = toUserMessage(failure);
+						globalError.set(shown.message, shown.details);
 					}
 				}
 			} catch (error) {

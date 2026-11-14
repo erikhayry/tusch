@@ -18,6 +18,9 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 ### Fixes
 
+- Failed AI image requests are retried automatically, and when the AI still returns nothing usable you now see a readable message instead of raw technical text. ([#221](https://github.com/erikhayry/tusch/pull/221))
+- After replacing a panel image, the character heads next to the dialogue now match the new image. ([#215](https://github.com/erikhayry/tusch/pull/215))
+- Panels without a title now have a named link in the panel list, so screen readers can announce them. ([#216](https://github.com/erikhayry/tusch/pull/216))
 - Example comics now show their own panel images, and a missing image shows a clear placeholder instead of an unrelated picture. ([#138](https://github.com/erikhayry/tusch/pull/138))
 - Every page now has a proper title and a main landmark, so screen readers and browser tabs show where you are. ([#115](https://github.com/erikhayry/tusch/pull/115))
 

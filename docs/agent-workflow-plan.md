@@ -151,6 +151,16 @@ derived from the current code:
 - `concurrency: agent-issue-<n>`: one agent per issue at a time.
 - Per role: `--max-turns` and `timeout-minutes`; on failure a step sets
   `status:blocked`.
+- Bounces without AI, for a pipeline PR whose issue waits in `status:needs-human`:
+  - `sonar` job, `scripts/sonar-bounce.sh` (#80): a failed SonarCloud check
+    sends the issue to `/develop` with the findings.
+  - `conflict` job, `scripts/conflict-bounce.sh` (#168): a PR that GitHub reports
+    as `CONFLICTING` sends the issue to `/develop`, which merges `main`. It runs
+    when a pipeline PR merges and every 30 minutes, and scans every open PR, not
+    only the merged one. `UNKNOWN` is checked on the next run.
+  - Both share `scripts/bounce-lib.sh`, block after 2 rounds, and hand off by
+    dispatching `agents.yml`, since label changes made with `GITHUB_TOKEN` start
+    no runs.
 - Implemented in AW8 (#33); see `docs/rules/workflow.md` ("Running the pipeline on GitHub").
 - The existing `@claude` workflow stays for ad-hoc requests; the automatic
   `claude-code-review.yml` is removed (the reviewer role replaces it).

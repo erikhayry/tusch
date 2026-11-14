@@ -86,5 +86,8 @@
 	"globalInstructionsHint": "Up to 1000 characters. Added to every AI prompt.",
 	"urlToSource": "URL to source",
 	"createComicSourceHint": "Enter a URL, a story, or both. A story is 20–10,000 characters.",
-	"yourStory": "Your story"
+	"yourStory": "Your story",
+	"aiNoImage": "The AI didn't return an image. Try again.",
+	"aiInvalidResponse": "The AI returned something we couldn't use. Try again.",
+	"showDetails": "Show details"
 }

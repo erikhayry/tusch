@@ -24,8 +24,14 @@ import {
 	getComicFromOpenAiResponse,
 	getImageFromOpenAiResponse,
 	getPanelFromOpenAiResponse,
+	hasImage,
 } from '$lib/utils/ai/ai';
-import { SchemaName, type CreatedImage, type OpenAiOutput } from '$lib/utils/ai/aiTypes';
+import {
+	SchemaName,
+	type AiImageRequest,
+	type CreatedImage,
+	type OpenAiOutput,
+} from '$lib/utils/ai/aiTypes';
 import {
 	buildCoverImageMessages,
 	buildInitialMessages,
@@ -37,10 +43,16 @@ import { INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
 import { generateId } from '$lib/utils/id';
 import type { AiGateway, PingResult } from '../ai/ai-gateway';
 
-/** The provider answered, but not with something we can use. */
+/**
+ * The provider answered, but not with something we can use. `code` tells the UI
+ * which friendly message to show (`src/lib/forms/form-failure.ts`).
+ */
 export class InvalidAiResponseError extends Error {
-	constructor(cause: unknown) {
-		super(`Invalid AI response: ${cause instanceof Error ? cause.message : String(cause)}`);
+	constructor(
+		readonly code: 'ai_no_image' | 'invalid_ai_response',
+		detail: string,
+	) {
+		super(`Invalid AI response: ${detail}`);
 		this.name = 'InvalidAiResponseError';
 	}
 }
@@ -49,8 +61,26 @@ function interpret<T>(read: () => T): T {
 	try {
 		return read();
 	} catch (error) {
-		throw new InvalidAiResponseError(error);
+		throw new InvalidAiResponseError(
+			'invalid_ai_response',
+			error instanceof Error ? error.message : String(error),
+		);
 	}
+}
+
+/**
+ * The model sometimes answers without an image even when the tool is forced, and a
+ * second request usually works, so an image request gets one retry (REQ-185-1).
+ * Gateway errors aren't retried; they're handled by the caller.
+ */
+async function generateImage(gateway: AiGateway, request: AiImageRequest): Promise<OpenAiOutput> {
+	const first = await gateway.image(request);
+	if (hasImage(first)) return first;
+
+	const second = await gateway.image(request);
+	if (hasImage(second)) return second;
+
+	throw new InvalidAiResponseError('ai_no_image', 'the response has no image');
 }
 
 /** Both orientations use the single generated image. */
@@ -67,7 +97,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 		imageUrl,
 		includeImage,
 	}: CreateCoverImageValues): Promise<CreateCoverImageResult> {
-		const output = await gateway.image({
+		const output = await generateImage(gateway, {
 			messages: [
 				...buildCoverImageMessages({ comic, globalInstructions }),
 				`USER INSTRUCTION: ${instructions}`,
@@ -156,7 +186,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			imageUrl,
 			referenceImages,
 		}: CreatePanelImageValues): Promise<CreatePanelImageResult> {
-			const output = await gateway.image({
+			const output = await generateImage(gateway, {
 				messages: buildPanelImageMessages({
 					panel,
 					characters,

@@ -11,7 +11,10 @@
 # start no runs). After MAX_ROUNDS bounces it blocks instead, to avoid a loop.
 #
 # Needs gh (GH_TOKEN, GH_REPO), curl, jq, and SONAR_PROJECT (e.g. owner_repo).
+# The guard, round count and hand-off are shared with conflict-bounce.sh (bounce-lib.sh).
 set -euo pipefail
+
+source "$(dirname "${BASH_SOURCE[0]}")/bounce-lib.sh"
 
 issue=$1
 pr=$2
@@ -19,13 +22,12 @@ max_rounds=${MAX_ROUNDS:-2}
 marker='### Pipeline: SonarCloud failed'
 api='https://sonarcloud.io/api'
 
-labels=$(gh issue view "$issue" --json labels --jq '.labels[].name')
-if ! printf '%s\n' "$labels" | grep -qx status:needs-human; then
-	echo "Issue #$issue is not status:needs-human; the pipeline is still working on it."
+issue_json=$(gh issue view "$issue" --json labels,comments)
+if ! bounce_is_waiting "$issue" "$issue_json"; then
 	exit 0
 fi
 
-rounds=$(gh issue view "$issue" --json comments --jq "[.comments[] | select(.body | startswith(\"$marker\"))] | length")
+rounds=$(bounce_rounds "$marker" "$issue_json")
 
 sonar() {
 	curl --proto '=https' --tlsv1.2 -fsS "$api/$1" || echo '{}'
@@ -65,10 +67,5 @@ sonar() {
 	fi
 } > sonar-comment.md
 
-gh issue comment "$issue" --body-file sonar-comment.md
-if [[ "$rounds" -ge "$max_rounds" ]]; then
-	gh issue edit "$issue" --remove-label status:needs-human --add-label status:blocked
-else
-	gh issue edit "$issue" --remove-label status:needs-human --add-label status:needs-dev
-	gh workflow run agents.yml --ref "${BRANCH:-main}" -f issue="$issue"
-fi
+bounce_comment "$issue" sonar-comment.md
+bounce_hand_off "$issue" "$rounds" "$max_rounds"
