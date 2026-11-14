@@ -7,6 +7,7 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 ### Features
 
+- You can now save global instructions on the Settings page; they are kept in your browser and added to every AI generation. ([#198](https://github.com/erikhayry/tusch/pull/198))
 - Tusch now switches to a dark theme automatically when your system or browser is set to dark mode. ([#170](https://github.com/erikhayry/tusch/pull/170))
 - After generating a new panel image, you can restore the previous one with "Restore previous image". ([#167](https://github.com/erikhayry/tusch/pull/167))
 - Deleting a panel now also removes the character images taken from it, so they no longer take up storage. ([#158](https://github.com/erikhayry/tusch/pull/158))
