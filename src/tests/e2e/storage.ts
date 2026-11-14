@@ -25,7 +25,8 @@ export function storedFileBase64(page: Page, name: string): Promise<string> {
 		});
 		return dataUrl.slice(dataUrl.indexOf(',') + 1);
 	}, name);
-  
+}
+
 /** Size in bytes of every file in OPFS (generated covers, panel images, crops). */
 export function storedFileSizes(page: Page): Promise<number[]> {
 	return page.evaluate(async () => {

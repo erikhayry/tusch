@@ -23,7 +23,7 @@
 	"done": "Klart",
 	"referenceNone": "Ingen",
 	"characterReference": "Referensbild för {character}",
-	"characterReferenceThumbnail": "Huvud på {character}"
+	"characterReferenceThumbnail": "Huvud på {character}",
 	"globalInstructions": "Globala instruktioner",
 	"saveGlobalInstructions": "Spara globala instruktioner",
 	"globalInstructionsTooLong": "Globala instruktioner får vara högst 1000 tecken",
