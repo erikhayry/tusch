@@ -7,3 +7,4 @@ date,kind,issue,pr,asked,accepted,changed,review_comments,changes_requested,tria
 2026-11-14,pr,100,212,,,,1,0,0,false,https://github.com/erikhayry/tusch/actions/runs/43608311526
 2026-11-14,pr,190,216,,,,0,0,0,true,https://github.com/erikhayry/tusch/actions/runs/43615120038
 2026-11-14,pr,162,215,,,,1,0,1,false,https://github.com/erikhayry/tusch/actions/runs/43615213308
+2026-11-14,plan,185,,4,4,0,,,,,https://github.com/erikhayry/tusch/actions/runs/43620748494
