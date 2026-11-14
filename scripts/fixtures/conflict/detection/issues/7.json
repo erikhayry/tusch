@@ -1,0 +1,4 @@
+{
+	"labels": [{ "name": "status:needs-human" }, { "name": "type:chore" }],
+	"comments": [{ "body": "### Developer: done\n\nNext: `status:needs-human`" }]
+}
