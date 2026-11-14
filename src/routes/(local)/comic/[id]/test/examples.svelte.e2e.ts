@@ -50,7 +50,13 @@ test(
 
 			for (const panel of panels) {
 				const entry = entries.filter({ hasText: panel.editorialTitle });
-				await activate(page, entry.getByRole('button', { name: 'create' }));
+				const number = EXAMPLE_COMPLETE.panels.indexOf(panel) + 1;
+				await activate(
+					page,
+					entry.getByRole('button', {
+						name: m.characterPreviewCrop({ name: character.name, number }),
+					}),
+				);
 				await expect(entry.locator('img[src^="blob:"]')).toBeVisible();
 			}
 		}

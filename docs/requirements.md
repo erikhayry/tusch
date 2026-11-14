@@ -111,8 +111,15 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-014 Characters show the panels they appear in
 
 - Status: active
-- Statement: the comic page lists characters with the panels they appear in, and can preview a crop of that character from a panel image.
+- Statement: the comic page lists characters with the panels they appear in. For a panel whose image has a position for the character but no stored crop of the character yet, it can preview a crop of that character from the panel image.
 - Why: character consistency across panels.
+- Proven by: tagged tests
+
+### REQ-101-1 The comic page shows each character's stored images
+
+- Status: active
+- Statement: on the comic page, each character's section shows the head crop of each stored character image, one per panel that still exists, in panel order (the most recent one if a panel image was generated more than once). Each crop's alt text names the character and the panel ("<name> in panel <n>: <editorial title>"). Activating a head crop shows that image's full-body crop. A character with no stored images shows "No images yet".
+- Why: to check that a character looks the same across panels, all of a character's images must be visible in one place.
 - Proven by: tagged tests
 
 ### REQ-047 Deleting a panel removes its character images

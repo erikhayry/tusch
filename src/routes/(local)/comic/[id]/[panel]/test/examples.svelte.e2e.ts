@@ -56,9 +56,17 @@ test(
 			.locator('xpath=following-sibling::ul[1]')
 			.getByRole('listitem')
 			.filter({ hasText: panel.editorialTitle });
-		await expect(entry).toContainText('Is generated: true');
-		await activate(page, entry.getByRole('button', { name: 'create' }));
-		await expect(entry.locator('img[src^="blob:"]')).toBeVisible();
+		// The stored crop is shown in the character's gallery, so no preview is offered.
+		await expect(
+			entry.getByRole('button', {
+				name: m.characterPreviewCrop({ name: character.name, number: 1 }),
+			}),
+		).toBeHidden();
+		await expect(
+			page.getByLabel(
+				m.characterHeadAlt({ name: character.name, number: 1, title: panel.editorialTitle }),
+			),
+		).toBeVisible();
 	},
 );
 
