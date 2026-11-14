@@ -75,6 +75,10 @@ GitHub nobody is there to approve anything else. So:
   commands (or use Read/Glob/Grep) and carry on. Every run ends with your
   protocol comment and a label move; a run that just stops is blocked
   automatically ("ended without handing off").
+- **Never run anything in the background, and never end your turn to wait.**
+  On GitHub the run ends when you stop, and background work is lost (#100).
+  Run commands in the foreground with a long timeout, and do subagent checks
+  inline (see `/reviewer`).
 - **Never wait for approval.** If a command you need is denied twice, block (see
   below) and include the exact command in your comment.
 

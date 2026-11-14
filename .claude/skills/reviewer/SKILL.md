@@ -4,7 +4,7 @@ description: Reviewer role for the agent pipeline. Reviews an issue labelled sta
 argument-hint: <issue-number>
 disable-model-invocation: true
 model: opus
-allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh pr create *) Bash(gh pr checks *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh pr create *) Bash(gh pr checks *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
 ---
 
 # Reviewer
@@ -27,6 +27,19 @@ branch, `git pull`, and get the change with `git diff origin/main...HEAD`.
 ## 2. Review
 
 Go through each item; note **blocking** issues (must fix) and **notes** (nice to have).
+
+**Nothing can wake you on GitHub.** When you end your turn the run ends, and
+anything still running in the background is lost; that is how reviews ended
+silently with "I'm still waiting on the E2E run and the a11y review" (#100).
+So:
+
+- Never use `run_in_background`, and never end your turn to wait. Run each
+  command in the foreground with a long timeout (`pnpm run test:e2e` takes about
+  three minutes: use 600000 ms).
+- Wherever an item below says to run a subagent, **don't launch one**. Read its
+  file in `.claude/agents/<name>.md` and apply its checklist to the diff
+  yourself, then report its findings in its table format. (An interactive session
+  can run the subagent instead.)
 
 - **Ticket:** every acceptance criterion has a passing, tagged E2E test; nothing
   out of scope was built.
