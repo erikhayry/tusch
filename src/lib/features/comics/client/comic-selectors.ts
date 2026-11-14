@@ -107,6 +107,23 @@ export function getCharacterImageForPanel(
 	)?.head;
 }
 
+/** One stored image per existing panel (the most recent), in panel order. */
+export function getCharacterGalleryImages(
+	comics: readonly Comic[],
+	comicId: string,
+	characterId: string,
+): { id: string; panel: Panel; number: number; head: ImageAsset; full: ImageAsset }[] {
+	const comic = getComic(comics, comicId);
+	const character = getCharacter(comics, comicId, characterId);
+	if (!comic || !character) return [];
+	return comic.panels.flatMap((panel, index) => {
+		const image = character.images.findLast(({ panelId }) => panelId === panel.id);
+		return image
+			? [{ id: image.id, panel, number: index + 1, head: image.head, full: image.full }]
+			: [];
+	});
+}
+
 export function getPanelsWithCharachter(
 	comics: readonly Comic[],
 	comicId: string,

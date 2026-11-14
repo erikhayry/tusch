@@ -10,9 +10,11 @@
 		"prepare": "svelte-kit sync || echo ''; simple-git-hooks || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --check . && eslint . && pnpm run lint:deps",
+		"lint": "prettier --check . && eslint . && pnpm run lint:css && pnpm run lint:deps",
+		"lint:css": "stylelint \"src/**/*.{css,svelte}\"",
 		"lint:deps": "depcruise src",
 		"check:requirements": "node scripts/check-requirements.mjs",
+		"check:agent-fixtures": "SKILL=develop TARGET=84 CONCLUSION=success RUN_URL=https://github.com/erikhayry/tusch/actions/runs/1001 node scripts/costs.mjs digest scripts/fixtures/execution-sample.json | diff -u scripts/fixtures/digest-sample.json - && node scripts/costs.mjs actions scripts/fixtures/digests | diff -u scripts/fixtures/actions-expected.md -",
 		"knip": "knip",
 		"format": "prettier --write .",
 		"test": "pnpm run test:e2e",
@@ -39,9 +41,11 @@
 		"knip": "^6.44.1",
 		"lint-staged": "^17.6.0",
 		"plop": "^4.0.5",
+		"postcss-html": "^2.0.0",
 		"prettier": "^3.9.10",
 		"prettier-plugin-svelte": "^4.1.1",
 		"simple-git-hooks": "^2.14.0",
+		"stylelint": "^18.0.0",
 		"svelte": "^5.57.3",
 		"svelte-check": "^4.7.8",
 		"typescript": "^6.0.3",
@@ -58,10 +62,19 @@
 		"pre-push": "pnpm run check && pnpm run lint && pnpm run --if-present check:requirements"
 	},
 	"lint-staged": {
-		"*.{js,mjs,ts,svelte}": [
+		"*.{js,mjs,ts}": [
 			"prettier --write --ignore-unknown",
 			"eslint --fix --no-warn-ignored"
 		],
-		"*.{json,md,yml,yaml,css,html}": "prettier --write --ignore-unknown"
+		"*.svelte": [
+			"prettier --write --ignore-unknown",
+			"eslint --fix --no-warn-ignored",
+			"stylelint --fix --allow-empty-input"
+		],
+		"*.css": [
+			"prettier --write --ignore-unknown",
+			"stylelint --fix --allow-empty-input"
+		],
+		"*.{json,md,yml,yaml,html}": "prettier --write --ignore-unknown"
 	}
 }

@@ -24,6 +24,10 @@ trailing commas, width 100) and ESLint. Run `pnpm run lint`; fix with
 - Behaviour contracts (`AiGateway`, `AssetStore`) are TypeScript interfaces;
   the data they pass is still Zod.
 
+`pnpm run lint` also runs stylelint for the mechanical CSS rules (raw values,
+`max-width` queries, outlines outside `:focus-visible`); see `styling.md`,
+"Stylelint".
+
 ## Svelte MCP
 
 The Svelte plugin (`svelte@svelte`) is enabled in `.claude/settings.json`, and
@@ -73,6 +77,14 @@ Keep duplication as low as possible, in app and test code alike (SonarCloud
 gates new duplicated lines at 3%). Share a helper instead of copying one, and
 parametrise tests that differ in one step. Never fix duplication with
 `sonar.cpd.exclusions`; it is only for fixture data (`src/examples/**`).
+
+## User-visible text
+
+- Every user-visible string (labels, alt text, `aria-label`, buttons, empty
+  states) is a message in both `messages/en.json` and `messages/sv-se.json`,
+  used as `m.key()`. No hard-coded text in components.
+- This includes strings already in a component you touch but didn't write:
+  translate them in the same PR.
 
 ## Comments
 

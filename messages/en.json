@@ -52,6 +52,10 @@
 	"panelTitle": "Panel: {number} of {total}",
 	"panels": "Panels",
 	"characterPanels": "Panels with charachter",
+	"characterNoImages": "No images yet",
+	"characterPreviewCrop": "Preview {name} in panel {number}",
+	"characterHeadAlt": "{name} in panel {number}: {title}",
+	"characterFullAlt": "{name}, full body, in panel {number}: {title}",
 	"removeImage": "Remove Image",
 	"restorePreviousImage": "Restore previous image",
 	"saveCaption": "Save Caption {number}",
@@ -75,4 +79,12 @@
 	"referenceNone": "None",
 	"characterReference": "Reference image for {character}",
 	"characterReferenceThumbnail": "Head of {character}"
+	"globalInstructions": "Global instructions",
+	"saveGlobalInstructions": "Save global instructions",
+	"globalInstructionsTooLong": "Global instructions can be at most 1000 characters",
+	"globalInstructionsSaved": "Global instructions saved",
+	"globalInstructionsHint": "Up to 1000 characters. Added to every AI prompt.",
+	"urlToSource": "URL to source",
+	"createComicSourceHint": "Enter a URL, a story, or both. A story is 20–10,000 characters.",
+	"yourStory": "Your story"
 }

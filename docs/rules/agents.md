@@ -1,7 +1,7 @@
 # Agent protocol
 
 Shared rules for the role skills in `.claude/skills/` (`/plan`, `/test`,
-`/develop`, `/review`, `/triage`, `/tech-lead`). The pipeline itself is
+`/develop`, `/reviewer`, `/triage`, `/tech-lead`, `/automate`). The pipeline itself is
 described in `docs/agent-workflow-plan.md`. These rules apply both locally
 and on GitHub.
 
@@ -14,14 +14,15 @@ and on GitHub.
 - Never skip a state. Never set `status:needs-human` yourself unless you are the
   reviewer and the PR exists.
 
-| Skill        | Entry label                  | Exit label(s)                                                           |
-| ------------ | ---------------------------- | ----------------------------------------------------------------------- |
-| `/plan`      | none or `status:idea`        | `status:needs-tests` (or stays `status:idea` while waiting for answers) |
-| `/test`      | `status:needs-tests`         | `status:needs-dev`                                                      |
-| `/develop`   | `status:needs-dev`           | `status:needs-review`                                                   |
-| `/review`    | `status:needs-review`        | `status:needs-human`, or back to `needs-dev` / `needs-tests`            |
-| `/triage`    | `status:needs-human`         | `status:needs-dev`, `status:needs-tests`, or unchanged                  |
-| `/tech-lead` | any (it doesn't move issues) | none                                                                    |
+| Skill        | Entry label                    | Exit label(s)                                                           |
+| ------------ | ------------------------------ | ----------------------------------------------------------------------- |
+| `/plan`      | none or `status:idea`          | `status:needs-tests` (or stays `status:idea` while waiting for answers) |
+| `/test`      | `status:needs-tests`           | `status:needs-dev`                                                      |
+| `/develop`   | `status:needs-dev`             | `status:needs-review`                                                   |
+| `/reviewer`  | `status:needs-review`          | `status:needs-human`, or back to `needs-dev` / `needs-tests`            |
+| `/triage`    | `status:needs-human`           | `status:needs-dev`, `status:needs-tests`, or unchanged                  |
+| `/tech-lead` | any (it doesn't move issues)   | none                                                                    |
+| `/automate`  | none (weekly, after the audit) | none; files `type:chore` issues, never moves labels                     |
 
 ## Branches
 
@@ -47,6 +48,22 @@ Next: `status:<next>`
 
 Keep it short. Link files and commits rather than pasting code.
 
+**Trust marker (planner only).** When `/plan` writes the ticket after the human
+answered its questions, its comment carries one hidden line
+`<!-- trust:plan asked=<n> accepted=<n> changed=<n> -->`. The planner counts each
+answered question, not each comment: an answer that matches the suggestion is
+accepted, anything else is changed, and "all suggestions" accepts every one
+(`accepted + changed = asked`). A run that only asks questions, or skips asking,
+adds no marker. `scripts/trust.mjs` reads the latest marker (#181).
+
+## Skill names
+
+A skill's name must not match a built-in Claude Code command or alias. The
+built-in wins: `/review` became an alias of Claude Code's `/code-review`, so our
+reviewer, then called `/review`, silently ran the built-in code review instead
+(three silent stops on #98). The reviewer is now `/reviewer`. Check the
+`commands` list in a run's init message when adding a skill.
+
 ## Running commands
 
 Skills pre-approve narrow command patterns (e.g. `Bash(gh pr create *)`), and on
@@ -66,6 +83,10 @@ GitHub nobody is there to approve anything else. So:
   commands (or use Read/Glob/Grep) and carry on. Every run ends with your
   protocol comment and a label move; a run that just stops is blocked
   automatically ("ended without handing off").
+- **Never run anything in the background, and never end your turn to wait.**
+  On GitHub the run ends when you stop, and background work is lost (#100).
+  Run commands in the foreground with a long timeout, and do subagent checks
+  inline (see `/reviewer`).
 - **Never wait for approval.** If a command you need is denied twice, block (see
   below) and include the exact command in your comment.
 
@@ -74,13 +95,14 @@ GitHub nobody is there to approve anything else. So:
 Use the cheapest model that does the job well; tokens are the pipeline's main
 cost (`costs.csv`, the "Cost so far" comment on each issue).
 
-| Role                                   | Model    | Why                                                     |
-| -------------------------------------- | -------- | ------------------------------------------------------- |
-| `/plan`, `/review`, `/tech-lead audit` | `opus`   | Judgement: scoping, catching what others missed         |
-| `/test`, `/develop`                    | `sonnet` | Implementation against a clear ticket and failing tests |
-| `/triage`, `/tech-lead reconcile`      | `sonnet` | Routine classification and bookkeeping                  |
-| `a11y-reviewer`, `css-reviewer`        | inherit  | Run inside `/review`, so they use its model             |
-| `pipeline-expert`                      | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
+| Role                                           | Model    | Why                                                     |
+| ---------------------------------------------- | -------- | ------------------------------------------------------- |
+| `/plan`, `/reviewer`, `/tech-lead audit`       | `opus`   | Judgement: scoping, catching what others missed         |
+| `/test`, `/develop`                            | `sonnet` | Implementation against a clear ticket and failing tests |
+| `/triage`, `/tech-lead reconcile`              | `sonnet` | Routine classification and bookkeeping                  |
+| `/automate`                                    | `sonnet` | Works from a pre-aggregated digest; 40 turns at most    |
+| `a11y-reviewer`, `css-reviewer`, `ux-reviewer` | inherit  | Run inside `/reviewer`, so they use its model           |
+| `pipeline-expert`                              | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
 
 The model is set twice and must match: `model:` in each skill's frontmatter
 (local runs) and the `model` case in `agents.yml` (GitHub). One exception: a skill has

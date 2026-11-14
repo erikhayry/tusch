@@ -1,4 +1,9 @@
 import { readCheckbox, readJsonField, readString, readStringList } from '$lib/forms/form-data';
+import {
+	GLOBAL_INSTRUCTIONS_VALUE_KEY,
+	GlobalInstructionsSchema,
+	decodeGlobalInstructions,
+} from '$lib/features/settings/contracts/globalInstructions';
 import type { Character } from '$lib/types';
 import { ComicStyleEnum, PanelSchema, ResponsivePanelImageSchema, type Panel } from '$lib/types';
 import { OpenAiOutputSchema } from '$lib/utils/ai/aiTypes';
@@ -41,11 +46,12 @@ export const CreatePanelImageValuesSchema = z.object({
 	style: ComicStyleEnum,
 	characters: z.array(CharacterPromptSchema),
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
+	[GLOBAL_INSTRUCTIONS_VALUE_KEY]: GlobalInstructionsSchema,
 	[IMAGE_VALUE_KEY]: z.string().optional(),
 	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
 	[REFERENCE_IMAGES_KEY]: z.array(z.string().startsWith('data:image/')).max(MAX_REFERENCE_IMAGES),
 });
-export type CreatePanelImageValues = z.infer<typeof CreatePanelImageValuesSchema>;
+export type CreatePanelImageValues = z.output<typeof CreatePanelImageValuesSchema>;
 
 export function toCreatePanelImageValues(
 	comicId: string,
@@ -76,6 +82,7 @@ export function decodeCreatePanelImageValues(formData: FormData) {
 		style: readString(formData, 'style'),
 		characters: readJsonField(formData, 'characters'),
 		[INSTRUCTIONS_VALUE_KEY]: readString(formData, INSTRUCTIONS_VALUE_KEY),
+		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: decodeGlobalInstructions(formData),
 		[IMAGE_VALUE_KEY]: readString(formData, IMAGE_VALUE_KEY),
 		[INCLUDE_IMAGE_VALUE_KEY]: readCheckbox(formData, INCLUDE_IMAGE_VALUE_KEY),
 		[REFERENCE_IMAGES_KEY]: readStringList(formData, REFERENCE_IMAGES_KEY),

@@ -51,6 +51,11 @@ export const PANEL = {
 	],
 };
 
+/** Standing user instructions; added after the built-in rules, nothing when empty. */
+function buildGlobalInstructions(globalInstructions: string): string[] {
+	return globalInstructions ? [`USER GLOBAL INSTRUCTIONS: ${globalInstructions}`] : [];
+}
+
 function buildStyleInstruction(styleKey: ComicStyle): string[] {
 	const styleDef = STYLES[styleKey];
 	if (!styleDef) {
@@ -68,17 +73,35 @@ function buildStyleInstruction(styleKey: ComicStyle): string[] {
 	];
 }
 
-export function buildInitialMessages(url: string, style: ComicStyle): string[] {
-	return [INIT.WHAT, `Source URL: ${url}`, ...INIT.HOWS, ...buildStyleInstruction(style)];
+export function buildInitialMessages(
+	{ url, story }: { url?: string; story?: string },
+	style: ComicStyle,
+	globalInstructions = '',
+): string[] {
+	return [
+		INIT.WHAT,
+		...(url ? [`Source URL: ${url}`] : []),
+		...(story ? [`USER STORY: ${story}`] : []),
+		...INIT.HOWS,
+		...buildStyleInstruction(style),
+		...buildGlobalInstructions(globalInstructions),
+	];
 }
 
-export function buildCoverImageMessages({ comic }: { comic: CoverPrompt }): string[] {
+export function buildCoverImageMessages({
+	comic,
+	globalInstructions = '',
+}: {
+	comic: CoverPrompt;
+	globalInstructions?: string;
+}): string[] {
 	return [
 		COVER_IMAGE.WHAT,
 		...COVER_IMAGE.HOWS,
 		...buildStyleInstruction(comic.style),
 		`CHARACTERS: ${JSON.stringify(comic.characters)}`,
 		`PANELS: ${JSON.stringify(comic.panels)}`,
+		...buildGlobalInstructions(globalInstructions),
 	];
 }
 
@@ -87,6 +110,7 @@ export function buildPanelImageMessages({
 	instructions,
 	characters,
 	style,
+	globalInstructions = '',
 }: {
 	panel: Pick<
 		Panel,
@@ -95,6 +119,7 @@ export function buildPanelImageMessages({
 	instructions: string;
 	characters: CharacterPrompt[];
 	style: ComicStyle;
+	globalInstructions?: string;
 }): string[] {
 	const meta: string[] = [];
 
@@ -116,16 +141,22 @@ export function buildPanelImageMessages({
 		...meta,
 		...IMAGE.HOWS,
 		...buildStyleInstruction(style),
+		...buildGlobalInstructions(globalInstructions),
 		`USER INSTRUCTION: ${instructions}`,
 	];
 }
 
-export function buildPanelMessages(index: number, panels: PanelPrompt[]): string[] {
+export function buildPanelMessages(
+	index: number,
+	panels: PanelPrompt[],
+	globalInstructions = '',
+): string[] {
 	return [
 		PANEL.WHAT,
 		`Target insertion index: ${index}`,
 		`Existing Panels Context: ${JSON.stringify(panels)}`,
 		...PANEL.HOWS,
+		...buildGlobalInstructions(globalInstructions),
 	];
 }
 

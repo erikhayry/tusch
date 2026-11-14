@@ -25,6 +25,27 @@ export function storedFileBase64(page: Page, name: string): Promise<string> {
 		});
 		return dataUrl.slice(dataUrl.indexOf(',') + 1);
 	}, name);
+  
+/** Size in bytes of every file in OPFS (generated covers, panel images, crops). */
+export function storedFileSizes(page: Page): Promise<number[]> {
+	return page.evaluate(async () => {
+		const root = await navigator.storage.getDirectory();
+		const sizes: number[] = [];
+		const entries = (
+			root as unknown as { entries(): AsyncIterable<[string, FileSystemFileHandle]> }
+		).entries();
+		for await (const [, handle] of entries) {
+			sizes.push((await handle.getFile()).size);
+		}
+		return sizes;
+	});
+}
+
+/** The comics currently stored in localStorage, as raw JSON objects. */
+export function storedComics(page: Page): Promise<Record<string, unknown>[]> {
+	return page.evaluate(
+		() => JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}').comics,
+	);
 }
 
 /** The stored src of a panel's current image, if any. */

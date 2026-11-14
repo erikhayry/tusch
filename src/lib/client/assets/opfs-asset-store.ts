@@ -3,8 +3,10 @@ import { deleteImage, getImageUrl, readImage, saveBlobImage } from '$lib/utils/s
 import type { AssetStore } from './asset-store';
 
 // Example comics ship their images in static/ and reference them by URL path
-// (`/examples/nirvana/1.jpg`). Assets the app creates are OPFS file names,
-// which never start with '/'. Static assets are read over HTTP and never deleted.
+// (`/examples/simple/a1-landscape.png`). Returning visitors may still have the
+// old `/examples/nirvana/*` paths in localStorage, so those files stay in static/.
+// Assets the app creates are OPFS file names, which never start with '/'.
+// Static assets are read over HTTP and never deleted.
 const isStaticAsset = (assetId: string) => assetId.startsWith('/');
 
 async function fetchStatic(assetId: string): Promise<Blob> {

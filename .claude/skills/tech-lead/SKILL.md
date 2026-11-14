@@ -68,15 +68,21 @@ If the ledger, the lessons or the changelog need edits, make them on a branch
      `status:*` for more than 3 days.
    - `docs/costs.csv` and `docs/costs.md`: costs copied from the `bookkeeping`
      branch, with totals per issue, skill and week.
+   - `docs/trust.csv` and `docs/trust.md` (may be missing): planner answers
+     accepted and PRs merged clean, last 10 issues and all time.
+   - `.agent-tmp/audit-actions.md` is for `/automate`, which runs after this
+     audit in the same job; don't analyse it here.
 5. Report in **one** issue titled "Weekly tech-lead audit". Find it with
    `gh issue list --search "Weekly tech-lead audit in:title" --state open`;
    create it (`type:chore`) only if none is open. Add one comment per audit
    with sections: Requirements, Flaky tests, Stuck issues, Costs (the week's
-   totals), and the issues filed. Never open a second audit issue.
+   totals), Trust (copy the figures from `docs/trust.md`; say if there is no
+   data yet), and the issues filed. Never open a second audit issue.
 6. File a `type:chore` issue for each actionable finding, unless an open issue
    already covers it (search first). Don't change code.
 7. Open one PR on a branch `audit-<yyyy-mm-dd>` from `main` with
-   `docs/costs.csv`, `docs/costs.md` and any wording-only ledger fixes. Skip
+   `docs/costs.csv`, `docs/costs.md`, `docs/trust.csv`, `docs/trust.md` and any
+   wording-only ledger fixes. Skip
    it if nothing changed.
 
 ## Rules

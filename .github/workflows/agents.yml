@@ -54,6 +54,7 @@ jobs:
       queued: ${{ steps.route.outputs.queued }}
       turns: ${{ steps.route.outputs.turns }}
       model: ${{ steps.route.outputs.model }}
+      automate_tools: ${{ steps.route.outputs.automate_tools }}
       tools: ${{ steps.route.outputs.tools }}
     steps:
       - uses: actions/checkout@v7
@@ -98,7 +99,7 @@ jobs:
                 status:idea)         skill=plan;    target=$ISSUE ;;
                 status:needs-tests)  skill=test;    target=$ISSUE ;;
                 status:needs-dev)    skill=develop; target=$ISSUE ;;
-                status:needs-review) skill=review;  target=$ISSUE ;;
+                status:needs-review) skill=reviewer;  target=$ISSUE ;;
                 *)                   ;;  # other labels start nothing
               esac ;;
             issue_comment|pull_request_review|pull_request_review_comment)
@@ -125,7 +126,7 @@ jobs:
               elif [ -z "$DISPATCH_ISSUE" ]; then :
               elif issue_has_label "$DISPATCH_ISSUE" status:needs-tests; then skill=test; target=$DISPATCH_ISSUE
               elif issue_has_label "$DISPATCH_ISSUE" status:needs-dev; then skill=develop; target=$DISPATCH_ISSUE
-              elif issue_has_label "$DISPATCH_ISSUE" status:needs-review; then skill=review; target=$DISPATCH_ISSUE
+              elif issue_has_label "$DISPATCH_ISSUE" status:needs-review; then skill=reviewer; target=$DISPATCH_ISSUE
               elif issue_has_label "$DISPATCH_ISSUE" status:idea; then skill=plan; target=$DISPATCH_ISSUE; fi ;;
             *) ;;
           esac
@@ -142,20 +143,24 @@ jobs:
             plan)      turns=60;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue create:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*)' ;;
             test)      turns=120; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
             develop)   turns=150; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh workflow run:*),Bash(gh run:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
-            review)    turns=100; tools='Read,Grep,Glob,Write,Agent,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
+            reviewer)    turns=100; tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh pr create:*),Bash(gh pr checks:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
             triage)    turns=50;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)' ;;
             tech-lead) turns=50;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh api:*),Bash(git:*),Bash(pnpm run check:requirements),Bash(pnpm exec playwright test --list:*)' ;;
             *)         turns=0;   tools='' ;;
           esac
 
-          # Model per role (docs/rules/agents.md, "Models"): the strongest model where
-          # judgement matters most (planning, review, the weekly audit), the cheaper
-          # one for implementation and routine bookkeeping.
+          # Model per role (docs/rules/agents.md, "Models"): opus for planning (and the
+          # weekly audit, below), haiku for implementation, sonnet for everything else.
           case "$skill" in
-            plan|review) model=opus ;;
-            *)           model=sonnet ;;
+            plan)    model=opus ;;
+            develop) model=haiku ;;
+            *)       model=sonnet ;;
           esac
           if [ "$target" = audit ]; then turns=100; model=opus; fi  # reads every requirement
+
+          # /automate runs after the audit in the same job (#84). Keep this list equal to
+          # `allowed-tools` in .claude/skills/automate/SKILL.md.
+          automate_tools='Read,Grep,Glob,Write,Bash(gh issue list:*),Bash(gh issue view:*),Bash(gh issue create:*),Bash(gh issue comment:*)'
 
           echo "Route: event=$EVENT action=$ACTION label=$LABEL → skill='${skill:-none}' target='$target'"
           {
@@ -166,6 +171,7 @@ jobs:
             echo "turns=$turns"
             echo "model=$model"
             echo "tools=$tools"
+            echo "automate_tools=$automate_tools"
           } >> "$GITHUB_OUTPUT"
 
   agent:
@@ -173,6 +179,7 @@ jobs:
     if: needs.route.outputs.skill != ''
     outputs:
       cost_row: ${{ steps.cost.outputs.row }}
+      cost_row_automate: ${{ steps.cost_automate.outputs.row }}
     # One agent per issue at a time. Only real stage runs join this queue, so
     # comments and other no-op events can't displace a pending stage
     # (GitHub keeps one pending run per group and cancels older ones).
@@ -180,7 +187,7 @@ jobs:
       group: agent-${{ needs.route.outputs.issue || needs.route.outputs.target }}
       cancel-in-progress: false
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60 # audit (up to 100 turns) plus /automate (30 turns), #84
     # Same image as CI so screenshot baselines render identically.
     container: mcr.microsoft.com/playwright:v1.63.0-noble
     permissions:
@@ -280,6 +287,61 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: echo "row=$(node "$RUNNER_TEMP/costs.mjs" row "$EXECUTION_FILE")" >> "$GITHUB_OUTPUT"
 
+      - name: Digest of the run
+        if: always() && steps.claude.outcome != 'skipped'
+        continue-on-error: true # never fail the job
+        env:
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+          SKILL: ${{ needs.route.outputs.skill }}
+          TARGET: ${{ needs.route.outputs.target }}
+          CONCLUSION: ${{ steps.claude.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/agent-digest"
+          node "$RUNNER_TEMP/costs.mjs" digest "$EXECUTION_FILE" > "$RUNNER_TEMP/agent-digest/${SKILL}.json"
+
+      # The weekly automater (#84): finds repeated actions in last week's digests and files issues.
+      - name: Run /automate
+        id: automate
+        if: ${{ !cancelled() && needs.route.outputs.target == 'audit' && steps.claude.outcome != 'skipped' }}
+        continue-on-error: true # the audit's own result decides the job
+        uses: anthropics/claude-code-action@8a29bc6f0ae11a363721054b6739feba6adabe57 # v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          allowed_bots: 'claude[bot],github-actions[bot]'
+          additional_permissions: |
+            actions: read
+          prompt: /automate
+          claude_args: |
+            --model sonnet
+            --max-turns 40
+            --allowedTools "${{ needs.route.outputs.automate_tools }}"
+
+      - name: Record cost (automate)
+        id: cost_automate
+        if: always() && steps.automate.outcome != 'skipped' && steps.automate.outcome != ''
+        continue-on-error: true
+        env:
+          EXECUTION_FILE: ${{ steps.automate.outputs.execution_file }}
+          ISSUE: ''
+          SKILL: automate
+          TARGET: audit
+          CONCLUSION: ${{ steps.automate.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          echo "row=$(node "$RUNNER_TEMP/costs.mjs" row "$EXECUTION_FILE")" >> "$GITHUB_OUTPUT"
+          node "$RUNNER_TEMP/costs.mjs" digest "$EXECUTION_FILE" > "$RUNNER_TEMP/agent-digest/automate.json" || true
+
+      - name: Upload digests
+        if: always() && steps.claude.outcome != 'skipped'
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: agent-digest
+          path: ${{ runner.temp }}/agent-digest
+          retention-days: 14
+          if-no-files-found: ignore
+
       # Every role ends with an issue comment (docs/rules/agents.md). A run that
       # "succeeds" without one handed nothing off (#61, #84, #86, #98). The first time,
       # run the same stage again; a second silent stop blocks the issue, listing
@@ -303,9 +365,14 @@ jobs:
             > "$RUNNER_TEMP/comments.tsv"
           posted=$(awk -F'\t' -v since="$AGENT_STARTED" '$1 == "claude[bot]" && $2 >= since' "$RUNNER_TEMP/comments.tsv" | wc -l)
           if [[ "$posted" -gt 0 ]]; then echo "Hand-off comment found"; exit 0; fi
-          # Silent stops of this stage since the last agent hand-off of any stage.
-          earlier=$(awk -F'\t' '$1 == "claude[bot]" { n = 0 } $1 == "github-actions[bot]" && $3 == 1 { n++ } END { print n + 0 }' "$RUNNER_TEMP/comments.tsv")
+          # Silent stops of this stage since the issue last entered it (its status label
+          # was added). A restart by a human, or a new hand-off, starts the count again.
+          stage=$(gh issue view "$ISSUE" --json labels --jq '[.labels[].name | select(startswith("status:"))][0] // ""')
+          entered=$(gh api --paginate "repos/$GH_REPO/issues/$ISSUE/timeline?per_page=100" \
+            --jq '.[] | select(.event == "labeled" and .label.name == "'"$stage"'") | .created_at' | tail -n1)
+          earlier=$(awk -F'\t' -v since="${entered:-0}" '$1 == "github-actions[bot]" && $3 == 1 && $2 >= since' "$RUNNER_TEMP/comments.tsv" | wc -l)
           denied=$(node "$RUNNER_TEMP/costs.mjs" denials "$EXECUTION_FILE")
+          last=$(node "$RUNNER_TEMP/costs.mjs" final "$EXECUTION_FILE")
           {
             printf '%s\n\n' "$marker"
             printf 'The run finished without an issue comment or label change: %s\n\n' "$RUN_URL"
@@ -313,6 +380,9 @@ jobs:
               printf 'Tool calls the run was not allowed to make:\n\n%s\n\n' "$denied"
             else
               printf 'No tool calls were denied; see the run summary for Claude'"'"'s report.\n\n'
+            fi
+            if [[ -n "$last" ]]; then
+              printf 'What the agent said last:\n\n%s\n\n' "$(printf '%s\n' "$last" | sed -e 's/@claude/claude/g' -e 's/^/> /')"
             fi
             if [[ "$earlier" -eq 0 ]]; then
               printf 'Retrying `/%s` once.\n' "$SKILL"
@@ -356,9 +426,11 @@ jobs:
       - name: Append to costs.csv
         env:
           ROW: ${{ needs.agent.outputs.cost_row }}
+          ROW_AUTOMATE: ${{ needs.agent.outputs.cost_row_automate }}
         run: |
           set -euo pipefail
           cp main/scripts/costs.mjs costs.mjs  # the bookkeeping branch has no scripts
+          cp main/scripts/trust.mjs trust.mjs
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           cd main
@@ -373,8 +445,41 @@ jobs:
           # Runs are serialised by the concurrency group; retry only for a manual push.
           for attempt in 1 2 3; do
             printf '%s\n' "$ROW" >> costs.csv
+            if [[ -n "$ROW_AUTOMATE" ]]; then printf '%s\n' "$ROW_AUTOMATE" >> costs.csv; fi
             git add costs.csv
             git commit -qm "Bookkeeping: $(printf '%s' "$ROW" | cut -d, -f2-4)"
+            if git push -q origin HEAD:bookkeeping; then exit 0; fi
+            echo "Push attempt $attempt failed; retrying on top of the remote branch"
+            git fetch -q origin bookkeeping
+            git reset -q --hard FETCH_HEAD
+          done
+          exit 1
+
+      - name: Append to trust.csv
+        continue-on-error: true # measuring trust must never fail or block a stage
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SKILL: ${{ needs.route.outputs.skill }}
+          TARGET: ${{ needs.route.outputs.target }}
+          ISSUE: ${{ needs.route.outputs.issue }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          ROW=''
+          if [[ "$SKILL" == plan && -n "$ISSUE" ]]; then
+            ROW=$(node trust.mjs plan "$ISSUE")
+          elif [[ "$TARGET" == "reconcile "* ]]; then
+            ROW=$(node trust.mjs pr "${TARGET#reconcile }")
+          fi
+          if [[ -z "$ROW" ]]; then exit 0; fi
+          cd main  # the previous step left the bookkeeping branch checked out
+          git fetch -q origin bookkeeping
+          git reset -q --hard FETCH_HEAD
+          for attempt in 1 2 3; do
+            if [[ ! -f trust.csv ]]; then node ../trust.mjs header > trust.csv; fi
+            printf '%s\n' "$ROW" >> trust.csv
+            git add trust.csv
+            git commit -qm "Trust: $(printf '%s' "$ROW" | cut -d, -f2-4)"
             if git push -q origin HEAD:bookkeeping; then exit 0; fi
             echo "Push attempt $attempt failed; retrying on top of the remote branch"
             git fetch -q origin bookkeeping

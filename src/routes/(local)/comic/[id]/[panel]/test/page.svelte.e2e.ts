@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
-import { EXAMPLES } from '../../../../../../examples/examples';
+import { EXAMPLE_COMPLETE } from '../../../../../../tests/e2e/examples';
 import { PanelPage } from './utils/panelPage';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import { activate, typeInto } from '../../../../../../tests/e2e/keyboard';
@@ -46,7 +46,7 @@ test('remove caption', { tag: '@REQ-019' }, async ({ page }) => {
 
 	await panelPage.removeCaption();
 
-	await expect(page.getByText(EXAMPLES[0].panels[1].captions[0])).toBeHidden();
+	await expect(page.getByText(EXAMPLE_COMPLETE.panels[1].captions[0])).toBeHidden();
 });
 
 test('edit dialogue', { tag: '@REQ-020' }, async ({ page }) => {
@@ -62,7 +62,7 @@ test('remove dialogue', { tag: '@REQ-020' }, async ({ page }) => {
 
 	await panelPage.removeDialogue();
 
-	await expect(page.getByText(EXAMPLES[0].panels[1].dialogue[0].text)).toBeHidden();
+	await expect(page.getByText(EXAMPLE_COMPLETE.panels[1].dialogue[0].text)).toBeHidden();
 });
 
 test('add panel before', { tag: '@REQ-021' }, async ({ page }) => {
@@ -87,17 +87,17 @@ test(
 
 		// One head crop per dialogue line whose character appears in the new image.
 		await expect(panelPage.dialogueCharacterImage).toHaveCount(
-			EXAMPLES[0].panels[0].dialogue.length,
+			EXAMPLE_COMPLETE.panels[0].dialogue.length,
 		);
 		await page.reload();
 		await expect(panelPage.dialogueCharacterImage).toHaveCount(
-			EXAMPLES[0].panels[0].dialogue.length,
+			EXAMPLE_COMPLETE.panels[0].dialogue.length,
 		);
 	},
 );
 
 test('add caption', { tag: ['@REQ-019', '@REQ-022'] }, async ({ page }) => {
-	await gotoHydrated(page, `/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
+	await gotoHydrated(page, `/comic/${EXAMPLE_COMPLETE.id}/${EXAMPLE_COMPLETE.panels[0].id}`);
 	const captions = page.getByRole('list', { name: m.captions() }).getByRole('listitem');
 	const before = await captions.count();
 

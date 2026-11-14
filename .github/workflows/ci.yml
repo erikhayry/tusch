@@ -55,6 +55,9 @@ jobs:
       - name: Unused code and dependencies
         run: pnpm run knip
 
+      - name: Agent digest and actions fixtures
+        run: pnpm run check:agent-fixtures
+
       - name: E2E tests
         if: ${{ !inputs.update_screenshots }}
         # Missing baselines are written (not failed) so they can be collected below.

@@ -42,7 +42,12 @@
 			<p>{comic.style}</p>
 
 			<Heading>{m.source()}</Heading>
-			<a target="_blank" rel="external" href={comic.source}>{comic.source}</a>
+			{#if comic.source}
+				<a target="_blank" rel="external" href={comic.source}>{comic.source}</a>
+			{/if}
+			{#if comic.story}
+				<p class="story">{comic.story}</p>
+			{/if}
 
 			<Heading id="panels">{m.panels()}</Heading>
 			<ul aria-labelledby="panels">
@@ -81,3 +86,9 @@
 		</Section>
 	</Section>
 </Section>
+
+<style>
+	.story {
+		white-space: pre-wrap;
+	}
+</style>
