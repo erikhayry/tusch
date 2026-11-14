@@ -450,6 +450,39 @@ jobs:
           done
           exit 1
 
+      - name: Append to trust.csv
+        continue-on-error: true # measuring trust must never fail or block a stage
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SKILL: ${{ needs.route.outputs.skill }}
+          TARGET: ${{ needs.route.outputs.target }}
+          ISSUE: ${{ needs.route.outputs.issue }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          cp main/scripts/trust.mjs trust.mjs
+          ROW=''
+          if [[ "$SKILL" == plan && -n "$ISSUE" ]]; then
+            ROW=$(node trust.mjs plan "$ISSUE")
+          elif [[ "$TARGET" == "reconcile "* ]]; then
+            ROW=$(node trust.mjs pr "${TARGET#reconcile }")
+          fi
+          if [[ -z "$ROW" ]]; then exit 0; fi
+          cd main  # the previous step left the bookkeeping branch checked out
+          git fetch -q origin bookkeeping
+          git reset -q --hard FETCH_HEAD
+          for attempt in 1 2 3; do
+            if [[ ! -f trust.csv ]]; then node ../trust.mjs header > trust.csv; fi
+            printf '%s\n' "$ROW" >> trust.csv
+            git add trust.csv
+            git commit -qm "Trust: $(printf '%s' "$ROW" | cut -d, -f2-4)"
+            if git push -q origin HEAD:bookkeeping; then exit 0; fi
+            echo "Push attempt $attempt failed; retrying on top of the remote branch"
+            git fetch -q origin bookkeeping
+            git reset -q --hard FETCH_HEAD
+          done
+          exit 1
+
       - name: Update the Cost so far comment
         if: needs.route.outputs.issue != ''
         env:
