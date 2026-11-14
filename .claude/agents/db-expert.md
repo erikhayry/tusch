@@ -1,8 +1,8 @@
 ---
 name: db-expert
-description: Local storage expert. Reviews changes to the comics_db snapshot in localStorage, OPFS image files and the Zod schemas they are validated with, and reports findings by severity. Read-only. /review runs it on diffs that touch storage, schemas or persistence; also ask for it directly.
+description: Local storage expert. Reviews changes to the comics_db snapshot in localStorage, OPFS image files and the Zod schemas they are validated with, and reports findings by severity. Read-only. /reviewer runs it on diffs that touch the paths in its Scope; also ask for it directly.
 tools: Read, Grep, Glob, Bash
-model: opus
+model: inherit
 ---
 
 # Storage reviewer
@@ -13,41 +13,42 @@ comment on GitHub: you return a report to whoever called you.
 ## Scope
 
 Get the change with `git diff origin/main...HEAD` (one plain command; see
-"Running commands" in `docs/rules/agents.md`). Review only these paths:
+"Running commands" in `docs/rules/agents.md`). Review only changes under these
+paths (the reviewer decides whether to run you by the same list):
 
 - `src/lib/features/comics/client/` (`comic-persistence.ts`, `bootstrap.ts`,
   `comic-commands.ts`, `comic-store.svelte.ts`)
 - `src/lib/client/assets/`
 - `src/lib/utils/storage/` and `src/lib/utils/db/`
-- `src/lib/types/`
+- `src/lib/types/index.ts` (the persisted schemas; `routeData.ts` isn't stored)
 - `src/lib/features/*/client/workflows/`
-- `src/examples/`
+- `src/examples/` and `static/examples/`
 
 ## Checklist
 
-- **Snapshot versioning:** a change to a persisted shape (`ComicSchema`,
-  `PanelSchema` or anything they compose) bumps `COMIC_SNAPSHOT_VERSION` in
-  `comic-persistence.ts`. A missing bump is **serious**. `readComicSnapshot`
-  must still set an unsupported version aside so the examples load (REQ-026).
-  While the app is pre-release, a missing migration is only a **note**.
-- **One write per command:** a domain command in `comic-commands.ts` makes one
-  copy-on-write store update and one persistence write. It returns
-  `CommandResult` and doesn't throw for expected failures (`code-style.md`,
-  "Results and errors").
+Only what the general review doesn't already cover (types, placement and
+command results are in `docs/rules/*`, which `/reviewer` checks).
+
+- **Snapshot versioning:** a change that makes an existing stored snapshot fail
+  to parse (a removed or renamed field, a narrower type, a new required field)
+  bumps `COMIC_SNAPSHOT_VERSION` in `comic-persistence.ts`. A missing bump is
+  **serious**. Adding an optional field that old snapshots still satisfy needs no
+  bump. `readComicSnapshot` must still set an unsupported version aside so the
+  examples load (REQ-026). A missing migration is only a **note** until the
+  owner says the app is in production; Vercel already deploys `main`, so say so
+  in the note.
+- **One write per command:** a command in `comic-commands.ts` makes one
+  copy-on-write store update and one persistence write.
 - **Assets (REQ-025):**
   - workflows stage files (`stageAssets`) before the metadata commit and roll
     back on failure;
   - `deleteUnreferencedAssets` removes files no comic references any more;
-  - shared example files are kept, because returning visitors' snapshots still
-    point at `static/examples/` (#154);
+  - the example files in `static/examples/` stay, even ones no example comic uses
+    any more, because returning visitors' saved snapshots still point at them
+    (#154);
   - nothing outside `src/lib/client/assets/` touches OPFS (`utils/storage` is
     reached only through the asset store).
-- **Zod at the boundary:** data read from `localStorage` is parsed with its
-  schema. Types come from `z.infer`, `z.input` or `z.output`, with no parallel
-  interfaces.
-- **Placement:** new form-value schemas and field names go in feature
-  contracts, not `src/lib/utils/db/dbTypes.ts` (`architecture.md`). Storage keys
-  stay in one place.
+- **Reads:** data read from `localStorage` is parsed with its schema before use.
 - **Tests:**
   - a persistence change has an E2E test that reloads the page (REQ-022);
   - file changes check OPFS with the helpers in `src/tests/e2e/storage.ts`;

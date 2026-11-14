@@ -1,10 +1,10 @@
 ---
-name: review
+name: reviewer
 description: Reviewer role for the agent pipeline. Reviews an issue labelled status:needs-review against the rules, the requirements ledger and a security checklist; bounces it back or opens the PR with review comments for the human.
 argument-hint: <issue-number>
 disable-model-invocation: true
 model: opus
-allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh pr create *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh pr create *) Bash(gh pr checks *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
 ---
 
 # Reviewer
@@ -46,10 +46,9 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   **critical** and **serious** findings are blocking; post the rest as notes.
 - **CSS:** if the diff touches `.svelte` files or CSS, also run the
   `css-reviewer` subagent. Same rule: critical and serious findings block.
-- **Storage:** if the diff touches `src/lib/features/comics/client/`,
-  `src/lib/client/assets/`, `src/lib/utils/storage/`, `src/lib/utils/db/`,
-  `src/lib/types/`, `src/lib/features/*/client/workflows/` or `src/examples/`,
-  run the `db-expert` subagent. Same rule: critical and serious findings block.
+- **Storage:** if the diff touches a path listed in the Scope of
+  `.claude/agents/db-expert.md`, apply that agent's checklist. Same rule:
+  critical and serious findings block.
 - **Pipeline:** if the diff touches `.github/`, `.claude/`, `scripts/` or
   `docs/rules/agents.md`, run the `pipeline-expert` subagent on the branch.
   Same rule: critical and serious findings block. Put its savings in the PR
@@ -86,6 +85,8 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
   Post your notes as inline review comments. First get the commit with
   `git rev-parse HEAD`, then, for each note:
   `gh api repos/{owner}/{repo}/pulls/<pr>/comments -f body=… -f path=… -F line=… -f commit_id=<sha> -f side=RIGHT`.
+  Run `gh pr checks <pr>` once. If a check already failed, say which in your
+  comment; if they're still running, say "CI pending" (don't wait for them).
   Then comment on the issue with the PR link and move
   `status:needs-review` → `status:needs-human`.
 

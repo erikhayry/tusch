@@ -14,16 +14,6 @@ export interface ComicBootstrapDeps {
 	examples?: readonly Comic[];
 }
 
-export function seedComics(examples: readonly Comic[] = EXAMPLES): Comic[] {
-	const [first] = examples;
-
-	return [
-		first,
-		{ ...first, id: '6dcbdd2b-a490-473f-bb50-fe7c894b8534', title: 'NIRVANA 2' },
-		{ ...first, id: '6dcbdd2b-a490-473f-bb50-fe7c894b8535', title: 'NIRVANA 3' },
-	];
-}
-
 export function initializeComics({ store, storage, examples = EXAMPLES }: ComicBootstrapDeps) {
 	const snapshot = readComicSnapshot(storage.read());
 
@@ -39,7 +29,7 @@ export function initializeComics({ store, storage, examples = EXAMPLES }: ComicB
 		storage.preserveInvalid(snapshot.raw);
 	}
 
-	const seeded = seedComics(examples);
+	const seeded = [...examples];
 	store.replace(seeded);
 
 	try {

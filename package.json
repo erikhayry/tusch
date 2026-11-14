@@ -13,6 +13,7 @@
 		"lint": "prettier --check . && eslint . && pnpm run lint:deps",
 		"lint:deps": "depcruise src",
 		"check:requirements": "node scripts/check-requirements.mjs",
+		"check:agent-fixtures": "SKILL=develop TARGET=84 CONCLUSION=success RUN_URL=https://github.com/erikhayry/tusch/actions/runs/1001 node scripts/costs.mjs digest scripts/fixtures/execution-sample.json | diff -u scripts/fixtures/digest-sample.json - && node scripts/costs.mjs actions scripts/fixtures/digests | diff -u scripts/fixtures/actions-expected.md -",
 		"knip": "knip",
 		"format": "prettier --write .",
 		"test": "pnpm run test:e2e",

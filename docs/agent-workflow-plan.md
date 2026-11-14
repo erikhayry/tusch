@@ -55,7 +55,7 @@ flowchart LR
 | Planner   | `/plan`      | `status:idea` label, or replies on that issue | Asks clarifying questions, then writes the ticket (template §6) with REQ references                      | `status:needs-tests`                       |
 | Tester    | `/test`      | `status:needs-tests`                          | Branch `issue-<n>` from `main` with **failing** E2E tests tagged with REQ ids; comment listing them      | `status:needs-dev`                         |
 | Developer | `/develop`   | `status:needs-dev`                            | Implementation on the same branch; ticket tests + full suite green; screenshot baselines updated         | `status:needs-review`                      |
-| Reviewer  | `/review`    | `status:needs-review`                         | Reviews against rules + ledger; opens the PR with summary, REQ list and inline comments; may bounce back | `status:needs-human`                       |
+| Reviewer  | `/reviewer`  | `status:needs-review`                         | Reviews against rules + ledger; opens the PR with summary, REQ list and inline comments; may bounce back | `status:needs-human`                       |
 | Triage    | `/triage`    | Human review comment / "changes requested"    | Decides whether the comment needs test or code changes and routes it                                     | `status:needs-tests` or `status:needs-dev` |
 | Tech lead | `/tech-lead` | Consulted by planner; PR merged; weekly       | Adds, edits, removes requirements; audits that every REQ has an E2E test                                 | —                                          |
 
@@ -166,7 +166,7 @@ derived from the current code:
 | AW4  | E2E coverage for every REQ                                                            | AW3        |
 | AW5  | Remove unit/component tests and Vitest                                                | AW4        |
 | AW6  | Screenshot baselines for every view                                                   | AW2        |
-| AW7  | Skills: `/plan`, `/test`, `/develop`, `/review`, `/triage`, `/tech-lead`              | AW2, AW3   |
+| AW7  | Skills: `/plan`, `/test`, `/develop`, `/reviewer`, `/triage`, `/tech-lead`            | AW2, AW3   |
 | AW8  | `agents.yml` orchestration                                                            | AW1, AW7   |
 | AW10 | Accessibility: axe scan on every view, fail on serious/critical (#37)                 | AW6        |
 | AW11 | Release notes in every PR, collected in `CHANGELOG.md` (#39)                          | AW7        |
