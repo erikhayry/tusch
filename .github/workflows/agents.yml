@@ -430,6 +430,7 @@ jobs:
         run: |
           set -euo pipefail
           cp main/scripts/costs.mjs costs.mjs  # the bookkeeping branch has no scripts
+          cp main/scripts/trust.mjs trust.mjs
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           cd main
@@ -464,7 +465,6 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
-          cp main/scripts/trust.mjs trust.mjs
           ROW=''
           if [[ "$SKILL" == plan && -n "$ISSUE" ]]; then
             ROW=$(node trust.mjs plan "$ISSUE")
