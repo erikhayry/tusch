@@ -15,6 +15,9 @@
 	"loadingDelete": "Tar bort...",
 	"loadingRestoreImage": "Återställer bild...",
 	"restorePreviousImage": "Återställ föregående bild",
+	"characterNoImages": "Inga bilder än",
+	"characterHeadAlt": "{name} i ruta {number}: {title}",
+	"characterFullAlt": "{name}, hel kropp, i ruta {number}: {title}",
 	"elapsedSeconds": "{seconds} s",
 	"done": "Klart"
 }
