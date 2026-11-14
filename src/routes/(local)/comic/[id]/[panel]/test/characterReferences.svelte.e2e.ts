@@ -37,6 +37,7 @@ test.describe('character references on the panel image form', () => {
 
 			const group = referenceGroup(page, shared.name);
 			await expect(group).toBeVisible();
+			await expect(group).toHaveAccessibleDescription(m.characterReferenceHint());
 			await expect(noneOption(group)).toBeChecked();
 			await expect(group.getByRole('radio')).toHaveCount(2);
 			const option = referenceOption(group, 1);

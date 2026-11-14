@@ -31,6 +31,9 @@
 
 	let { label, values, imageName, characterReferences }: CreatePanelImageFormProps = $props();
 
+	// Every panel renders its own form on the comic page, so the hint id must be per instance.
+	const referenceHintId = $props.id();
+
 	const referenceFieldName = (characterId: string) => `reference-${characterId}`;
 
 	/**
@@ -84,8 +87,12 @@
 		</label>
 	{/if}
 
+	{#if characterReferences.length > 0}
+		<p id={referenceHintId}>{m.characterReferenceHint()}</p>
+	{/if}
+
 	{#each characterReferences as group (group.characterId)}
-		<fieldset>
+		<fieldset aria-describedby={referenceHintId}>
 			<legend>{m.characterReference({ character: group.characterName })}</legend>
 			<label>
 				<input type="radio" name={referenceFieldName(group.characterId)} value="" checked />

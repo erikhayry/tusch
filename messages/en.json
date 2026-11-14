@@ -79,6 +79,7 @@
 	"referenceNone": "None",
 	"characterReference": "Reference image for {character}",
 	"characterReferenceThumbnail": "Head of {character}",
+	"characterReferenceHint": "Pick a look from another panel so the character stays consistent.",
 	"globalInstructions": "Global instructions",
 	"saveGlobalInstructions": "Save global instructions",
 	"globalInstructionsTooLong": "Global instructions can be at most 1000 characters",
