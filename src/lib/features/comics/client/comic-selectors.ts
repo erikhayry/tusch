@@ -102,7 +102,8 @@ export function getCharacterImageForPanel(
 	panelId: string,
 	characterId: string,
 ): ImageAsset | undefined {
-	return getCharacter(comics, comicId, characterId)?.images.find(
+	// Older crops stay after a replace (restore needs them); the newest is the current head.
+	return getCharacter(comics, comicId, characterId)?.images.findLast(
 		(image) => image.panelId === panelId,
 	)?.head;
 }
