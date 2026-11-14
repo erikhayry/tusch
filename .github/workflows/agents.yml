@@ -303,8 +303,12 @@ jobs:
             > "$RUNNER_TEMP/comments.tsv"
           posted=$(awk -F'\t' -v since="$AGENT_STARTED" '$1 == "claude[bot]" && $2 >= since' "$RUNNER_TEMP/comments.tsv" | wc -l)
           if [[ "$posted" -gt 0 ]]; then echo "Hand-off comment found"; exit 0; fi
-          # Silent stops of this stage since the last agent hand-off of any stage.
-          earlier=$(awk -F'\t' '$1 == "claude[bot]" { n = 0 } $1 == "github-actions[bot]" && $3 == 1 { n++ } END { print n + 0 }' "$RUNNER_TEMP/comments.tsv")
+          # Silent stops of this stage since the issue last entered it (its status label
+          # was added). A restart by a human, or a new hand-off, starts the count again.
+          stage=$(gh issue view "$ISSUE" --json labels --jq '[.labels[].name | select(startswith("status:"))][0] // ""')
+          entered=$(gh api --paginate "repos/$GH_REPO/issues/$ISSUE/timeline?per_page=100" \
+            --jq '.[] | select(.event == "labeled" and .label.name == "'"$stage"'") | .created_at' | tail -n1)
+          earlier=$(awk -F'\t' -v since="${entered:-0}" '$1 == "github-actions[bot]" && $3 == 1 && $2 >= since' "$RUNNER_TEMP/comments.tsv" | wc -l)
           denied=$(node "$RUNNER_TEMP/costs.mjs" denials "$EXECUTION_FILE")
           {
             printf '%s\n\n' "$marker"
