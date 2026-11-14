@@ -11,13 +11,16 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { RestorePanelImageFormProps } from './restorePanelImageFormTypes';
 
-	let { comicId, panelId }: RestorePanelImageFormProps = $props();
+	let { comicId, panelId, onSuccess }: RestorePanelImageFormProps = $props();
 
 	const handleSubmit = enhanceClientCommand(
 		m.loadingRestoreImage(),
 		getRestorePanelImageValues,
 		async (values) => expectWorkflow(await restorePanelImage(workflowDeps, values)),
-		({ update }) => update(),
+		async ({ update }) => {
+			await update();
+			onSuccess?.();
+		},
 	);
 </script>
 

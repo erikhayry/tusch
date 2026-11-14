@@ -29,7 +29,13 @@
 		}),
 	);
 
-	let { label, values, imageName, characterReferences }: CreatePanelImageFormProps = $props();
+	let {
+		label,
+		values,
+		imageName,
+		characterReferences,
+		submitButton = $bindable(),
+	}: CreatePanelImageFormProps & { submitButton?: HTMLButtonElement } = $props();
 
 	const referenceFieldName = (characterId: string) => `reference-${characterId}`;
 
@@ -113,5 +119,5 @@
 		<textarea id={INSTRUCTIONS_VALUE_KEY} name={INSTRUCTIONS_VALUE_KEY} rows={5}></textarea>
 	</label>
 
-	<button type="submit">{label}</button>
+	<button type="submit" bind:this={submitButton}>{label}</button>
 </form>

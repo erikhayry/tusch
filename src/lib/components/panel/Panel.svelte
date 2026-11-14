@@ -12,6 +12,7 @@
 	import { toCreatePanelImageValues } from '$lib/features/panels/contracts/createPanelImage';
 	import { m } from '$lib/paraglide/messages';
 	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
+	import { tick } from 'svelte';
 	import AddCaptionForm from '../forms/addCaptionForm/AddCaptionForm.svelte';
 	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
@@ -27,6 +28,18 @@
 	const characterReferences = $derived(
 		getCharacterReferenceGroups(comicStore.comics, comicId, panel.id),
 	);
+
+	let generateImageButton = $state<HTMLButtonElement>();
+	let addImageButton = $state<HTMLButtonElement>();
+
+	/**
+	 * Restore and remove swap out the control that had focus, which drops focus to
+	 * <body>. Wait for the DOM to update, then focus the control that replaces it.
+	 */
+	async function focusAfterUpdate(button: () => HTMLButtonElement | undefined) {
+		await tick();
+		button()?.focus();
+	}
 </script>
 
 <Section data-testId={PanelTestId}>
@@ -37,6 +50,7 @@
 			label={m.addImage()}
 			{characterReferences}
 			values={toCreatePanelImageValues(comicId, panel, characters, style)}
+			bind:submitButton={addImageButton}
 		/>
 	{:else}
 		<Image image={panel.image.landscape} alt={panel.image.alt} />
@@ -45,13 +59,19 @@
 			imageName={panel.image?.landscape.src}
 			{characterReferences}
 			values={toCreatePanelImageValues(comicId, panel, characters, style)}
+			bind:submitButton={generateImageButton}
 		/>
 		<DeleteItemForm
 			label={m.removeImage()}
 			values={{ type: DB_ITEM_TYPE.enum.panelImage, comicId, panelId: panel.id }}
+			onSuccess={() => focusAfterUpdate(() => addImageButton)}
 		/>
 		{#if panel.previousImage}
-			<RestorePanelImageForm {comicId} panelId={panel.id} />
+			<RestorePanelImageForm
+				{comicId}
+				panelId={panel.id}
+				onSuccess={() => focusAfterUpdate(() => generateImageButton)}
+			/>
 		{/if}
 	{/if}
 
