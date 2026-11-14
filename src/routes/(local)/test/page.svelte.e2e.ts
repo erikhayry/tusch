@@ -40,14 +40,9 @@ test('removes comic', { tag: '@REQ-002' }, async ({ page }) => {
 });
 
 test('redirects to create once every comic is deleted', { tag: '@REQ-003' }, async ({ page }) => {
-	await new LandingPage(page).goto();
-	const deleteButtons = page.getByRole('button', { name: /^Delete Comic / });
-	await expect(deleteButtons.first()).toBeVisible();
+	const landingPage = await new LandingPage(page).goto();
 
-	for (let remaining = await deleteButtons.count(); remaining > 0; remaining--) {
-		await activate(page, deleteButtons.first());
-		await expect(deleteButtons).toHaveCount(remaining - 1);
-	}
+	await landingPage.deleteAllComics();
 
 	await expect(page).toHaveURL(/\/comic\/create$/);
 	await expect(page.getByRole('heading', { name: m.createNewComic() })).toBeVisible();

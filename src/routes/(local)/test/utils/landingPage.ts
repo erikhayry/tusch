@@ -1,6 +1,7 @@
 import { m } from '$lib/paraglide/messages';
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
+import { activate } from '../../../../tests/e2e/keyboard';
 
 export class LandingPage {
 	readonly page: Page;
@@ -26,5 +27,16 @@ export class LandingPage {
 		await gotoHydrated(this.page, '/');
 
 		return this;
+	}
+
+	/** Waits for each delete before the next: a press during a pending delete is dropped. */
+	async deleteAllComics() {
+		const deleteButtons = this.page.getByRole('button', { name: /^Delete Comic / });
+		await expect(deleteButtons.first()).toBeVisible();
+
+		for (let remaining = await deleteButtons.count(); remaining > 0; remaining--) {
+			await activate(this.page, deleteButtons.first());
+			await expect(deleteButtons).toHaveCount(remaining - 1);
+		}
 	}
 }

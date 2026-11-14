@@ -2,7 +2,6 @@ import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
 import { exampleTitles } from '../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
-import { activate } from '../../../tests/e2e/keyboard';
 import { LandingPage } from './utils/landingPage';
 
 test(
@@ -25,12 +24,9 @@ test(
 	async ({ page }) => {
 		const titles = exampleTitles();
 		const landingPage = await new LandingPage(page).goto();
-		const deleteButtons = page.getByRole('button', { name: /^Delete Comic / });
-		await expect(deleteButtons).toHaveCount(3);
+		await expect(page.getByRole('button', { name: /^Delete Comic / })).toHaveCount(3);
 
-		for (const title of titles) {
-			await activate(page, landingPage.deleteComicButton(title));
-		}
+		await landingPage.deleteAllComics();
 		await expect(page).toHaveURL(/\/comic\/create$/);
 
 		await gotoHydrated(page, '/');
