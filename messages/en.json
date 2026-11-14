@@ -73,5 +73,6 @@
 	"addCaption": "Add caption",
 	"newCaption": "New caption",
 	"referenceNone": "None",
-	"characterReferenceThumbnail": "{character} in panel {number}"
+	"characterReference": "Reference image for {character}",
+	"characterReferenceThumbnail": "Head of {character}"
 }

@@ -32,6 +32,9 @@ export function toPanelImagePrompt(panel: Panel): PanelImagePrompt {
 /** Field holding one data URL per chosen character reference (its full-body crop). */
 export const REFERENCE_IMAGES_KEY = 'referenceImages' as const;
 
+/** One per character; bounds the request body, which Vercel caps at about 4.5 MB. */
+const MAX_REFERENCE_IMAGES = 10;
+
 export const CreatePanelImageValuesSchema = z.object({
 	panel: PanelImagePromptSchema,
 	comicId: z.string(),
@@ -40,7 +43,7 @@ export const CreatePanelImageValuesSchema = z.object({
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
 	[IMAGE_VALUE_KEY]: z.string().optional(),
 	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
-	[REFERENCE_IMAGES_KEY]: z.array(z.string()),
+	[REFERENCE_IMAGES_KEY]: z.array(z.string().startsWith('data:image/')).max(MAX_REFERENCE_IMAGES),
 });
 export type CreatePanelImageValues = z.infer<typeof CreatePanelImageValuesSchema>;
 

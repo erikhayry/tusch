@@ -14,11 +14,14 @@ import { activate, tabTo } from '../../../../../../../tests/e2e/keyboard';
 import { storedFileBase64 } from '../../../../../../../tests/e2e/storage';
 
 /** Radio that means "no reference"; its label is the "None" message. */
-const NONE = { name: 'None', exact: true } as const;
+const NONE = { name: m.referenceNone(), exact: true } as const;
 
-/** The fieldset for one character's reference choice (its legend is the character's name). */
+/** The fieldset for one character's reference choice (its legend names the purpose and the character). */
 export function referenceGroup(page: Page, characterName: string): Locator {
-	return page.getByRole('group', { name: characterName, exact: true });
+	return page.getByRole('group', {
+		name: m.characterReference({ character: characterName }),
+		exact: true,
+	});
 }
 
 /** The radio that picks the crop taken from panel `number` (1-based). */

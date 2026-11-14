@@ -18,5 +18,6 @@
 	"elapsedSeconds": "{seconds} s",
 	"done": "Klart",
 	"referenceNone": "Ingen",
-	"characterReferenceThumbnail": "{character} i ruta {number}"
+	"characterReference": "Referensbild för {character}",
+	"characterReferenceThumbnail": "Huvud på {character}"
 }

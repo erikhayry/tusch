@@ -86,7 +86,7 @@
 
 	{#each characterReferences as group (group.characterId)}
 		<fieldset>
-			<legend>{group.characterName}</legend>
+			<legend>{m.characterReference({ character: group.characterName })}</legend>
 			<label>
 				<input type="radio" name={referenceFieldName(group.characterId)} value="" checked />
 				<span>{m.referenceNone()}</span>
@@ -101,7 +101,6 @@
 						image={option.head}
 						alt={m.characterReferenceThumbnail({
 							character: group.characterName,
-							number: option.panelNumber,
 						})}
 					/>
 				</label>
