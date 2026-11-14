@@ -55,11 +55,17 @@ export const PanelImageAssetSchema = ImageAssetSchema.extend({
 	characters: z.optional(z.array(CharachterPositionsSchema)),
 });
 
-export const CharacterImageSchema = z.object({
-	id: z.uuid(),
-	panelId: z.uuid(),
+/** The head and full-body crops of one version of a character image. */
+export const CharacterImageCropsSchema = z.object({
 	head: ImageAssetSchema,
 	full: ImageAssetSchema,
+});
+
+export const CharacterImageSchema = CharacterImageCropsSchema.extend({
+	id: z.uuid(),
+	panelId: z.uuid(),
+	/** The version before the latest crop fix; one undo step (REQ-219-2). */
+	previous: z.optional(CharacterImageCropsSchema),
 });
 export type CharacterImage = z.infer<typeof CharacterImageSchema>;
 
