@@ -74,13 +74,14 @@ function buildStyleInstruction(styleKey: ComicStyle): string[] {
 }
 
 export function buildInitialMessages(
-	url: string,
+	{ url, story }: { url?: string; story?: string },
 	style: ComicStyle,
 	globalInstructions = '',
 ): string[] {
 	return [
 		INIT.WHAT,
-		`Source URL: ${url}`,
+		...(url ? [`Source URL: ${url}`] : []),
+		...(story ? [`USER STORY: ${story}`] : []),
 		...INIT.HOWS,
 		...buildStyleInstruction(style),
 		...buildGlobalInstructions(globalInstructions),

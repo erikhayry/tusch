@@ -43,10 +43,10 @@ The ledger of how Tusch must behave. Owned by the tech lead
 
 ## Creating a comic
 
-### REQ-005 A comic can be created from a source URL
+### REQ-005 A comic can be created from a source URL or a story
 
 - Status: active
-- Statement: on `/comic/create`, submitting a valid URL and a style generates a comic (title, characters, panels) and opens its page.
+- Statement: on `/comic/create`, submitting a style and a valid URL, a story, or both generates a comic (title, characters, panels) and opens its page. When both are given, the story is extra context on top of the URL.
 - Why: the core feature.
 - Proven by: tagged tests
 
@@ -60,8 +60,15 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-007 Invalid input is rejected with a visible message
 
 - Status: active
-- Statement: submitting an invalid URL shows an error and creates nothing; the error clears on the next valid submission.
+- Statement: submitting with neither a URL nor a story, an invalid URL, or a story shorter than 20 or longer than 10,000 characters shows an error and creates nothing; the error clears on the next valid submission.
 - Why: users must know why nothing happened.
+- Proven by: tagged tests
+
+### REQ-105-1 A comic keeps and shows the story it was created from
+
+- Status: active
+- Statement: a comic created with a story stores the story locally with the comic (it survives a reload), and the comic page shows it in the source section. The source link is shown only when the comic has a URL.
+- Why: the story is the comic's source when there is no article, and users want to see what a comic was based on.
 - Proven by: tagged tests
 
 ### REQ-008 Creating a comic never discards existing comics

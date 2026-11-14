@@ -30,13 +30,19 @@
 
 <Section data-testId={createComicFormTestId}>
 	<form method="post" action={`?/${CREATE_COMIC_ACTION}`} use:enhance={handleSubmit}>
+		<p id="create-comic-hint">{m.createComicSourceHint()}</p>
 		<label>
-			Url to source
+			{m.urlToSource()}
 			<input
 				type="text"
 				name="url"
+				aria-describedby="create-comic-hint"
 				placeholder="https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna"
 			/>
+		</label>
+		<label>
+			{m.yourStory()}
+			<textarea name="story" rows="6" aria-describedby="create-comic-hint"></textarea>
 		</label>
 		<label>
 			{m.comicStyles()}
