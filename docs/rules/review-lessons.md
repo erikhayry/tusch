@@ -12,4 +12,6 @@ a merge (see `.claude/skills/tech-lead/SKILL.md`).
 
 ## Lessons
 
-_None yet._
+- Run the full `pnpm run lint` (Prettier on `.claude/`, docs and scripts, ESLint,
+  `lint:deps`), not a subset, and check `gh pr checks` before reporting a PR as
+  passing (#193).
