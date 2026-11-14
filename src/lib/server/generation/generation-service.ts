@@ -91,11 +91,12 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 
 		async createComic({
 			url,
+			story,
 			style,
 			globalInstructions,
 		}: CreateComicValues): Promise<CreateComicResult> {
 			const output: OpenAiOutput = await gateway.text({
-				messages: buildInitialMessages(url, style, globalInstructions),
+				messages: buildInitialMessages({ url, story }, style, globalInstructions),
 				schemaName: SchemaName.enum.initComic,
 			});
 
@@ -104,6 +105,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 				return {
 					id: createId(),
 					source: url,
+					story,
 					...initial,
 					panels: initial.panels.map((panel) => ({ ...panel, id: createId() })),
 				};
