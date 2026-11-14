@@ -235,6 +235,46 @@ test(
 );
 
 test(
+	'dialogue heads use the crop from the current image after a replace',
+	{ tag: ['@REQ-162-1', '@REQ-018'] },
+	async ({ page }) => {
+		// Object URLs hide which OPFS file an <img> shows; record the file name behind each one.
+		await page.addInitScript(() => {
+			const names = new Map<string, string>();
+			(window as unknown as { __urlNames: Map<string, string> }).__urlNames = names;
+			const original = URL.createObjectURL.bind(URL);
+			URL.createObjectURL = (obj: Blob | MediaSource) => {
+				const url = original(obj);
+				if (obj instanceof File) names.set(url, obj.name);
+				return url;
+			};
+		});
+		const panelPage = await new PanelPage(page).goto();
+		await generateFirstImage(panelPage);
+		await expect(panelPage.dialogueCharacterImage).toHaveCount(PANEL.dialogue.length);
+		const cropsFromA = await panelCrops(page);
+
+		await replace(panelPage);
+		await expect(panelPage.dialogueCharacterImage).toHaveCount(PANEL.dialogue.length);
+		const idsFromA = new Set(cropsFromA.map((crop) => crop.id));
+		const headsFromB = (await panelCrops(page))
+			.filter((crop) => !idsFromA.has(crop.id))
+			.map((crop) => crop.head);
+		expect(headsFromB.length).toBeGreaterThan(0);
+
+		const shown = await panelPage.dialogueCharacterImage.evaluateAll((images) =>
+			images.map(
+				(image) =>
+					(window as unknown as { __urlNames: Map<string, string> }).__urlNames.get(
+						(image as HTMLImageElement).src,
+					) ?? '',
+			),
+		);
+		for (const name of shown) expect(headsFromB).toContain(name);
+	},
+);
+
+test(
 	'shows the loader while restoring and ignores a second activation',
 	{ tag: '@REQ-032' },
 	async ({ page }) => {
