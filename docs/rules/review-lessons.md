@@ -1,7 +1,7 @@
 # Review lessons
 
 Things human reviewers asked for on pipeline PRs that the reviewer agent
-missed. `/review` checks every entry; `/tech-lead reconcile` adds entries after
+missed. `/reviewer` checks every entry; `/tech-lead reconcile` adds entries after
 a merge (see `.claude/skills/tech-lead/SKILL.md`).
 
 - One line per lesson: what to check, then the source PR, e.g.

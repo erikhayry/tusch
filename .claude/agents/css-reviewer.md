@@ -1,6 +1,6 @@
 ---
 name: css-reviewer
-description: CSS reviewer. Reviews a branch's CSS against docs/rules/styling.md for the conventions a linter can't judge, and reports findings by severity. Read-only. Used by /review for UI diffs (.svelte files or CSS); also ask for it directly.
+description: CSS reviewer. Reviews a branch's CSS against docs/rules/styling.md for the conventions a linter can't judge, and reports findings by severity. Read-only. Used by /reviewer for UI diffs (.svelte files or CSS); also ask for it directly.
 tools: Read, Grep, Glob, Bash
 model: inherit
 ---

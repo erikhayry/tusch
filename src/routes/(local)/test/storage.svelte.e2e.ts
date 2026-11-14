@@ -1,11 +1,10 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test, type Page } from '@playwright/test';
-import { EXAMPLES } from '../../../examples/examples';
+import { EXAMPLE_COMPLETE as EXAMPLE } from '../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../tests/e2e/keyboard';
 import { panelImageSrc as storedPanelImageSrc, storedFiles } from '../../../tests/e2e/storage';
 
-const EXAMPLE = EXAMPLES[0];
 const PANEL = EXAMPLE.panels[0];
 const PANEL_URL = `/comic/${EXAMPLE.id}/${PANEL.id}`;
 

@@ -48,6 +48,14 @@ Next: `status:<next>`
 
 Keep it short. Link files and commits rather than pasting code.
 
+## Skill names
+
+A skill's name must not match a built-in Claude Code command or alias. The
+built-in wins: `/review` became an alias of Claude Code's `/code-review`, so our
+reviewer, then called `/review`, silently ran the built-in code review instead
+(three silent stops on #98). The reviewer is now `/reviewer`. Check the
+`commands` list in a run's init message when adding a skill.
+
 ## Running commands
 
 Skills pre-approve narrow command patterns (e.g. `Bash(gh pr create *)`), and on

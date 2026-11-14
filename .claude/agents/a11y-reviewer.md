@@ -1,6 +1,6 @@
 ---
 name: a11y-reviewer
-description: Accessibility expert. Reviews a branch's UI changes (Svelte components, CSS, messages) against WCAG 2.2 AA and this app's conventions, and reports findings by severity. Read-only. Used by /review for UI diffs; also ask for it directly ("use the a11y-reviewer on this branch").
+description: Accessibility expert. Reviews a branch's UI changes (Svelte components, CSS, messages) against WCAG 2.2 AA and this app's conventions, and reports findings by severity. Read-only. Used by /reviewer for UI diffs; also ask for it directly ("use the a11y-reviewer on this branch").
 tools: Read, Grep, Glob, Bash
 model: inherit
 ---
