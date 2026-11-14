@@ -372,6 +372,7 @@ jobs:
             --jq '.[] | select(.event == "labeled" and .label.name == "'"$stage"'") | .created_at' | tail -n1)
           earlier=$(awk -F'\t' -v since="${entered:-0}" '$1 == "github-actions[bot]" && $3 == 1 && $2 >= since' "$RUNNER_TEMP/comments.tsv" | wc -l)
           denied=$(node "$RUNNER_TEMP/costs.mjs" denials "$EXECUTION_FILE")
+          last=$(node "$RUNNER_TEMP/costs.mjs" final "$EXECUTION_FILE")
           {
             printf '%s\n\n' "$marker"
             printf 'The run finished without an issue comment or label change: %s\n\n' "$RUN_URL"
@@ -379,6 +380,9 @@ jobs:
               printf 'Tool calls the run was not allowed to make:\n\n%s\n\n' "$denied"
             else
               printf 'No tool calls were denied; see the run summary for Claude'"'"'s report.\n\n'
+            fi
+            if [[ -n "$last" ]]; then
+              printf 'What the agent said last:\n\n%s\n\n' "$(printf '%s\n' "$last" | sed -e 's/@claude/claude/g' -e 's/^/> /')"
             fi
             if [[ "$earlier" -eq 0 ]]; then
               printf 'Retrying `/%s` once.\n' "$SKILL"

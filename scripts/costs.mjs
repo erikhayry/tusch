@@ -361,6 +361,22 @@ function denials(file) {
 		.join('\n');
 }
 
+// The agent's last message, shortened. When a run ends without handing off, this is
+// usually the explanation (or the review it never posted), and a run summary needs a
+// GitHub login to read while an issue comment does not.
+function finalMessage(file) {
+	let messages;
+	try {
+		messages = parseMessages(readFileSync(file, 'utf8'));
+	} catch {
+		return '';
+	}
+	const result = messages.findLast((message) => message?.type === 'result') ?? {};
+	return String(result.result ?? '')
+		.trim()
+		.slice(0, 3000);
+}
+
 const [command, arg, issue] = process.argv.slice(2);
 if (command === 'header') console.log(COLUMNS.join(','));
 else if (command === 'row') console.log(row(arg));
@@ -368,9 +384,10 @@ else if (command === 'digest') process.stdout.write(digest(arg));
 else if (command === 'actions') process.stdout.write(actions(arg));
 else if (command === 'summary') console.log(summary(arg, issue));
 else if (command === 'denials') console.log(denials(arg));
+else if (command === 'final') console.log(finalMessage(arg));
 else {
 	console.error(
-		'usage: costs.mjs header | row <execution-file> | summary <costs.csv> [issue] | digest <execution-file> | actions <digest-dir> | denials <execution-file>',
+		'usage: costs.mjs header | row <execution-file> | summary <costs.csv> [issue] | digest <execution-file> | actions <digest-dir> | denials <execution-file> | final <execution-file>',
 	);
 	process.exit(2);
 }
