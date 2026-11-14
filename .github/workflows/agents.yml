@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
-      issues: read
+      issues: write # to add status:idea when a bug starts the planner
       pull-requests: read
     env:
       GH_REPO: ${{ github.repository }}
@@ -100,6 +100,15 @@ jobs:
                 status:needs-tests)  skill=test;    target=$ISSUE ;;
                 status:needs-dev)    skill=develop; target=$ISSUE ;;
                 status:needs-review) skill=reviewer;  target=$ISSUE ;;
+                type:bug)
+                  # A human labelling a bug that has no status yet starts the planner. Agents
+                  # file follow-up bugs too; those must wait for a human, so bots don't count.
+                  has_status=$(gh issue view "$ISSUE" --json labels --jq '[.labels[].name | select(startswith("status:"))] | length')
+                  if [[ "$SENDER_TYPE" != Bot && "$has_status" == 0 ]]; then
+                    # status:idea is what routes the human's answers back to the planner.
+                    gh issue edit "$ISSUE" --add-label status:idea > /dev/null
+                    skill=plan; target=$ISSUE
+                  fi ;;
                 *)                   ;;  # other labels start nothing
               esac ;;
             issue_comment|pull_request_review|pull_request_review_comment)
