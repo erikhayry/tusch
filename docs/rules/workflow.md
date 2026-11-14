@@ -15,14 +15,14 @@
 
 `.github/workflows/agents.yml` runs the role skills automatically:
 
-| You do                                                                             | Runs                                                                             |
-| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Add `status:idea` to an issue, or answer the planner's questions there             | `/plan <n>`                                                                      |
-| Add `status:needs-tests` (or a skill hands off to it)                              | `/test <n>` → `/develop` → `/review`, each started by the previous stage's label |
-| Comment or review on a pipeline PR while the issue is `status:needs-human`         | `/triage <n>`                                                                    |
-| Merge a pipeline PR (branch `issue-<n>-…`)                                         | `/tech-lead reconcile <pr>`                                                      |
-| Nothing: SonarCloud fails on a pipeline PR while the issue is `status:needs-human` | `/develop <n>` with the findings (blocked after 2 rounds)                        |
-| Nothing: Mondays 06:00 UTC, or dispatch `agents.yml` with `audit` ticked           | `/tech-lead audit`                                                               |
+| You do                                                                             | Runs                                                                               |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Add `status:idea` to an issue, or answer the planner's questions there             | `/plan <n>`                                                                        |
+| Add `status:needs-tests` (or a skill hands off to it)                              | `/test <n>` → `/develop` → `/reviewer`, each started by the previous stage's label |
+| Comment or review on a pipeline PR while the issue is `status:needs-human`         | `/triage <n>`                                                                      |
+| Merge a pipeline PR (branch `issue-<n>-…`)                                         | `/tech-lead reconcile <pr>`                                                        |
+| Nothing: SonarCloud fails on a pipeline PR while the issue is `status:needs-human` | `/develop <n>` with the findings (blocked after 2 rounds)                          |
+| Nothing: Mondays 06:00 UTC, or dispatch `agents.yml` with `audit` ticked           | `/tech-lead audit`                                                                 |
 
 - Bare approvals, bot comments and `@claude` mentions don't start a stage
   (`@claude` goes to `claude.yml`).
