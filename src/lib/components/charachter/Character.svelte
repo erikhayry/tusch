@@ -1,6 +1,7 @@
 <script lang="ts">
 	import {
 		getCharacterGalleryImages,
+		getComic,
 		getPanelsWithCharachter,
 	} from '$lib/features/comics/client/comic-selectors';
 	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
@@ -13,6 +14,7 @@
 
 	let { character, comicId }: CharacterProps = $props();
 	let panels = $derived(getPanelsWithCharachter(comicStore.comics, comicId, character.id));
+	let comic = $derived(getComic(comicStore.comics, comicId));
 	let gallery = $derived(getCharacterGalleryImages(comicStore.comics, comicId, character.id));
 </script>
 
@@ -28,8 +30,8 @@
 				}}
 				<li>
 					<details>
-						<summary>
-							<Image image={entry.head} alt={m.characterHeadAlt(params)} />
+						<summary aria-label={m.characterHeadAlt(params)}>
+							<Image image={entry.head} alt="" class="head" />
 						</summary>
 						<Image image={entry.full} alt={m.characterFullAlt(params)} />
 					</details>
@@ -48,7 +50,10 @@
 				{panel.editorialTitle}
 				{#if landscape && crop && !stored}
 					<CreateCharacterImageForm
-						label="create"
+						label={m.characterPreviewCrop({
+							name: character.name,
+							number: (comic?.panels.findIndex(({ id }) => id === panel.id) ?? 0) + 1,
+						})}
 						values={{ comicId, characterId: character.id, image: landscape.src, crop }}
 					/>
 				{/if}
@@ -66,7 +71,8 @@
 		list-style: none;
 	}
 
-	.gallery :global(img) {
+	/* The img is rendered by Image, so the scoped class needs :global to reach it. */
+	.gallery :global(.head) {
 		max-width: 100%;
 		height: auto;
 		max-height: calc(var(--control-min-size) * 4);

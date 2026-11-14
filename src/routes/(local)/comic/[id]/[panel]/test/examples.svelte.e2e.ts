@@ -63,9 +63,9 @@ test(
 			}),
 		).toBeHidden();
 		await expect(
-			page.getByRole('img', {
-				name: m.characterHeadAlt({ name: character.name, number: 1, title: panel.editorialTitle }),
-			}),
+			page.getByLabel(
+				m.characterHeadAlt({ name: character.name, number: 1, title: panel.editorialTitle }),
+			),
 		).toBeVisible();
 	},
 );
