@@ -10,7 +10,6 @@ export const CreateCoverImageFormPropsSchema = z.object({
 		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: true,
 		[INCLUDE_IMAGE_VALUE_KEY]: true,
 	}),
-	imageName: z.string().optional(),
 });
 
 export type CreateCoverImageFormProps = z.infer<typeof CreateCoverImageFormPropsSchema>;

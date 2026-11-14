@@ -76,7 +76,7 @@
 	{/each}
 
 	{#if imageName}
-		<img width="50px" height="auto" src={imageUrl} alt="" />
+		<img width={50} height={75} src={imageUrl} alt="" />
 		<label for={INCLUDE_IMAGE_VALUE_KEY}>
 			<input type="hidden" name={IMAGE_VALUE_KEY} value={imageUrl} />
 			<input type="checkbox" id={INCLUDE_IMAGE_VALUE_KEY} name={INCLUDE_IMAGE_VALUE_KEY} />
