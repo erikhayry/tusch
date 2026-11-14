@@ -14,7 +14,12 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import type { FixCharacterCropFormProps } from './fixCharacterCropFormTypes';
 
-	let { label, values, imageAssetId }: FixCharacterCropFormProps = $props();
+	let {
+		label,
+		values,
+		imageAssetId,
+		submitButton = $bindable(),
+	}: FixCharacterCropFormProps & { submitButton?: HTMLButtonElement } = $props();
 
 	const handleSubmit = enhanceAction<FixCharacterCropResult>(
 		m.loadingFixCharacterCrop(),
@@ -44,5 +49,5 @@
 		{/if}
 	{/each}
 
-	<button type="submit">{label}</button>
+	<button type="submit" bind:this={submitButton}>{label}</button>
 </form>

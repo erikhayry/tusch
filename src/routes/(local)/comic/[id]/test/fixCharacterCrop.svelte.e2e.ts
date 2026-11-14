@@ -219,6 +219,15 @@ test.describe('undo a crop fix', () => {
 		},
 	);
 
+	test('moves focus to the Fix crop button after undo', { tag: '@REQ-219-2' }, async ({ page }) => {
+		const setup = await setUp(page);
+		await fixCrop(setup);
+
+		await undoFix(setup);
+
+		await expect(fixButton(setup)).toBeFocused();
+	});
+
 	test('goes back exactly one step after two fixes', { tag: '@REQ-219-2' }, async ({ page }) => {
 		const setup = await setUp(page);
 		const first = await fixCrop(setup);

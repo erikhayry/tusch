@@ -11,7 +11,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { UndoCharacterCropFixFormProps } from './undoCharacterCropFixFormTypes';
 
-	let { label, values }: UndoCharacterCropFixFormProps = $props();
+	let { label, values, onSuccess }: UndoCharacterCropFixFormProps = $props();
 
 	const handleSubmit = enhanceClientCommand(
 		m.loadingUndoCharacterCropFix(),
@@ -19,6 +19,7 @@
 		async (value) => expectWorkflow(await undoCharacterCropFix(workflowDeps, value)),
 		async ({ update }) => {
 			await update();
+			onSuccess?.();
 		},
 	);
 </script>
