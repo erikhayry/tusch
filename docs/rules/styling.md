@@ -47,13 +47,18 @@ The global baseline lives in `src/app.css`, imported once in
 
 - no colour literals (hex, `rgb()`/`hsl()`/…, named colours), no length units
   (`px`, `rem`, `em`, …) and no percentages other than `100%`, except custom
-  property declarations in `src/app.css` (the token block). `0` and keywords pass.
-  A new value needs a token.
+  property declarations in the `:root` blocks of `src/app.css` (the token block;
+  `tusch/custom-property-in-root` rejects custom properties elsewhere in that
+  file). `0` and keywords pass. A new value needs a token.
 - no `max-*` or `device-*` media features, range syntax (`width <= …`) or
   `min-width` value other than the documented `48em` breakpoint
 - `outline*` only in a rule whose selector contains `:focus-visible`
-  (`stylelint-plugins/outline-focus-visible.mjs`); `outline: none` resets are
+  (`stylelint-plugins/outline-focus-visible.mjs`; every selector in the list must
+  qualify, and `:not(:focus-visible)` doesn't count); `outline: none` resets are
   not allowed
+
+Font families, unitless line heights and font weights are not checked; they stay
+with `css-reviewer`.
 
 Judgement checks stay with the `css-reviewer`. `lint-staged` runs
 `stylelint --fix` on staged `.css` and `.svelte` files.

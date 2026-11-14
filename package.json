@@ -62,11 +62,19 @@
 		"pre-push": "pnpm run check && pnpm run lint && pnpm run --if-present check:requirements"
 	},
 	"lint-staged": {
-		"*.{js,mjs,ts,svelte}": [
+		"*.{js,mjs,ts}": [
 			"prettier --write --ignore-unknown",
 			"eslint --fix --no-warn-ignored"
 		],
-		"*.{css,svelte}": "stylelint --fix --allow-empty-input",
-		"*.{json,md,yml,yaml,css,html}": "prettier --write --ignore-unknown"
+		"*.svelte": [
+			"prettier --write --ignore-unknown",
+			"eslint --fix --no-warn-ignored",
+			"stylelint --fix --allow-empty-input"
+		],
+		"*.css": [
+			"prettier --write --ignore-unknown",
+			"stylelint --fix --allow-empty-input"
+		],
+		"*.{json,md,yml,yaml,html}": "prettier --write --ignore-unknown"
 	}
 }

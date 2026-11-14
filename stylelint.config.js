@@ -51,7 +51,7 @@ const tokenRules = ({ ignoreCustomProperties }) => {
 				}),
 			},
 		],
-		// Named colours: only allowed as the `color`-free keywords below.
+		// No named colours, except in custom property values in the token block.
 		'color-named': ['never', { ignoreProperties: ignoreCustomProperties ? ['/^--/'] : [] }],
 	};
 };
@@ -74,7 +74,11 @@ export default {
 		},
 		{
 			files: ['src/app.css'],
-			rules: tokenRules({ ignoreCustomProperties: true }),
+			// Raw values are exempt only as custom properties, and only in `:root`.
+			rules: {
+				...tokenRules({ ignoreCustomProperties: true }),
+				'tusch/custom-property-in-root': true,
+			},
 		},
 	],
 };
