@@ -149,12 +149,12 @@ jobs:
             *)         turns=0;   tools='' ;;
           esac
 
-          # Model per role (docs/rules/agents.md, "Models"): the strongest model where
-          # judgement matters most (planning, review, the weekly audit), the cheaper
-          # one for implementation and routine bookkeeping.
+          # Model per role (docs/rules/agents.md, "Models"): opus for planning (and the
+          # weekly audit, below), haiku for implementation, sonnet for everything else.
           case "$skill" in
-            plan|reviewer) model=opus ;;
-            *)           model=sonnet ;;
+            plan)    model=opus ;;
+            develop) model=haiku ;;
+            *)       model=sonnet ;;
           esac
           if [ "$target" = audit ]; then turns=100; model=opus; fi  # reads every requirement
 
@@ -430,6 +430,7 @@ jobs:
         run: |
           set -euo pipefail
           cp main/scripts/costs.mjs costs.mjs  # the bookkeeping branch has no scripts
+          cp main/scripts/trust.mjs trust.mjs
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           cd main
@@ -447,6 +448,38 @@ jobs:
             if [[ -n "$ROW_AUTOMATE" ]]; then printf '%s\n' "$ROW_AUTOMATE" >> costs.csv; fi
             git add costs.csv
             git commit -qm "Bookkeeping: $(printf '%s' "$ROW" | cut -d, -f2-4)"
+            if git push -q origin HEAD:bookkeeping; then exit 0; fi
+            echo "Push attempt $attempt failed; retrying on top of the remote branch"
+            git fetch -q origin bookkeeping
+            git reset -q --hard FETCH_HEAD
+          done
+          exit 1
+
+      - name: Append to trust.csv
+        continue-on-error: true # measuring trust must never fail or block a stage
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SKILL: ${{ needs.route.outputs.skill }}
+          TARGET: ${{ needs.route.outputs.target }}
+          ISSUE: ${{ needs.route.outputs.issue }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          ROW=''
+          if [[ "$SKILL" == plan && -n "$ISSUE" ]]; then
+            ROW=$(node trust.mjs plan "$ISSUE")
+          elif [[ "$TARGET" == "reconcile "* ]]; then
+            ROW=$(node trust.mjs pr "${TARGET#reconcile }")
+          fi
+          if [[ -z "$ROW" ]]; then exit 0; fi
+          cd main  # the previous step left the bookkeeping branch checked out
+          git fetch -q origin bookkeeping
+          git reset -q --hard FETCH_HEAD
+          for attempt in 1 2 3; do
+            if [[ ! -f trust.csv ]]; then node ../trust.mjs header > trust.csv; fi
+            printf '%s\n' "$ROW" >> trust.csv
+            git add trust.csv
+            git commit -qm "Trust: $(printf '%s' "$ROW" | cut -d, -f2-4)"
             if git push -q origin HEAD:bookkeeping; then exit 0; fi
             echo "Push attempt $attempt failed; retrying on top of the remote branch"
             git fetch -q origin bookkeeping

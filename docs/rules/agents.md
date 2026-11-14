@@ -48,6 +48,14 @@ Next: `status:<next>`
 
 Keep it short. Link files and commits rather than pasting code.
 
+**Trust marker (planner only).** When `/plan` writes the ticket after the human
+answered its questions, its comment carries one hidden line
+`<!-- trust:plan asked=<n> accepted=<n> changed=<n> -->`. The planner counts each
+answered question, not each comment: an answer that matches the suggestion is
+accepted, anything else is changed, and "all suggestions" accepts every one
+(`accepted + changed = asked`). A run that only asks questions, or skips asking,
+adds no marker. `scripts/trust.mjs` reads the latest marker (#181).
+
 ## Skill names
 
 A skill's name must not match a built-in Claude Code command or alias. The
@@ -87,14 +95,14 @@ GitHub nobody is there to approve anything else. So:
 Use the cheapest model that does the job well; tokens are the pipeline's main
 cost (`costs.csv`, the "Cost so far" comment on each issue).
 
-| Role                                     | Model    | Why                                                     |
-| ---------------------------------------- | -------- | ------------------------------------------------------- |
-| `/plan`, `/reviewer`, `/tech-lead audit` | `opus`   | Judgement: scoping, catching what others missed         |
-| `/test`, `/develop`                      | `sonnet` | Implementation against a clear ticket and failing tests |
-| `/triage`, `/tech-lead reconcile`        | `sonnet` | Routine classification and bookkeeping                  |
-| `/automate`                              | `sonnet` | Works from a pre-aggregated digest; 40 turns at most    |
-| `a11y-reviewer`, `css-reviewer`          | inherit  | Run inside `/reviewer`, so they use its model           |
-| `pipeline-expert`                        | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
+| Role                                                                              | Model    | Why                                                     |
+| --------------------------------------------------------------------------------- | -------- | ------------------------------------------------------- |
+| `/plan`, `/tech-lead audit`                                                       | `opus`   | Judgement: scoping the work, auditing the pipeline      |
+| `/develop`                                                                        | `haiku`  | Implementation against a clear ticket and failing tests |
+| `/test`, `/reviewer`                                                              | `sonnet` | Writing tests and reviewing diffs against the rules     |
+| `/triage`, `/tech-lead reconcile`                                                 | `sonnet` | Routine classification and bookkeeping                  |
+| `/automate`                                                                       | `sonnet` | Works from a pre-aggregated digest; 40 turns at most    |
+| Review subagents (`a11y-`, `css-`, `ux-reviewer`, `pipeline-expert`, `db-expert`) | inherit  | Run inside `/reviewer`, so they use its model           |
 
 The model is set twice and must match: `model:` in each skill's frontmatter
 (local runs) and the `model` case in `agents.yml` (GitHub). One exception: a skill has
