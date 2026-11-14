@@ -40,6 +40,13 @@
   API-price estimate, not the subscription bill. `scripts/costs.mjs` reads the
   rows and totals them; the weekly audit copies them to `docs/costs.csv`.
   Local runs aren't recorded.
+- **Trust:** `trust.csv` on the same branch measures how far to trust the
+  agents (#181). A `/plan` run that classifies the human's answers adds a `plan`
+  row (asked, accepted, changed), and a merged pipeline PR adds a `pr` row
+  (review comments, changes requested, `/triage` rounds, `clean`). Bots don't
+  count. `scripts/trust.mjs` writes the rows and summarises them; the weekly
+  audit copies the file to `docs/trust.csv` and `docs/trust.md` and reports a
+  "Trust" section. It only measures; it never changes what the agents do.
 
 ## Branches and PRs
 
