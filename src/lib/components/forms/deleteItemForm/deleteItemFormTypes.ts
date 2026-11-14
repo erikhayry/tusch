@@ -4,6 +4,7 @@ import { z } from 'zod';
 export const DeleteItemFormPropsSchema = z.object({
 	label: z.string(),
 	values: DeleteValuesSchema,
+	onSuccess: z.function({ input: [], output: z.void() }).optional(),
 });
 
 export type DeleteItemFormProps = z.infer<typeof DeleteItemFormPropsSchema>;

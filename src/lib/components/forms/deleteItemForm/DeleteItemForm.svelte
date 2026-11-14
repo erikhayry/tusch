@@ -7,6 +7,8 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
 
+	let { label, values, onSuccess }: DeleteItemFormProps = $props();
+
 	const handleSubmit = enhanceClientCommand(
 		m.loadingDelete(),
 		getDeleteValues,
@@ -14,10 +16,11 @@
 			const cleanup = await deleteItemWithAssets(workflowDeps, values);
 			if (!cleanup.ok) console.warn('Could not remove obsolete assets', cleanup.failed);
 		},
-		({ update }) => update(),
+		async ({ update }) => {
+			await update();
+			onSuccess?.();
+		},
 	);
-
-	let { label, values }: DeleteItemFormProps = $props();
 </script>
 
 <form method="POST" action={`?/${DELETE_ITEM_ACTION}`} use:enhance={handleSubmit}>
