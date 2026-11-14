@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { tick } from 'svelte';
 	import Heading from '$lib/components/relativeHeading/Heading.svelte';
 	import Section from '$lib/components/relativeHeading/Section.svelte';
 	import {
@@ -24,13 +25,21 @@
 
 	let saved = $state(false);
 
+	// Clear first and set the text after a tick, so a second save in a row changes the DOM
+	// and is announced again.
+	async function confirmSaved() {
+		saved = false;
+		await tick();
+		saved = true;
+	}
+
 	// Nothing here needs the server (REQ-022, REQ-033).
 	const handleSubmit = enhanceLocalCommand(
 		getSaveGlobalInstructionsValues,
 		saveGlobalInstructions,
 		{
 			onStart: () => (saved = false),
-			onSuccess: () => (saved = true),
+			onSuccess: confirmSaved,
 		},
 	);
 </script>

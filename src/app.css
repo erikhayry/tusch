@@ -218,8 +218,9 @@ button:disabled {
 
 /* Loader and Error status regions: an empty region is 0 px tall. Never hide
    them (display/visibility): a live region must stay in the accessibility
-   tree for its content changes to be announced. */
-[role='status'] {
+   tree for its content changes to be announced. Regions inside `main` (the
+   settings save confirmation) are not page-wide, so they skip this rule. */
+[role='status']:not(main [role='status']) {
 	max-inline-size: var(--content-width);
 	margin-inline: auto;
 	padding-inline: var(--space-3);
@@ -301,7 +302,7 @@ progress:indeterminate::-moz-progress-bar {
 		font-size: var(--font-size-h1-wide);
 	}
 
-	[role='status'] {
+	[role='status']:not(main [role='status']) {
 		padding-inline: var(--space-5);
 	}
 }
