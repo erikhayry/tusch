@@ -187,6 +187,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: users iterate on panels.
 - Proven by: tagged tests
 
+### REQ-172-1 The current-image preview has valid dimension attributes
+
+- Status: active
+- Statement: the current-image preview on the panel image form (panel page) is an `<img>` whose `width` and `height` attributes are the bare integers `50` and `75` (the 2:3 ratio of generated images), and it renders 50 CSS px wide.
+- Why: `50px` and `auto` are invalid HTML, so the browser drops `height` and can't reserve space before the image loads.
+- Proven by: tagged tests
+
 ### REQ-017 A panel image can be removed
 
 - Status: active

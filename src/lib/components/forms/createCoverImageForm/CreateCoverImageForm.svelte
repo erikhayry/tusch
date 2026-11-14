@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { readAssetDataUrl } from '$lib/client/assets/read-data-url';
 	import { workflowDeps } from '$lib/client/workflow-deps';
 	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
 	import { commitGeneratedCover } from '$lib/features/comics/client/workflows/commit-generated-cover';
@@ -12,11 +11,7 @@
 	import { enhanceAction } from '$lib/forms/enhance-action';
 	import { encodeFormValue } from '$lib/forms/form-data';
 	import { m } from '$lib/paraglide/messages';
-	import {
-		IMAGE_VALUE_KEY,
-		INCLUDE_IMAGE_VALUE_KEY,
-		INSTRUCTIONS_VALUE_KEY,
-	} from '$lib/utils/db/dbTypes';
+	import { INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
 	import type { CreateCoverImageFormProps } from './createCoverImageFormTypes';
 
 	const handleSubmit = withGlobalInstructions(
@@ -26,32 +21,13 @@
 		}),
 	);
 
-	let { label, values, imageName }: CreateCoverImageFormProps = $props();
-
-	let imageUrl = $state<string | null>(null);
-
-	$effect(() => {
-		if (imageName) {
-			readAssetDataUrl(workflowDeps.assets, imageName).then((url) => {
-				imageUrl = url;
-			});
-		}
-	});
+	let { label, values }: CreateCoverImageFormProps = $props();
 </script>
 
 <form method="POST" action={`?/${CREATE_COVER_IMAGE_ACTION}`} use:enhance={handleSubmit}>
 	{#each Object.entries(values) as entry (entry[0])}
 		<input type="hidden" name={entry[0]} value={encodeFormValue(entry[1])} />
 	{/each}
-
-	{#if imageName}
-		<img width="50px" height="auto" src={imageUrl} alt="" />
-		<label for={INCLUDE_IMAGE_VALUE_KEY}>
-			<input type="hidden" name={IMAGE_VALUE_KEY} value={imageUrl} />
-			<input type="checkbox" id={INCLUDE_IMAGE_VALUE_KEY} name={INCLUDE_IMAGE_VALUE_KEY} />
-			<span>{m.includeImage()}</span>
-		</label>
-	{/if}
 
 	<label for={INSTRUCTIONS_VALUE_KEY}>
 		{m.instructions()}

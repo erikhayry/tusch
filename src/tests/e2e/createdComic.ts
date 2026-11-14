@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import { ComicSchema, type Comic } from '$lib/types';
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from './gotoHydrated';
 import { activate, typeInto } from './keyboard';
 
@@ -47,6 +47,18 @@ export async function deletePanel(page: Page, comicId: string, number: number) {
 	const before = await panels.count();
 	await activate(page, page.getByRole('button', { name: m.deletePanel({ number }) }));
 	await expect(panels).toHaveCount(before - 1);
+}
+
+/** The preview of the current image in a create-image form; it sits right before the "include current image" label. */
+export function currentImagePreview(page: Page): Locator {
+	return page.locator('form img:has(+ label)');
+}
+
+/** Assert the preview's `width`/`height` attributes are bare integers and it renders 50 px wide. */
+export async function expectValidPreviewSize(preview: Locator) {
+	await expect(preview).toHaveAttribute('width', '50');
+	await expect(preview).toHaveAttribute('height', '75');
+	await expect.poll(async () => (await preview.boundingBox())?.width).toBe(50);
 }
 
 /** Generate the panel's image through the UI; the mock returns crops for the comic's characters. */

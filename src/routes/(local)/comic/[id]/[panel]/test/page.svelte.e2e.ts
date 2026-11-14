@@ -1,7 +1,23 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, test } from '@playwright/test';
 import { EXAMPLE_COMPLETE } from '../../../../../../tests/e2e/examples';
+import {
+	createComic,
+	currentImagePreview,
+	expectValidPreviewSize,
+	generatePanelImage,
+	storedComic,
+} from '../../../../../../tests/e2e/createdComic';
 import { PanelPage } from './utils/panelPage';
+
+test('panel image preview has valid size attributes', { tag: '@REQ-172-1' }, async ({ page }) => {
+	const comicId = await createComic(page);
+	const [panel] = (await storedComic(page, comicId)).panels;
+	await generatePanelImage(page, comicId, panel.id);
+	await gotoHydrated(page, `/comic/${comicId}/${panel.id}`);
+
+	await expectValidPreviewSize(currentImagePreview(page));
+});
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import { activate, typeInto } from '../../../../../../tests/e2e/keyboard';
 
