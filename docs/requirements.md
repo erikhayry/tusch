@@ -85,6 +85,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: provider problems are common and must be actionable.
 - Proven by: tagged tests
 
+### REQ-185-1 An image request that returns no image is retried once
+
+- Status: active
+- Statement: when the AI response to a panel image or cover image request contains no image, the server retries the request once by itself; the user only sees an error if the second response has no image either.
+- Why: the model sometimes answers without calling the image tool, and a second try usually works (#185).
+- Proven by: tagged tests
+
+### REQ-185-2 An unusable AI response shows a friendly message with details
+
+- Status: active
+- Statement: when the AI returns a response the app can't use (no image, or comic or panel text that doesn't match the schema), the error region shows a translated, user-friendly message and a native `<details>` "Show details" disclosure, collapsed by default, with the technical message. The user stays where they were and nothing is saved; submitting again clears the error.
+- Why: the raw schema issue list breaks REQ-009 and means nothing to the user (#185).
+- Proven by: tagged tests
+
+### REQ-185-3 Unexpected provider failures are reported to Sentry without private data
+
+- Status: active
+- Statement: invalid AI responses and other unexpected provider failures (the 502 path) are reported to Sentry from the server with only the error message and kind, never prompts, AI output or the API key; expected failures (auth, permission, rate limit, invalid input) are not reported.
+- Why: the failures were invisible in Sentry, and reports must respect REQ-029 and `src/lib/sentry-options.ts` (#185).
+- Proven by: tagged tests
+
 ## Comic page
 
 ### REQ-010 The comic page shows the comic and its panels

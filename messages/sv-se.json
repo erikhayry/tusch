@@ -31,5 +31,8 @@
 	"globalInstructionsHint": "Högst 1000 tecken. Läggs till i varje AI-prompt.",
 	"urlToSource": "URL till källa",
 	"createComicSourceHint": "Ange en URL, en berättelse eller båda. En berättelse är 20–10 000 tecken.",
-	"yourStory": "Din berättelse"
+	"yourStory": "Din berättelse",
+	"aiNoImage": "AI:n returnerade ingen bild. Försök igen.",
+	"aiInvalidResponse": "AI:n returnerade något vi inte kunde använda. Försök igen.",
+	"showDetails": "Visa detaljer"
 }

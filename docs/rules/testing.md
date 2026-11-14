@@ -48,6 +48,15 @@ Drive failures from the UI with markers in submitted text:
 - `mock-error:auth`, `mock-error:rate-limit`, `mock-error:upstream`: the gateway
   throws that error (any request whose messages, or API key, contain the marker)
 - an API key containing `invalid`: key validation returns `success: false`
+- `mock-error:no-image`: an image request gets a response without an image
+  (every attempt, so the one retry fails too)
+- `mock-error:no-image-once`: only the first image request of a request gets no
+  image; the server's retry succeeds
+- `mock-error:invalid-text`: a text request gets a response whose data doesn't
+  match the schema
+
+The response markers are read per request, never from shared state, since tests
+run in parallel against one server.
 
 ## Build for real usage
 

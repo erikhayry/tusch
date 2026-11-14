@@ -65,11 +65,14 @@ export function createOpenAiGateway({ apiKey, textModel, imageModel }: AiCredent
 				text: { format: getSchemaAsTextFormat(schemaName) },
 			}),
 
+		// Forced: without it the model sometimes answers with text only and no image (#185).
+		// Covered by review only; E2E never calls OpenAI.
 		image: ({ messages, schemaName, imageUrls, size = IMAGE_SIZE.PORTRAIT }: AiImageRequest) =>
 			parse({
 				model: textModel,
 				input: [...getChatMessages(messages), ...getImageMessages(imageUrls)],
 				tools: [TOOLS.image(size, imageModel || '')],
+				tool_choice: { type: 'image_generation' },
 				store: true,
 				include: [],
 				text: { format: getSchemaAsTextFormat(schemaName) },
