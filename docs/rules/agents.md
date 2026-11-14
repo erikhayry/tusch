@@ -48,6 +48,14 @@ Next: `status:<next>`
 
 Keep it short. Link files and commits rather than pasting code.
 
+**Trust marker (planner only).** When `/plan` writes the ticket after the human
+answered its questions, its comment carries one hidden line
+`<!-- trust:plan asked=<n> accepted=<n> changed=<n> -->`. The planner counts each
+answered question, not each comment: an answer that matches the suggestion is
+accepted, anything else is changed, and "all suggestions" accepts every one
+(`accepted + changed = asked`). A run that only asks questions, or skips asking,
+adds no marker. `scripts/trust.mjs` reads the latest marker (#181).
+
 ## Skill names
 
 A skill's name must not match a built-in Claude Code command or alias. The
