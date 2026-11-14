@@ -17,15 +17,19 @@ const ROUTES = [
 	{ path: '/comic/create', exposed: ['create-comic'], hidden: ['client', 'create-panel'] },
 	{
 		path: `/comic/${EXAMPLE.id}`,
-		exposed: ['create-cover-image', 'client'],
+		exposed: ['create-cover-image', 'fix-character-crop', 'client'],
 		hidden: ['create-panel', 'config'],
 	},
 	{
 		path: `/comic/${EXAMPLE.id}/${EXAMPLE.panels[0].id}`,
 		exposed: ['create-panel', 'create-panel-image', 'client'],
-		hidden: ['create-comic', 'create-cover-image'],
+		hidden: ['create-comic', 'create-cover-image', 'fix-character-crop'],
 	},
-	{ path: '/settings', exposed: ['byok', 'config'], hidden: ['client', 'create-comic'] },
+	{
+		path: '/settings',
+		exposed: ['byok', 'config'],
+		hidden: ['client', 'create-comic', 'fix-character-crop'],
+	},
 ];
 
 test.describe('route action maps', { tag: '@REQ-033' }, () => {
