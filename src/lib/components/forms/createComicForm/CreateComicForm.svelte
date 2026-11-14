@@ -31,12 +31,16 @@
 <Section data-testId={createComicFormTestId}>
 	<form method="post" action={`?/${CREATE_COMIC_ACTION}`} use:enhance={handleSubmit}>
 		<label>
-			Url to source
+			{m.urlToSource()}
 			<input
 				type="text"
 				name="url"
 				placeholder="https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna"
 			/>
+		</label>
+		<label>
+			{m.yourStory()}
+			<textarea name="story" rows="6"></textarea>
 		</label>
 		<label>
 			{m.comicStyles()}

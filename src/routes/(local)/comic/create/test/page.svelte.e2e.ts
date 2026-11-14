@@ -140,7 +140,7 @@ test('creates a comic from a story only', { tag: '@REQ-005' }, async ({ page }) 
 	await createPage.submit();
 
 	await expect(page).toHaveURL(COMIC_URL);
-	await expect(page.getByRole('heading', { name: MOCK_TITLE })).toBeVisible();
+	await expect(page.getByRole('heading', { name: MOCK_TITLE, exact: true })).toBeVisible();
 	await expect(page.locator('ul[aria-labelledby="panels"] > li').first()).toBeVisible();
 });
 

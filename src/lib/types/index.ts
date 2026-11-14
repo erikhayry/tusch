@@ -165,7 +165,8 @@ export const PanelArraySchema = z.array(PanelSchema);
 export const ComicSchema = z.object({
 	id: z.uuid(),
 	title: z.string(),
-	source: z.url(),
+	source: z.optional(z.url()),
+	story: z.optional(z.string()),
 	cover: z.optional(ResponsiveImageSchema),
 	style: ComicStyleEnum,
 	panels: PanelArraySchema,
