@@ -46,8 +46,9 @@ estimates the saving from the counts and `costs.csv`. Say when you're guessing.
 
 For each proposal, at most **5** per run:
 
-1. Search first: `gh issue list --search "<words>" --state open`. If an issue
-   already covers it, link that one instead.
+1. Check "Open type:chore issues" at the end of `audit-actions.md` first; if
+   one already covers it, link that one instead. Only search GitHub
+   (`gh issue list --search …`) when the list says it couldn't be loaded.
 2. Otherwise write the body to `.agent-tmp/automate-<n>.md` and run
    `gh issue create --title "…" --label type:chore --body-file .agent-tmp/automate-<n>.md`.
    No `status:*` label: a human decides when it enters the pipeline.

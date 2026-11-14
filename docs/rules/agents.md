@@ -61,6 +61,12 @@ GitHub nobody is there to approve anything else. So:
 - Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`.
 - Screenshot baselines: `pnpm screenshots:update` renders them in CI and copies
   them into `src/`; don't download or copy them by hand.
+- **Inspect files with Read, Glob and Grep**, not `ls`, `cat`, `du`, `file`,
+  `find` or `wc`; those aren't on any role's allow list.
+- **A denial doesn't end your run.** Split the command into allowed single
+  commands (or use Read/Glob/Grep) and carry on. Every run ends with your
+  protocol comment and a label move; a run that just stops is blocked
+  automatically ("ended without handing off").
 - **Never wait for approval.** If a command you need is denied twice, block (see
   below) and include the exact command in your comment.
 
@@ -74,8 +80,9 @@ cost (`costs.csv`, the "Cost so far" comment on each issue).
 | `/plan`, `/review`, `/tech-lead audit` | `opus`   | Judgement: scoping, catching what others missed         |
 | `/test`, `/develop`                    | `sonnet` | Implementation against a clear ticket and failing tests |
 | `/triage`, `/tech-lead reconcile`      | `sonnet` | Routine classification and bookkeeping                  |
-| `/automate`                            | `sonnet` | Works from a pre-aggregated digest; 30 turns at most    |
-| `a11y-reviewer`, `pipeline-expert`     | as set   | `inherit` and `opus` (in `.claude/agents/`)             |
+| `/automate`                            | `sonnet` | Works from a pre-aggregated digest; 40 turns at most    |
+| `a11y-reviewer`, `css-reviewer`        | inherit  | Run inside `/review`, so they use its model             |
+| `pipeline-expert`                      | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
 
 The model is set twice and must match: `model:` in each skill's frontmatter
 (local runs) and the `model` case in `agents.yml` (GitHub). One exception: a skill has
@@ -84,17 +91,20 @@ one model, so `/tech-lead audit` runs on `sonnet` locally (switch with
 no judgement (gathering facts, formatting, label moves, fixed check lists) is a
 script or workflow step, not an agent turn; `pipeline-expert` looks for these.
 
-## Workflow files
+## Workflow and agent files
 
-Agents never change `.github/workflows/`. The agents' GitHub App has no
-`workflows` permission on purpose, so a push that touches it is rejected.
-This keeps agents from changing their own permissions, models, turn caps or CI
-gates.
+Agents never change `.github/workflows/` or `.claude/` (skills, subagents,
+settings). The agents' GitHub App has no `workflows` permission, and the
+agents' Write tool was refused for `.claude/` files (#84). Keep it that way, so
+agents can't change their own permissions, models, turn caps, instructions or
+CI gates. For a new or changed skill or subagent, post the full file content in
+the comment the same way.
 
-When a ticket needs a workflow change:
+When a ticket needs a workflow or agent-file change:
 
 1. Do everything else first, and push it.
-2. Put the exact change in your protocol comment as a ```diff block per file,
+2. Put the exact change in your protocol comment as a ```diff block per file
+   (or the full content of a new file),
    plus one line on why.
 3. Set `status:blocked` with the decision "apply the workflow diff". A human
    applies it on the branch, pushes, and moves the label back to your stage.

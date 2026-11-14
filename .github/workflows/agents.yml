@@ -125,7 +125,9 @@ jobs:
               if [ "$DISPATCH_AUDIT" = true ]; then skill=tech-lead; target=audit
               elif [ -z "$DISPATCH_ISSUE" ]; then :
               elif issue_has_label "$DISPATCH_ISSUE" status:needs-tests; then skill=test; target=$DISPATCH_ISSUE
-              elif issue_has_label "$DISPATCH_ISSUE" status:needs-dev; then skill=develop; target=$DISPATCH_ISSUE; fi ;;
+              elif issue_has_label "$DISPATCH_ISSUE" status:needs-dev; then skill=develop; target=$DISPATCH_ISSUE
+              elif issue_has_label "$DISPATCH_ISSUE" status:needs-review; then skill=review; target=$DISPATCH_ISSUE
+              elif issue_has_label "$DISPATCH_ISSUE" status:idea; then skill=plan; target=$DISPATCH_ISSUE; fi ;;
             *) ;;
           esac
 
@@ -193,7 +195,7 @@ jobs:
       issues: write
       pull-requests: read
       id-token: write
-      actions: read
+      actions: write # the hand-off check re-dispatches a stage once
     env:
       PLAYWRIGHT_SCREENSHOTS: '1'
       GH_REPO: ${{ github.repository }}
@@ -238,6 +240,9 @@ jobs:
       # The agent may switch to an issue branch that predates the script.
       - run: cp scripts/costs.mjs "$RUNNER_TEMP/costs.mjs"
 
+      # For the hand-off check below: only comments after this moment count.
+      - run: echo "AGENT_STARTED=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+
       # Facts for the audit (costs, CI re-runs, stuck issues), gathered without AI.
       - name: Gather audit inputs
         if: needs.route.outputs.target == 'audit'
@@ -254,6 +259,9 @@ jobs:
           # github-actions[bot] is this workflow's own dispatch (WIP release, Sonar bounce):
           # only this repo's workflows can act as it, and `route` still decides what runs.
           allowed_bots: 'claude[bot],github-actions[bot]'
+          # Claude's own report on the run's summary page, to see why a run stopped
+          # (no tool output; show_full_output stays off because logs are public).
+          display_report: 'true'
           # The Svelte MCP (docs + svelte-autofixer), same plugin as .claude/settings.json.
           plugin_marketplaces: https://github.com/sveltejs/ai-tools.git
           plugins: svelte@svelte
@@ -295,7 +303,8 @@ jobs:
       # The weekly automater (#84): finds repeated actions in last week's digests and files issues.
       - name: Run /automate
         id: automate
-        if: always() && needs.route.outputs.target == 'audit' && steps.claude.outcome != 'skipped'
+        if: ${{ !cancelled() && needs.route.outputs.target == 'audit' && steps.claude.outcome != 'skipped' }}
+        continue-on-error: true # the audit's own result decides the job
         uses: anthropics/claude-code-action@8a29bc6f0ae11a363721054b6739feba6adabe57 # v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -305,7 +314,7 @@ jobs:
           prompt: /automate
           claude_args: |
             --model sonnet
-            --max-turns 30
+            --max-turns 40
             --allowedTools "${{ needs.route.outputs.automate_tools }}"
 
       - name: Record cost (automate)
@@ -321,7 +330,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           echo "row=$(node "$RUNNER_TEMP/costs.mjs" row "$EXECUTION_FILE")" >> "$GITHUB_OUTPUT"
-          SKILL=automate node "$RUNNER_TEMP/costs.mjs" digest "$EXECUTION_FILE" > "$RUNNER_TEMP/agent-digest/automate.json"
+          node "$RUNNER_TEMP/costs.mjs" digest "$EXECUTION_FILE" > "$RUNNER_TEMP/agent-digest/automate.json" || true
 
       - name: Upload digests
         if: always() && steps.claude.outcome != 'skipped'
@@ -332,6 +341,61 @@ jobs:
           path: ${{ runner.temp }}/agent-digest
           retention-days: 14
           if-no-files-found: ignore
+
+      # Every role ends with an issue comment (docs/rules/agents.md). A run that
+      # "succeeds" without one handed nothing off (#61, #84, #86, #98). The first time,
+      # run the same stage again; a second silent stop blocks the issue, listing
+      # what was denied.
+      - name: Check the hand-off
+        if: always() && steps.claude.outcome == 'success' && needs.route.outputs.issue != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ needs.route.outputs.issue }}
+          SKILL: ${{ needs.route.outputs.skill }}
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.event.repository.default_branch || 'main' }}
+        run: |
+          set -euo pipefail
+          marker="### Pipeline: \`/$SKILL\` ended without handing off"
+          # One line per comment: author, then 1 if it is this stage's silent-stop marker.
+          gh api --paginate "repos/$GH_REPO/issues/$ISSUE/comments?per_page=100" \
+            --jq '.[] | [.user.login, .created_at, (if (.body | startswith("'"$marker"'")) then 1 else 0 end)] | @tsv' \
+            > "$RUNNER_TEMP/comments.tsv"
+          posted=$(awk -F'\t' -v since="$AGENT_STARTED" '$1 == "claude[bot]" && $2 >= since' "$RUNNER_TEMP/comments.tsv" | wc -l)
+          if [[ "$posted" -gt 0 ]]; then echo "Hand-off comment found"; exit 0; fi
+          # Silent stops of this stage since the issue last entered it (its status label
+          # was added). A restart by a human, or a new hand-off, starts the count again.
+          stage=$(gh issue view "$ISSUE" --json labels --jq '[.labels[].name | select(startswith("status:"))][0] // ""')
+          entered=$(gh api --paginate "repos/$GH_REPO/issues/$ISSUE/timeline?per_page=100" \
+            --jq '.[] | select(.event == "labeled" and .label.name == "'"$stage"'") | .created_at' | tail -n1)
+          earlier=$(awk -F'\t' -v since="${entered:-0}" '$1 == "github-actions[bot]" && $3 == 1 && $2 >= since' "$RUNNER_TEMP/comments.tsv" | wc -l)
+          denied=$(node "$RUNNER_TEMP/costs.mjs" denials "$EXECUTION_FILE")
+          {
+            printf '%s\n\n' "$marker"
+            printf 'The run finished without an issue comment or label change: %s\n\n' "$RUN_URL"
+            if [[ -n "$denied" ]]; then
+              printf 'Tool calls the run was not allowed to make:\n\n%s\n\n' "$denied"
+            else
+              printf 'No tool calls were denied; see the run summary for Claude'"'"'s report.\n\n'
+            fi
+            if [[ "$earlier" -eq 0 ]]; then
+              printf 'Retrying `/%s` once.\n' "$SKILL"
+            else
+              printf 'It stopped silently twice, so the issue is **blocked**. A human needs to decide: allow the tool, do that step by hand (e.g. files under `.claude/` or `.github/workflows/`), or change the ticket. Then move the label back.\n'
+            fi
+          } > "$RUNNER_TEMP/handoff.md"
+          if [[ "$earlier" -eq 0 ]]; then
+            gh issue comment "$ISSUE" --body-file "$RUNNER_TEMP/handoff.md"
+            gh workflow run agents.yml --ref "$BRANCH" -f issue="$ISSUE"
+            exit 0
+          fi
+          for label in status:idea status:needs-tests status:needs-dev status:needs-review status:needs-human; do
+            gh issue edit "$ISSUE" --remove-label "$label" >/dev/null 2>&1 || true
+          done
+          gh issue edit "$ISSUE" --add-label status:blocked
+          gh issue comment "$ISSUE" --body-file "$RUNNER_TEMP/handoff.md"
 
   # Appends the row to costs.csv on the unprotected `bookkeeping` branch (pushes
   # to main need a PR; the weekly audit copies the file there, #38) and keeps

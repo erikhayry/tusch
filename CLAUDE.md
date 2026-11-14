@@ -23,8 +23,9 @@ Role skills live in `.claude/skills/` (`/plan`, `/test`, `/develop`, `/review`,
 `/triage`, `/tech-lead`, and `/automate`, which runs after the weekly audit). They follow `docs/rules/agents.md` (labels, branches,
 comments, blocking) and `docs/agent-workflow-plan.md`. Subagents live in
 `.claude/agents/`: `a11y-reviewer` (accessibility review; `/review` runs it on
-UI diffs) and `pipeline-expert` (pipeline changes and token savings; `/review`
-runs it on pipeline diffs). Models per role: `docs/rules/agents.md`, "Models".
+UI diffs), `css-reviewer` (styling conventions; `/review` runs it on UI diffs)
+and `pipeline-expert` (pipeline changes and token savings; `/review` runs it on
+pipeline diffs). Models per role: `docs/rules/agents.md`, "Models".
 
 ## Commands
 

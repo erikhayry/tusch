@@ -341,15 +341,36 @@ function actions(dir) {
 	].join('\n');
 }
 
+// The tool calls the run's permissions refused, one line each (shortened), so a
+// silent run can be explained without the full transcript (agents.yml hand-off check).
+function denials(file) {
+	let messages;
+	try {
+		messages = parseMessages(readFileSync(file, 'utf8'));
+	} catch {
+		return '';
+	}
+	const result = messages.findLast((message) => message?.type === 'result') ?? {};
+	return (result.permission_denials ?? [])
+		.map(({ tool_name: tool, tool_input: input = {} }) => {
+			const detail = String(input.command ?? input.file_path ?? input.path ?? '')
+				.replace(/\s+/g, ' ')
+				.slice(0, 160);
+			return `- \`${tool}\`${detail ? `: \`${detail.replaceAll('`', "'")}\`` : ''}`;
+		})
+		.join('\n');
+}
+
 const [command, arg, issue] = process.argv.slice(2);
 if (command === 'header') console.log(COLUMNS.join(','));
 else if (command === 'row') console.log(row(arg));
 else if (command === 'digest') process.stdout.write(digest(arg));
 else if (command === 'actions') process.stdout.write(actions(arg));
 else if (command === 'summary') console.log(summary(arg, issue));
+else if (command === 'denials') console.log(denials(arg));
 else {
 	console.error(
-		'usage: costs.mjs header | row <execution-file> | summary <costs.csv> [issue] | digest <execution-file> | actions <digest-dir>',
+		'usage: costs.mjs header | row <execution-file> | summary <costs.csv> [issue] | digest <execution-file> | actions <digest-dir> | denials <execution-file>',
 	);
 	process.exit(2);
 }

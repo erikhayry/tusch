@@ -63,3 +63,13 @@ for id in $(gh api "repos/${GH_REPO:-$(gh repo view --json nameWithOwner --jq .n
 	gh run download "$id" -n agent-digest -D ".agent-tmp/digests/$id" >/dev/null 2>&1 || true
 done
 node scripts/costs.mjs actions .agent-tmp/digests > .agent-tmp/audit-actions.md
+
+# Open chores, so /automate can check for duplicates without GitHub search
+# (its index lags, and each search costs a turn).
+{
+	echo
+	echo '## Open type:chore issues'
+	echo
+	gh issue list --state open --label type:chore --limit 200 --json number,title \
+		--jq '.[] | "- #\(.number) \(.title)"' 2>/dev/null || echo '(could not list issues)'
+} >> .agent-tmp/audit-actions.md
