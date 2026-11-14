@@ -40,6 +40,24 @@ The global baseline lives in `src/app.css`, imported once in
 - Set the outline only under `:focus-visible`; a resting outline breaks the
   REQ-038 test.
 
+## Stylelint
+
+`pnpm run lint` runs stylelint (`stylelint.config.js`, `pnpm run lint:css`) on
+`src/app.css` and the `<style>` blocks of every `.svelte` file. It enforces:
+
+- no colour literals (hex, `rgb()`/`hsl()`/…, named colours), no length units
+  (`px`, `rem`, `em`, …) and no percentages other than `100%`, except custom
+  property declarations in `src/app.css` (the token block). `0` and keywords pass.
+  A new value needs a token.
+- no `max-*` or `device-*` media features, range syntax (`width <= …`) or
+  `min-width` value other than the documented `48em` breakpoint
+- `outline*` only in a rule whose selector contains `:focus-visible`
+  (`stylelint-plugins/outline-focus-visible.mjs`); `outline: none` resets are
+  not allowed
+
+Judgement checks stay with the `css-reviewer`. `lint-staged` runs
+`stylelint --fix` on staged `.css` and `.svelte` files.
+
 ## Tests
 
 `/reviewer` runs the `css-reviewer` subagent on diffs that touch `.svelte` files
