@@ -60,7 +60,9 @@ function list(path) {
 const isBot = (item) => item.type === 'Bot' || String(item.login ?? '').endsWith('[bot]');
 
 function planRow(issue) {
+	// Bot comments only: anyone could post a fake marker, and #182 would act on it.
 	const marker = list(`repos/{owner}/{repo}/issues/${issue}/comments`)
+		.filter(isBot)
 		.map((comment) => MARKER.exec(comment.body))
 		.findLast(Boolean);
 	if (!marker) return '';
@@ -88,8 +90,8 @@ function prRow(pr) {
 	const reviewBodies = human(reviews).filter((review) => review.body.trim() !== '');
 	const reviewComments = inline.length + reviewBodies.length + conversation.length;
 	const changesRequested = human(reviews).filter((r) => r.state === 'CHANGES_REQUESTED').length;
-	const triageRounds = list(`repos/{owner}/{repo}/issues/${issue}/comments`).filter((comment) =>
-		comment.body.startsWith('### Triage'),
+	const triageRounds = list(`repos/{owner}/{repo}/issues/${issue}/comments`).filter(
+		(comment) => isBot(comment) && comment.body.startsWith('### Triage'),
 	).length;
 
 	return csvRow({
