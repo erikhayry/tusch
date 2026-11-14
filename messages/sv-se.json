@@ -16,5 +16,7 @@
 	"loadingRestoreImage": "Återställer bild...",
 	"restorePreviousImage": "Återställ föregående bild",
 	"elapsedSeconds": "{seconds} s",
-	"done": "Klart"
+	"done": "Klart",
+	"referenceNone": "Ingen",
+	"characterReferenceThumbnail": "{character} i ruta {number}"
 }

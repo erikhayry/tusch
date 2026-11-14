@@ -6,6 +6,11 @@ export function readString(formData: FormData, name: string): string | undefined
 	return typeof value === 'string' ? value : undefined;
 }
 
+/** Every string entry named `name`, for fields submitted more than once. */
+export function readStringList(formData: FormData, name: string): string[] {
+	return formData.getAll(name).filter((value): value is string => typeof value === 'string');
+}
+
 export function readCheckbox(formData: FormData, name: string): boolean {
 	return formData.has(name);
 }

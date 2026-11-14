@@ -49,7 +49,8 @@ export const AiImageRequestSchema = z.object({
 	messages: z.array(z.string()),
 	schemaName: z.literal(SchemaName.enum.createImage),
 	size: ImageSizeSchema,
-	imageUrl: z.string().optional(),
+	/** Reference images (data URLs) sent with the prompt; empty means a text-only request. */
+	imageUrls: z.array(z.string()),
 });
 export type AiImageRequest = z.infer<typeof AiImageRequestSchema>;
 

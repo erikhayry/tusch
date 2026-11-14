@@ -136,19 +136,22 @@ export function getChatMessages(messages: string[]): ResponseInputItem[] {
 	}));
 }
 
-export function getImageMessages(imageUrl?: string): ResponseInputItem[] {
-	if (!imageUrl) return [];
+export function getImageMessages(imageUrls: string[]): ResponseInputItem[] {
+	if (imageUrls.length === 0) return [];
 
 	return [
 		{
 			role: OPEN_AI_ROLE.USER,
 			content: [
-				{ type: OPEN_AI_TYPE.TEXT, text: 'Use attached image as reference to user instruction' },
 				{
+					type: OPEN_AI_TYPE.TEXT,
+					text: 'Use attached images as reference to user instruction',
+				},
+				...imageUrls.map((imageUrl) => ({
 					type: OPEN_AI_TYPE.IMAGE,
 					image_url: imageUrl,
-					detail: 'auto',
-				},
+					detail: 'auto' as const,
+				})),
 			],
 		},
 	];

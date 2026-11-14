@@ -71,5 +71,7 @@
 	"includeImage": "Include Image in instructions",
 	"deleteCover": "Delete Cover",
 	"addCaption": "Add caption",
-	"newCaption": "New caption"
+	"newCaption": "New caption",
+	"referenceNone": "None",
+	"characterReferenceThumbnail": "{character} in panel {number}"
 }

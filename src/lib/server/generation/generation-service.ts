@@ -70,7 +70,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			messages: [...buildCoverImageMessages({ comic }), `USER INSTRUCTION: ${instructions}`],
 			schemaName: SchemaName.enum.createImage,
 			size: IMAGE_SIZE.PORTRAIT,
-			imageUrl: includeImage ? imageUrl : undefined,
+			imageUrls: includeImage && imageUrl ? [imageUrl] : [],
 		});
 
 		return interpret(() =>
@@ -134,12 +134,13 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			style,
 			includeImage,
 			imageUrl,
+			referenceImages,
 		}: CreatePanelImageValues): Promise<CreatePanelImageResult> {
 			const output = await gateway.image({
 				messages: buildPanelImageMessages({ panel, characters, instructions, style }),
 				schemaName: SchemaName.enum.createImage,
 				size: IMAGE_SIZE.PORTRAIT,
-				imageUrl: includeImage ? imageUrl : undefined,
+				imageUrls: [...(includeImage && imageUrl ? [imageUrl] : []), ...referenceImages],
 			});
 
 			return interpret(() =>
