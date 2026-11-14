@@ -215,6 +215,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: users extend the story.
 - Proven by: tagged tests
 
+### REQ-190-1 A panel without a title still has a named navigation link
+
+- Status: active
+- Statement: in the panel list on the panel page, a panel whose `editorialTitle` is empty has a navigation link named "Panel <number>", so the page has no axe `link-name` violation.
+- Why: a link with no text is unusable for screen-reader users; generated panels can have empty titles.
+- Proven by: tagged tests
+
 ## Persistence and navigation
 
 ### REQ-022 Changes persist locally across reloads
