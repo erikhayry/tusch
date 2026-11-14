@@ -5,6 +5,7 @@ import {
 	decodeGlobalInstructions,
 } from '$lib/features/settings/contracts/globalInstructions';
 import { ComicSchema, ComicStyleEnum } from '$lib/types';
+import { m } from '$lib/paraglide/messages';
 import z from 'zod';
 
 export const CREATE_COMIC_ACTION = 'create-comic' as const;
@@ -20,7 +21,7 @@ export const CreateComicValuesSchema = z
 		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: GlobalInstructionsSchema,
 	})
 	.refine((values) => values.url !== undefined || values.story !== undefined, {
-		message: 'Enter a URL, a story, or both',
+		message: m.createComicSourceHint(),
 		path: ['url'],
 	});
 export type CreateComicValues = z.output<typeof CreateComicValuesSchema>;

@@ -90,6 +90,5 @@
 <style>
 	.story {
 		white-space: pre-wrap;
-		overflow-wrap: anywhere;
 	}
 </style>
