@@ -34,8 +34,16 @@ function getImageData(response: OpenAiOutput): CreateImage {
 	return CreateImageSchema.parse(output);
 }
 
+function getImageResult(response: OpenAiOutput): string | undefined {
+	return response.output.find((item) => item.type === 'image_generation_call')?.result;
+}
+
+export function hasImage(response: OpenAiOutput): boolean {
+	return Boolean(getImageResult(response));
+}
+
 export function getImageFromOpenAiResponse(response: OpenAiOutput): CreatedImage {
-	const src = response.output.find((item) => item.type === 'image_generation_call')?.result;
+	const src = getImageResult(response);
 
 	return CreatedImageSchema.parse({ src, ...getImageData(response) });
 }

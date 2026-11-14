@@ -12,6 +12,12 @@
 	{#if globalError.error.isError}
 		<p>{m.error()}</p>
 		<p>{globalError.error.message}</p>
+		{#if globalError.error.details}
+			<details>
+				<summary>{m.showDetails()}</summary>
+				<p>{globalError.error.details}</p>
+			</details>
+		{/if}
 	{/if}
 </div>
 

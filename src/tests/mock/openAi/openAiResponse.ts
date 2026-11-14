@@ -457,6 +457,26 @@ export function createPanelImageResponse(characterIds: string[]): OpenAiOutput {
 	};
 }
 
+/** An image request answered without the image tool's result (REQ-185-1). */
+export const IMAGE_WITHOUT_IMAGE_RESPONSE: OpenAiOutput = {
+	output: [
+		{
+			type: 'message',
+			content: [{ type: 'output_text', text: JSON.stringify(IMAGE_RESPONSE_DATA) }],
+		},
+	],
+};
+
+/** A text response whose data doesn't match the comic schema (REQ-185-2). */
+export const INVALID_TEXT_RESPONSE: OpenAiOutput = {
+	output: [
+		{
+			type: 'message',
+			content: [{ type: 'output_text', text: JSON.stringify({ data: { title: 'Mock' } }) }],
+		},
+	],
+};
+
 export const MODELS_RESPONSE = {
 	options: { method: 'get', path: '/models', __security: { bearerAuth: true } },
 	response: {},
