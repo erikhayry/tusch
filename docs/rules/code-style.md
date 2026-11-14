@@ -46,6 +46,21 @@ until it reports no issues, and look up Svelte or SvelteKit APIs with
 - Svelte 5 runes only (`$props`, `$state`, `$derived`, `$effect`); no legacy
   `export let` or stores.
 
+## Fixed value sets
+
+- A fixed set of values (failure codes, action names, status values) is defined
+  once, as a Zod enum (`z.enum([...])`, with `CommandFailureCodes` exporting its
+  `.enum` object) or as a `const` with `as const`. Every use imports that
+  definition; never repeat the string literal at a call site.
+- Why: a misspelt literal compiles when the type is `string`, and the same code
+  spelled in several places drifts apart. A typo in a value reference fails to
+  compile.
+- Example: `CommandFailureCodes['panel-not-found']` in
+  `features/comics/client/comic-commands.ts`; `ASSET_FAILED_CODE` in
+  `asset-workflow.ts`.
+- Changing the user-facing text of a message is a separate concern from the
+  code value; the code is an identifier, not copy.
+
 ## No non-null assertions
 
 - Never use the `!` operator. Narrow with a guard (`?.`, `if`, `{#if}`) and

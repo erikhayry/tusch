@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import type {
 	Character,
 	CharacterImage,
@@ -14,13 +15,18 @@ import {
 import { bootstrapComics } from './bootstrap';
 import { comicStore, type ComicStoreState } from './comic-store.svelte';
 
-export type CommandFailureCode =
-	| 'comic-not-found'
-	| 'panel-not-found'
-	| 'character-not-found'
-	| 'image-not-found'
-	| 'invalid-index'
-	| 'storage-failed';
+const CommandFailureCodeSchema = z.enum([
+	'comic-not-found',
+	'panel-not-found',
+	'character-not-found',
+	'image-not-found',
+	'invalid-index',
+	'storage-failed',
+]);
+
+export type CommandFailureCode = z.infer<typeof CommandFailureCodeSchema>;
+/** Use these instead of string literals so a misspelt code fails to compile. */
+export const CommandFailureCodes = CommandFailureCodeSchema.enum;
 
 export type CommandFailure = { ok: false; code: CommandFailureCode; message: string };
 export type CommandResult = { ok: true } | CommandFailure;
@@ -51,7 +57,7 @@ function updatePanel(
 	change: (panel: Panel) => Outcome<Panel>,
 ): Outcome<Comic> {
 	const panel = comic.panels.find(({ id }) => id === panelId);
-	if (!panel) return fail('panel-not-found', `Panel ${panelId} not found`);
+	if (!panel) return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
 
 	const next = change(panel);
 	if (!next.ok) return next;
@@ -68,7 +74,8 @@ function updateCharacter(
 	change: (character: Character) => Outcome<Character>,
 ): Outcome<Comic> {
 	const character = comic.characters.find(({ id }) => id === characterId);
-	if (!character) return fail('character-not-found', `Character ${characterId} not found`);
+	if (!character)
+		return fail(CommandFailureCodes['character-not-found'], `Character ${characterId} not found`);
 
 	const next = change(character);
 	if (!next.ok) return next;
@@ -115,7 +122,7 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			storage.write(serializeComicSnapshot(transition.value));
 		} catch (error) {
 			return fail(
-				'storage-failed',
+				CommandFailureCodes['storage-failed'],
 				error instanceof Error ? error.message : 'Could not save comics',
 			);
 		}
@@ -127,7 +134,8 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 	function updateComic(comicId: string, change: (comic: Comic) => Outcome<Comic>): CommandResult {
 		const comics = current();
 		const comic = comics.find(({ id }) => id === comicId);
-		if (!comic) return commit(fail('comic-not-found', `Comic ${comicId} not found`));
+		if (!comic)
+			return commit(fail(CommandFailureCodes['comic-not-found'], `Comic ${comicId} not found`));
 
 		const next = change(comic);
 		if (!next.ok) return commit(next);
@@ -152,7 +160,7 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 		deleteComic(comicId: string): CommandResult {
 			const comics = current();
 			if (!comics.some(({ id }) => id === comicId)) {
-				return commit(fail('comic-not-found', `Comic ${comicId} not found`));
+				return commit(fail(CommandFailureCodes['comic-not-found'], `Comic ${comicId} not found`));
 			}
 
 			return commit(ok(comics.filter(({ id }) => id !== comicId)));
@@ -161,7 +169,7 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 		insertPanel(comicId: string, panel: Panel, index: number): CommandResult {
 			return updateComic(comicId, (comic) => {
 				if (!Number.isInteger(index) || index < 0 || index > comic.panels.length) {
-					return fail('invalid-index', `Panel index ${index} is out of range`);
+					return fail(CommandFailureCodes['invalid-index'], `Panel index ${index} is out of range`);
 				}
 
 				return ok({
@@ -174,7 +182,7 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 		deletePanel(comicId: string, panelId: string): CommandResult {
 			return updateComic(comicId, (comic) => {
 				if (!comic.panels.some(({ id }) => id === panelId)) {
-					return fail('panel-not-found', `Panel ${panelId} not found`);
+					return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
 				}
 
 				// Same update as the panel removal so the crops and the panel go in one commit;
@@ -251,9 +259,14 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 		restorePanelImage(comicId: string, panelId: string): CommandResult {
 			return updateComic(comicId, (comic) => {
 				const panel = comic.panels.find(({ id }) => id === panelId);
-				if (!panel) return fail('panel-not-found', `Panel ${panelId} not found`);
+				if (!panel)
+					return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
 				const previous = panel.previousImage;
-				if (!previous) return fail('image-not-found', `Panel ${panelId} has no previous image`);
+				if (!previous)
+					return fail(
+						CommandFailureCodes['image-not-found'],
+						`Panel ${panelId} has no previous image`,
+					);
 
 				const dropped = new Set(panel.imageCropIds ?? []);
 				const restored = updatePanel(comic, panelId, (current) =>
@@ -288,7 +301,10 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			return updateComic(comicId, (comic) =>
 				updatePanel(comic, panelId, (panel) => {
 					if (!isIndex(panel.captions, index)) {
-						return fail('invalid-index', `Caption index ${index} is out of range`);
+						return fail(
+							CommandFailureCodes['invalid-index'],
+							`Caption index ${index} is out of range`,
+						);
 					}
 
 					return ok({
@@ -303,7 +319,10 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			return updateComic(comicId, (comic) =>
 				updatePanel(comic, panelId, (panel) => {
 					if (!isIndex(panel.captions, index)) {
-						return fail('invalid-index', `Caption index ${index} is out of range`);
+						return fail(
+							CommandFailureCodes['invalid-index'],
+							`Caption index ${index} is out of range`,
+						);
 					}
 
 					return ok({ ...panel, captions: panel.captions.filter((_, i) => i !== index) });
@@ -315,7 +334,10 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			return updateComic(comicId, (comic) =>
 				updatePanel(comic, panelId, (panel) => {
 					if (!isIndex(panel.dialogue, index)) {
-						return fail('invalid-index', `Dialogue index ${index} is out of range`);
+						return fail(
+							CommandFailureCodes['invalid-index'],
+							`Dialogue index ${index} is out of range`,
+						);
 					}
 
 					return ok({
@@ -330,7 +352,10 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			return updateComic(comicId, (comic) =>
 				updatePanel(comic, panelId, (panel) => {
 					if (!isIndex(panel.dialogue, index)) {
-						return fail('invalid-index', `Dialogue index ${index} is out of range`);
+						return fail(
+							CommandFailureCodes['invalid-index'],
+							`Dialogue index ${index} is out of range`,
+						);
 					}
 
 					return ok({ ...panel, dialogue: panel.dialogue.filter((_, i) => i !== index) });
@@ -390,7 +415,10 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			return updateComic(comicId, (comic) =>
 				updateCharacter(comic, characterId, (character) => {
 					if (!character.images.some(({ id }) => id === imageId)) {
-						return fail('image-not-found', `Character image ${imageId} not found`);
+						return fail(
+							CommandFailureCodes['image-not-found'],
+							`Character image ${imageId} not found`,
+						);
 					}
 
 					return ok({

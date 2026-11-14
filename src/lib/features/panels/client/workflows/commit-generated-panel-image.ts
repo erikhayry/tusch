@@ -1,4 +1,7 @@
-import type { ComicCommands } from '$lib/features/comics/client/comic-commands';
+import {
+	CommandFailureCodes,
+	type ComicCommands,
+} from '$lib/features/comics/client/comic-commands';
 import { getCharacter, getPanel } from '$lib/features/comics/client/comic-selectors';
 import {
 	base64ImageToBlob,
@@ -26,7 +29,11 @@ export function commitGeneratedPanelImage(
 ): Promise<WorkflowResult> {
 	return runAssetWorkflow(deps, async (stage) => {
 		if (!getPanel(deps.store.comics, comicId, panelId)) {
-			return { ok: false, code: 'panel-not-found', message: `Panel ${panelId} not found` };
+			return {
+				ok: false,
+				code: CommandFailureCodes['panel-not-found'],
+				message: `Panel ${panelId} not found`,
+			};
 		}
 
 		const source = base64ImageToBlob(image.landscape.src);
