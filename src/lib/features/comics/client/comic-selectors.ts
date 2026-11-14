@@ -1,4 +1,68 @@
-import type { Character, Comic, ImageAsset, Panel } from '$lib/types';
+import {
+	ImageAssetSchema,
+	type Character,
+	type Comic,
+	type ImageAsset,
+	type Panel,
+} from '$lib/types';
+import { z } from 'zod';
+
+export const CharacterReferenceGroupSchema = z.object({
+	characterId: z.string(),
+	characterName: z.string(),
+	options: z.array(
+		z.object({
+			/** Id of the stored `CharacterImage`; submitted as the radio value. */
+			imageId: z.string(),
+			/** 1-based position of the panel the crop was taken from. */
+			panelNumber: z.number().int(),
+			head: ImageAssetSchema,
+			full: ImageAssetSchema,
+		}),
+	),
+});
+export type CharacterReferenceGroup = z.infer<typeof CharacterReferenceGroupSchema>;
+
+/**
+ * Characters that speak in the panel and have a stored crop from a different
+ * panel, with those crops as options. Crops of the panel itself are left out:
+ * they would be replaced by the image being generated.
+ */
+export function getCharacterReferenceGroups(
+	comics: readonly Comic[],
+	comicId: string,
+	panelId: string,
+): CharacterReferenceGroup[] {
+	const comic = getComic(comics, comicId);
+	const panel = comic?.panels.find(({ id }) => id === panelId);
+	if (!comic || !panel) return [];
+
+	const speakerIds = new Set(panel.dialogue.map(({ characterId }) => characterId));
+	return comic.characters
+		.filter(({ id }) => speakerIds.has(id))
+		.map((character) => ({
+			characterId: character.id,
+			characterName: character.name,
+			options: character.images.flatMap((image) => {
+				const index = comic.panels.findIndex(({ id }) => id === image.panelId);
+				return image.panelId === panelId || index === -1
+					? []
+					: [
+							{
+								imageId: image.id,
+								panelNumber: index + 1,
+								head: image.head,
+								full: image.full,
+							},
+						];
+			}),
+		}))
+		.filter(({ options }) => options.length > 0)
+		.map((group) => ({
+			...group,
+			options: group.options.toSorted((a, b) => a.panelNumber - b.panelNumber),
+		}));
+}
 
 export function getComics(comics: readonly Comic[]): Comic[] {
 	return [...comics];
@@ -38,7 +102,8 @@ export function getCharacterImageForPanel(
 	panelId: string,
 	characterId: string,
 ): ImageAsset | undefined {
-	return getCharacter(comics, comicId, characterId)?.images.find(
+	// Older crops stay after a replace (restore needs them); the newest is the current head.
+	return getCharacter(comics, comicId, characterId)?.images.findLast(
 		(image) => image.panelId === panelId,
 	)?.head;
 }

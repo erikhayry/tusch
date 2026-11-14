@@ -6,6 +6,7 @@
 	import { commitGeneratedPanelImage } from '$lib/features/panels/client/workflows/commit-generated-panel-image';
 	import {
 		CREATE_PANEL_IMAGE_ACTION,
+		REFERENCE_IMAGES_KEY,
 		type CreatePanelImageResult,
 	} from '$lib/features/panels/contracts/createPanelImage';
 	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
@@ -17,6 +18,8 @@
 		INCLUDE_IMAGE_VALUE_KEY,
 		INSTRUCTIONS_VALUE_KEY,
 	} from '$lib/utils/db/dbTypes';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import Image from '../../image/Image.svelte';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
 	const handleSubmit = withGlobalInstructions(
@@ -26,7 +29,29 @@
 		}),
 	);
 
-	let { label, values, imageName }: CreatePanelImageFormProps = $props();
+	let { label, values, imageName, characterReferences }: CreatePanelImageFormProps = $props();
+
+	const referenceFieldName = (characterId: string) => `reference-${characterId}`;
+
+	/**
+	 * The radios only carry crop ids. The chosen full-body crops are read from
+	 * OPFS here, so the request stays small however many options are offered.
+	 */
+	const prepareSubmit: SubmitFunction<CreatePanelImageResult> = async (input) => {
+		for (const group of characterReferences) {
+			const name = referenceFieldName(group.characterId);
+			const chosenId = input.formData.get(name);
+			input.formData.delete(name);
+			const chosen = group.options.find(({ imageId }) => imageId === chosenId);
+			if (chosen) {
+				input.formData.append(
+					REFERENCE_IMAGES_KEY,
+					await readAssetDataUrl(workflowDeps.assets, chosen.full.src),
+				);
+			}
+		}
+		return handleSubmit(input);
+	};
 
 	let imageUrl = $state<string | null>(null);
 
@@ -39,7 +64,13 @@
 	});
 </script>
 
-<form method="POST" action={`?/${CREATE_PANEL_IMAGE_ACTION}`} use:enhance={handleSubmit}>
+<!-- multipart: the reference images are large data URLs that urlencoding would inflate -->
+<form
+	method="POST"
+	enctype="multipart/form-data"
+	action={`?/${CREATE_PANEL_IMAGE_ACTION}`}
+	use:enhance={prepareSubmit}
+>
 	{#each Object.entries(values) as entry (entry[0])}
 		<input type="hidden" name={entry[0]} value={encodeFormValue(entry[1])} />
 	{/each}
@@ -52,6 +83,30 @@
 			<span>{m.includeImage()}</span>
 		</label>
 	{/if}
+
+	{#each characterReferences as group (group.characterId)}
+		<fieldset>
+			<legend>{m.characterReference({ character: group.characterName })}</legend>
+			<label>
+				<input type="radio" name={referenceFieldName(group.characterId)} value="" checked />
+				<span>{m.referenceNone()}</span>
+			</label>
+			{#each group.options as option (option.imageId)}
+				<label>
+					<input type="radio" name={referenceFieldName(group.characterId)} value={option.imageId} />
+					<span>{m.panel({ number: option.panelNumber })}</span>
+					<Image
+						width={50}
+						height={50}
+						image={option.head}
+						alt={m.characterReferenceThumbnail({
+							character: group.characterName,
+						})}
+					/>
+				</label>
+			{/each}
+		</fieldset>
+	{/each}
 
 	<label for={INSTRUCTIONS_VALUE_KEY}>
 		{m.instructions()}

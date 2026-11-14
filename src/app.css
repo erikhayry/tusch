@@ -161,6 +161,27 @@ label {
 	font-weight: bold;
 }
 
+fieldset {
+	min-inline-size: 0;
+	margin-block: var(--space-3) 0;
+	padding: var(--space-2) var(--space-3);
+	border: var(--border-width) solid var(--color-border);
+	border-radius: var(--radius);
+}
+
+legend {
+	padding-inline: var(--space-1);
+	font-weight: bold;
+}
+
+fieldset label {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--space-2);
+	font-weight: normal;
+}
+
 input,
 select,
 textarea,

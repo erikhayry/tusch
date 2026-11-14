@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
-      issues: read
+      issues: write # to add status:idea when a bug starts the planner
       pull-requests: read
     env:
       GH_REPO: ${{ github.repository }}
@@ -100,6 +100,15 @@ jobs:
                 status:needs-tests)  skill=test;    target=$ISSUE ;;
                 status:needs-dev)    skill=develop; target=$ISSUE ;;
                 status:needs-review) skill=reviewer;  target=$ISSUE ;;
+                type:bug)
+                  # A human labelling a bug that has no status yet starts the planner. Agents
+                  # file follow-up bugs too; those must wait for a human, so bots don't count.
+                  has_status=$(gh issue view "$ISSUE" --json labels --jq '[.labels[].name | select(startswith("status:"))] | length')
+                  if [[ "$SENDER_TYPE" != Bot && "$has_status" == 0 ]]; then
+                    # status:idea is what routes the human's answers back to the planner.
+                    gh issue edit "$ISSUE" --add-label status:idea > /dev/null
+                    skill=plan; target=$ISSUE
+                  fi ;;
                 *)                   ;;  # other labels start nothing
               esac ;;
             issue_comment|pull_request_review|pull_request_review_comment)
@@ -594,6 +603,37 @@ jobs:
           issue=$(printf '%s' "$HEAD_BRANCH" | sed -nE 's/^issue-([0-9]+)-.*/\1/p')
           if [[ -z "$issue" || -z "$PR" ]]; then echo "No pipeline issue or PR for $HEAD_BRANCH"; exit 0; fi
           scripts/sonar-bounce.sh "$issue" "$PR"
+
+  # A pipeline PR that conflicts with main sends its issue back to /develop, which
+  # merges main (scripts/conflict-bounce.sh, #168). Runs when a pipeline PR merges
+  # and on the schedule, and scans every open PR. No AI in this job.
+  conflict:
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged)
+    concurrency:
+      group: agent-conflict
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      actions: write
+    env:
+      GH_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+      BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # merge-tree needs the history of main and of every open branch.
+          fetch-depth: 0
+          sparse-checkout: scripts
+
+      - name: Send conflicting pipeline PRs back to the developer
+        run: scripts/conflict-bounce.sh
 
   # Runs on the plain runner (gh is preinstalled) so it works even if the
   # container or the agent setup fails.

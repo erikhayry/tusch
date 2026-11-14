@@ -22,7 +22,11 @@ The status label must be `status:needs-review`; otherwise stop. Also stop and
 report (without changing anything) if the issue is closed or its PR is already
 merged (`gh pr list --head <branch> --state merged`); a human merged it
 mid-loop. Otherwise, switch to the
-branch, `git pull`, and get the change with `git diff origin/main...HEAD`.
+branch, `git pull`, then bring it up to date with `main`: `git fetch origin`, then
+`git merge origin/main`. If the merge is clean, `git push` it before reviewing. If it
+conflicts, run `git merge --abort`, move the issue `status:needs-review` →
+`status:needs-dev` and post the conflicting files as a blocking finding (`/develop`
+merges `main`). Then get the change with `git diff origin/main...HEAD`.
 
 ## 2. Review
 

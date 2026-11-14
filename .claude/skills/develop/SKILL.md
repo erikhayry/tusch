@@ -23,6 +23,18 @@ The status label must be `status:needs-dev`; otherwise stop. Switch to the
 issue's branch (`git fetch`, then `git switch issue-$0-…`, then `git pull`), and read
 the tester's comment and any reviewer or triage feedback.
 
+**Merge conflict with `main`.** If the latest pipeline comment starts with
+`### Pipeline: merge conflict with main`, the branch has to merge `main` first
+(`scripts/conflict-bounce.sh`, #168):
+
+- `git fetch origin`, then `git merge origin/main`. Never rebase or force-push.
+- Resolve each conflict, then commit the merge (`Refs #$0`).
+- Screenshot baselines (`src/tests/e2e/__screenshots__/*.png`): don't choose a side
+  as the answer. Check out either side only to finish the merge, then regenerate
+  the baselines in step 4 and commit the new images.
+- An id clash in `docs/requirements.md`: keep both entries.
+- Then run step 3 in full, and steps 4 and 5. Block if a conflict is beyond you.
+
 ## 2. Implement
 
 - Read the failing tests first; they are the spec. Then read

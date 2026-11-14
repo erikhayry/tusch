@@ -91,7 +91,7 @@ const COMIC_DATA: { data: InitialComic } = {
 		],
 		panels: [
 			{
-				editorialTitle: '',
+				editorialTitle: 'Mock title 1',
 				captions: [
 					'Ådalen, 14 maj 1931. En arbetskonflikt och användningen av strejkbrytare hade skärpt motsättningarna.',
 					'Gestalterna och replikerna i berättelsen är fiktiva sammansättningar, inte historiska citat.',
@@ -111,7 +111,7 @@ const COMIC_DATA: { data: InitialComic } = {
 				id: 'ad01f7ac-b88b-41dd-a94a-37bb307278fa',
 			},
 			{
-				editorialTitle: '',
+				editorialTitle: 'Mock title 2',
 				captions: [
 					'Demonstranter tågade mot Lunde för att protestera mot strejkbryteriet.',
 					'Soldater hade kallats till området under den upptrappade konflikten.',
@@ -135,7 +135,7 @@ const COMIC_DATA: { data: InitialComic } = {
 				id: 'a2b4d1f0-99dd-4b3c-a15a-87a09ca294c8',
 			},
 			{
-				editorialTitle: '',
+				editorialTitle: 'Mock title 3',
 				captions: [
 					'Vid Lunde mötte demonstranterna en militär avspärrning.',
 					'Spänningen växte när folkmassan och soldaterna stod mitt emot varandra.',
@@ -159,7 +159,7 @@ const COMIC_DATA: { data: InitialComic } = {
 				id: 'd13b6d9e-7ef6-4f79-81a6-f47811c30e6e',
 			},
 			{
-				editorialTitle: '',
+				editorialTitle: 'Mock title 4',
 				captions: [
 					'Soldaterna öppnade eld mot demonstrationen.',
 					'Skotten bröt upp folkmassan och förvandlade protesten till en katastrof.',
@@ -183,7 +183,7 @@ const COMIC_DATA: { data: InitialComic } = {
 				id: 'be836f25-2c89-4632-8a06-94cd31d2917b',
 			},
 			{
-				editorialTitle: '',
+				editorialTitle: 'Mock title 5',
 				captions: [
 					'Fem människor dödades och fem skadades i skottlossningen.',
 					'Bland de dödade fanns den unga Eira Söderberg.',
@@ -207,7 +207,7 @@ const COMIC_DATA: { data: InitialComic } = {
 				id: 'c28d3a73-c4ac-4c14-8ab1-50ea2d41bbee',
 			},
 			{
-				editorialTitle: '',
+				editorialTitle: 'Mock title 6',
 				captions: [
 					'Nyheten om skotten spreds snabbt och väckte starka reaktioner långt utanför Ådalen.',
 					'Frågan om militärens roll i arbetskonflikter blev föremål för en omfattande samhällsdebatt.',

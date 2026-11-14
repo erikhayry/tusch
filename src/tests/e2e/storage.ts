@@ -12,6 +12,21 @@ export function storedFiles(page: Page): Promise<string[]> {
 	});
 }
 
+/** A stored file's bytes as base64, the form they take inside a `data:` URL. */
+export function storedFileBase64(page: Page, name: string): Promise<string> {
+	return page.evaluate(async (fileName) => {
+		const root = await navigator.storage.getDirectory();
+		const file = await (await root.getFileHandle(fileName)).getFile();
+		const dataUrl = await new Promise<string>((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result as string);
+			reader.onerror = () => reject(new Error('Failed to read file'));
+			reader.readAsDataURL(file);
+		});
+		return dataUrl.slice(dataUrl.indexOf(',') + 1);
+	}, name);
+}
+
 /** Size in bytes of every file in OPFS (generated covers, panel images, crops). */
 export function storedFileSizes(page: Page): Promise<number[]> {
 	return page.evaluate(async () => {

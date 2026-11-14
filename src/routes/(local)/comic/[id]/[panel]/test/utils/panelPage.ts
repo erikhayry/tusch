@@ -57,6 +57,32 @@ export class PanelPage {
 			.getByRole('img', { name: 'charachter' });
 	}
 
+	/** Object URLs hide which OPFS file an <img> shows; record the file name behind each one. */
+	static async recordImageFileNames(page: Page) {
+		await page.addInitScript(() => {
+			const names = new Map<string, string>();
+			(window as unknown as { __urlNames: Map<string, string> }).__urlNames = names;
+			const original = URL.createObjectURL.bind(URL);
+			URL.createObjectURL = (obj: Blob | MediaSource) => {
+				const url = original(obj);
+				if (obj instanceof File) names.set(url, obj.name);
+				return url;
+			};
+		});
+	}
+
+	/** OPFS file names behind the dialogue heads; needs `recordImageFileNames` before goto. */
+	dialogueCharacterImageFileNames(): Promise<string[]> {
+		return this.dialogueCharacterImage.evaluateAll((images) =>
+			images.map(
+				(image) =>
+					(window as unknown as { __urlNames: Map<string, string> }).__urlNames.get(
+						(image as HTMLImageElement).src,
+					) ?? '',
+			),
+		);
+	}
+
 	async removeCaption() {
 		await activate(this.page, this.deleteCaptionButton);
 	}

@@ -141,8 +141,22 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-015 A panel image can be generated
 
 - Status: active
-- Statement: on a panel without an image, the user can generate one (optionally with instructions and a reference image).
+- Statement: on a panel without an image, the user can generate one (optionally with instructions, and with character references from other panels as in REQ-100-1).
 - Why: the comic's visuals.
+- Proven by: tagged tests
+
+### REQ-100-1 A panel image form offers character references from other panels
+
+- Status: active
+- Statement: on a panel's image form (generate or replace), for each character in that panel's dialogue that has a stored crop from a different panel, the user can choose one of those panels as the character's reference, or none (the default); characters without such a crop aren't listed, and if no character qualifies the picker isn't shown.
+- Why: characters stay consistent across panels (same clothes, hair colour, face).
+- Proven by: tagged tests
+
+### REQ-100-2 Chosen character references are sent to the image model
+
+- Status: active
+- Statement: generating a panel image with chosen character references sends each chosen character's full-body crop to the image model together with the prompt (and the current image, if "include current image" is ticked); with no reference chosen, the request is the same as today.
+- Why: the model can only keep a character consistent if it sees the earlier look.
 - Proven by: tagged tests
 
 ### REQ-016 A panel image can be replaced
@@ -180,6 +194,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: crops of an image that is gone would be stray files and wrong references.
 - Proven by: tagged tests
 
+### REQ-162-1 Dialogue heads show the crop from the current panel image
+
+- Status: active
+- Statement: after a panel image is replaced, the head crop shown next to each dialogue line is the one created from the current panel image, not one from an earlier image of that panel.
+- Why: the head must match the image that's shown.
+- Proven by: tagged tests
+
 ### REQ-019 Captions can be added, edited and removed
 
 - Status: active
@@ -199,6 +220,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: from a panel, the user can generate a new panel that is inserted before it.
 - Why: users extend the story.
+- Proven by: tagged tests
+
+### REQ-190-1 A panel without a title still has a named navigation link
+
+- Status: active
+- Statement: in the panel list on the panel page, a panel whose `editorialTitle` is empty has a navigation link named "Panel <number>", so the page has no axe `link-name` violation.
+- Why: a link with no text is unusable for screen-reader users; generated panels can have empty titles.
 - Proven by: tagged tests
 
 ## Persistence and navigation

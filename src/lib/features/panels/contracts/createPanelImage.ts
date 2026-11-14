@@ -1,9 +1,9 @@
+import { readCheckbox, readJsonField, readString, readStringList } from '$lib/forms/form-data';
 import {
 	GLOBAL_INSTRUCTIONS_VALUE_KEY,
 	GlobalInstructionsSchema,
 	decodeGlobalInstructions,
 } from '$lib/features/settings/contracts/globalInstructions';
-import { readCheckbox, readJsonField, readString } from '$lib/forms/form-data';
 import type { Character } from '$lib/types';
 import { ComicStyleEnum, PanelSchema, ResponsivePanelImageSchema, type Panel } from '$lib/types';
 import { OpenAiOutputSchema } from '$lib/utils/ai/aiTypes';
@@ -34,6 +34,12 @@ export function toPanelImagePrompt(panel: Panel): PanelImagePrompt {
 	return { id, visualDescription, captions, dialogue, place, year, season, timeOfDay };
 }
 
+/** Field holding one data URL per chosen character reference (its full-body crop). */
+export const REFERENCE_IMAGES_KEY = 'referenceImages' as const;
+
+/** One per character; bounds the request body, which Vercel caps at about 4.5 MB. */
+const MAX_REFERENCE_IMAGES = 10;
+
 export const CreatePanelImageValuesSchema = z.object({
 	panel: PanelImagePromptSchema,
 	comicId: z.string(),
@@ -43,6 +49,7 @@ export const CreatePanelImageValuesSchema = z.object({
 	[GLOBAL_INSTRUCTIONS_VALUE_KEY]: GlobalInstructionsSchema,
 	[IMAGE_VALUE_KEY]: z.string().optional(),
 	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
+	[REFERENCE_IMAGES_KEY]: z.array(z.string().startsWith('data:image/')).max(MAX_REFERENCE_IMAGES),
 });
 export type CreatePanelImageValues = z.output<typeof CreatePanelImageValuesSchema>;
 
@@ -78,5 +85,6 @@ export function decodeCreatePanelImageValues(formData: FormData) {
 		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: decodeGlobalInstructions(formData),
 		[IMAGE_VALUE_KEY]: readString(formData, IMAGE_VALUE_KEY),
 		[INCLUDE_IMAGE_VALUE_KEY]: readCheckbox(formData, INCLUDE_IMAGE_VALUE_KEY),
+		[REFERENCE_IMAGES_KEY]: readStringList(formData, REFERENCE_IMAGES_KEY),
 	};
 }
