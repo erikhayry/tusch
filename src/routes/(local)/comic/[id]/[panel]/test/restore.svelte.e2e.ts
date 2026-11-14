@@ -238,17 +238,7 @@ test(
 	'dialogue heads use the crop from the current image after a replace',
 	{ tag: ['@REQ-162-1', '@REQ-018'] },
 	async ({ page }) => {
-		// Object URLs hide which OPFS file an <img> shows; record the file name behind each one.
-		await page.addInitScript(() => {
-			const names = new Map<string, string>();
-			(window as unknown as { __urlNames: Map<string, string> }).__urlNames = names;
-			const original = URL.createObjectURL.bind(URL);
-			URL.createObjectURL = (obj: Blob | MediaSource) => {
-				const url = original(obj);
-				if (obj instanceof File) names.set(url, obj.name);
-				return url;
-			};
-		});
+		await PanelPage.recordImageFileNames(page);
 		const panelPage = await new PanelPage(page).goto();
 		await generateFirstImage(panelPage);
 		await expect(panelPage.dialogueCharacterImage).toHaveCount(PANEL.dialogue.length);
@@ -262,14 +252,7 @@ test(
 			.map((crop) => crop.head);
 		expect(headsFromB.length).toBeGreaterThan(0);
 
-		const shown = await panelPage.dialogueCharacterImage.evaluateAll((images) =>
-			images.map(
-				(image) =>
-					(window as unknown as { __urlNames: Map<string, string> }).__urlNames.get(
-						(image as HTMLImageElement).src,
-					) ?? '',
-			),
-		);
+		const shown = await panelPage.dialogueCharacterImageFileNames();
 		for (const name of shown) expect(headsFromB).toContain(name);
 	},
 );
