@@ -1,0 +1,6 @@
+[
+	{ "number": 21, "headRefName": "issue-7-add-thing", "mergeable": "CONFLICTING" },
+	{ "number": 22, "headRefName": "issue-8-other", "mergeable": "MERGEABLE" },
+	{ "number": 23, "headRefName": "issue-9-third", "mergeable": "CONFLICTING" },
+	{ "number": 24, "headRefName": "issue-10-busy", "mergeable": "CONFLICTING" }
+]

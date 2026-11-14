@@ -1,0 +1,8 @@
+{
+	"labels": [{ "name": "status:needs-human" }],
+	"comments": [
+		{ "body": "### Pipeline: merge conflict with main (round 1 of 2)\n\nold" },
+		{ "body": "### Pipeline: SonarCloud failed (round 1 of 2)\n\nold" },
+		{ "body": "### Pipeline: merge conflict with main (round 2 of 2)\n\nold" }
+	]
+}
