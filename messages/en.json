@@ -80,5 +80,7 @@
 	"saveGlobalInstructions": "Save global instructions",
 	"globalInstructionsTooLong": "Global instructions can be at most 1000 characters",
 	"globalInstructionsSaved": "Global instructions saved",
-	"globalInstructionsHint": "Up to 1000 characters. Added to every AI prompt."
+	"globalInstructionsHint": "Up to 1000 characters. Added to every AI prompt.",
+	"urlToSource": "Url to source",
+	"yourStory": "Your story"
 }

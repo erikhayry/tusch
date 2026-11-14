@@ -25,5 +25,7 @@
 	"saveGlobalInstructions": "Spara globala instruktioner",
 	"globalInstructionsTooLong": "Globala instruktioner får vara högst 1000 tecken",
 	"globalInstructionsSaved": "Globala instruktioner sparade",
-	"globalInstructionsHint": "Högst 1000 tecken. Läggs till i varje AI-prompt."
+	"globalInstructionsHint": "Högst 1000 tecken. Läggs till i varje AI-prompt.",
+	"urlToSource": "Url till källa",
+	"yourStory": "Din berättelse"
 }
