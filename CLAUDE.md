@@ -36,6 +36,7 @@ pipeline diffs). Models per role: `docs/rules/agents.md`, "Models".
 | Dev server      | `pnpm run dev`                      |
 | Typecheck       | `pnpm run check`                    |
 | Lint / format   | `pnpm run lint` / `pnpm run format` |
+| Lint CSS only   | `pnpm run lint:css`                 |
 | E2E (mocked AI) | `pnpm run test:e2e`                 |
 
 ## Plans

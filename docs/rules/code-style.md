@@ -24,6 +24,10 @@ trailing commas, width 100) and ESLint. Run `pnpm run lint`; fix with
 - Behaviour contracts (`AiGateway`, `AssetStore`) are TypeScript interfaces;
   the data they pass is still Zod.
 
+`pnpm run lint` also runs stylelint for the mechanical CSS rules (raw values,
+`max-width` queries, outlines outside `:focus-visible`); see `styling.md`,
+"Stylelint".
+
 ## Svelte MCP
 
 The Svelte plugin (`svelte@svelte`) is enabled in `.claude/settings.json`, and
