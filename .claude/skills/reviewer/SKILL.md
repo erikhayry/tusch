@@ -55,16 +55,19 @@ So:
 - **Screenshots:** baselines changed only for the views the ticket lists, and
   the images look intended.
 - **Accessibility:** if the diff touches `.svelte` files, CSS or `messages/`,
-  run the `a11y-reviewer` subagent (Agent tool) on the branch. Its
+  apply the `a11y-reviewer` checklist to the diff. Its
   **critical** and **serious** findings are blocking; post the rest as notes.
-- **CSS:** if the diff touches `.svelte` files or CSS, also run the
-  `css-reviewer` subagent. Same rule: critical and serious findings block.
-- **UX:** if the diff touches `.svelte` files, CSS or `messages/`, run the
-  `ux-reviewer` subagent (Agent tool) on the branch, in parallel with
-  `a11y-reviewer`. Its findings are **never blocking**: post them as notes
-  (inline PR comments where they point at a line).
+- **CSS:** if the diff touches `.svelte` files or CSS, also apply the
+  `css-reviewer` checklist. Same rule: critical and serious findings block.
+- **UX:** if the diff touches `.svelte` files, CSS or `messages/`, also apply
+  the `ux-reviewer` checklist, alongside `a11y-reviewer`'s. Its findings are
+  **never blocking**: post them as notes (inline PR comments where they point at
+  a line).
+- **Storage:** if the diff touches a path listed in the Scope of
+  `.claude/agents/db-expert.md`, apply that agent's checklist. Same rule:
+  critical and serious findings block.
 - **Pipeline:** if the diff touches `.github/`, `.claude/`, `scripts/` or
-  `docs/rules/agents.md`, run the `pipeline-expert` subagent on the branch.
+  `docs/rules/agents.md`, apply the `pipeline-expert` checklist.
   Same rule: critical and serious findings block. Put its savings in the PR
   body.
 - **Security** (blocking if high or critical):
