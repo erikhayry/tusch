@@ -57,7 +57,11 @@ test(
 			.getByRole('listitem')
 			.filter({ hasText: panel.editorialTitle });
 		// The stored crop is shown in the character's gallery, so no preview is offered.
-		await expect(entry.getByRole('button', { name: 'create' })).toBeHidden();
+		await expect(
+			entry.getByRole('button', {
+				name: m.characterPreviewCrop({ name: character.name, number: 1 }),
+			}),
+		).toBeHidden();
 		await expect(
 			page.getByRole('img', {
 				name: m.characterHeadAlt({ name: character.name, number: 1, title: panel.editorialTitle }),

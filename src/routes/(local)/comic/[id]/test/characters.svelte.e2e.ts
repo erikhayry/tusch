@@ -54,6 +54,12 @@ const headAlt = (name: string) =>
 const fullAlt = (name: string) =>
 	m.characterFullAlt({ name, number: 1, title: PANEL.editorialTitle });
 
+/** The control that reveals a full-body crop, named after character and panel. */
+const headControl = (page: Page, name: string): Locator =>
+	characterSection(page, name).getByLabel(headAlt(name));
+
+const previewCrop = (name: string) => m.characterPreviewCrop({ name, number: 1 });
+
 function panelEntry(page: Page, name: string): Locator {
 	return characterSection(page, name)
 		.getByRole('list', { name: m.characterPanels() })
@@ -84,7 +90,8 @@ test.describe('character gallery', () => {
 
 			for (const { character } of HEAD_SIZES) {
 				const section = characterSection(page, character.name);
-				await expect(section.getByRole('img', { name: headAlt(character.name) })).toHaveCount(1);
+				await expect(headControl(page, character.name)).toHaveCount(1);
+				await expect(headControl(page, character.name).locator('img')).toHaveCount(1);
 				await expect(section.getByText(m.characterNoImages())).toHaveCount(0);
 			}
 		},
@@ -97,9 +104,7 @@ test.describe('character gallery', () => {
 			async ({ page }) => {
 				await generatePanelImage(page);
 
-				const head = characterSection(page, character.name).getByRole('img', {
-					name: headAlt(character.name),
-				});
+				const head = headControl(page, character.name).locator('img');
 				await expect(head).toBeVisible();
 				await expect
 					.poll(() =>
@@ -116,9 +121,7 @@ test.describe('character gallery', () => {
 		async ({ page }) => {
 			await generatePanelImage(page);
 			const section = characterSection(page, CHARACTER.name);
-			const control = section
-				.locator('summary, button')
-				.filter({ has: page.getByRole('img', { name: headAlt(CHARACTER.name) }) });
+			const control = headControl(page, CHARACTER.name);
 			const full = section.getByRole('img', { name: fullAlt(CHARACTER.name) });
 			await expect(full).toBeHidden();
 
@@ -136,11 +139,7 @@ test.describe('character gallery', () => {
 			await generatePanelImage(page, 2);
 
 			for (const { character } of HEAD_SIZES) {
-				await expect(
-					characterSection(page, character.name).getByRole('img', {
-						name: headAlt(character.name),
-					}),
-				).toHaveCount(1);
+				await expect(headControl(page, character.name)).toHaveCount(1);
 			}
 		},
 	);
@@ -150,13 +149,12 @@ test.describe('character gallery', () => {
 		{ tag: ['@REQ-101-1', '@REQ-047'] },
 		async ({ page }) => {
 			await generatePanelImage(page);
-			await expect(
-				characterSection(page, CHARACTER.name).getByRole('img', { name: headAlt(CHARACTER.name) }),
-			).toHaveCount(1);
+			await expect(headControl(page, CHARACTER.name)).toHaveCount(1);
 
 			await activate(page, page.getByRole('button', { name: m.deletePanel({ number: 1 }) }));
 
 			const section = characterSection(page, CHARACTER.name);
+			await expect(headControl(page, CHARACTER.name)).toHaveCount(0);
 			await expect(section.getByRole('img')).toHaveCount(0);
 			await expect(section.getByText(m.characterNoImages())).toBeVisible();
 		},
@@ -167,9 +165,7 @@ test.describe('character gallery', () => {
 		{ tag: ['@REQ-101-1', '@REQ-022'] },
 		async ({ page }) => {
 			await generatePanelImage(page);
-			const head = characterSection(page, CHARACTER.name).getByRole('img', {
-				name: headAlt(CHARACTER.name),
-			});
+			const head = headControl(page, CHARACTER.name).locator('img');
 			await expect(head).toBeVisible();
 
 			await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
@@ -186,7 +182,7 @@ test.describe('character panel list', () => {
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
 		const entry = panelEntry(page, CHARACTER.name);
 
-		await activate(page, entry.getByRole('button', { name: 'create' }));
+		await activate(page, entry.getByRole('button', { name: previewCrop(CHARACTER.name) }));
 
 		await expect(entry.locator('img[src^="blob:"]')).toBeVisible();
 	});
@@ -200,7 +196,9 @@ test.describe('character panel list', () => {
 			for (const { character } of HEAD_SIZES) {
 				const entry = panelEntry(page, character.name);
 				await expect(entry).toBeVisible();
-				await expect(entry.getByRole('button', { name: 'create' })).toHaveCount(0);
+				await expect(entry.getByRole('button', { name: previewCrop(character.name) })).toHaveCount(
+					0,
+				);
 				await expect(entry).not.toContainText('Is generated');
 			}
 		},

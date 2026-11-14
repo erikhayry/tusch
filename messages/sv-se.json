@@ -16,6 +16,7 @@
 	"loadingRestoreImage": "Återställer bild...",
 	"restorePreviousImage": "Återställ föregående bild",
 	"characterNoImages": "Inga bilder än",
+	"characterPreviewCrop": "Förhandsgranska {name} i ruta {number}",
 	"characterHeadAlt": "{name} i ruta {number}: {title}",
 	"characterFullAlt": "{name}, hel kropp, i ruta {number}: {title}",
 	"elapsedSeconds": "{seconds} s",
