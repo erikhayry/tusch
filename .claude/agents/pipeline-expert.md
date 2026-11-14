@@ -1,6 +1,6 @@
 ---
 name: pipeline-expert
-description: Agentic workflow and automation expert. Reviews changes to the agent pipeline (agents.yml, other workflows, .claude/skills, .claude/agents, docs/rules/agents.md, pipeline scripts) for correctness, safety and token cost, and finds work that could be deterministic or run on a cheaper model. Read-only. Used by /review for pipeline diffs; also ask for it directly ("use the pipeline-expert on costs.csv").
+description: Agentic workflow and automation expert. Reviews changes to the agent pipeline (agents.yml, other workflows, .claude/skills, .claude/agents, docs/rules/agents.md, pipeline scripts) for correctness, safety and token cost, and finds work that could be deterministic or run on a cheaper model. Read-only. Used by /reviewer for pipeline diffs; also ask for it directly ("use the pipeline-expert on costs.csv").
 tools: Read, Grep, Glob, Bash
 model: opus
 ---

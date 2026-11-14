@@ -98,7 +98,7 @@ jobs:
                 status:idea)         skill=plan;    target=$ISSUE ;;
                 status:needs-tests)  skill=test;    target=$ISSUE ;;
                 status:needs-dev)    skill=develop; target=$ISSUE ;;
-                status:needs-review) skill=review;  target=$ISSUE ;;
+                status:needs-review) skill=reviewer;  target=$ISSUE ;;
                 *)                   ;;  # other labels start nothing
               esac ;;
             issue_comment|pull_request_review|pull_request_review_comment)
@@ -125,7 +125,7 @@ jobs:
               elif [ -z "$DISPATCH_ISSUE" ]; then :
               elif issue_has_label "$DISPATCH_ISSUE" status:needs-tests; then skill=test; target=$DISPATCH_ISSUE
               elif issue_has_label "$DISPATCH_ISSUE" status:needs-dev; then skill=develop; target=$DISPATCH_ISSUE
-              elif issue_has_label "$DISPATCH_ISSUE" status:needs-review; then skill=review; target=$DISPATCH_ISSUE
+              elif issue_has_label "$DISPATCH_ISSUE" status:needs-review; then skill=reviewer; target=$DISPATCH_ISSUE
               elif issue_has_label "$DISPATCH_ISSUE" status:idea; then skill=plan; target=$DISPATCH_ISSUE; fi ;;
             *) ;;
           esac
@@ -142,7 +142,7 @@ jobs:
             plan)      turns=60;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue create:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*)' ;;
             test)      turns=120; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
             develop)   turns=150; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh workflow run:*),Bash(gh run:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
-            review)    turns=100; tools='Read,Grep,Glob,Write,Agent,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
+            reviewer)    turns=100; tools='Read,Grep,Glob,Write,Agent,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
             triage)    turns=50;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)' ;;
             tech-lead) turns=50;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh api:*),Bash(git:*),Bash(pnpm run check:requirements),Bash(pnpm exec playwright test --list:*)' ;;
             *)         turns=0;   tools='' ;;
@@ -152,7 +152,7 @@ jobs:
           # judgement matters most (planning, review, the weekly audit), the cheaper
           # one for implementation and routine bookkeeping.
           case "$skill" in
-            plan|review) model=opus ;;
+            plan|reviewer) model=opus ;;
             *)           model=sonnet ;;
           esac
           if [ "$target" = audit ]; then turns=100; model=opus; fi  # reads every requirement
