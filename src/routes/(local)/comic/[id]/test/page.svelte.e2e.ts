@@ -1,25 +1,25 @@
 import { expect, test } from '@playwright/test';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../../../tests/e2e/keyboard';
-import { EXAMPLES } from '../../../../../examples/examples';
+import { EXAMPLE_COMPLETE } from '../../../../../tests/e2e/examples';
 import { ComicPage } from './utils/comicPage';
 
 test('has expected title', { tag: '@REQ-010' }, async ({ page }) => {
-	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
+	const comicPage = await new ComicPage(page, EXAMPLE_COMPLETE).goto();
 
 	await expect(comicPage.heading).toBeVisible();
 });
 
 test('opens panel view', { tag: '@REQ-010' }, async ({ page }) => {
-	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
+	const comicPage = await new ComicPage(page, EXAMPLE_COMPLETE).goto();
 
 	await activate(page, comicPage.link);
 
-	await page.waitForURL(`**/comic/${EXAMPLES[0].id}/${EXAMPLES[0].panels[0].id}`);
+	await page.waitForURL(`**/comic/${EXAMPLE_COMPLETE.id}/${EXAMPLE_COMPLETE.panels[0].id}`);
 });
 
 test('delete cover', { tag: '@REQ-012' }, async ({ page }) => {
-	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
+	const comicPage = await new ComicPage(page, EXAMPLE_COMPLETE).goto();
 
 	await expect(comicPage.initialCoverImage).toBeVisible();
 
@@ -29,7 +29,7 @@ test('delete cover', { tag: '@REQ-012' }, async ({ page }) => {
 });
 
 test('create cover', { tag: '@REQ-011' }, async ({ page }) => {
-	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
+	const comicPage = await new ComicPage(page, EXAMPLE_COMPLETE).goto();
 
 	await activate(page, comicPage.deleteCoverButton);
 	await activate(page, comicPage.addCoverButton);
@@ -38,7 +38,7 @@ test('create cover', { tag: '@REQ-011' }, async ({ page }) => {
 });
 
 test('delete panel', { tag: '@REQ-013' }, async ({ page }) => {
-	const comicPage = await new ComicPage(page, EXAMPLES[0]).goto();
+	const comicPage = await new ComicPage(page, EXAMPLE_COMPLETE).goto();
 
 	await expect(comicPage.listItems).toHaveCount(comicPage.initialNumberOfListItems);
 
@@ -48,8 +48,8 @@ test('delete panel', { tag: '@REQ-013' }, async ({ page }) => {
 });
 
 test('shows the stored comic as JSON in the raw view', { tag: '@REQ-027' }, async ({ page }) => {
-	await gotoHydrated(page, `/comic/${EXAMPLES[0].id}/raw`);
+	await gotoHydrated(page, `/comic/${EXAMPLE_COMPLETE.id}/raw`);
 
 	const raw = await page.getByRole('textbox').inputValue();
-	expect(JSON.parse(raw)).toMatchObject({ id: EXAMPLES[0].id, title: EXAMPLES[0].title });
+	expect(JSON.parse(raw)).toMatchObject({ id: EXAMPLE_COMPLETE.id, title: EXAMPLE_COMPLETE.title });
 });

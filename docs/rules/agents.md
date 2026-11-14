@@ -1,7 +1,7 @@
 # Agent protocol
 
 Shared rules for the role skills in `.claude/skills/` (`/plan`, `/test`,
-`/develop`, `/review`, `/triage`, `/tech-lead`). The pipeline itself is
+`/develop`, `/reviewer`, `/triage`, `/tech-lead`). The pipeline itself is
 described in `docs/agent-workflow-plan.md`. These rules apply both locally
 and on GitHub.
 
@@ -19,7 +19,7 @@ and on GitHub.
 | `/plan`      | none or `status:idea`        | `status:needs-tests` (or stays `status:idea` while waiting for answers) |
 | `/test`      | `status:needs-tests`         | `status:needs-dev`                                                      |
 | `/develop`   | `status:needs-dev`           | `status:needs-review`                                                   |
-| `/review`    | `status:needs-review`        | `status:needs-human`, or back to `needs-dev` / `needs-tests`            |
+| `/reviewer`  | `status:needs-review`        | `status:needs-human`, or back to `needs-dev` / `needs-tests`            |
 | `/triage`    | `status:needs-human`         | `status:needs-dev`, `status:needs-tests`, or unchanged                  |
 | `/tech-lead` | any (it doesn't move issues) | none                                                                    |
 
@@ -47,6 +47,14 @@ Next: `status:<next>`
 
 Keep it short. Link files and commits rather than pasting code.
 
+## Skill names
+
+A skill's name must not match a built-in Claude Code command or alias. The
+built-in wins: `/review` became an alias of Claude Code's `/code-review`, so our
+reviewer, then called `/review`, silently ran the built-in code review instead
+(three silent stops on #98). The reviewer is now `/reviewer`. Check the
+`commands` list in a run's init message when adding a skill.
+
 ## Running commands
 
 Skills pre-approve narrow command patterns (e.g. `Bash(gh pr create *)`), and on
@@ -60,6 +68,12 @@ GitHub nobody is there to approve anything else. So:
 - Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`.
 - Screenshot baselines: `pnpm screenshots:update` renders them in CI and copies
   them into `src/`; don't download or copy them by hand.
+- **Inspect files with Read, Glob and Grep**, not `ls`, `cat`, `du`, `file`,
+  `find` or `wc`; those aren't on any role's allow list.
+- **A denial doesn't end your run.** Split the command into allowed single
+  commands (or use Read/Glob/Grep) and carry on. Every run ends with your
+  protocol comment and a label move; a run that just stops is blocked
+  automatically ("ended without handing off").
 - **Never wait for approval.** If a command you need is denied twice, block (see
   below) and include the exact command in your comment.
 
@@ -68,12 +82,13 @@ GitHub nobody is there to approve anything else. So:
 Use the cheapest model that does the job well; tokens are the pipeline's main
 cost (`costs.csv`, the "Cost so far" comment on each issue).
 
-| Role                                   | Model    | Why                                                     |
-| -------------------------------------- | -------- | ------------------------------------------------------- |
-| `/plan`, `/review`, `/tech-lead audit` | `opus`   | Judgement: scoping, catching what others missed         |
-| `/test`, `/develop`                    | `sonnet` | Implementation against a clear ticket and failing tests |
-| `/triage`, `/tech-lead reconcile`      | `sonnet` | Routine classification and bookkeeping                  |
-| `a11y-reviewer`, `pipeline-expert`     | as set   | `inherit` and `opus` (in `.claude/agents/`)             |
+| Role                                     | Model    | Why                                                     |
+| ---------------------------------------- | -------- | ------------------------------------------------------- |
+| `/plan`, `/reviewer`, `/tech-lead audit` | `opus`   | Judgement: scoping, catching what others missed         |
+| `/test`, `/develop`                      | `sonnet` | Implementation against a clear ticket and failing tests |
+| `/triage`, `/tech-lead reconcile`        | `sonnet` | Routine classification and bookkeeping                  |
+| `a11y-reviewer`, `css-reviewer`          | inherit  | Run inside `/reviewer`, so they use its model           |
+| `pipeline-expert`                        | `opus`   | Set in `.claude/agents/pipeline-expert.md`              |
 
 The model is set twice and must match: `model:` in each skill's frontmatter
 (local runs) and the `model` case in `agents.yml` (GitHub). One exception: a skill has
@@ -81,6 +96,27 @@ one model, so `/tech-lead audit` runs on `sonnet` locally (switch with
 `/model opus` first if you want the GitHub behaviour). Anything that needs
 no judgement (gathering facts, formatting, label moves, fixed check lists) is a
 script or workflow step, not an agent turn; `pipeline-expert` looks for these.
+
+## Workflow and agent files
+
+Agents never change `.github/workflows/` or `.claude/` (skills, subagents,
+settings). The agents' GitHub App has no `workflows` permission, and the
+agents' Write tool was refused for `.claude/` files (#84). Keep it that way, so
+agents can't change their own permissions, models, turn caps, instructions or
+CI gates. For a new or changed skill or subagent, post the full file content in
+the comment the same way.
+
+When a ticket needs a workflow or agent-file change:
+
+1. Do everything else first, and push it.
+2. Put the exact change in your protocol comment as a ```diff block per file
+   (or the full content of a new file),
+   plus one line on why.
+3. Set `status:blocked` with the decision "apply the workflow diff". A human
+   applies it on the branch, pushes, and moves the label back to your stage.
+
+The planner flags workflow changes in the ticket ("needs a human-applied
+workflow change"), so it's expected rather than a surprise.
 
 ## Follow-ups
 
@@ -112,9 +148,12 @@ Don't guess. A clear block is better than a wrong PR.
 ## Requirements ledger
 
 - `docs/requirements.md` is the source of truth for behaviour; tickets cite
-  `REQ-nnn` ids.
+  its ids. REQ-001 … REQ-052 are legacy sequential ids. Every new requirement
+  is scoped to the issue that adds it: `REQ-<issue>-<n>` (REQ-98-1, REQ-98-2),
+  so tickets running in parallel can't take the same id (#165).
+  `check:requirements` rejects new sequential ids.
 - The **planner** proposes new requirements in the ticket (`REQ-NEW: …`).
-- The **tester** adds them to the ledger with the next free id and tags the
+- The **tester** adds them to the ledger as `REQ-<issue>-<n>` and tags the
   tests that prove them, so `pnpm run check:requirements` passes.
 - The **tech lead** edits wording, removes obsolete requirements, and audits
   coverage; it never weakens a requirement to make a test pass.

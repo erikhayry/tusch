@@ -14,6 +14,7 @@
 	import AddCaptionForm from '../forms/addCaptionForm/AddCaptionForm.svelte';
 	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
+	import RestorePanelImageForm from '../forms/restorePanelImageForm/RestorePanelImageForm.svelte';
 	import Image from '../image/Image.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
@@ -42,6 +43,9 @@
 			label={m.removeImage()}
 			values={{ type: DB_ITEM_TYPE.enum.panelImage, comicId, panelId: panel.id }}
 		/>
+		{#if panel.previousImage}
+			<RestorePanelImageForm {comicId} panelId={panel.id} />
+		{/if}
 	{/if}
 
 	<p>{m.timeOfDay()}: {panel.timeOfDay}</p>

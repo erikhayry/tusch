@@ -31,9 +31,10 @@ rather than guessing.
 
 ## 3. Requirements
 
-For each `REQ-NEW` in the ticket, add an entry to `docs/requirements.md` with the
-next free id (keep the section structure; `Status: active`,
-`Proven by: tagged tests`). Apply any `Changes REQ-…` wording. Leave
+For each `REQ-NEW` in the ticket, add an entry to `docs/requirements.md` with an
+id scoped to this issue: `REQ-$0-1`, `REQ-$0-2`, … in ticket order (never the
+"next free" sequential number; parallel tickets would collide). Keep the
+section structure: `Status: active`, `Proven by: tagged tests`. Apply any `Changes REQ-…` wording. Leave
 `Removes REQ-…` for the developer (the old tests must go in the same commit).
 
 ## 4. Tests

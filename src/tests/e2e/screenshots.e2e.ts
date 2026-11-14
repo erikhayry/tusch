@@ -52,6 +52,18 @@ test.describe('screenshots', () => {
 		});
 	}
 
+	test.describe('dark colour scheme', () => {
+		test.use({ colorScheme: 'dark' });
+		// Only these three views get dark baselines; axe scans all of them in dark.
+		for (const name of ['landing', 'comic', 'settings'] as const) {
+			test(name, async ({ page }) => {
+				await gotoHydrated(page, VIEWS[name]);
+				await settle(page);
+				await expect(page).toHaveScreenshot(`${name}-dark.png`, { fullPage: true });
+			});
+		}
+	});
+
 	test('settings after adding a key', async ({ page }) => {
 		await gotoHydrated(page, '/settings');
 		await typeInto(page, page.getByRole('textbox', { name: m.byok() }), 'mock key');

@@ -37,8 +37,8 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-004 Example comics are seeded on first visit
 
 - Status: active
-- Statement: with no stored comics, the app seeds the example comics (and persists them).
-- Why: new users see a working comic before they have an API key.
+- Statement: with no stored comics, the app seeds three lightweight example comics (one complete, one without a cover or panel images, one with a single panel) and persists them.
+- Why: development and tests start from a small library that covers the main data shapes without heavy assets.
 - Proven by: tagged tests
 
 ## Creating a comic
@@ -152,6 +152,20 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: character references for later images.
 - Proven by: tagged tests
 
+### REQ-048 A replaced panel image can be restored
+
+- Status: active
+- Statement: after a panel image is replaced, the panel page offers "Restore previous image", which brings back the image shown just before the latest replacement. It is a single step: once restored, or once the panel image is replaced again, removed, or the panel or comic deleted, only the newest previous image or none is kept. It survives a reload. A panel image that was never replaced offers nothing to restore.
+- Why: a worse new image shouldn't destroy the one the user had.
+- Proven by: tagged tests
+
+### REQ-049 Restoring a panel image drops the crops of the replaced image
+
+- Status: active
+- Statement: restoring a previous panel image removes the character crops created from the replaced image and keeps the crops from earlier images, so dialogue heads match the image that's shown.
+- Why: crops of an image that is gone would be stray files and wrong references.
+- Proven by: tagged tests
+
 ### REQ-019 Captions can be added, edited and removed
 
 - Status: active
@@ -199,7 +213,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-025 Image files never leak or dangle
 
 - Status: active
-- Statement: replacing or deleting a cover, panel image or comic removes image files no comic still references (shared example files are kept); a generation that fails part-way leaves no partial metadata and no stray files.
+- Statement: replacing or deleting a cover, panel image, panel (with its character images) or comic removes image files no comic still references (shared example files are kept); a generation that fails part-way leaves no partial metadata and no stray files.
 - Why: OPFS is the user's disk space; metadata must not point at missing files.
 - Proven by: tagged tests
 
@@ -213,7 +227,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-036 A missing image file shows a placeholder
 
 - Status: active
-- Statement: if a comic references an image file that is no longer stored, the view shows a neutral "missing image" placeholder instead of a broken image or another comic's picture; example comics show their bundled images.
+- Statement: if a comic references an image file that is no longer stored, the view shows a neutral "missing image" placeholder instead of a broken image or another comic's picture; example comics show their bundled images. In the dark colour scheme the placeholder has a dark version, so it doesn't show a light-grey box on a dark page.
 - Why: a missing file must be visible, not disguised as a real image.
 - Proven by: tagged tests
 
@@ -326,7 +340,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-035 Every view passes an axe scan
 
 - Status: active
-- Statement: every view (landing, create, comic, panel, raw, not found, settings) has no axe violations: each has a page title, a main landmark, and labelled form controls.
+- Statement: every view (landing, create, comic, panel, raw, not found, settings) has no axe violations, in both the light and the dark colour scheme: each has a page title, a main landmark, labelled form controls and sufficient colour contrast.
 - Why: screen-reader and keyboard users must be able to use every view; tests select by role and name, so missing labels break both.
 - Proven by: tagged tests
 
@@ -340,7 +354,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-038 The focused control has a visible focus indicator
 
 - Status: active
-- Statement: when a control receives focus by keyboard, it shows a visible indicator (non-zero outline or box-shadow, distinct from its unfocused state).
+- Statement: when a control receives focus by keyboard, it shows a visible indicator (non-zero outline or box-shadow, distinct from its unfocused state). The indicator uses the accent colour in both colour schemes, and the accent has at least 3:1 contrast against the background of the active scheme.
 - Why: keyboard users must see where they are (WCAG 2.4.7); axe doesn't check it.
 - Proven by: tagged tests
 
@@ -349,6 +363,15 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: at a viewport 320 CSS px wide, no view (landing, create, comic, panel, raw, not found, settings) scrolls horizontally: the document is no wider than the viewport, and long content such as the raw JSON wraps or scrolls inside its own box.
 - Why: WCAG 1.4.10 (Reflow); users on narrow screens or at high zoom must not have to scroll in two directions.
+- Proven by: tagged tests
+
+## Appearance
+
+### REQ-044 Every view follows the OS/browser colour scheme
+
+- Status: active
+- Statement: every view follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it looks as before: black text on white. There is no toggle and nothing is stored.
+- Why: users with a dark system setting otherwise get a bright white page.
 - Proven by: tagged tests
 
 ## Performance

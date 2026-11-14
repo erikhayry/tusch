@@ -1,7 +1,7 @@
 import { m } from '$lib/paraglide/messages';
 import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
 import { expect, test } from '@playwright/test';
-import { EXAMPLES } from '../../../../../examples/examples';
+import { EXAMPLE_COMPLETE } from '../../../../../tests/e2e/examples';
 import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
 import { CreatePage } from './utils/createPage';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
@@ -53,7 +53,7 @@ test(
 	{ tag: '@REQ-008' },
 	async ({ page }) => {
 		await gotoHydrated(page, '/');
-		await expect(page.getByRole('link', { name: EXAMPLES[0].title })).toBeVisible();
+		await expect(page.getByRole('link', { name: EXAMPLE_COMPLETE.title })).toBeVisible();
 		const before = await page.evaluate(
 			() => JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}').comics.length,
 		);

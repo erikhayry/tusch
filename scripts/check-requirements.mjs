@@ -1,6 +1,14 @@
 #!/usr/bin/env node
-// Checks docs/requirements.md against the @REQ-nnn tags in the E2E tests.
+// Checks docs/requirements.md against the @REQ-… tags in the E2E tests.
 // See docs/agent-workflow-plan.md §5.2 and docs/rules/testing.md.
+//
+// Ids: REQ-001 … REQ-052 are the legacy sequential ids and keep their numbers.
+// New requirements are scoped to the issue that adds them: REQ-<issue>-<n>
+// (REQ-98-1, REQ-98-2). Parallel tickets have different issue numbers, so their
+// ids can't collide the way "next free number" did (#165).
+const LAST_LEGACY_ID = 52;
+const ID = /^REQ-(?:(\d{3})|([1-9]\d*)-([1-9]\d*))$/;
+const TAG = /@REQ-\d+(?:-\d+)?/g;
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
@@ -15,8 +23,15 @@ for (const [index, line] of readFileSync(ledgerPath, 'utf8').split('\n').entries
 	const heading = line.match(/^### (\S+)\s+(.*)$/);
 	if (heading) {
 		const [, id, title] = heading;
-		if (!/^REQ-\d{3}$/.test(id))
-			errors.push(`docs/requirements.md:${index + 1}: malformed id "${id}"`);
+		const parts = id.match(ID);
+		if (!parts)
+			errors.push(
+				`docs/requirements.md:${index + 1}: malformed id "${id}" (new ids are REQ-<issue>-<n>)`,
+			);
+		else if (parts[1] && Number(parts[1]) > LAST_LEGACY_ID)
+			errors.push(
+				`docs/requirements.md:${index + 1}: ${id} takes a new sequential number; use REQ-<issue>-<n> instead`,
+			);
 		if (requirements.has(id)) errors.push(`docs/requirements.md:${index + 1}: duplicate id ${id}`);
 		current = { id, title, status: null, gap: false };
 		requirements.set(id, current);
@@ -45,7 +60,7 @@ const tagged = new Map(); // id -> [test locations]
 for (const file of e2eFiles(join(root, 'src'))) {
 	const lines = readFileSync(file, 'utf8').split('\n');
 	lines.forEach((line, index) => {
-		const ids = line.match(/@REQ-\d{3}/g);
+		const ids = line.match(TAG);
 		if (!ids) return;
 		const location = `${relative(root, file)}:${index + 1}`;
 		// The tag may sit on its own line after `test(` (Prettier), so look back to the call.

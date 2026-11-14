@@ -13,6 +13,8 @@
 	"loadingAddCaption": "Lägger till bildtext...",
 	"loadingEdit": "Sparar ändringar...",
 	"loadingDelete": "Tar bort...",
+	"loadingRestoreImage": "Återställer bild...",
+	"restorePreviousImage": "Återställ föregående bild",
 	"elapsedSeconds": "{seconds} s",
 	"done": "Klart",
 	"globalInstructions": "Globala instruktioner",

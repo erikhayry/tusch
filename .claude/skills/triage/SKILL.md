@@ -43,7 +43,7 @@ goes first and the developer follows).
 Comment on the issue with the protocol format. Quote each human comment
 (shortened) with what you decided and why, so the next role can act without
 re-reading the PR. For each test or code change, add **Missed by review: yes**
-if the reviewer's checklist (`review/SKILL.md`, `docs/rules/*`,
+if the reviewer's checklist (`reviewer/SKILL.md`, `docs/rules/*`,
 `docs/rules/review-lessons.md`) should have caught it, with a one-line lesson
 that would have; otherwise **Missed by review: no**. The tech lead turns these
 into review lessons after the merge. Then update the label as decided. If a comment is unclear,
