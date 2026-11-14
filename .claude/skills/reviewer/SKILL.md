@@ -3,7 +3,7 @@ name: reviewer
 description: Reviewer role for the agent pipeline. Reviews an issue labelled status:needs-review against the rules, the requirements ledger and a security checklist; bounces it back or opens the PR with review comments for the human.
 argument-hint: <issue-number>
 disable-model-invocation: true
-model: opus
+model: sonnet
 allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh pr create *) Bash(gh pr checks *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
 ---
 
@@ -28,6 +28,19 @@ branch, `git pull`, and get the change with `git diff origin/main...HEAD`.
 
 Go through each item; note **blocking** issues (must fix) and **notes** (nice to have).
 
+**Nothing can wake you on GitHub.** When you end your turn the run ends, and
+anything still running in the background is lost; that is how reviews ended
+silently with "I'm still waiting on the E2E run and the a11y review" (#100).
+So:
+
+- Never use `run_in_background`, and never end your turn to wait. Run each
+  command in the foreground with a long timeout (`pnpm run test:e2e` takes about
+  three minutes: use 600000 ms).
+- Wherever an item below says to run a subagent, **don't launch one**. Read its
+  file in `.claude/agents/<name>.md` and apply its checklist to the diff
+  yourself, then report its findings in its table format. (An interactive session
+  can run the subagent instead.)
+
 - **Ticket:** every acceptance criterion has a passing, tagged E2E test; nothing
   out of scope was built.
 - **Requirements:** new or changed requirements are in `docs/requirements.md`
@@ -42,15 +55,19 @@ Go through each item; note **blocking** issues (must fix) and **notes** (nice to
 - **Screenshots:** baselines changed only for the views the ticket lists, and
   the images look intended.
 - **Accessibility:** if the diff touches `.svelte` files, CSS or `messages/`,
-  run the `a11y-reviewer` subagent (Agent tool) on the branch. Its
+  apply the `a11y-reviewer` checklist to the diff. Its
   **critical** and **serious** findings are blocking; post the rest as notes.
-- **CSS:** if the diff touches `.svelte` files or CSS, also run the
-  `css-reviewer` subagent. Same rule: critical and serious findings block.
+- **CSS:** if the diff touches `.svelte` files or CSS, also apply the
+  `css-reviewer` checklist. Same rule: critical and serious findings block.
+- **UX:** if the diff touches `.svelte` files, CSS or `messages/`, also apply
+  the `ux-reviewer` checklist, alongside `a11y-reviewer`'s. Its findings are
+  **never blocking**: post them as notes (inline PR comments where they point at
+  a line).
 - **Storage:** if the diff touches a path listed in the Scope of
   `.claude/agents/db-expert.md`, apply that agent's checklist. Same rule:
   critical and serious findings block.
 - **Pipeline:** if the diff touches `.github/`, `.claude/`, `scripts/` or
-  `docs/rules/agents.md`, run the `pipeline-expert` subagent on the branch.
+  `docs/rules/agents.md`, apply the `pipeline-expert` checklist.
   Same rule: critical and serious findings block. Put its savings in the PR
   body.
 - **Security** (blocking if high or critical):

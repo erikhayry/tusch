@@ -3,7 +3,7 @@ name: develop
 description: Developer role for the agent pipeline. Implements an issue labelled status:needs-dev on its branch until the tester's E2E tests and the full suite pass, updates screenshot baselines, then hands it to review.
 argument-hint: <issue-number>
 disable-model-invocation: true
-model: sonnet
+model: haiku
 allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh workflow run *) Bash(gh run *) Bash(git *) Bash(pnpm *)
 ---
 

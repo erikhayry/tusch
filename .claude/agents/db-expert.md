@@ -1,6 +1,6 @@
 ---
 name: db-expert
-description: Local storage expert. Reviews changes to the comics_db snapshot in localStorage, OPFS image files and the Zod schemas they are validated with, and reports findings by severity. Read-only. /reviewer runs it on diffs that touch the paths in its Scope; also ask for it directly.
+description: Local storage expert. Reviews changes to the comics_db snapshot in localStorage, OPFS image files and the Zod schemas they are validated with, and reports findings by severity. Read-only. /reviewer applies it to diffs that touch the paths in its Scope; also ask for it directly.
 tools: Read, Grep, Glob, Bash
 model: inherit
 ---
@@ -46,8 +46,8 @@ command results are in `docs/rules/*`, which `/reviewer` checks).
   - the example files in `static/examples/` stay, even ones no example comic uses
     any more, because returning visitors' saved snapshots still point at them
     (#154);
-  - nothing outside `src/lib/client/assets/` touches OPFS (`utils/storage` is
-    reached only through the asset store).
+  - nothing outside `src/lib/client/assets/` makes OPFS calls (read, write or
+    delete a stored file); a pure helper such as `base64ToBlob` may be imported.
 - **Reads:** data read from `localStorage` is parsed with its schema before use.
 - **Tests:**
   - a persistence change has an E2E test that reloads the page (REQ-022);
