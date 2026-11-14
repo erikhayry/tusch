@@ -18,6 +18,7 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 ### Fixes
 
+- After replacing a panel image, the character heads next to the dialogue now match the new image. ([#215](https://github.com/erikhayry/tusch/pull/215))
 - Example comics now show their own panel images, and a missing image shows a clear placeholder instead of an unrelated picture. ([#138](https://github.com/erikhayry/tusch/pull/138))
 - Every page now has a proper title and a main landmark, so screen readers and browser tabs show where you are. ([#115](https://github.com/erikhayry/tusch/pull/115))
 
