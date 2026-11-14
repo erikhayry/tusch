@@ -24,7 +24,7 @@
 					<a
 						href={resolve(`/comic/${comicId}/${panel.id}`)}
 						aria-current={index === current.index ? 'page' : undefined}
-						>{panel.editorialTitle}
+						>{panel.editorialTitle || m.panel({ number: index + 1 })}
 					</a>
 					<CreatePanelForm
 						values={toCreatePanelValues(comicId, panels, index)}
