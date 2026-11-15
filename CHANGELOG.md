@@ -7,6 +7,7 @@ release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
 
 ### Features
 
+- The start page now shows each comic's cover next to its title. ([#240](https://github.com/erikhayry/tusch/pull/240))
 - The panel list now shows one "add panel" button per position, and "Add Panel after panel N" now really inserts after panel N. ([#241](https://github.com/erikhayry/tusch/pull/241))
 - You can fix a wrongly cropped character image with AI from the comic page, and undo the fix. ([#229](https://github.com/erikhayry/tusch/pull/229))
 - When generating a panel image, you can now attach a character's look from another panel so the character stays consistent. ([#212](https://github.com/erikhayry/tusch/pull/212))
