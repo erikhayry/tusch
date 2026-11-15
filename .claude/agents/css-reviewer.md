@@ -27,10 +27,10 @@ Ignore untouched CSS unless the change breaks it.
 
 ## Checklist (cite the `styling.md` section)
 
-- **Order of work:** semantic elements are styled before classes. Flag a class
-  where an element selector would do, or a `<div>` styled to look like a
-  `<button>`. Base styles target 320 px, and wide-screen rules are added on top,
-  not the reverse.
+- **Order of work:** semantic elements are styled before classes. Local classes
+  in a component's scoped `<style>` are fine for its layout; flag global classes
+  in `app.css`, or a `<div>` styled to look like a `<button>`. Base styles target
+  320 px, and wide-screen rules are added on top, not the reverse.
 - **Where styles go:** a scoped `<style>` holds only the component's own
   layout; the global look belongs in `app.css`.
 - **Variables only:** add a new token only when no existing one fits, and no
