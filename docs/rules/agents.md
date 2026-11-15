@@ -75,8 +75,13 @@ GitHub nobody is there to approve anything else. So:
   `.agent-tmp/<name>.md` (gitignored), then pass the file:
   `gh issue comment <n> --body-file .agent-tmp/comment.md`.
 - Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`.
-- Screenshot baselines: `pnpm screenshots:update` renders them in CI and copies
-  them into `src/`; don't download or copy them by hand.
+- Screenshot baselines: run `pnpm screenshots:update`. Inside the CI container
+  (agent runs on GitHub: `GITHUB_ACTIONS=true` and `PLAYWRIGHT_SCREENSHOTS=1`) it
+  renders the baselines in place, with no dispatch and no download. That is the
+  same image as `ci.yml`, so the baselines match CI; `pnpm run check:agent-fixtures`
+  fails if the two container tags drift apart. Elsewhere it pushes the branch,
+  renders the baselines in CI, then copies them into `src/`. Either way, don't
+  download or copy them by hand.
 - **Inspect files with Read, Glob and Grep**, not `ls`, `cat`, `du`, `file`,
   `find` or `wc`; those aren't on any role's allow list.
 - **A denial doesn't end your run.** Split the command into allowed single
