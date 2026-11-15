@@ -24,7 +24,7 @@
 		({ update }) => update(),
 	);
 
-	let { models, config }: ConfigFormProps = $props();
+	let { models, config, hasKey }: ConfigFormProps = $props();
 </script>
 
 <Section data-testId={configFormTestId}>
@@ -36,6 +36,10 @@
 			<li aria-label={configEntry[0]}>{configEntry[1]}</li>
 		{/each}
 	</ul>
+
+	{#if !hasKey}
+		<p>{m.noKeyModelsHint()}</p>
+	{/if}
 
 	<form method="POST" action={`?/${CONFIG_ACTION}`} use:enhance={handleSubmit}>
 		<label for="select-text-model">{m.selectTextModel()}</label>

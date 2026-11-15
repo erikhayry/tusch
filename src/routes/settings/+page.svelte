@@ -8,12 +8,12 @@
 	import type { Props } from './+page';
 
 	let { data }: { data: Props } = $props();
-	const { config, ...models } = $derived(data);
+	const { config, hasKey, ...models } = $derived(data);
 </script>
 
 <Page title={m.settings()}>
-	<LoginForm />
-	<ConfigForm {models} {config} />
+	<LoginForm {hasKey} />
+	<ConfigForm {models} {config} {hasKey} />
 	<GlobalInstructionsForm />
 	<a href={resolve('/')}>{m.back()}</a>
 </Page>

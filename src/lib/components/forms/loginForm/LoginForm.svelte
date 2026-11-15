@@ -14,6 +14,10 @@
 	} from '$lib/features/settings/contracts/validateApiKey';
 	import { enhanceAction } from '$lib/forms/enhance-action';
 
+	import { type LoginFormProps } from './loginFormTypes';
+
+	let { hasKey }: LoginFormProps = $props();
+
 	let success = $state<boolean | null>(null);
 
 	// Failures (invalid input, rate limits, provider errors) surface in the global
@@ -27,6 +31,9 @@
 	<p>{m.keyAdded()}</p>
 	<a href={resolve('/comic/create')}>{m.createNewComic()}</a>
 {:else}
+	{#if hasKey}
+		<p>{m.keyStatus()}</p>
+	{/if}
 	{#if success === false}
 		<p>{m.invalidKey()}</p>
 	{/if}
@@ -38,8 +45,9 @@
 	>
 		<label>
 			<span>{m.byok()}</span>
-			<input type="text" name="key" autocomplete="off" />
+			<input type="text" name="key" autocomplete="off" aria-describedby="key-hint" />
 		</label>
+		<p id="key-hint">{m.keyHint()}</p>
 
 		<button type="submit">{m.add()}</button>
 	</form>

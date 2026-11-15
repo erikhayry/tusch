@@ -5,6 +5,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import DeleteItemForm from '$lib/components/forms/deleteItemForm/DeleteItemForm.svelte';
+	import LoginForm from '$lib/components/forms/loginForm/LoginForm.svelte';
 	import Page from '$lib/components/page/Page.svelte';
 	import Heading from '$lib/components/relativeHeading/Heading.svelte';
 	import Section from '$lib/components/relativeHeading/Section.svelte';
@@ -16,6 +17,14 @@
 </script>
 
 <Page title={m.tusch()}>
+	{#if data.showWelcome}
+		<Section>
+			<Heading>{m.welcomeHeading()}</Heading>
+			<p>{m.welcomeSentence()}</p>
+			<LoginForm hasKey={data.hasKey} />
+		</Section>
+	{/if}
+
 	<Section>
 		<Heading id={comicsListId}>{m.comics()}</Heading>
 		<ul aria-labelledby={comicsListId}>
