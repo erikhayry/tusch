@@ -82,10 +82,14 @@ function interpret<T>(read: () => T): T {
  */
 async function generateImage(gateway: AiGateway, request: AiImageRequest): Promise<OpenAiOutput> {
 	const first = await gateway.image(request);
-	if (hasImage(first)) return first;
+	if (hasImage(first)) {
+		return first;
+	}
 
 	const second = await gateway.image(request);
-	if (hasImage(second)) return second;
+	if (hasImage(second)) {
+		return second;
+	}
 
 	throw new InvalidAiResponseError('ai_no_image', 'the response has no image');
 }

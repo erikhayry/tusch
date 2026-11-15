@@ -124,16 +124,28 @@ export function buildPanelImageMessages({
 }): string[] {
 	const meta: string[] = [];
 
-	if (panel.visualDescription) meta.push(`Visual Description: ${panel.visualDescription}`);
+	if (panel.visualDescription) {
+		meta.push(`Visual Description: ${panel.visualDescription}`);
+	}
 	if (panel.dialogue?.length) {
 		const dialogText = panel.dialogue.map(({ text }) => text).join('. ');
 		meta.push(`Dialogue context for emotion/acting: ${dialogText}`);
 	}
-	if (panel.captions?.length) meta.push(`Scene mood/context: ${panel.captions.join('. ')}`);
-	if (panel.place) meta.push(`Location: ${panel.place}`);
-	if (panel.year) meta.push(`Year/Era setting: ${panel.year}`);
-	if (panel.season) meta.push(`Season: ${panel.season}`);
-	if (panel.timeOfDay) meta.push(`Time of day: ${panel.timeOfDay}`);
+	if (panel.captions?.length) {
+		meta.push(`Scene mood/context: ${panel.captions.join('. ')}`);
+	}
+	if (panel.place) {
+		meta.push(`Location: ${panel.place}`);
+	}
+	if (panel.year) {
+		meta.push(`Year/Era setting: ${panel.year}`);
+	}
+	if (panel.season) {
+		meta.push(`Season: ${panel.season}`);
+	}
+	if (panel.timeOfDay) {
+		meta.push(`Time of day: ${panel.timeOfDay}`);
+	}
 
 	meta.push(`Characters in comic: ${JSON.stringify(characters)}`);
 
@@ -202,7 +214,9 @@ export function getChatMessages(messages: string[]): ResponseInputItem[] {
 }
 
 export function getImageMessages(imageUrls: string[]): ResponseInputItem[] {
-	if (imageUrls.length === 0) return [];
+	if (imageUrls.length === 0) {
+		return [];
+	}
 
 	return [
 		{

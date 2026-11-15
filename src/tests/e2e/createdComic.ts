@@ -13,7 +13,9 @@ export async function createComic(page: Page): Promise<string> {
 	await activate(page, page.getByRole('button', { name: /submit/i }));
 	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 	const id = page.url().split('/').at(-1);
-	if (!id) throw new Error('created comic has no id');
+	if (!id) {
+		throw new Error('created comic has no id');
+	}
 	return id;
 }
 
@@ -21,7 +23,9 @@ export async function createComic(page: Page): Promise<string> {
 export async function createComicAtFirstPanel(page: Page) {
 	const comicId = await createComic(page);
 	const panel = (await storedComic(page, comicId)).panels[0];
-	if (!panel) throw new Error('created comic has no panel');
+	if (!panel) {
+		throw new Error('created comic has no panel');
+	}
 	await gotoHydrated(page, `/comic/${comicId}/${panel.id}`);
 	return { comicId, panelId: panel.id };
 }

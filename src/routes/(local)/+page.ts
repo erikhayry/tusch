@@ -12,7 +12,9 @@ export async function load({ parent }) {
 	const comics = getComics(comicStore.comics);
 
 	// Empty collection (e.g. every comic deleted this session): start a new one.
-	if (comics.length === 0) redirect(307, resolve('/comic/create'));
+	if (comics.length === 0) {
+		redirect(307, resolve('/comic/create'));
+	}
 
 	return ComicsPageDataSchema.parse({ comics });
 }

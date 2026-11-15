@@ -156,7 +156,9 @@ function prefixOf(command) {
 	const [first, second] = String(command ?? '')
 		.trim()
 		.split(/\s+/);
-	if (!first || !/^[\w./-]+$/.test(first)) return '(other)';
+	if (!first || !/^[\w./-]+$/.test(first)) {
+		return '(other)';
+	}
 	// Only these tools take a subcommand; after any other word (`echo sk-…`) the
 	// second word may be a secret.
 	return second && SUBCOMMAND_TOOLS.has(first) && WORD.test(second) ? `${first} ${second}` : first;
@@ -273,7 +275,9 @@ function ranked(digests, pick, minimum) {
 }
 
 function markdownTable(headers, rows) {
-	if (rows.length === 0) return 'None.\n';
+	if (rows.length === 0) {
+		return 'None.\n';
+	}
 	return [
 		`| ${headers.join(' | ')} |`,
 		`| --- | ${headers
@@ -287,7 +291,9 @@ function markdownTable(headers, rows) {
 
 function actions(dir) {
 	const digests = readDigests(dir);
-	if (digests.length === 0) return '# Agent actions\n\nNo digests.\n';
+	if (digests.length === 0) {
+		return '# Agent actions\n\nNo digests.\n';
+	}
 
 	const skills = new Map();
 	for (const d of digests) {
@@ -378,14 +384,21 @@ function finalMessage(file) {
 }
 
 const [command, arg, issue] = process.argv.slice(2);
-if (command === 'header') console.log(COLUMNS.join(','));
-else if (command === 'row') console.log(row(arg));
-else if (command === 'digest') process.stdout.write(digest(arg));
-else if (command === 'actions') process.stdout.write(actions(arg));
-else if (command === 'summary') console.log(summary(arg, issue));
-else if (command === 'denials') console.log(denials(arg));
-else if (command === 'final') console.log(finalMessage(arg));
-else {
+if (command === 'header') {
+	console.log(COLUMNS.join(','));
+} else if (command === 'row') {
+	console.log(row(arg));
+} else if (command === 'digest') {
+	process.stdout.write(digest(arg));
+} else if (command === 'actions') {
+	process.stdout.write(actions(arg));
+} else if (command === 'summary') {
+	console.log(summary(arg, issue));
+} else if (command === 'denials') {
+	console.log(denials(arg));
+} else if (command === 'final') {
+	console.log(finalMessage(arg));
+} else {
 	console.error(
 		'usage: costs.mjs header | row <execution-file> | summary <costs.csv> [issue] | digest <execution-file> | actions <digest-dir> | denials <execution-file> | final <execution-file>',
 	);

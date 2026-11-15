@@ -87,7 +87,9 @@ export async function createComicWithImageOnFirstPanel(page: Page) {
 	const comicId = await createComic(page);
 	const { panels } = await storedComic(page, comicId);
 	const [a, b] = panels;
-	if (!a || !b) throw new Error('created comic needs two panels');
+	if (!a || !b) {
+		throw new Error('created comic needs two panels');
+	}
 	await generatePanelImage(page, comicId, a.id);
 	const comic = await storedComic(page, comicId);
 	const shared = speakers(comic, a.id).find(({ id }) =>
@@ -96,7 +98,8 @@ export async function createComicWithImageOnFirstPanel(page: Page) {
 	const silentInB = comic.characters.find(
 		({ id }) => !speakers(comic, b.id).some((speaker) => speaker.id === id),
 	);
-	if (!shared || !silentInB)
+	if (!shared || !silentInB) {
 		throw new Error('mock comic needs a shared and a non-speaking character');
+	}
 	return { comicId, comic, a, b, shared, silentInB, imagesOfA: imagesFromPanel(comic, a.id) };
 }

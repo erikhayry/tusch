@@ -12,7 +12,9 @@ import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.m
 import { AiGatewayError, type AiCredentials, type AiGateway } from './ai-gateway';
 
 export function toAiGatewayError(error: unknown): AiGatewayError {
-	if (error instanceof AiGatewayError) return error;
+	if (error instanceof AiGatewayError) {
+		return error;
+	}
 	if (error instanceof OpenAI.AuthenticationError) {
 		return new AiGatewayError('auth', 'API key is invalid or rejected', 401);
 	}
@@ -45,7 +47,9 @@ export function toAiGatewayError(error: unknown): AiGatewayError {
 
 export function createOpenAiGateway({ apiKey, textModel, imageModel }: AiCredentials): AiGateway {
 	function client(): OpenAI {
-		if (!apiKey) throw new AiGatewayError('missing-key', 'Add an OpenAI API key in Settings', 401);
+		if (!apiKey) {
+			throw new AiGatewayError('missing-key', 'Add an OpenAI API key in Settings', 401);
+		}
 		return new OpenAI({ apiKey });
 	}
 
@@ -84,7 +88,9 @@ export function createOpenAiGateway({ apiKey, textModel, imageModel }: AiCredent
 				return { success: true, message: 'API key is valid' };
 			} catch (error) {
 				const failure = toAiGatewayError(error);
-				if (failure.kind === 'rate-limit') throw failure;
+				if (failure.kind === 'rate-limit') {
+					throw failure;
+				}
 				return { success: false, message: failure.message };
 			}
 		},

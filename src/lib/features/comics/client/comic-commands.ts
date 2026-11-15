@@ -57,10 +57,14 @@ function updatePanel(
 	change: (panel: Panel) => Outcome<Panel>,
 ): Outcome<Comic> {
 	const panel = comic.panels.find(({ id }) => id === panelId);
-	if (!panel) return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
+	if (!panel) {
+		return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
+	}
 
 	const next = change(panel);
-	if (!next.ok) return next;
+	if (!next.ok) {
+		return next;
+	}
 
 	return ok({
 		...comic,
@@ -74,11 +78,14 @@ function updateCharacter(
 	change: (character: Character) => Outcome<Character>,
 ): Outcome<Comic> {
 	const character = comic.characters.find(({ id }) => id === characterId);
-	if (!character)
+	if (!character) {
 		return fail(CommandFailureCodes['character-not-found'], `Character ${characterId} not found`);
+	}
 
 	const next = change(character);
-	if (!next.ok) return next;
+	if (!next.ok) {
+		return next;
+	}
 
 	return ok({
 		...comic,
@@ -96,10 +103,14 @@ function updateCharacterImage(
 ): Outcome<Comic> {
 	return updateCharacter(comic, characterId, (character) => {
 		const image = character.images.find(({ id }) => id === imageId);
-		if (!image) return fail('image-not-found', `Character image ${imageId} not found`);
+		if (!image) {
+			return fail('image-not-found', `Character image ${imageId} not found`);
+		}
 
 		const next = change(image);
-		if (!next.ok) return next;
+		if (!next.ok) {
+			return next;
+		}
 
 		return ok({
 			...character,
@@ -116,7 +127,9 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 	}
 
 	function commit(transition: Outcome<Comic[]>): CommandResult {
-		if (!transition.ok) return transition;
+		if (!transition.ok) {
+			return transition;
+		}
 
 		try {
 			storage.write(serializeComicSnapshot(transition.value));
@@ -134,11 +147,14 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 	function updateComic(comicId: string, change: (comic: Comic) => Outcome<Comic>): CommandResult {
 		const comics = current();
 		const comic = comics.find(({ id }) => id === comicId);
-		if (!comic)
+		if (!comic) {
 			return commit(fail(CommandFailureCodes['comic-not-found'], `Comic ${comicId} not found`));
+		}
 
 		const next = change(comic);
-		if (!next.ok) return commit(next);
+		if (!next.ok) {
+			return commit(next);
+		}
 
 		return commit(ok(comics.map((current) => (current.id === comicId ? next.value : current))));
 	}
@@ -259,14 +275,16 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 		restorePanelImage(comicId: string, panelId: string): CommandResult {
 			return updateComic(comicId, (comic) => {
 				const panel = comic.panels.find(({ id }) => id === panelId);
-				if (!panel)
+				if (!panel) {
 					return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
+				}
 				const previous = panel.previousImage;
-				if (!previous)
+				if (!previous) {
 					return fail(
 						CommandFailureCodes['image-not-found'],
 						`Panel ${panelId} has no previous image`,
 					);
+				}
 
 				const dropped = new Set(panel.imageCropIds ?? []);
 				const restored = updatePanel(comic, panelId, (current) =>
@@ -277,7 +295,9 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 						previousImage: undefined,
 					}),
 				);
-				if (!restored.ok) return restored;
+				if (!restored.ok) {
+					return restored;
+				}
 
 				return ok({
 					...restored.value,
@@ -442,5 +462,7 @@ export const comicCommands = createComicCommands({
 });
 
 export function expectCommitted(result: CommandResult): void {
-	if (!result.ok) throw new Error(result.message);
+	if (!result.ok) {
+		throw new Error(result.message);
+	}
 }

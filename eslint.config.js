@@ -23,6 +23,9 @@ export default defineConfig(
 			'no-undef': 'off',
 			// Narrow with a guard instead; a `!` hides a render-time crash (docs/rules/code-style.md).
 			'@typescript-eslint/no-non-null-assertion': 'error',
+			// Placed after eslint-config-prettier, which switches `curly` off; `all` is compatible
+			// with Prettier, and braces stop a later edit from adding a line outside the `if`.
+			curly: ['error', 'all'],
 		},
 	},
 	{

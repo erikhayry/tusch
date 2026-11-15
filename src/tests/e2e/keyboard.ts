@@ -8,7 +8,9 @@ const MAX_TABS = 80;
 function describeFocused(page: Page): Promise<string> {
 	return page.evaluate(() => {
 		const el = document.activeElement;
-		if (!el || el === document.body) return 'nothing (document body)';
+		if (!el || el === document.body) {
+			return 'nothing (document body)';
+		}
 		const label = el.getAttribute('aria-label') ?? el.textContent?.trim().slice(0, 40) ?? '';
 		return `<${el.tagName.toLowerCase()}> "${label}"`;
 	});
@@ -25,7 +27,9 @@ export async function tabTo(page: Page, target: Locator, maxTabs = MAX_TABS): Pr
 			await expect(target).toBeFocused();
 			return;
 		}
-		if (presses < maxTabs) await page.keyboard.press('Tab');
+		if (presses < maxTabs) {
+			await page.keyboard.press('Tab');
+		}
 	}
 	throw new Error(
 		`Could not reach ${target} with Tab in ${maxTabs} presses; focus ended on ${await describeFocused(page)}`,
@@ -46,8 +50,11 @@ export async function activate(
 export async function typeInto(page: Page, target: Locator, text: string): Promise<void> {
 	await tabTo(page, target);
 	await page.keyboard.press('ControlOrMeta+A');
-	if (text === '') await page.keyboard.press('Delete');
-	else await page.keyboard.type(text);
+	if (text === '') {
+		await page.keyboard.press('Delete');
+	} else {
+		await page.keyboard.type(text);
+	}
 }
 
 /** Tab to a <select> and choose an option by typing its label (type-ahead). */

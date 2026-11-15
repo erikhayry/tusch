@@ -2,7 +2,9 @@
 
 export function parseRgb(color: string): [number, number, number] {
 	const match = color.match(/rgba?\(\s*(\d+(?:\.\d+)?)[,\s]+(\d+(?:\.\d+)?)[,\s]+(\d+(?:\.\d+)?)/);
-	if (!match) throw new Error(`Not an rgb() colour: ${color}`);
+	if (!match) {
+		throw new Error(`Not an rgb() colour: ${color}`);
+	}
 	return [Number(match[1]), Number(match[2]), Number(match[3])];
 }
 

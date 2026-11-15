@@ -24,7 +24,9 @@ export interface ComicSnapshotStorage {
 }
 
 export function readComicSnapshot(raw: string | null): ComicSnapshotRead {
-	if (raw === null) return { status: 'missing' };
+	if (raw === null) {
+		return { status: 'missing' };
+	}
 
 	let parsed: unknown;
 	try {
@@ -36,7 +38,9 @@ export function readComicSnapshot(raw: string | null): ComicSnapshotRead {
 	// Legacy format before versioning: an array of [id, comic] tuples.
 	if (Array.isArray(parsed)) {
 		const legacy = ComicEntriesSchema.safeParse(parsed);
-		if (!legacy.success) return { status: 'invalid', reason: 'invalid legacy comics', raw };
+		if (!legacy.success) {
+			return { status: 'invalid', reason: 'invalid legacy comics', raw };
+		}
 
 		return { status: 'loaded', comics: legacy.data.map(([, comic]) => comic) };
 	}
@@ -50,7 +54,9 @@ export function readComicSnapshot(raw: string | null): ComicSnapshotRead {
 	}
 
 	const snapshot = ComicSnapshotSchema.safeParse(parsed);
-	if (!snapshot.success) return { status: 'invalid', reason: 'invalid comics', raw };
+	if (!snapshot.success) {
+		return { status: 'invalid', reason: 'invalid comics', raw };
+	}
 
 	return { status: 'loaded', comics: snapshot.data.comics };
 }
@@ -68,9 +74,13 @@ export function serializeComicSnapshot(comics: Comic[]): string {
 export const localComicStorage: ComicSnapshotStorage = {
 	read: () => (browser ? localStorage.getItem(STORAGE.COMICS) : null),
 	write: (serialized) => {
-		if (browser) localStorage.setItem(STORAGE.COMICS, serialized);
+		if (browser) {
+			localStorage.setItem(STORAGE.COMICS, serialized);
+		}
 	},
 	preserveInvalid: (raw) => {
-		if (browser) localStorage.setItem(INVALID_SNAPSHOT_KEY, raw);
+		if (browser) {
+			localStorage.setItem(INVALID_SNAPSHOT_KEY, raw);
+		}
 	},
 };

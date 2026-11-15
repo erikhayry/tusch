@@ -184,7 +184,9 @@ test.describe('rejected input creates nothing', { tag: '@REQ-007' }, () => {
 			const createPage = await new CreatePage(page).goto();
 			const before = (await storedComics(page)).length;
 
-			if (story !== undefined) await createPage.pasteStory(story);
+			if (story !== undefined) {
+				await createPage.pasteStory(story);
+			}
 			await createPage.submit();
 
 			await expect(createPage.error).toBeVisible();
@@ -235,7 +237,9 @@ test(
 			source: 'https://example.com/old',
 		};
 		await page.addInitScript((comic) => {
-			if (sessionStorage.getItem('seeded-legacy')) return;
+			if (sessionStorage.getItem('seeded-legacy')) {
+				return;
+			}
 			sessionStorage.setItem('seeded-legacy', '1');
 			localStorage.setItem('comics_db', JSON.stringify({ version: 1, comics: [comic] }));
 		}, legacy);

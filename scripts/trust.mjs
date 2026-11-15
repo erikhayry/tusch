@@ -65,7 +65,9 @@ function planRow(issue) {
 		.filter(isBot)
 		.map((comment) => MARKER.exec(comment.body))
 		.findLast(Boolean);
-	if (!marker) return '';
+	if (!marker) {
+		return '';
+	}
 	const [, asked, accepted, changed] = marker;
 	return csvRow({
 		date: today(),
@@ -81,7 +83,9 @@ function planRow(issue) {
 function prRow(pr) {
 	const info = JSON.parse(gh(['pr', 'view', String(pr), '--json', 'headRefName,mergedAt']));
 	const issue = /^issue-(\d+)-/.exec(info.headRefName ?? '')?.[1];
-	if (!issue || !info.mergedAt) return '';
+	if (!issue || !info.mergedAt) {
+		return '';
+	}
 
 	const human = (items) => items.filter((item) => !isBot(item));
 	const inline = human(list(`repos/{owner}/{repo}/pulls/${pr}/comments`));
@@ -138,7 +142,9 @@ function summary(csv) {
 	}
 	const plans = rows.filter((r) => r.kind === 'plan');
 	const prs = rows.filter((r) => r.kind === 'pr');
-	if (plans.length === 0 && prs.length === 0) return 'No trust data yet.';
+	if (plans.length === 0 && prs.length === 0) {
+		return 'No trust data yet.';
+	}
 
 	const recentPlans = lastIssues(plans);
 	const recentPrs = lastIssues(prs);
@@ -174,4 +180,6 @@ try {
 } catch {
 	// gh failed or data is missing: print nothing, never block.
 }
-if (output) console.log(output);
+if (output) {
+	console.log(output);
+}

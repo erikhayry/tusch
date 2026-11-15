@@ -10,7 +10,9 @@ const STORAGE_KEY = 'global_instructions';
 
 /** Corrupt, missing or too-long stored values read as empty. */
 export function readGlobalInstructions(): string {
-	if (!browser) return '';
+	if (!browser) {
+		return '';
+	}
 	try {
 		const value = localStorage.getItem(STORAGE_KEY);
 		return value !== null && value.length <= GLOBAL_INSTRUCTIONS_MAX_LENGTH ? value : '';
@@ -22,8 +24,11 @@ export function readGlobalInstructions(): string {
 /** Client command for the settings form; an empty value clears the key. */
 export function saveGlobalInstructions(values: SaveGlobalInstructionsValues): void {
 	const text = values[GLOBAL_INSTRUCTIONS_VALUE_KEY];
-	if (text === '') localStorage.removeItem(STORAGE_KEY);
-	else localStorage.setItem(STORAGE_KEY, text);
+	if (text === '') {
+		localStorage.removeItem(STORAGE_KEY);
+	} else {
+		localStorage.setItem(STORAGE_KEY, text);
+	}
 }
 
 /**

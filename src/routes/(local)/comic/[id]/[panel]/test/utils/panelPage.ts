@@ -65,7 +65,9 @@ export class PanelPage {
 			const original = URL.createObjectURL.bind(URL);
 			URL.createObjectURL = (obj: Blob | MediaSource) => {
 				const url = original(obj);
-				if (obj instanceof File) names.set(url, obj.name);
+				if (obj instanceof File) {
+					names.set(url, obj.name);
+				}
 				return url;
 			};
 		});

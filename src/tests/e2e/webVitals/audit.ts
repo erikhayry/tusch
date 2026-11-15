@@ -86,8 +86,9 @@ async function auditView(
 			median(
 				results.map((r) => {
 					const numeric = r.audits[AUDIT_IDS[metric]]?.numericValue;
-					if (numeric === undefined)
+					if (numeric === undefined) {
 						throw new Error(`Lighthouse reported no ${metric} for ${view}`);
+					}
 					return numeric;
 				}),
 			);

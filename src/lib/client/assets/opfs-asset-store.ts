@@ -11,7 +11,9 @@ const isStaticAsset = (assetId: string) => assetId.startsWith('/');
 
 async function fetchStatic(assetId: string): Promise<Blob> {
 	const response = await fetch(assetId);
-	if (!response.ok) throw new Error(`Missing static asset ${assetId} (${response.status})`);
+	if (!response.ok) {
+		throw new Error(`Missing static asset ${assetId} (${response.status})`);
+	}
 	return response.blob();
 }
 
