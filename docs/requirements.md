@@ -136,6 +136,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: overview and navigation for one comic.
 - Proven by: tagged tests
 
+### REQ-236-1 The comic's title is the comic page's only h1
+
+- Status: active
+- Statement: on `/comic/<id>` the page's only level-1 heading is the comic's title, without a "Comic:" prefix; the title is not repeated as another heading, and the document title is "<title> · Tusch".
+- Why: the heading and the tab said "Comic: <title>" and the title was repeated as an `<h2>`, which is noise for screen reader users and in the tab.
+- Proven by: tagged tests
+
+### REQ-236-2 The comic page's headings have no skipped level
+
+- Status: active
+- Statement: on `/comic/<id>` the sections below the title start at level 2: "Settings" is an `<h2>` and the headings inside it ("Style", "Source", "Panels") are `<h3>`.
+- Why: the outline went from h1 straight to h3 once the duplicate title heading goes; skipped levels break heading navigation.
+- Proven by: tagged tests
+
+### REQ-236-3 A comic with an empty title shows "Untitled comic"
+
+- Status: active
+- Statement: a comic whose title is empty shows "Untitled comic" (translated) as the `<h1>` of its page and "Untitled comic · Tusch" as the document title, so the page never has an empty heading.
+- Why: `ComicSchema.title` allows an empty string, and an empty `<h1>` fails axe `empty-heading`.
+- Proven by: tagged tests
+
 ### REQ-011 A cover can be generated or replaced
 
 - Status: active

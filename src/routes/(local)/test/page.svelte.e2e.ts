@@ -26,7 +26,9 @@ test('navigates to comic', { tag: ['@REQ-001', '@REQ-004'] }, async ({ page }) =
 
 	await activate(page, landingPage.comicLink(EXAMPLE.title));
 
-	await expect(page.getByRole('heading', { name: EXAMPLE.title, level: 2 })).toBeVisible();
+	await expect(
+		page.getByRole('heading', { name: EXAMPLE.title, level: 1, exact: true }),
+	).toBeVisible();
 });
 
 test('removes comic', { tag: '@REQ-002' }, async ({ page }) => {

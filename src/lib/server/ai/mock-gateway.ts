@@ -8,6 +8,7 @@ import {
 import { COVER_IMAGE, CURRENT_BOXES_PREFIX } from '$lib/utils/ai/utils/messages';
 import {
 	CREATE_COMIC_RESPONSE,
+	createComicResponse,
 	CREATE_COVER_IMAGE_RESPONSE,
 	CREATE_PANEL_IMAGE_RESPONSE,
 	CREATE_PANEL_RESPONSE,
@@ -42,6 +43,8 @@ export const MOCK_ERRORS = {
 const NO_IMAGE = 'mock-error:no-image';
 const NO_IMAGE_ONCE = 'mock-error:no-image-once';
 const INVALID_TEXT = 'mock-error:invalid-text';
+/** A create-comic request answered with an empty title (REQ-236-3). */
+const EMPTY_TITLE = 'mock-error:empty-title';
 /** A crop fix answered with boxes outside the image (REQ-219-4). Read from the API key too. */
 const INVALID_CROP = 'mock-error:invalid-crop';
 
@@ -136,7 +139,12 @@ const mockAiGateway: AiGateway = {
 		if (messages.join('\n').includes(INVALID_TEXT)) {
 			return INVALID_TEXT_RESPONSE;
 		}
-		return schemaName === SchemaName.enum.initComic ? CREATE_COMIC_RESPONSE : CREATE_PANEL_RESPONSE;
+		if (schemaName === SchemaName.enum.initComic) {
+			return messages.join('\n').includes(EMPTY_TITLE)
+				? createComicResponse('')
+				: CREATE_COMIC_RESPONSE;
+		}
+		return CREATE_PANEL_RESPONSE;
 	},
 	image: async ({ messages }) => {
 		failIfRequested(messages);
