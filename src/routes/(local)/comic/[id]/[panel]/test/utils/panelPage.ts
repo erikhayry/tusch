@@ -1,6 +1,6 @@
 import { m } from '$lib/paraglide/messages';
 import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
-import { expect, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { EXAMPLE_COMPLETE } from '../../../../../../../tests/e2e/examples';
 import { CREATE_PANEL_IMAGE_RESPONSE } from '../../../../../../../tests/mock/openAi/openAiResponse';
 import { gotoHydrated } from '../../../../../../../tests/e2e/gotoHydrated';
@@ -22,9 +22,6 @@ export class PanelPage {
 	readonly createImageButton: Locator;
 	readonly replaceImageButton: Locator;
 	readonly restoreImageButton: Locator;
-	readonly initialNumberOfPanels: number;
-	readonly numberOfPanels: () => Promise<number>;
-	readonly addPanelBeforeButton: Locator;
 	readonly dialogueCharacterImage: Locator;
 
 	constructor(page: Page) {
@@ -37,10 +34,6 @@ export class PanelPage {
 		this.newImage = page.getByRole('img', {
 			name: getImageFromOpenAiResponse(CREATE_PANEL_IMAGE_RESPONSE).alt,
 		});
-		this.addPanelBeforeButton = page.getByRole('button', { name: m.addPanelBefore({ number: 2 }) });
-		this.initialNumberOfPanels = EXAMPLE_COMPLETE.panels.length;
-		this.numberOfPanels = async () =>
-			page.getByRole('list', { name: m.panels() }).getByRole('listitem').count();
 
 		this.editCaptionButton = page.getByRole('button', { name: m.editCaption({ number: 1 }) });
 		this.editCaptionInput = page.getByRole('textbox', { name: m.editCaption({ number: 1 }) });
@@ -65,7 +58,9 @@ export class PanelPage {
 			const original = URL.createObjectURL.bind(URL);
 			URL.createObjectURL = (obj: Blob | MediaSource) => {
 				const url = original(obj);
-				if (obj instanceof File) names.set(url, obj.name);
+				if (obj instanceof File) {
+					names.set(url, obj.name);
+				}
 				return url;
 			};
 		});
@@ -101,11 +96,6 @@ export class PanelPage {
 		await activate(this.page, this.editDialogueButton);
 		await typeInto(this.page, this.editDialogueInput, newDialogue);
 		await activate(this.page, this.saveDialogueButton);
-	}
-
-	async addPanelBefore() {
-		await activate(this.page, this.addPanelBeforeButton);
-		await expect(this.page.getByRole('progressbar')).toBeHidden();
 	}
 
 	async goto(panel = 0) {

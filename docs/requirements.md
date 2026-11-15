@@ -115,6 +115,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: overview and navigation for one comic.
 - Proven by: tagged tests
 
+### REQ-236-1 The comic's title is the comic page's only h1
+
+- Status: active
+- Statement: on `/comic/<id>` the page's only level-1 heading is the comic's title, without a "Comic:" prefix; the title is not repeated as another heading, and the document title is "<title> · Tusch".
+- Why: the heading and the tab said "Comic: <title>" and the title was repeated as an `<h2>`, which is noise for screen reader users and in the tab.
+- Proven by: tagged tests
+
+### REQ-236-2 The comic page's headings have no skipped level
+
+- Status: active
+- Statement: on `/comic/<id>` the sections below the title start at level 2: "Settings" is an `<h2>` and the headings inside it ("Style", "Source", "Panels") are `<h3>`.
+- Why: the outline went from h1 straight to h3 once the duplicate title heading goes; skipped levels break heading navigation.
+- Proven by: tagged tests
+
+### REQ-236-3 A comic with an empty title shows "Untitled comic"
+
+- Status: active
+- Statement: a comic whose title is empty shows "Untitled comic" (translated) as the `<h1>` of its page and "Untitled comic · Tusch" as the document title, so the page never has an empty heading.
+- Why: `ComicSchema.title` allows an empty string, and an empty `<h1>` fails axe `empty-heading`.
+- Proven by: tagged tests
+
 ### REQ-011 A cover can be generated or replaced
 
 - Status: active
@@ -148,6 +169,34 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: on the comic page, each character's section shows the head crop of each stored character image, one per panel that still exists, in panel order (the most recent one if a panel image was generated more than once). Each crop's alt text names the character and the panel ("<name> in panel <n>: <editorial title>"). Activating a head crop shows that image's full-body crop. A character with no stored images shows "No images yet".
 - Why: to check that a character looks the same across panels, all of a character's images must be visible in one place.
+- Proven by: tagged tests
+
+### REQ-219-1 A character crop can be fixed with AI
+
+- Status: active
+- Statement: on the comic page, every head crop in a character's gallery whose panel has an image offers a "Fix crop" button inside its expanded `<details>`. Activating it asks the AI for new head and full-body boxes for that character in the panel's current image, and replaces both stored crops of that character image. The gallery still shows one crop for the panel, and the panel page shows the fixed head next to that character's dialogue.
+- Why: a crop is sometimes off (for example only part of the face), and the user shouldn't have to regenerate the panel image to correct it.
+- Proven by: tagged tests
+
+### REQ-219-2 A crop fix can be undone one step
+
+- Status: active
+- Statement: after a crop fix, that crop offers "Undo crop fix", which puts the previous head and full-body crops back. It survives a reload. Fixing the same crop again replaces the stored previous version, so undo always goes back exactly one step. After an undo, the undo button is gone.
+- Why: a fix can make the crop worse; it must be reversible without losing the earlier crop.
+- Proven by: tagged tests
+
+### REQ-219-3 Crop fixes leave no stray files
+
+- Status: active
+- Statement: an undo removes the fixed crop's image files. A second fix removes the files of the version it replaces as "previous". Deleting the panel or restoring its image (REQ-049) also removes the previous-version files of the crops it drops.
+- Why: image files never leak (REQ-025).
+- Proven by: tagged tests
+
+### REQ-219-4 A failed crop fix changes nothing
+
+- Status: active
+- Statement: if the crop fix fails (an AI provider error, or a response whose boxes are invalid or outside the image), the usual error is shown, both crops stay unchanged and no undo is offered.
+- Why: a failed fix must never damage a crop the user already has.
 - Proven by: tagged tests
 
 ### REQ-047 Deleting a panel removes its character images
@@ -257,11 +306,18 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: text is part of the comic.
 - Proven by: tagged tests
 
-### REQ-021 A generated panel can be inserted before a panel
+### REQ-021 A generated panel can be inserted after any panel or before the first
 
 - Status: active
-- Statement: from a panel, the user can generate a new panel that is inserted before it.
-- Why: users extend the story.
+- Statement: from the panel list on the panel page, the user can generate a new panel and insert it after any panel, or before the first panel; each insertion point is offered exactly once.
+- Why: users extend the story, and a duplicate button for the same position only adds noise.
+- Proven by: tagged tests
+
+### REQ-237-1 "Add Panel after panel N" inserts at position N+1
+
+- Status: active
+- Statement: generating a panel with "Add Panel after panel N" inserts the new panel at position N+1 (it becomes panel N+1, the old panel N+1 moves to N+2), and the order survives a reload.
+- Why: the button used to insert before panel N, so a panel could not be added at the end.
 - Proven by: tagged tests
 
 ### REQ-190-1 A panel without a title still has a named navigation link

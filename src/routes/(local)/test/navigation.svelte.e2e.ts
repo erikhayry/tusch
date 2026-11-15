@@ -6,7 +6,9 @@ import { activate, typeInto } from '../../../tests/e2e/keyboard';
 
 const MISSING_ID = '00000000-0000-4000-8000-000000000000';
 
-async function storedComics(page: Page): Promise<{ id: string; panels: { id: string }[] }[]> {
+async function storedComics(
+	page: Page,
+): Promise<{ id: string; title: string; panels: { id: string }[] }[]> {
 	return page.evaluate(
 		() => JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}').comics,
 	);
@@ -21,7 +23,9 @@ async function createComic(page: Page) {
 
 	const id = page.url().split('/').at(-1)!;
 	const comic = (await storedComics(page)).find((stored) => stored.id === id);
-	if (!comic) throw new Error('created comic was not persisted');
+	if (!comic) {
+		throw new Error('created comic was not persisted');
+	}
 	return comic;
 }
 
@@ -29,7 +33,9 @@ test.describe('direct navigation', () => {
 	test('opens an existing comic', { tag: '@REQ-023' }, async ({ page }) => {
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
 
-		await expect(page.getByRole('heading', { name: EXAMPLE.title, level: 2 })).toBeVisible();
+		await expect(
+			page.getByRole('heading', { name: EXAMPLE.title, level: 1, exact: true }),
+		).toBeVisible();
 	});
 
 	test('shows not found for a missing comic', { tag: '@REQ-024' }, async ({ page }) => {
@@ -65,7 +71,9 @@ test.describe('direct navigation', () => {
 			const created = await createComic(page);
 
 			await page.reload();
-			await expect(page.getByRole('heading', { name: /^Comic:/, level: 1 })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { name: created.title, level: 1, exact: true }),
+			).toBeVisible();
 
 			// Previously server-rendered: a locally created panel 404'd on direct load.
 			await gotoHydrated(page, `/comic/${created.id}/${created.panels[0].id}`);

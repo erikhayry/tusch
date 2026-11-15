@@ -19,8 +19,14 @@ import {
 	type CreatePanelImageResult,
 	type CreatePanelImageValues,
 } from '$lib/features/panels/contracts/createPanelImage';
-import type { Comic, ResponsiveImage } from '$lib/types';
 import {
+	FixCharacterCropResultSchema,
+	type FixCharacterCropResult,
+	type FixCharacterCropValues,
+} from '$lib/features/panels/contracts/fixCharacterCrop';
+import type { Comic, Crop, ResponsiveImage } from '$lib/types';
+import {
+	getCharacterBoxesFromOpenAiResponse,
 	getComicFromOpenAiResponse,
 	getImageFromOpenAiResponse,
 	getPanelFromOpenAiResponse,
@@ -34,6 +40,7 @@ import {
 } from '$lib/utils/ai/aiTypes';
 import {
 	buildCoverImageMessages,
+	buildFixCharacterCropMessages,
 	buildInitialMessages,
 	buildPanelImageMessages,
 	buildPanelMessages,
@@ -75,10 +82,14 @@ function interpret<T>(read: () => T): T {
  */
 async function generateImage(gateway: AiGateway, request: AiImageRequest): Promise<OpenAiOutput> {
 	const first = await gateway.image(request);
-	if (hasImage(first)) return first;
+	if (hasImage(first)) {
+		return first;
+	}
 
 	const second = await gateway.image(request);
-	if (hasImage(second)) return second;
+	if (hasImage(second)) {
+		return second;
+	}
 
 	throw new InvalidAiResponseError('ai_no_image', 'the response has no image');
 }
@@ -87,6 +98,22 @@ async function generateImage(gateway: AiGateway, request: AiImageRequest): Promi
 function responsive(image: CreatedImage) {
 	const copy = structuredClone(image);
 	return { landscape: copy, portrait: copy, alt: copy.alt };
+}
+
+/**
+ * The crop is cut from the image in the browser, so a box outside the picture
+ * would produce an empty or shifted crop. Whole pixels only, like the stored sizes.
+ */
+function isInsideImage(box: Crop, width: number, height: number): boolean {
+	return (
+		[box.x, box.y, box.width, box.height].every(Number.isInteger) &&
+		box.x >= 0 &&
+		box.y >= 0 &&
+		box.width > 0 &&
+		box.height > 0 &&
+		box.x + box.width <= width &&
+		box.y + box.height <= height
+	);
 }
 
 export function createGenerationService(gateway: AiGateway, createId: () => string = generateId) {
@@ -205,6 +232,40 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 					panelId: panel.id,
 					image: responsive(getImageFromOpenAiResponse(output)),
 					output: output.output,
+				}),
+			);
+		},
+
+		/** Asks for new boxes only; the client crops the stored panel image (REQ-219-1). */
+		async fixCharacterCrop({
+			comicId,
+			panelId,
+			characterId,
+			characterImageId,
+			character,
+			image,
+			width,
+			height,
+			current,
+		}: FixCharacterCropValues): Promise<FixCharacterCropResult> {
+			const output = await gateway.text({
+				messages: buildFixCharacterCropMessages({ character, width, height, current }),
+				schemaName: SchemaName.enum.fixCharacterCrop,
+				imageUrls: [image],
+			});
+
+			const boxes = interpret(() => getCharacterBoxesFromOpenAiResponse(output));
+			if (!isInsideImage(boxes.head, width, height) || !isInsideImage(boxes.full, width, height)) {
+				throw new InvalidAiResponseError('invalid_ai_response', 'the boxes lie outside the image');
+			}
+
+			return interpret(() =>
+				FixCharacterCropResultSchema.parse({
+					comicId,
+					panelId,
+					characterId,
+					characterImageId,
+					...boxes,
 				}),
 			);
 		},

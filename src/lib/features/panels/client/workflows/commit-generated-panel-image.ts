@@ -55,7 +55,9 @@ export function commitGeneratedPanelImage(
 		const characterImages: { characterId: string; image: CharacterImage }[] = [];
 		for (const character of characters) {
 			// The model can reference characters that are not in this comic; skip those crops.
-			if (!getCharacter(deps.store.comics, comicId, character.id)) continue;
+			if (!getCharacter(deps.store.comics, comicId, character.id)) {
+				continue;
+			}
 
 			characterImages.push({
 				characterId: character.id,

@@ -46,7 +46,9 @@ export class LoadingState {
 		this.succeeded = succeeded;
 		clearTimeout(this.doneTimeout);
 		// "Done" only needs to be announced once; don't leave it lingering on the page.
-		if (succeeded) this.doneTimeout = setTimeout(() => (this.succeeded = false), DONE_VISIBLE_MS);
+		if (succeeded) {
+			this.doneTimeout = setTimeout(() => (this.succeeded = false), DONE_VISIBLE_MS);
+		}
 		if (this.submissions.length === 0 && this.interval !== undefined) {
 			clearInterval(this.interval);
 			this.interval = undefined;

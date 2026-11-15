@@ -57,10 +57,14 @@ function updatePanel(
 	change: (panel: Panel) => Outcome<Panel>,
 ): Outcome<Comic> {
 	const panel = comic.panels.find(({ id }) => id === panelId);
-	if (!panel) return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
+	if (!panel) {
+		return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
+	}
 
 	const next = change(panel);
-	if (!next.ok) return next;
+	if (!next.ok) {
+		return next;
+	}
 
 	return ok({
 		...comic,
@@ -74,17 +78,44 @@ function updateCharacter(
 	change: (character: Character) => Outcome<Character>,
 ): Outcome<Comic> {
 	const character = comic.characters.find(({ id }) => id === characterId);
-	if (!character)
+	if (!character) {
 		return fail(CommandFailureCodes['character-not-found'], `Character ${characterId} not found`);
+	}
 
 	const next = change(character);
-	if (!next.ok) return next;
+	if (!next.ok) {
+		return next;
+	}
 
 	return ok({
 		...comic,
 		characters: comic.characters.map((current) =>
 			current.id === characterId ? next.value : current,
 		),
+	});
+}
+
+function updateCharacterImage(
+	comic: Comic,
+	characterId: string,
+	imageId: string,
+	change: (image: CharacterImage) => Outcome<CharacterImage>,
+): Outcome<Comic> {
+	return updateCharacter(comic, characterId, (character) => {
+		const image = character.images.find(({ id }) => id === imageId);
+		if (!image) {
+			return fail('image-not-found', `Character image ${imageId} not found`);
+		}
+
+		const next = change(image);
+		if (!next.ok) {
+			return next;
+		}
+
+		return ok({
+			...character,
+			images: character.images.map((current) => (current.id === imageId ? next.value : current)),
+		});
 	});
 }
 
@@ -96,7 +127,9 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 	}
 
 	function commit(transition: Outcome<Comic[]>): CommandResult {
-		if (!transition.ok) return transition;
+		if (!transition.ok) {
+			return transition;
+		}
 
 		try {
 			storage.write(serializeComicSnapshot(transition.value));
@@ -114,11 +147,14 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 	function updateComic(comicId: string, change: (comic: Comic) => Outcome<Comic>): CommandResult {
 		const comics = current();
 		const comic = comics.find(({ id }) => id === comicId);
-		if (!comic)
+		if (!comic) {
 			return commit(fail(CommandFailureCodes['comic-not-found'], `Comic ${comicId} not found`));
+		}
 
 		const next = change(comic);
-		if (!next.ok) return commit(next);
+		if (!next.ok) {
+			return commit(next);
+		}
 
 		return commit(ok(comics.map((current) => (current.id === comicId ? next.value : current))));
 	}
@@ -239,14 +275,16 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 		restorePanelImage(comicId: string, panelId: string): CommandResult {
 			return updateComic(comicId, (comic) => {
 				const panel = comic.panels.find(({ id }) => id === panelId);
-				if (!panel)
+				if (!panel) {
 					return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
+				}
 				const previous = panel.previousImage;
-				if (!previous)
+				if (!previous) {
 					return fail(
 						CommandFailureCodes['image-not-found'],
 						`Panel ${panelId} has no previous image`,
 					);
+				}
 
 				const dropped = new Set(panel.imageCropIds ?? []);
 				const restored = updatePanel(comic, panelId, (current) =>
@@ -257,7 +295,9 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 						previousImage: undefined,
 					}),
 				);
-				if (!restored.ok) return restored;
+				if (!restored.ok) {
+					return restored;
+				}
 
 				return ok({
 					...restored.value,
@@ -351,6 +391,46 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			);
 		},
 
+		/**
+		 * Replaces both crops of a character image. The version it replaces becomes
+		 * the one undo step, so a second fix drops the first fix's previous version.
+		 */
+		fixCharacterCrop(
+			comicId: string,
+			characterId: string,
+			imageId: string,
+			crops: Pick<CharacterImage, 'head' | 'full'>,
+		): CommandResult {
+			return updateComic(comicId, (comic) =>
+				updateCharacterImage(comic, characterId, imageId, (image) =>
+					ok({
+						...image,
+						head: crops.head,
+						full: crops.full,
+						previous: { head: image.head, full: image.full },
+					}),
+				),
+			);
+		},
+
+		/** Brings back the crops from before the latest fix; the fixed ones go with the commit. */
+		undoCharacterCropFix(comicId: string, characterId: string, imageId: string): CommandResult {
+			return updateComic(comicId, (comic) =>
+				updateCharacterImage(comic, characterId, imageId, (image) => {
+					if (!image.previous) {
+						return fail('image-not-found', `Character image ${imageId} has no crop fix to undo`);
+					}
+
+					return ok({
+						...image,
+						head: image.previous.head,
+						full: image.previous.full,
+						previous: undefined,
+					});
+				}),
+			);
+		},
+
 		removeCharacterImage(comicId: string, characterId: string, imageId: string): CommandResult {
 			return updateComic(comicId, (comic) =>
 				updateCharacter(comic, characterId, (character) => {
@@ -382,5 +462,7 @@ export const comicCommands = createComicCommands({
 });
 
 export function expectCommitted(result: CommandResult): void {
-	if (!result.ok) throw new Error(result.message);
+	if (!result.ok) {
+		throw new Error(result.message);
+	}
 }

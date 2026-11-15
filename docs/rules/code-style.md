@@ -4,6 +4,11 @@ Formatting is enforced by Prettier (`prettier.config.js`: tabs, single quotes,
 trailing commas, width 100) and ESLint. Run `pnpm run lint`; fix with
 `pnpm run format`.
 
+Every `if`, `else`, `for` and `while` body uses braces, even a single statement
+(`curly: ['error', 'all']` in `eslint.config.js`). Write `if (!panel) { return fail(…); }`,
+not `if (!panel) return fail(…);`: a brace-less body breaks when a second line is added
+later and the new line silently runs outside the `if`.
+
 ## Zod-first data types
 
 - For every application-owned runtime data shape (domain entities, route data,

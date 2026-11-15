@@ -1,5 +1,6 @@
 import type { CoverPrompt } from '$lib/features/comics/contracts/createCoverImage';
 import type { CharacterPrompt, PanelPrompt } from '$lib/features/comics/contracts/prompts';
+import type { CharacterBoxes } from '$lib/utils/ai/aiTypes';
 import type { ComicStyle, Panel } from '$lib/types';
 import { STYLES } from '$lib/utils/comicStyles';
 import type { ResponseInputItem } from 'openai/resources/responses/responses.mjs';
@@ -123,16 +124,28 @@ export function buildPanelImageMessages({
 }): string[] {
 	const meta: string[] = [];
 
-	if (panel.visualDescription) meta.push(`Visual Description: ${panel.visualDescription}`);
+	if (panel.visualDescription) {
+		meta.push(`Visual Description: ${panel.visualDescription}`);
+	}
 	if (panel.dialogue?.length) {
 		const dialogText = panel.dialogue.map(({ text }) => text).join('. ');
 		meta.push(`Dialogue context for emotion/acting: ${dialogText}`);
 	}
-	if (panel.captions?.length) meta.push(`Scene mood/context: ${panel.captions.join('. ')}`);
-	if (panel.place) meta.push(`Location: ${panel.place}`);
-	if (panel.year) meta.push(`Year/Era setting: ${panel.year}`);
-	if (panel.season) meta.push(`Season: ${panel.season}`);
-	if (panel.timeOfDay) meta.push(`Time of day: ${panel.timeOfDay}`);
+	if (panel.captions?.length) {
+		meta.push(`Scene mood/context: ${panel.captions.join('. ')}`);
+	}
+	if (panel.place) {
+		meta.push(`Location: ${panel.place}`);
+	}
+	if (panel.year) {
+		meta.push(`Year/Era setting: ${panel.year}`);
+	}
+	if (panel.season) {
+		meta.push(`Season: ${panel.season}`);
+	}
+	if (panel.timeOfDay) {
+		meta.push(`Time of day: ${panel.timeOfDay}`);
+	}
 
 	meta.push(`Characters in comic: ${JSON.stringify(characters)}`);
 
@@ -143,6 +156,39 @@ export function buildPanelImageMessages({
 		...buildStyleInstruction(style),
 		...buildGlobalInstructions(globalInstructions),
 		`USER INSTRUCTION: ${instructions}`,
+	];
+}
+
+/** Prefix of the hint line; the mock gateway reads the boxes back from it. */
+export const CURRENT_BOXES_PREFIX = 'Current boxes, may be wrong: ';
+
+export const FIX_CROP = {
+	WHAT: 'Find one character in the attached comic panel image and return the pixel boxes of the head and of the full body.',
+	HOWS: [
+		'COORDINATES: Boxes are pixels of the attached image, origin at the top left. Every box MUST lie inside the image: x and y at least 0, x + width at most the image width, y + height at most the image height.',
+		'HEAD: The head box covers the whole head, including hair.',
+		'FULL BODY: The full box covers the whole body, from the top of the head to the feet.',
+		'IDENTITY: Use the character description to tell the character apart from the others in the image.',
+	],
+};
+
+export function buildFixCharacterCropMessages({
+	character,
+	width,
+	height,
+	current,
+}: {
+	character: CharacterPrompt;
+	width: number;
+	height: number;
+	current?: CharacterBoxes;
+}): string[] {
+	return [
+		FIX_CROP.WHAT,
+		`Image size: ${width}x${height}`,
+		`Character: ${JSON.stringify(character)}`,
+		...(current ? [`${CURRENT_BOXES_PREFIX}${JSON.stringify(current)}`] : []),
+		...FIX_CROP.HOWS,
 	];
 }
 
@@ -168,7 +214,9 @@ export function getChatMessages(messages: string[]): ResponseInputItem[] {
 }
 
 export function getImageMessages(imageUrls: string[]): ResponseInputItem[] {
-	if (imageUrls.length === 0) return [];
+	if (imageUrls.length === 0) {
+		return [];
+	}
 
 	return [
 		{

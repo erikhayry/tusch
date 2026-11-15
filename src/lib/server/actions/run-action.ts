@@ -29,7 +29,9 @@ interface FormContract<T extends z.ZodType> {
 /** Invalid input is a 400 with the field errors, whatever decoded the values. */
 export function parseValues<T extends z.ZodType>(schema: T, input: unknown): Outcome<z.output<T>> {
 	const result = schema.safeParse(input);
-	if (result.success) return { ok: true, result: result.data };
+	if (result.success) {
+		return { ok: true, result: result.data };
+	}
 
 	return {
 		ok: false,
@@ -108,7 +110,9 @@ export async function runGeneration<T extends z.ZodType, R>(
 	),
 ): ActionResult<R> {
 	const decoded = await decodeForm(event, contract);
-	if (!decoded.ok) return decoded.failure;
+	if (!decoded.ok) {
+		return decoded.failure;
+	}
 
 	const outcome = await runOperation(() => run(service, decoded.values));
 	return outcome.ok ? outcome.result : fail(outcome.status, outcome.body);

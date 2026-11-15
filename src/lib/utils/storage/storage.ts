@@ -29,7 +29,9 @@ export async function deleteImage(fileName: string): Promise<void> {
 	try {
 		await root.removeEntry(fileName);
 	} catch (error) {
-		if (error instanceof DOMException && error.name === 'NotFoundError') return;
+		if (error instanceof DOMException && error.name === 'NotFoundError') {
+			return;
+		}
 		throw error;
 	}
 }

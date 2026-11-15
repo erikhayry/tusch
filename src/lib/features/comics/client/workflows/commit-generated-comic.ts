@@ -17,7 +17,9 @@ export function commitGeneratedComic(
 	comic: Comic,
 ): Promise<WorkflowResult> {
 	return runAssetWorkflow(deps, async (stage) => {
-		if (!comic.cover) return () => deps.commands.addComic(comic);
+		if (!comic.cover) {
+			return () => deps.commands.addComic(comic);
+		}
 
 		const src = await stage(base64ImageToBlob(comic.cover.landscape.src));
 		const stored: Comic = {

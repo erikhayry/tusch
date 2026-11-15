@@ -18,7 +18,9 @@ function eventsIn(envelope) {
 	const found = [];
 	for (let index = 1; index < lines.length - 1; index += 2) {
 		try {
-			if (JSON.parse(lines[index]).type === 'event') found.push(JSON.parse(lines[index + 1]));
+			if (JSON.parse(lines[index]).type === 'event') {
+				found.push(JSON.parse(lines[index + 1]));
+			}
 		} catch {
 			// Attachments and other binary items aren't events.
 		}

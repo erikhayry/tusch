@@ -16,7 +16,9 @@ function addImageIds(
 	ids: Set<string>,
 	image?: { landscape: { src: string }; portrait: { src: string } },
 ) {
-	if (!image) return;
+	if (!image) {
+		return;
+	}
 	ids.add(image.landscape.src);
 	ids.add(image.portrait.src);
 }
@@ -33,8 +35,14 @@ export function collectAssetIds(comics: readonly Comic[]): Set<string> {
 		}
 		for (const character of comic.characters) {
 			for (const image of character.images) {
-				ids.add(image.head.src);
-				ids.add(image.full.src);
+				// `previous` is the one undo step of a crop fix; its files go with the image.
+				for (const crops of [image, image.previous]) {
+					if (!crops) {
+						continue;
+					}
+					ids.add(crops.head.src);
+					ids.add(crops.full.src);
+				}
 			}
 		}
 	}

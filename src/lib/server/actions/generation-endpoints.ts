@@ -39,7 +39,9 @@ export async function generationEndpoint<T extends z.ZodType, R>(
 	}
 
 	const parsed = parseValues(schema, input);
-	if (!parsed.ok) return failureResponse(parsed);
+	if (!parsed.ok) {
+		return failureResponse(parsed);
+	}
 
 	const service = createGenerationService(getAiGateway(credentials));
 	const outcome = await runOperation(() => run(service, parsed.result));

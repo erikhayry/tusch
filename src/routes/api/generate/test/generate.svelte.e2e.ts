@@ -72,7 +72,9 @@ async function expectJsonFailure(
 	expect(text).not.toContain('Internal Error');
 	const body = JSON.parse(text) as { code: string; message: string };
 	expect(body.message).toBeTruthy();
-	if (code) expect(body.code).toBe(code);
+	if (code) {
+		expect(body.code).toBe(code);
+	}
 	return body;
 }
 
@@ -123,21 +125,59 @@ test.describe('generation API', () => {
 	});
 
 	test.describe('provider failures', () => {
-		const PROVIDER_FAILURES = [
-			{ marker: 'mock-error:auth', status: 401, code: 'provider_auth' },
-			{ marker: 'mock-error:rate-limit', status: 429, code: 'rate_limited' },
-			{ marker: 'mock-error:upstream', status: 502, code: undefined },
-			{ marker: NO_IMAGE, status: 502, code: 'ai_no_image' },
-			{ marker: INVALID_TEXT, status: 502, code: 'invalid_ai_response' },
+		// Creating a comic only sends the story to the text model, so `no-image` must reach an
+		// image request: the cover endpoint, with the marker in the instructions.
+		const storyBody = (marker: string) => ({ story: `${STORY} ${marker}`, style: 'anime' });
+		const PROVIDER_FAILURES: {
+			marker: string;
+			status: number;
+			code?: string;
+			endpoint: Endpoint;
+			body: (comic: Comic, marker: string) => unknown;
+		}[] = [
+			{
+				marker: 'mock-error:auth',
+				status: 401,
+				code: 'provider_auth',
+				endpoint: 'comic',
+				body: (_comic, marker) => storyBody(marker),
+			},
+			{
+				marker: 'mock-error:rate-limit',
+				status: 429,
+				code: 'rate_limited',
+				endpoint: 'comic',
+				body: (_comic, marker) => storyBody(marker),
+			},
+			{
+				marker: 'mock-error:upstream',
+				status: 502,
+				endpoint: 'comic',
+				body: (_comic, marker) => storyBody(marker),
+			},
+			{
+				marker: INVALID_TEXT,
+				status: 502,
+				code: 'invalid_ai_response',
+				endpoint: 'comic',
+				body: (_comic, marker) => storyBody(marker),
+			},
+			{
+				marker: NO_IMAGE,
+				status: 502,
+				code: 'ai_no_image',
+				endpoint: 'cover-image',
+				body: (comic, marker) => ({ comic: toCoverPrompt(comic), instructions: marker }),
+			},
 		];
 
-		for (const { marker, status, code } of PROVIDER_FAILURES) {
+		for (const { marker, status, code, endpoint, body } of PROVIDER_FAILURES) {
 			test(
-				`${marker} returns JSON ${status}`,
+				`${marker} returns JSON ${status} from /api/generate/${endpoint}`,
 				{ tag: ['@REQ-71-2', '@REQ-71-3', '@REQ-029'] },
 				async ({ request }) => {
-					const story = `${STORY} ${marker}`;
-					const response = await post(request, 'comic', { story, style: 'anime' });
+					const comic = await generateComic(request);
+					const response = await post(request, endpoint, body(comic, marker));
 					await expectJsonFailure(response, status, code);
 				},
 			);
@@ -162,7 +202,9 @@ test.describe('generation API', () => {
 					data,
 				});
 				const body = await expectJsonFailure(response, 400, 'invalid_input');
-				if (fieldErrors) expect(body).toHaveProperty('fieldErrors');
+				if (fieldErrors) {
+					expect(body).toHaveProperty('fieldErrors');
+				}
 			});
 		}
 	});

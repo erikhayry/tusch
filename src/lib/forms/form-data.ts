@@ -23,7 +23,9 @@ export function readInteger(formData: FormData, name: string): unknown {
 
 export function readJsonField(formData: FormData, name: string): unknown {
 	const value = readString(formData, name);
-	if (value === undefined) return undefined;
+	if (value === undefined) {
+		return undefined;
+	}
 
 	try {
 		return JSON.parse(value);

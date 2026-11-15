@@ -58,7 +58,9 @@ test.describe('character references on the panel image form', () => {
 		async ({ page }) => {
 			const comicId = await createComic(page);
 			const [a, b] = (await storedComic(page, comicId)).panels;
-			if (!a || !b) throw new Error('created comic needs two panels');
+			if (!a || !b) {
+				throw new Error('created comic needs two panels');
+			}
 			await gotoPanel(page, comicId, b.id);
 			await expect(addImage(page)).toBeVisible();
 			await expect(anyReference(page)).toHaveCount(0);
@@ -124,7 +126,9 @@ test.describe('character references on the panel image form', () => {
 			const chosen = imagesOfA.find(({ id }) => shared.images.some((image) => image.id === id));
 			const other = speakers(comic, b.id).find(({ id }) => id !== shared.id);
 			const otherCrop = imagesOfA.find(({ id }) => other?.images.some((image) => image.id === id));
-			if (!chosen || !otherCrop) throw new Error('mock comic needs crops for two speakers');
+			if (!chosen || !otherCrop) {
+				throw new Error('mock comic needs crops for two speakers');
+			}
 			const bytes = await cropBytes(page, chosen);
 			const otherBytes = await cropBytes(page, otherCrop);
 
@@ -174,7 +178,9 @@ test.describe('character references on the panel image form', () => {
 			const { comicId, b, shared, imagesOfA } = await createComicWithImageOnFirstPanel(page);
 			await generatePanelImage(page, comicId, b.id);
 			const chosen = imagesOfA.find(({ id }) => shared.images.some((image) => image.id === id));
-			if (!chosen) throw new Error('mock comic needs a crop of the shared speaker');
+			if (!chosen) {
+				throw new Error('mock comic needs a crop of the shared speaker');
+			}
 			const bytes = await cropBytes(page, chosen);
 			const before = await panelImageSrc(page, comicId, b.id);
 			expect(before).toBeDefined();
@@ -200,7 +206,9 @@ test.describe('character references on the panel image form', () => {
 		async ({ page }) => {
 			const { comicId, b, shared, imagesOfA } = await createComicWithImageOnFirstPanel(page);
 			const chosen = imagesOfA.find(({ id }) => shared.images.some((image) => image.id === id));
-			if (!chosen) throw new Error('mock comic needs a crop of the shared speaker');
+			if (!chosen) {
+				throw new Error('mock comic needs a crop of the shared speaker');
+			}
 			const bytes = await cropBytes(page, chosen);
 			await gotoPanel(page, comicId, b.id);
 			const metadata = await storedComic(page, comicId);

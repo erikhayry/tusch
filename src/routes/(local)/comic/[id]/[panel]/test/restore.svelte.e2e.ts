@@ -50,7 +50,9 @@ async function generate(page: Page, button: Locator): Promise<string> {
 	await activate(page, button);
 	await expect.poll(() => panelImageSrc(page)).not.toBe(before);
 	const src = await panelImageSrc(page);
-	if (!src) throw new Error('Expected a stored panel image');
+	if (!src) {
+		throw new Error('Expected a stored panel image');
+	}
 	return src;
 }
 
@@ -253,7 +255,9 @@ test(
 		expect(headsFromB.length).toBeGreaterThan(0);
 
 		const shown = await panelPage.dialogueCharacterImageFileNames();
-		for (const name of shown) expect(headsFromB).toContain(name);
+		for (const name of shown) {
+			expect(headsFromB).toContain(name);
+		}
 	},
 );
 

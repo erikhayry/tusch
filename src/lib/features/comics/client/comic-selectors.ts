@@ -35,7 +35,9 @@ export function getCharacterReferenceGroups(
 ): CharacterReferenceGroup[] {
 	const comic = getComic(comics, comicId);
 	const panel = comic?.panels.find(({ id }) => id === panelId);
-	if (!comic || !panel) return [];
+	if (!comic || !panel) {
+		return [];
+	}
 
 	const speakerIds = new Set(panel.dialogue.map(({ characterId }) => characterId));
 	return comic.characters
@@ -113,14 +115,33 @@ export function getCharacterGalleryImages(
 	comics: readonly Comic[],
 	comicId: string,
 	characterId: string,
-): { id: string; panel: Panel; number: number; head: ImageAsset; full: ImageAsset }[] {
+): {
+	id: string;
+	panel: Panel;
+	number: number;
+	head: ImageAsset;
+	full: ImageAsset;
+	/** True after a crop fix, while its undo step is kept. */
+	canUndoFix: boolean;
+}[] {
 	const comic = getComic(comics, comicId);
 	const character = getCharacter(comics, comicId, characterId);
-	if (!comic || !character) return [];
+	if (!comic || !character) {
+		return [];
+	}
 	return comic.panels.flatMap((panel, index) => {
 		const image = character.images.findLast(({ panelId }) => panelId === panel.id);
 		return image
-			? [{ id: image.id, panel, number: index + 1, head: image.head, full: image.full }]
+			? [
+					{
+						id: image.id,
+						panel,
+						number: index + 1,
+						head: image.head,
+						full: image.full,
+						canUndoFix: image.previous !== undefined,
+					},
+				]
 			: [];
 	});
 }

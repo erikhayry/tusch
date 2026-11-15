@@ -14,7 +14,9 @@
 		getDeleteValues,
 		async (values) => {
 			const cleanup = await deleteItemWithAssets(workflowDeps, values);
-			if (!cleanup.ok) console.warn('Could not remove obsolete assets', cleanup.failed);
+			if (!cleanup.ok) {
+				console.warn('Could not remove obsolete assets', cleanup.failed);
+			}
 		},
 		async ({ update }) => {
 			await update();

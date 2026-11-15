@@ -36,12 +36,22 @@ export type CreatedImage = z.infer<typeof CreatedImageSchema>;
 export const CreatePanelSchema = INITAL_PANEL_SCHEMA;
 export type CreatePanel = z.infer<typeof CreatePanelSchema>;
 
-export const SchemaName = z.enum(['initComic', 'createImage', 'createPanel']);
+/** One character's head and full-body boxes, in the pixels of the panel image. */
+export const CharacterBoxesSchema = CharachterPositionsSchema.omit({ id: true });
+export type CharacterBoxes = z.infer<typeof CharacterBoxesSchema>;
+
+export const SchemaName = z.enum(['initComic', 'createImage', 'createPanel', 'fixCharacterCrop']);
 export type SchemaName = z.infer<typeof SchemaName>;
 
 export const AiTextRequestSchema = z.object({
 	messages: z.array(z.string()),
-	schemaName: z.enum([SchemaName.enum.initComic, SchemaName.enum.createPanel]),
+	schemaName: z.enum([
+		SchemaName.enum.initComic,
+		SchemaName.enum.createPanel,
+		SchemaName.enum.fixCharacterCrop,
+	]),
+	/** Images the text request reads (data URLs); empty or absent for a text-only request. */
+	imageUrls: z.optional(z.array(z.string())),
 });
 export type AiTextRequest = z.infer<typeof AiTextRequestSchema>;
 
@@ -58,6 +68,7 @@ export const SCHEMA: Record<SchemaName, z.ZodType> = {
 	initComic: InitialComicSchema,
 	createImage: CreateImageSchema,
 	createPanel: CreatePanelSchema,
+	fixCharacterCrop: CharacterBoxesSchema,
 } as const;
 
 export const OpenAiOutputSchema = z.object({

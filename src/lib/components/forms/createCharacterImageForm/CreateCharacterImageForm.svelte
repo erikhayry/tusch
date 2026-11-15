@@ -22,7 +22,9 @@
 	// Preview only: crop the stored panel image after the no-op action succeeds.
 	async function showCrop(values: CreateCharacterImageValue) {
 		const cropped = await createCharacterCrop(workflowDeps, values);
-		if (imageSrc) URL.revokeObjectURL(imageSrc);
+		if (imageSrc) {
+			URL.revokeObjectURL(imageSrc);
+		}
 		imageSrc = URL.createObjectURL(cropped);
 	}
 
