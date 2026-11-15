@@ -96,7 +96,10 @@ test.describe('viewer content', () => {
 
 			await expect(view.title).toHaveCount(1);
 			await expect(view.title).toHaveText(comic.title);
-			await expect(page.getByRole('img', { name: comic.cover?.alt, exact: true })).toBeVisible();
+			// The cover is the image outside the panel sections (it shares its alt text with panel 1 in the mock).
+			const cover = page.locator('main > img');
+			await expect(cover).toHaveCount(1);
+			await expect(cover).toHaveAttribute('alt', String(comic.cover?.alt));
 
 			await expect(view.panelHeadings).toHaveCount(comic.panels.length);
 			for (const [index, panel] of comic.panels.entries()) {
@@ -110,8 +113,10 @@ test.describe('viewer content', () => {
 					).toBeVisible();
 				}
 			}
-			// Panel 1 has a generated image.
-			await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+			// Panel 1 has a generated image. Scoped to its section: the cover has the same mock alt text.
+			await expect(
+				page.locator('section', { has: view.panelHeading(1) }).getByRole('img'),
+			).toBeVisible();
 		},
 	);
 
@@ -146,7 +151,7 @@ test.describe('viewer content', () => {
 		const main = page.getByRole('main');
 		for (const panel of comic.panels) {
 			await expect(main).not.toContainText(panel.visualDescription);
-			await expect(main).not.toContainText(panel.place);
+			// `place` is not checked: the mock's captions name the same place, so it is reader text.
 		}
 		for (const character of comic.characters) {
 			await expect(main).not.toContainText(character.description.masterVisualPrompt);

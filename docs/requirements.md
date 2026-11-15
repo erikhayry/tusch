@@ -508,7 +508,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-035 Every view passes an axe scan
 
 - Status: active
-- Statement: every view (landing, create, comic, panel, raw, not found, settings) has no axe violations, in both the light and the dark colour scheme: each has a page title, a main landmark, labelled form controls and sufficient colour contrast.
+- Statement: every view (landing, create, comic, view, panel, raw, not found, settings) has no axe violations, in both the light and the dark colour scheme: each has a page title, a main landmark, labelled form controls and sufficient colour contrast.
 - Why: screen-reader and keyboard users must be able to use every view; tests select by role and name, so missing labels break both.
 - Proven by: tagged tests
 
@@ -529,7 +529,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-040 No view scrolls horizontally at 320 px
 
 - Status: active
-- Statement: at a viewport 320 CSS px wide, no view (landing, create, comic, panel, raw, not found, settings) scrolls horizontally: the document is no wider than the viewport, and long content such as the raw JSON wraps or scrolls inside its own box.
+- Statement: at a viewport 320 CSS px wide, no view (landing, create, comic, view, panel, raw, not found, settings) scrolls horizontally: the document is no wider than the viewport, and long content such as the raw JSON wraps or scrolls inside its own box.
 - Why: WCAG 1.4.10 (Reflow); users on narrow screens or at high zoom must not have to scroll in two directions.
 - Proven by: tagged tests
 
