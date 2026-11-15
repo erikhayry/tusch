@@ -27,6 +27,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: users manage their own local library.
 - Proven by: tagged tests
 
+### REQ-235-1 A comic with a cover shows it in its library entry
+
+- Status: active
+- Statement: on `/`, each comic with a cover shows its portrait cover above its title, and one link wraps both and leads to the comic page; the cover is decorative (`alt=""`), so the link's accessible name is the comic title. The "Delete comic" button stays outside the link. A cover whose file is gone shows the "missing image" placeholder (REQ-036).
+- Why: a cover makes a comic recognisable at a glance, and a single link keeps one tab stop and one name per comic.
+- Proven by: tagged tests
+
+### REQ-235-2 A comic without a cover shows only its title in the library
+
+- Status: active
+- Statement: on `/`, a comic without a cover shows its title inside the link with no image and no placeholder; an empty spacer the height of a portrait cover keeps its title level with the others in its row.
+- Why: a missing cover is not a missing file, so there is nothing to replace; the spacer stops titles from drifting out of line across a row.
+- Proven by: tagged tests
+
+### REQ-235-3 The library lays out covers in a grid and loads them lazily
+
+- Status: active
+- Statement: on `/`, the entries sit one per row at 320 px and three per row from the `48em` breakpoint; the first three covers load eagerly and every later cover has `loading="lazy"`.
+- Why: a narrow screen needs one column (REQ-040), and covers below the first row must not slow the first paint (REQ-039).
+- Proven by: tagged tests
+
 ### REQ-003 An empty library leads to creating a comic
 
 - Status: active
