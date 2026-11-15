@@ -18,7 +18,9 @@ async function settle(page: Page) {
 	// Lazy images only start loading once scrolled near the viewport, and a
 	// full-page screenshot doesn't scroll, so reveal each one first.
 	await page.evaluate(() => {
-		for (const image of document.images) image.scrollIntoView();
+		for (const image of document.images) {
+			image.scrollIntoView();
+		}
 		window.scrollTo(0, 0);
 	});
 	await page.waitForLoadState('networkidle');

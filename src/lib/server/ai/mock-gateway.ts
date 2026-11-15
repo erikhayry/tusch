@@ -54,7 +54,9 @@ const DEFAULT_BOXES: CharacterBoxes = {
 function failIfRequested(messages: string[]): void {
 	const text = messages.join('\n');
 	for (const [kind, error] of Object.entries(MOCK_ERRORS)) {
-		if (text.includes(`mock-error:${kind}`)) throw error;
+		if (text.includes(`mock-error:${kind}`)) {
+			throw error;
+		}
 	}
 }
 
@@ -65,10 +67,14 @@ function failIfRequested(messages: string[]): void {
 function charactersInPrompt(messages: string[]): string[] | undefined {
 	const prefix = 'Characters in comic: ';
 	const line = messages.find((message) => message.startsWith(prefix));
-	if (!line) return undefined;
+	if (!line) {
+		return undefined;
+	}
 	try {
 		const parsed: unknown = JSON.parse(line.slice(prefix.length));
-		if (!Array.isArray(parsed)) return undefined;
+		if (!Array.isArray(parsed)) {
+			return undefined;
+		}
 		return parsed.flatMap((character) =>
 			typeof character?.id === 'string' ? [character.id as string] : [],
 		);
@@ -80,7 +86,9 @@ function charactersInPrompt(messages: string[]): string[] | undefined {
 /** The boxes the request says are current (the hint from `buildFixCharacterCropMessages`). */
 function currentBoxes(messages: string[]): CharacterBoxes | undefined {
 	const line = messages.find((message) => message.startsWith(CURRENT_BOXES_PREFIX));
-	if (!line) return undefined;
+	if (!line) {
+		return undefined;
+	}
 
 	const parsed = CharacterBoxesSchema.safeParse(
 		JSON.parse(line.slice(CURRENT_BOXES_PREFIX.length)),
@@ -125,12 +133,16 @@ function fixCropResponse(messages: string[]): OpenAiOutput {
 const mockAiGateway: AiGateway = {
 	text: async ({ schemaName, messages }) => {
 		failIfRequested(messages);
-		if (messages.join('\n').includes(INVALID_TEXT)) return INVALID_TEXT_RESPONSE;
+		if (messages.join('\n').includes(INVALID_TEXT)) {
+			return INVALID_TEXT_RESPONSE;
+		}
 		return schemaName === SchemaName.enum.initComic ? CREATE_COMIC_RESPONSE : CREATE_PANEL_RESPONSE;
 	},
 	image: async ({ messages }) => {
 		failIfRequested(messages);
-		if (messages[0] === COVER_IMAGE.WHAT) return CREATE_COVER_IMAGE_RESPONSE;
+		if (messages[0] === COVER_IMAGE.WHAT) {
+			return CREATE_COVER_IMAGE_RESPONSE;
+		}
 		const characterIds = charactersInPrompt(messages);
 		return characterIds ? createPanelImageResponse(characterIds) : CREATE_PANEL_IMAGE_RESPONSE;
 	},
@@ -149,7 +161,9 @@ export function createMockAiGateway({ apiKey }: AiCredentials = {}): AiGateway {
 			// The API key is part of the scope too, as documented in testing.md.
 			const scope = [apiKey ?? '', ...request.messages];
 			failIfRequested(scope);
-			if (request.schemaName === SchemaName.enum.fixCharacterCrop) return fixCropResponse(scope);
+			if (request.schemaName === SchemaName.enum.fixCharacterCrop) {
+				return fixCropResponse(scope);
+			}
 			return mockAiGateway.text(request);
 		},
 		image: async (request) => {
@@ -158,7 +172,9 @@ export function createMockAiGateway({ apiKey }: AiCredentials = {}): AiGateway {
 			const isFirstCall = imageCalls === 0;
 			imageCalls += 1;
 			const withoutImage = text.includes(NO_IMAGE_ONCE) ? isFirstCall : text.includes(NO_IMAGE);
-			if (withoutImage) return IMAGE_WITHOUT_IMAGE_RESPONSE;
+			if (withoutImage) {
+				return IMAGE_WITHOUT_IMAGE_RESPONSE;
+			}
 			return mockAiGateway.image(request);
 		},
 		models: async () => {

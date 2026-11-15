@@ -20,6 +20,8 @@ export function enhanceLocalCommand<T>(
 		if (decoded.success) {
 			command(decoded.data);
 			onSuccess?.();
-		} else globalError.set(decoded.error.issues.map((issue) => issue.message).join(' '));
+		} else {
+			globalError.set(decoded.error.issues.map((issue) => issue.message).join(' '));
+		}
 	};
 }

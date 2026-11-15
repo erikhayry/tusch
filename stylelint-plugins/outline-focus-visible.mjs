@@ -30,16 +30,22 @@ const isFocusVisibleRule = (rule) =>
 const ancestorRules = (node) => {
 	const rules = [];
 	for (let parent = node.parent; parent; parent = parent.parent) {
-		if (parent.type === 'rule') rules.push(parent);
+		if (parent.type === 'rule') {
+			rules.push(parent);
+		}
 	}
 	return rules;
 };
 
 // No built-in rule looks at the selector and the property together.
 const outlineFunction = (primary) => (root, result) => {
-	if (!primary) return;
+	if (!primary) {
+		return;
+	}
 	root.walkDecls(/^outline(-|$)/i, (decl) => {
-		if (ancestorRules(decl).some(isFocusVisibleRule)) return;
+		if (ancestorRules(decl).some(isFocusVisibleRule)) {
+			return;
+		}
 		stylelint.utils.report({
 			ruleName: outlineRule,
 			result,
@@ -52,10 +58,14 @@ outlineFunction.ruleName = outlineRule;
 outlineFunction.messages = outlineMessages;
 
 const tokenFunction = (primary) => (root, result) => {
-	if (!primary) return;
+	if (!primary) {
+		return;
+	}
 	root.walkDecls(/^--/, (decl) => {
 		const [rule] = ancestorRules(decl);
-		if (rule && rule.selector.trim() === ':root') return;
+		if (rule && rule.selector.trim() === ':root') {
+			return;
+		}
 		stylelint.utils.report({
 			ruleName: tokenRule,
 			result,

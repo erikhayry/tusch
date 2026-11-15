@@ -21,7 +21,9 @@ async function createComic(page: Page) {
 
 	const id = page.url().split('/').at(-1)!;
 	const comic = (await storedComics(page)).find((stored) => stored.id === id);
-	if (!comic) throw new Error('created comic was not persisted');
+	if (!comic) {
+		throw new Error('created comic was not persisted');
+	}
 	return comic;
 }
 

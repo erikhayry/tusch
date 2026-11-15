@@ -18,9 +18,13 @@ async function createComicWithPanelImages(page: Page, count: 1 | 2) {
 	const comicId = await createComic(page);
 	const { panels } = await storedComic(page, comicId);
 	const [first, second] = panels;
-	if (!first || !second) throw new Error('created comic needs two panels');
+	if (!first || !second) {
+		throw new Error('created comic needs two panels');
+	}
 	await generatePanelImage(page, comicId, first.id);
-	if (count === 2) await generatePanelImage(page, comicId, second.id);
+	if (count === 2) {
+		await generatePanelImage(page, comicId, second.id);
+	}
 	return { comicId, first, second };
 }
 
@@ -49,9 +53,13 @@ test.describe('deleting a panel removes its character images', () => {
 			const comic = await storedComic(page, comicId);
 			const cropFiles = filesOf(imagesFromPanel(comic, first.id));
 			const panelFile = comic.panels.find(({ id }) => id === first.id)?.image?.landscape.src;
-			if (!panelFile) throw new Error('generated panel image was not stored');
+			if (!panelFile) {
+				throw new Error('generated panel image was not stored');
+			}
 			const stored = await storedFiles(page);
-			for (const file of [...cropFiles, panelFile]) expect(stored).toContain(file);
+			for (const file of [...cropFiles, panelFile]) {
+				expect(stored).toContain(file);
+			}
 
 			await deletePanel(page, comicId, 1);
 
@@ -90,7 +98,9 @@ test.describe('deleting a panel removes its character images', () => {
 				shared?.images.filter(({ panelId }) => panelId === second.id),
 			);
 			const files = await storedFiles(page);
-			for (const file of filesOf(keptImages)) expect(files).toContain(file);
+			for (const file of filesOf(keptImages)) {
+				expect(files).toContain(file);
+			}
 		},
 	);
 

@@ -61,7 +61,9 @@ test.describe('image files', { tag: '@REQ-025' }, () => {
 			const original = FileSystemFileHandle.prototype.createWritable;
 			FileSystemFileHandle.prototype.createWritable = function (...args) {
 				writes += 1;
-				if (writes === 2) return Promise.reject(new Error('Simulated disk failure'));
+				if (writes === 2) {
+					return Promise.reject(new Error('Simulated disk failure'));
+				}
 				return original.apply(this, args);
 			};
 		});
@@ -82,7 +84,9 @@ test(
 	{ tag: '@REQ-026' },
 	async ({ page }) => {
 		await page.addInitScript(() => {
-			if (sessionStorage.getItem('seeded-corrupt')) return;
+			if (sessionStorage.getItem('seeded-corrupt')) {
+				return;
+			}
 			sessionStorage.setItem('seeded-corrupt', '1');
 			localStorage.setItem('comics_db', '{not json');
 		});

@@ -62,7 +62,9 @@ export async function runAssetWorkflow(
 
 	const before = store.comics;
 	const result = commit();
-	if (!result.ok) return { ...result, rollback: await staging.rollback() };
+	if (!result.ok) {
+		return { ...result, rollback: await staging.rollback() };
+	}
 
 	return { ok: true, cleanup: await deleteUnreferencedAssets(assets, before, store.comics) };
 }

@@ -30,7 +30,9 @@ export type ActionSuccessResult = z.infer<typeof ActionSuccessResultSchema>;
 /** Stores the submitted key and reports whether the provider accepts it. */
 export async function validateApiKeyAction(event: RequestEvent): ActionResult<PingResult> {
 	const decoded = await decodeForm(event, { decode: decodeByokValues, schema: ByokValuesSchema });
-	if (!decoded.ok) return decoded.failure;
+	if (!decoded.ok) {
+		return decoded.failure;
+	}
 
 	const candidate = decoded.values.key;
 	const gateway = getAiGateway({ ...credentialsFromCookies(event.cookies), apiKey: candidate });
@@ -44,7 +46,9 @@ export async function validateApiKeyAction(event: RequestEvent): ActionResult<Pi
 
 	// Only a key the provider accepted becomes the active credential; a rejected
 	// candidate leaves any previously stored key in place.
-	if (result.success) event.cookies.set(...getCookieArgs(KEY_COOKIE_NAME, candidate));
+	if (result.success) {
+		event.cookies.set(...getCookieArgs(KEY_COOKIE_NAME, candidate));
+	}
 
 	return result;
 }
@@ -72,7 +76,9 @@ export async function saveModelSettingsAction(
 		decode: decodeConfigValues,
 		schema: SaveModelSettingsValuesSchema,
 	});
-	if (!decoded.ok) return decoded.failure;
+	if (!decoded.ok) {
+		return decoded.failure;
+	}
 
 	const config = decoded.values;
 	event.cookies.set(...getCookieArgs(TEXT_MODEL_COOKIE_NAME, config[TEXT_MODEL_KEY], false));

@@ -24,34 +24,46 @@ for (const [index, line] of readFileSync(ledgerPath, 'utf8').split('\n').entries
 	if (heading) {
 		const [, id, title] = heading;
 		const parts = id.match(ID);
-		if (!parts)
+		if (!parts) {
 			errors.push(
 				`docs/requirements.md:${index + 1}: malformed id "${id}" (new ids are REQ-<issue>-<n>)`,
 			);
-		else if (parts[1] && Number(parts[1]) > LAST_LEGACY_ID)
+		} else if (parts[1] && Number(parts[1]) > LAST_LEGACY_ID) {
 			errors.push(
 				`docs/requirements.md:${index + 1}: ${id} takes a new sequential number; use REQ-<issue>-<n> instead`,
 			);
-		if (requirements.has(id)) errors.push(`docs/requirements.md:${index + 1}: duplicate id ${id}`);
+		}
+		if (requirements.has(id)) {
+			errors.push(`docs/requirements.md:${index + 1}: duplicate id ${id}`);
+		}
 		current = { id, title, status: null, gap: false };
 		requirements.set(id, current);
 		continue;
 	}
-	if (!current) continue;
+	if (!current) {
+		continue;
+	}
 	const status = line.match(/^- Status:\s*(\S+)/);
-	if (status) current.status = status[1];
-	if (/^- Proven by:\s*gap\b/.test(line)) current.gap = true;
+	if (status) {
+		current.status = status[1];
+	}
+	if (/^- Proven by:\s*gap\b/.test(line)) {
+		current.gap = true;
+	}
 }
 for (const req of requirements.values()) {
-	if (req.status !== 'active')
+	if (req.status !== 'active') {
 		errors.push(`${req.id}: Status must be "active" (delete obsolete requirements instead)`);
+	}
 }
 
 // --- Tests ----------------------------------------------------------------
 function e2eFiles(dir) {
 	return readdirSync(dir).flatMap((name) => {
 		const path = join(dir, name);
-		if (statSync(path).isDirectory()) return e2eFiles(path);
+		if (statSync(path).isDirectory()) {
+			return e2eFiles(path);
+		}
 		return name.endsWith('.e2e.ts') ? [path] : [];
 	});
 }
@@ -61,7 +73,9 @@ for (const file of e2eFiles(join(root, 'src'))) {
 	const lines = readFileSync(file, 'utf8').split('\n');
 	lines.forEach((line, index) => {
 		const ids = line.match(TAG);
-		if (!ids) return;
+		if (!ids) {
+			return;
+		}
 		const location = `${relative(root, file)}:${index + 1}`;
 		// The tag may sit on its own line after `test(` (Prettier), so look back to the call.
 		const call = lines
@@ -74,7 +88,9 @@ for (const file of e2eFiles(join(root, 'src'))) {
 		}
 		for (const tag of ids) {
 			const id = tag.slice(1);
-			if (!requirements.has(id)) errors.push(`${location}: tags unknown requirement ${id}`);
+			if (!requirements.has(id)) {
+				errors.push(`${location}: tags unknown requirement ${id}`);
+			}
 			tagged.set(id, [...(tagged.get(id) ?? []), location]);
 		}
 	});
@@ -98,10 +114,14 @@ for (const req of requirements.values()) {
 console.log(
 	`${requirements.size} requirements, ${requirements.size - gaps.length} proven, ${gaps.length} gaps`,
 );
-for (const gap of gaps) console.log(`  gap: ${gap.id} ${gap.title}`);
+for (const gap of gaps) {
+	console.log(`  gap: ${gap.id} ${gap.title}`);
+}
 
 if (errors.length > 0) {
 	console.error(`\n${errors.length} problem(s):`);
-	for (const error of errors) console.error(`  ${error}`);
+	for (const error of errors) {
+		console.error(`  ${error}`);
+	}
 	process.exit(1);
 }

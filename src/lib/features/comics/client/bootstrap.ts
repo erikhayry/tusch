@@ -42,7 +42,9 @@ export function initializeComics({ store, storage, examples = EXAMPLES }: ComicB
 let bootstrapped = false;
 
 export function bootstrapComics(): void {
-	if (bootstrapped) return;
+	if (bootstrapped) {
+		return;
+	}
 	bootstrapped = true;
 
 	initializeComics({ store: comicStore, storage: localComicStorage });

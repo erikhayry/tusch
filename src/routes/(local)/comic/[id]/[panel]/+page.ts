@@ -9,15 +9,21 @@ export type Props = z.infer<typeof PanelPageDataSchema>;
 export async function load({ params, parent }) {
 	await parent();
 	const parsedParams = PanelRouteParamsSchema.safeParse(params);
-	if (!parsedParams.success) error(404, 'Panel not found');
+	if (!parsedParams.success) {
+		error(404, 'Panel not found');
+	}
 
 	const { id: comicId, panel: panelId } = parsedParams.data;
 	const comic = getComic(comicStore.comics, comicId);
-	if (!comic) error(404, 'Comic not found');
+	if (!comic) {
+		error(404, 'Comic not found');
+	}
 
 	// Also covers a panel id that exists, but in a different comic.
 	const panel = getPanel(comicStore.comics, comicId, panelId);
-	if (!panel) error(404, 'Panel not found');
+	if (!panel) {
+		error(404, 'Panel not found');
+	}
 
 	const index = comic.panels.indexOf(panel);
 

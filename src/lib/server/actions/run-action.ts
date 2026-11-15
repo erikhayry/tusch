@@ -22,7 +22,9 @@ export async function decodeForm<T extends z.ZodType>(
 	{ decode, schema }: FormContract<T>,
 ): Promise<{ ok: true; values: z.output<T> } | { ok: false; failure: ActionFailure<FormFailure> }> {
 	const result = schema.safeParse(decode(await event.request.formData()));
-	if (result.success) return { ok: true, values: result.data };
+	if (result.success) {
+		return { ok: true, values: result.data };
+	}
 
 	return {
 		ok: false,
@@ -75,7 +77,9 @@ export async function runGeneration<T extends z.ZodType, R>(
 	),
 ): ActionResult<R> {
 	const decoded = await decodeForm(event, contract);
-	if (!decoded.ok) return decoded.failure;
+	if (!decoded.ok) {
+		return decoded.failure;
+	}
 
 	try {
 		return await run(service, decoded.values);

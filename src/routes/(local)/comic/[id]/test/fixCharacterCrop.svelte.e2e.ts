@@ -58,7 +58,9 @@ function storedCrops(page: Page, { comicId, panelId, characterId }: Setup): Prom
 /** The crop the gallery shows for the panel: the most recent one (after a replaced panel image there are two). */
 async function onlyCrop(setup: Setup): Promise<Crop> {
 	const crop = (await storedCrops(setup.page, setup)).at(-1);
-	if (!crop) throw new Error('expected a stored crop for the panel');
+	if (!crop) {
+		throw new Error('expected a stored crop for the panel');
+	}
 	return crop;
 }
 
@@ -70,7 +72,9 @@ async function setUp(page: Page): Promise<Setup> {
 	const { panels, characters } = await storedComic(page, comicId);
 	const panel = panels[0];
 	const character = characters[0];
-	if (!panel || !character) throw new Error('created comic needs a panel and a character');
+	if (!panel || !character) {
+		throw new Error('created comic needs a panel and a character');
+	}
 	await generatePanelImage(page, comicId, panel.id);
 	await gotoHydrated(page, `/comic/${comicId}`);
 	return {
@@ -103,7 +107,9 @@ const undoButton = (setup: Setup) =>
 /** Expand the crop's `<details>` with the keyboard, unless it is open already. */
 async function expand(setup: Setup) {
 	const details = characterSection(setup).locator('details');
-	if (await details.evaluate((el: HTMLDetailsElement) => el.open)) return;
+	if (await details.evaluate((el: HTMLDetailsElement) => el.open)) {
+		return;
+	}
 	await activate(setup.page, headControl(setup));
 	await expect(details).toHaveJSProperty('open', true);
 }
@@ -273,7 +279,9 @@ test.describe('crop fixes leave no stray files', () => {
 
 			await expectFilesGone(page, filesOf(original));
 			const files = await storedFiles(page);
-			for (const file of [...filesOf(first), ...filesOf(second)]) expect(files).toContain(file);
+			for (const file of [...filesOf(first), ...filesOf(second)]) {
+				expect(files).toContain(file);
+			}
 		},
 	);
 
@@ -283,7 +291,9 @@ test.describe('crop fixes leave no stray files', () => {
 		async ({ page }) => {
 			const setup = await setUp(page);
 			const fixed = await fixCrop(setup);
-			if (!fixed.previous) throw new Error('a fixed crop must keep its previous version');
+			if (!fixed.previous) {
+				throw new Error('a fixed crop must keep its previous version');
+			}
 			const all = [...filesOf(fixed), ...filesOf(fixed.previous)];
 			expect(await storedFiles(page)).toEqual(expect.arrayContaining(all));
 
@@ -305,7 +315,9 @@ test.describe('crop fixes leave no stray files', () => {
 			await expect(panelPage.restoreImageButton).toBeVisible();
 			await gotoHydrated(page, `/comic/${setup.comicId}`);
 			const fixed = await fixCrop(setup);
-			if (!fixed.previous) throw new Error('a fixed crop must keep its previous version');
+			if (!fixed.previous) {
+				throw new Error('a fixed crop must keep its previous version');
+			}
 			const dropped = [...filesOf(fixed), ...filesOf(fixed.previous)];
 
 			await gotoHydrated(page, `/comic/${setup.comicId}/${setup.panelId}`);
