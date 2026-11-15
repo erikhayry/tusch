@@ -30,3 +30,4 @@ date,kind,issue,pr,asked,accepted,changed,review_comments,changes_requested,tria
 2026-11-15,plan,243,,4,4,0,,,,,https://github.com/erikhayry/tusch/actions/runs/43745287662
 2026-11-15,plan,87,,7,7,0,,,,,https://github.com/erikhayry/tusch/actions/runs/43745487216
 2026-11-15,pr,243,244,,,,0,0,0,true,https://github.com/erikhayry/tusch/actions/runs/43748616271
+2026-11-15,pr,235,240,,,,3,0,0,false,https://github.com/erikhayry/tusch/actions/runs/43748833537
