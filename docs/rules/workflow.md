@@ -34,11 +34,13 @@
   (`@claude` goes to `claude.yml`).
 - One agent runs per issue at a time. A failed or timed-out run sets
   `status:blocked` and links the run.
-- **WIP limit: two issues in progress** (open and labelled `needs-tests`,
-  `needs-dev`, `needs-review` or `needs-human`). A third `status:needs-tests`
-  issue gets the `queued` label and a comment instead of a `/test` run. When an
-  issue is merged, closed or blocked (and every 30 minutes), the oldest queued
-  issue starts. `scripts/pipeline-wip.sh` holds the rule; local runs ignore it.
+- **WIP limit: five issues in progress** (open and labelled `needs-tests`,
+  `needs-dev`, `needs-review` or `needs-human`; #183 raised it from two). A sixth
+  `status:needs-tests` issue gets the `queued` label and a comment instead of a
+  `/test` run. When an issue is merged, closed or blocked (and every 30 minutes),
+  the oldest queued issues start, one per free slot. `scripts/pipeline-wip.sh`
+  holds the rule and the number (`limit`, default 5, `WIP_LIMIT` overrides it);
+  local runs ignore it.
 - To take over by hand, run the same skill locally (`/develop 42`) or move the label yourself.
 - **Bookkeeping:** every agent run on GitHub appends a row (skill, model,
   turns, tokens, estimated cost, run link) to `costs.csv` on the `bookkeeping`

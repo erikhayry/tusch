@@ -1,0 +1,41 @@
+// Stub for `gh issue list`, used by scripts/check-wip-script.sh (issue #183).
+// jq isn't guaranteed to be installed, so this applies the few --jq filters
+// that scripts/pipeline-wip.sh uses instead of running jq:
+//   - `index("queued") | not`  drop issues labelled `queued`
+//   - `sort_by(.createdAt)`    oldest first, then the slice `.[a:b]` or `.[0]`
+//   - anything else            every issue number
+// Issues come from the JSON file in STUB_ISSUES: [{ number, createdAt, labels: [name] }].
+// No file extension on purpose: knip would flag a .mjs fixture as an unused file.
+// The package is "type": "module", so node reads this as ESM.
+import { readFileSync } from 'node:fs';
+
+const args = process.argv.slice(2);
+if (args[0] !== 'issue' || args[1] !== 'list') {
+	console.error(`gh stub: unsupported command: ${args.join(' ')}`);
+	process.exit(1);
+}
+
+const labels = [];
+let jq = '';
+for (let i = 2; i < args.length; i++) {
+	if (args[i] === '--label') labels.push(args[++i]);
+	if (args[i] === '--jq') jq = args[++i];
+}
+
+const issues = JSON.parse(readFileSync(process.env.STUB_ISSUES, 'utf8')).filter((issue) =>
+	labels.every((label) => issue.labels.includes(label))
+);
+
+let result = issues;
+if (jq.includes('index("queued")')) {
+	result = issues.filter((issue) => !issue.labels.includes('queued'));
+} else if (jq.includes('sort_by(.createdAt)')) {
+	const sorted = [...issues].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+	const slice = jq.match(/\.\[(\d+):(\d+)\]/);
+	const first = jq.match(/\.\[0\]/);
+	if (slice) result = sorted.slice(Number(slice[1]), Number(slice[2]));
+	else if (first) result = sorted.slice(0, 1);
+	else result = sorted;
+}
+
+for (const issue of result) console.log(issue.number);
