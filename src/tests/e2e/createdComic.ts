@@ -7,9 +7,12 @@ import { activate, typeInto } from './keyboard';
 export type CharacterImage = Comic['characters'][number]['images'][number];
 
 /** Create a comic through the UI (mock AI), as a user does, and return its id. */
-export async function createComic(page: Page): Promise<string> {
+export async function createComic(
+	page: Page,
+	url = 'https://example.com/article',
+): Promise<string> {
 	await gotoHydrated(page, '/comic/create');
-	await typeInto(page, page.getByRole('textbox', { name: /url/i }), 'https://example.com/article');
+	await typeInto(page, page.getByRole('textbox', { name: /url/i }), url);
 	await activate(page, page.getByRole('button', { name: /submit/i }));
 	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 	const id = page.url().split('/').at(-1);

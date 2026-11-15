@@ -26,6 +26,11 @@ const ROUTES = [
 		hidden: ['create-comic', 'create-cover-image', 'fix-character-crop'],
 	},
 	{
+		path: `/comic/${EXAMPLE.id}/view`,
+		exposed: [],
+		hidden: ['client', 'create-panel', 'create-cover-image', 'fix-character-crop'],
+	},
+	{
 		path: '/settings',
 		exposed: ['byok', 'config'],
 		hidden: ['client', 'create-comic', 'fix-character-crop'],
@@ -39,11 +44,13 @@ test.describe('route action maps', { tag: '@REQ-033' }, () => {
 				const result = await postAction(request, path, action);
 				expect(result.error?.message, `${path} should handle ?/${action}`).not.toBe('Not Found');
 			}
+			// A page without a +page.server.ts has no actions, so SvelteKit answers POST with 405.
+			const rejection = exposed.length === 0 ? 'Method Not Allowed' : 'Not Found';
 			for (const action of hidden) {
 				const result = await postAction(request, path, action);
 				expect(result, `${path} must not expose ?/${action}`).toMatchObject({
 					type: 'error',
-					error: { message: 'Not Found' },
+					error: { message: rejection },
 				});
 			}
 		});
