@@ -24,7 +24,7 @@
 		({ update }) => update(),
 	);
 
-	let { models, config }: ConfigFormProps = $props();
+	let { models, config, hasKey }: ConfigFormProps = $props();
 </script>
 
 <Section data-testId={configFormTestId}>
@@ -37,15 +37,27 @@
 		{/each}
 	</ul>
 
+	{#if !hasKey}
+		<p id="models-hint">{m.noKeyModelsHint()}</p>
+	{/if}
+
 	<form method="POST" action={`?/${CONFIG_ACTION}`} use:enhance={handleSubmit}>
 		<label for="select-text-model">{m.selectTextModel()}</label>
-		<select id="select-text-model" name={TEXT_MODEL_KEY}>
+		<select
+			id="select-text-model"
+			name={TEXT_MODEL_KEY}
+			aria-describedby={hasKey ? undefined : 'models-hint'}
+		>
 			{#each models[TEXT_MODEL_KEY] as model, index (index)}
 				<option value={model} selected={model === config[TEXT_MODEL_KEY]}>{model}</option>
 			{/each}
 		</select>
 		<label for="select-textmodels">{m.selectImageModel()}</label>
-		<select id="select-textmodels" name={IMAGE_MODEL_KEY}>
+		<select
+			id="select-textmodels"
+			name={IMAGE_MODEL_KEY}
+			aria-describedby={hasKey ? undefined : 'models-hint'}
+		>
 			{#each models[IMAGE_MODEL_KEY] as model, index (index)}
 				<option value={model} selected={model === config[IMAGE_MODEL_KEY]}>{model}</option>
 			{/each}

@@ -18,5 +18,6 @@ export async function load({ fetch, data }): Promise<Props> {
 		[TEXT_MODEL_KEY]: modelIds.filter((id) => !id.includes('image')),
 		[IMAGE_MODEL_KEY]: modelIds.filter((id) => id.includes('image')),
 		config: data.config,
+		hasKey: data.hasKey,
 	});
 }

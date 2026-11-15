@@ -53,6 +53,11 @@ export async function validateApiKeyAction(event: RequestEvent): ActionResult<Pi
 	return result;
 }
 
+/** Only whether a key is stored; the key itself never leaves the server (REQ-029). */
+export function hasStoredKey(cookies: Cookies): boolean {
+	return Boolean(cookies.get(KEY_COOKIE_NAME));
+}
+
 /** The model cookies are the single persisted authority for model settings. */
 export function readSelectedModels(cookies: Cookies): SelectedModels {
 	const textModel = cookies.get(TEXT_MODEL_COOKIE_NAME);

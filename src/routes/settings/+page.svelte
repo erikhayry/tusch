@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import ConfigForm from '$lib/components/forms/configForm/ConfigForm.svelte';
 	import GlobalInstructionsForm from '$lib/components/forms/globalInstructionsForm/GlobalInstructionsForm.svelte';
@@ -8,12 +9,13 @@
 	import type { Props } from './+page';
 
 	let { data }: { data: Props } = $props();
-	const { config, ...models } = $derived(data);
+	const { config, hasKey, ...models } = $derived(data);
 </script>
 
 <Page title={m.settings()}>
-	<LoginForm />
-	<ConfigForm {models} {config} />
+	<!-- A saved key changes the model lists and the hints, which come from the page load. -->
+	<LoginForm {hasKey} onSaved={invalidateAll} />
+	<ConfigForm {models} {config} {hasKey} />
 	<GlobalInstructionsForm />
 	<a href={resolve('/')}>{m.back()}</a>
 </Page>

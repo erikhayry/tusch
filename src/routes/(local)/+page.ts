@@ -1,5 +1,5 @@
 import { resolve } from '$app/paths';
-import { getComics } from '$lib/features/comics/client/comic-selectors';
+import { getComics, hasOnlyExampleComics } from '$lib/features/comics/client/comic-selectors';
 import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
 import { ComicsPageDataSchema } from '$lib/types/routeData';
 import { redirect } from '@sveltejs/kit';
@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 export type Props = z.infer<typeof ComicsPageDataSchema>;
 
-export async function load({ parent }) {
+export async function load({ parent, data }) {
 	await parent();
 	const comics = getComics(comicStore.comics);
 
@@ -16,5 +16,9 @@ export async function load({ parent }) {
 		redirect(307, resolve('/comic/create'));
 	}
 
-	return ComicsPageDataSchema.parse({ comics });
+	return ComicsPageDataSchema.parse({
+		comics,
+		hasKey: data.hasKey,
+		showWelcome: !data.hasKey && hasOnlyExampleComics(comics),
+	});
 }
