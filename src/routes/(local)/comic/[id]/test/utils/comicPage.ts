@@ -22,7 +22,7 @@ export class ComicPage {
 	constructor(page: Page, comic: Comic) {
 		this.page = page;
 		this.comic = comic;
-		this.heading = page.getByRole('heading', { name: this.comic.title, level: 2 });
+		this.heading = page.getByRole('heading', { name: this.comic.title, level: 1, exact: true });
 		this.link = page.getByRole('link', { name: this.comic.panels[0].editorialTitle });
 		this.notFound = page.getByRole('heading', { name: '404' });
 		this.listItems = page.locator('ul[aria-labelledby="panels"] > li');

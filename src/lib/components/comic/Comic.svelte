@@ -16,75 +16,73 @@
 	let { comic }: ComicProps = $props();
 </script>
 
+<!-- The page's <h1> already shows the comic title, so the sections start at h2. -->
 <Section>
-	<Heading>{comic.title}</Heading>
+	<Heading>{m.settings()}</Heading>
+	{#if comic.cover}
+		<Image
+			image={comic.cover.landscape}
+			alt={comic.cover.alt}
+			fetchpriority="high"
+			decoding="async"
+		/>
+		<DeleteItemForm
+			label={m.deleteCover()}
+			values={{
+				comicId: comic.id,
+				type: DB_ITEM_TYPE.enum.coverImage,
+			}}
+		/>
+	{:else}
+		<CreateCoverImageForm values={{ comic: toCoverPrompt(comic) }} label={m.addCover()} />
+	{/if}
 	<Section>
-		<Heading>{m.settings()}</Heading>
-		{#if comic.cover}
-			<Image
-				image={comic.cover.landscape}
-				alt={comic.cover.alt}
-				fetchpriority="high"
-				decoding="async"
-			/>
-			<DeleteItemForm
-				label={m.deleteCover()}
-				values={{
-					comicId: comic.id,
-					type: DB_ITEM_TYPE.enum.coverImage,
-				}}
-			/>
-		{:else}
-			<CreateCoverImageForm values={{ comic: toCoverPrompt(comic) }} label={m.addCover()} />
+		<Heading>{m.comicStyle()}</Heading>
+		<p>{comic.style}</p>
+
+		<Heading>{m.source()}</Heading>
+		{#if comic.source}
+			<a target="_blank" rel="external" href={comic.source}>{comic.source}</a>
 		{/if}
-		<Section>
-			<Heading>{m.comicStyle()}</Heading>
-			<p>{comic.style}</p>
+		{#if comic.story}
+			<p class="story">{comic.story}</p>
+		{/if}
 
-			<Heading>{m.source()}</Heading>
-			{#if comic.source}
-				<a target="_blank" rel="external" href={comic.source}>{comic.source}</a>
-			{/if}
-			{#if comic.story}
-				<p class="story">{comic.story}</p>
-			{/if}
+		<Heading id="panels">{m.panels()}</Heading>
+		<ul aria-labelledby="panels">
+			{#each comic.panels as panel, index (panel)}
+				<li>
+					<a href={resolve(`/comic/${comic.id}/${panel.id}`)}>
+						<PanelThumbnail {panel} />
+					</a>
+					<DeleteItemForm
+						label={m.deletePanel({ number: index + 1 })}
+						values={{
+							comicId: comic.id,
+							panelId: panel.id,
+							type: DB_ITEM_TYPE.enum.panels,
+						}}
+					/>
+				</li>
+			{/each}
+		</ul>
 
-			<Heading id="panels">{m.panels()}</Heading>
-			<ul aria-labelledby="panels">
-				{#each comic.panels as panel, index (panel)}
+		{#if comic.characters}
+			<Heading id="characters">{m.characters()}</Heading>
+			<ul aria-labelledby="characters">
+				<!-- Keyed by id: the store copies the character on every update, and an object key would remount the gallery and close its open crops. -->
+				{#each comic.characters as character (character.id)}
 					<li>
-						<a href={resolve(`/comic/${comic.id}/${panel.id}`)}>
-							<PanelThumbnail {panel} />
-						</a>
-						<DeleteItemForm
-							label={m.deletePanel({ number: index + 1 })}
-							values={{
-								comicId: comic.id,
-								panelId: panel.id,
-								type: DB_ITEM_TYPE.enum.panels,
-							}}
-						/>
+						<Character {character} comicId={comic.id} />
 					</li>
 				{/each}
 			</ul>
+		{/if}
 
-			{#if comic.characters}
-				<Heading id="characters">{m.characters()}</Heading>
-				<ul aria-labelledby="characters">
-					<!-- Keyed by id: the store copies the character on every update, and an object key would remount the gallery and close its open crops. -->
-					{#each comic.characters as character (character.id)}
-						<li>
-							<Character {character} comicId={comic.id} />
-						</li>
-					{/each}
-				</ul>
-			{/if}
-
-			{#if comic.setting}
-				<Heading>{m.setting()}</Heading>
-				<Setting setting={comic.setting} />
-			{/if}
-		</Section>
+		{#if comic.setting}
+			<Heading>{m.setting()}</Heading>
+			<Setting setting={comic.setting} />
+		{/if}
 	</Section>
 </Section>
 
