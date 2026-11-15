@@ -11,8 +11,8 @@ import {
 	createComicResponse,
 	CREATE_COVER_IMAGE_RESPONSE,
 	CREATE_PANEL_IMAGE_RESPONSE,
-	CREATE_PANEL_RESPONSE,
 	createPanelImageResponse,
+	createPanelResponse,
 	IMAGE_WITHOUT_IMAGE_RESPONSE,
 	INVALID_TEXT_RESPONSE,
 	MODELS_RESPONSE,
@@ -144,7 +144,7 @@ const mockAiGateway: AiGateway = {
 				? createComicResponse('')
 				: CREATE_COMIC_RESPONSE;
 		}
-		return CREATE_PANEL_RESPONSE;
+		return createPanelResponse();
 	},
 	image: async ({ messages }) => {
 		failIfRequested(messages);

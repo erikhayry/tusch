@@ -327,6 +327,20 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: a link with no text is unusable for screen-reader users; generated panels can have empty titles.
 - Proven by: tagged tests
 
+### REQ-238-1 Each panel in the panel list is a card with an image and a title
+
+- Status: active
+- Statement: in the panel list on the panel page, each panel is a card whose single link shows the panel's stored image (an `<img>` with empty alt) or, without one, a same-size CSS placeholder hidden from assistive technology (no text, no `<img>`), and the panel's title; the link is named by the title.
+- Why: users recognise a panel by its picture faster than by a text link; the title already names the link, so the image adds no screen-reader noise.
+- Proven by: tagged tests
+
+### REQ-238-2 The panel list is one horizontal row that scrolls inside its own box
+
+- Status: active
+- Statement: the panel list on the panel page is one horizontal row of cards that scrolls inside its own box at every viewport width (the document never gets wider than the viewport); on load the current panel's card is scrolled into view and is the only link marked `aria-current="page"`; a card focused by keyboard is scrolled into view.
+- Why: a long story would otherwise push the panel itself far down the page, and the user must see which panel they are on.
+- Proven by: tagged tests
+
 ## Persistence and navigation
 
 ### REQ-022 Changes persist locally across reloads
