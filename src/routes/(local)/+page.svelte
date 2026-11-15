@@ -35,6 +35,9 @@
 								loading={index < EAGER_COVERS ? 'eager' : 'lazy'}
 								decoding="async"
 							/>
+						{:else}
+							<!-- Empty and hidden from assistive tech: it only reserves a cover's height so titles line up in a row. -->
+							<span class="cover-spacer" aria-hidden="true"></span>
 						{/if}
 						<span class="title">{comic.title}</span>
 					</a>
@@ -77,6 +80,12 @@
 		gap: var(--space-2);
 		inline-size: 100%;
 		text-decoration: none;
+	}
+
+	.cover-spacer {
+		display: block;
+		inline-size: 100%;
+		aspect-ratio: var(--cover-aspect-ratio);
 	}
 
 	.title {

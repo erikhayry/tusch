@@ -168,6 +168,23 @@ test.describe('covers on the landing page', () => {
 				expect(new Set(boxes.map((box) => box.y)).size).toBe(1);
 				expect(new Set(boxes.map((box) => box.x)).size).toBe(3);
 			});
+
+			test(
+				'keeps a comic without a cover as tall as its row neighbours',
+				{ tag: '@REQ-235-2' },
+				async ({ page }) => {
+					await new LandingPage(page).goto();
+					await expect(entries(page)).toHaveCount(3);
+					await expect(entries(page).filter({ hasNot: page.locator('img') })).toHaveCount(1);
+
+					const heights = await entries(page).evaluateAll((items) =>
+						items.map((item) =>
+							Math.round(item.querySelector('a')?.getBoundingClientRect().height ?? 0),
+						),
+					);
+					expect(new Set(heights).size).toBe(1);
+				},
+			);
 		});
 
 		test('loads the first three covers eagerly and later ones lazily', async ({ page }) => {

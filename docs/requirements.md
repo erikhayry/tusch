@@ -37,8 +37,8 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-235-2 A comic without a cover shows only its title in the library
 
 - Status: active
-- Statement: on `/`, a comic without a cover shows only its title inside the link, with no image and no placeholder.
-- Why: a missing cover is not a missing file; there is nothing to replace.
+- Statement: on `/`, a comic without a cover shows its title inside the link with no image and no placeholder; an empty spacer the height of a portrait cover keeps its title level with the others in its row.
+- Why: a missing cover is not a missing file, so there is nothing to replace; the spacer stops titles from drifting out of line across a row.
 - Proven by: tagged tests
 
 ### REQ-235-3 The library lays out covers in a grid and loads them lazily
