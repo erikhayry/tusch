@@ -52,6 +52,6 @@
 	"welcomeSentence": "Tusch använder OpenAI för att rita dina serier, så du behöver en egen OpenAI API-nyckel. Lägg till den här för att skapa en serie; exemplen nedan kan du titta på utan nyckel.",
 	"config": "AI-modeller",
 	"saveConfig": "Spara modeller",
-	"noKeyModelsHint": "Lägg till din API-nyckel för att välja modeller."
+	"noKeyModelsHint": "Lägg till din API-nyckel för att välja modeller.",
 	"viewComic": "Visa serien"
 }
