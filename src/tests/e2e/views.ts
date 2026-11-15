@@ -11,6 +11,7 @@ export const VIEWS = {
 	create: '/comic/create',
 	comic: `/comic/${EXAMPLE.id}`,
 	panel: `/comic/${EXAMPLE.id}/${EXAMPLE.panels[0].id}`,
+	view: `/comic/${EXAMPLE.id}/view`,
 	raw: `/comic/${EXAMPLE.id}/raw`,
 	'not-found': `/comic/${MISSING_ID}`,
 	settings: '/settings',
