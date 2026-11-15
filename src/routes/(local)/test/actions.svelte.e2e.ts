@@ -26,6 +26,11 @@ const ROUTES = [
 		hidden: ['create-comic', 'create-cover-image', 'fix-character-crop'],
 	},
 	{
+		path: `/comic/${EXAMPLE.id}/view`,
+		exposed: [],
+		hidden: ['client', 'create-panel', 'create-cover-image', 'fix-character-crop'],
+	},
+	{
 		path: '/settings',
 		exposed: ['byok', 'config'],
 		hidden: ['client', 'create-comic', 'fix-character-crop'],

@@ -93,5 +93,6 @@
 	"yourStory": "Your story",
 	"aiNoImage": "The AI didn't return an image. Try again.",
 	"aiInvalidResponse": "The AI returned something we couldn't use. Try again.",
-	"showDetails": "Show details"
+	"showDetails": "Show details",
+	"viewComic": "View comic"
 }

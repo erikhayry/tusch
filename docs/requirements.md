@@ -136,6 +136,34 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: `ComicSchema.title` allows an empty string, and an empty `<h1>` fails axe `empty-heading`.
 - Proven by: tagged tests
 
+### REQ-87-1 The comic page links to a viewer and the viewer links back
+
+- Status: active
+- Statement: `/comic/<id>` has a "View comic" link (not a button) after the `<h1>` and before the "Settings" heading, to `/comic/<id>/view`. The viewer has a "Back" link to `/comic/<id>`. The link adds no heading.
+- Why: readers need a way to see the comic without the editor.
+- Proven by: tagged tests
+
+### REQ-87-2 The viewer shows the comic as a reader sees it
+
+- Status: active
+- Statement: `/comic/<id>/view` shows the comic's title (or "Untitled comic") as its only `<h1>`, then the cover if there is one, then every panel in stored order as an `<h2>` "Panel <n>" section with its image, captions as text and dialogue lines as "<character name>: <text>" (text alone if the character is unknown).
+- Why: the editor mixes content with controls and notes; a reader wants the story.
+- Proven by: tagged tests
+
+### REQ-87-3 The viewer shows no editing data or controls
+
+- Status: active
+- Statement: the viewer has no form, no button and none of the editing data: visual descriptions, time of day, season, year, style, source/story, character list, setting or dialogue head crops.
+- Why: the viewer is read-only and shows the comic, not how it was made.
+- Proven by: tagged tests
+
+### REQ-87-4 The viewer handles panels without an image and comics without panels
+
+- Status: active
+- Statement: a viewer panel without an image still shows its heading, captions and dialogue and renders no image. A comic without panels shows only its title and cover (if any), with no panel headings.
+- Why: users edit comics in any order; a half-finished comic must still be readable.
+- Proven by: tagged tests
+
 ### REQ-011 A cover can be generated or replaced
 
 - Status: active

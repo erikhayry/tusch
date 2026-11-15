@@ -41,5 +41,6 @@
 	"yourStory": "Din berättelse",
 	"aiNoImage": "AI:n returnerade ingen bild. Försök igen.",
 	"aiInvalidResponse": "AI:n returnerade något vi inte kunde använda. Försök igen.",
-	"showDetails": "Visa detaljer"
+	"showDetails": "Visa detaljer",
+	"viewComic": "Visa serien"
 }
