@@ -234,6 +234,23 @@ const COMIC_DATA: { data: InitialComic } = {
 	},
 };
 
+/** The create-comic response with another generated title (e.g. an empty one). */
+export function createComicResponse(title: string): OpenAiOutput {
+	return {
+		output: [
+			{
+				type: 'message',
+				content: [
+					{
+						type: 'output_text',
+						text: JSON.stringify({ data: { ...COMIC_DATA.data, title } }),
+					},
+				],
+			},
+		],
+	};
+}
+
 export const CREATE_COMIC_RESPONSE: OpenAiOutput = {
 	output: [
 		{
