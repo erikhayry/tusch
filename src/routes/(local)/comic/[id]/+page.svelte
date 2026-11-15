@@ -8,7 +8,7 @@
 	let { data }: { data: Data } = $props();
 </script>
 
-<Page title={m.comicTitle({ title: data.comic.title })}>
+<Page title={data.comic.title.trim() || m.untitledComic()}>
 	{#if data.comic}
 		<Comic comic={data.comic} />
 	{/if}
