@@ -17,17 +17,20 @@
 		<ol aria-labelledby="panels-heading">
 			{#each panels as panel, index (panel.id)}
 				<li>
-					<CreatePanelForm
-						values={toCreatePanelValues(comicId, panels, index)}
-						label={m.addPanelBefore({ number: index + 1 })}
-					/>
+					{#if index === 0}
+						<CreatePanelForm
+							values={toCreatePanelValues(comicId, panels, 0)}
+							label={m.addPanelBefore({ number: 1 })}
+						/>
+					{/if}
 					<a
 						href={resolve(`/comic/${comicId}/${panel.id}`)}
 						aria-current={index === current.index ? 'page' : undefined}
 						>{panel.editorialTitle || m.panel({ number: index + 1 })}
 					</a>
+					<!-- "After panel N" is the insertion index N (0-based array index of the new panel). -->
 					<CreatePanelForm
-						values={toCreatePanelValues(comicId, panels, index)}
+						values={toCreatePanelValues(comicId, panels, index + 1)}
 						label={m.addPanelAfter({ number: index + 1 })}
 					/>
 				</li>
