@@ -12,7 +12,7 @@ const keyCookie = async (context: BrowserContext) =>
 	(await context.cookies()).find(({ name }) => name === KEY_COOKIE_NAME);
 
 const setKeyCookie = (context: BrowserContext, value: string) =>
-	context.addCookies([{ name: KEY_COOKIE_NAME, value, url: ORIGIN }]);
+	context.addCookies([{ name: KEY_COOKIE_NAME, value, url: ORIGIN, httpOnly: true }]);
 
 test.describe('welcome section', () => {
 	test(
