@@ -10,6 +10,7 @@
 
 <Page title={data.comic.title.trim() || m.untitledComic()}>
 	{#if data.comic}
+		<a href={resolve(`/comic/${data.comic.id}/view`)}>{m.viewComic()}</a>
 		<Comic comic={data.comic} />
 	{/if}
 	<a href={resolve('/')}>{m.back()}</a>
