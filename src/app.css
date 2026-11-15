@@ -36,6 +36,7 @@
 	--space-5: 2rem;
 
 	--border-width: 1px;
+	--border-width-thick: 3px;
 	--focus-width: 3px;
 	--focus-offset: 2px;
 	--radius: 0.25rem;
@@ -43,6 +44,7 @@
 	/* Portrait covers are generated at 1024×1536. A placeholder of the same shape keeps rows aligned. */
 	--cover-aspect-ratio: 2 / 3;
 	--control-min-size: 2.75rem;
+	--panel-card-width: 8rem;
 	--progress-duration: 1s;
 	--visually-hidden-size: 1px;
 	--visually-hidden-clip: inset(50%);
