@@ -13,7 +13,7 @@ async function postAction(request: APIRequestContext, path: string, action: stri
 }
 
 const ROUTES = [
-	{ path: '/', exposed: ['client'], hidden: ['create-comic', 'byok'] },
+	{ path: '/', exposed: ['client', 'byok'], hidden: ['create-comic', 'config'] },
 	{ path: '/comic/create', exposed: ['create-comic'], hidden: ['client', 'create-panel'] },
 	{
 		path: `/comic/${EXAMPLE.id}`,

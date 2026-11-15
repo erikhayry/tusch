@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { m } from '$lib/paraglide/messages';
 import { KEY_COOKIE_NAME, TEXT_MODEL_COOKIE_NAME } from '$lib/utils/cookies';
 import { LandingPage } from '../../(local)/test/utils/landingPage';
+import { KEY_COPY } from '../../../tests/e2e/keyCopy';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
 import { activate, chooseOption, typeInto } from '../../../tests/e2e/keyboard';
 import { CreatePage } from './utils/createPage';
@@ -59,6 +60,75 @@ test(
 		await expect(createPage.keyInput).toBeVisible();
 		const cookie = (await context.cookies()).find(({ name }) => name === KEY_COOKIE_NAME);
 		expect(cookie).toBeUndefined();
+	},
+);
+
+test(
+	'shows the new messages for an accepted and a rejected key',
+	{ tag: '@REQ-028' },
+	async ({ page }) => {
+		const createPage = await new CreatePage(page).goto();
+		await createPage.submit('an invalid key');
+		await expect(page.getByText(KEY_COPY.invalidKey)).toBeVisible();
+
+		await createPage.submit();
+
+		await expect(page.getByText(KEY_COPY.keySaved)).toBeVisible();
+	},
+);
+
+test(
+	'shows that a key is saved, above the empty key field, without showing it',
+	{ tag: ['@REQ-234-4', '@REQ-029'] },
+	async ({ page, context }) => {
+		await context.addCookies([
+			{ name: KEY_COOKIE_NAME, value: 'sk-secret-settings', url: 'http://localhost:4173' },
+		]);
+		const createPage = await new CreatePage(page).goto();
+
+		await expect(createPage.keyStatus).toBeVisible();
+		await expect(createPage.keyInput).toHaveValue('');
+		const statusBox = await createPage.keyStatus.boundingBox();
+		const inputBox = await createPage.keyInput.boundingBox();
+		expect(statusBox?.y).toBeLessThan(inputBox?.y ?? 0);
+		expect(await page.content()).not.toContain('sk-secret-settings');
+	},
+);
+
+test('shows no key status without a key', { tag: '@REQ-234-4' }, async ({ page }) => {
+	const createPage = await new CreatePage(page).goto();
+
+	await expect(createPage.keyInput).toBeVisible();
+	await expect(createPage.keyStatus).toHaveCount(0);
+});
+
+test(
+	'uses plain labels and shows the add-a-key hint for models without a key',
+	{ tag: ['@REQ-234-5', '@REQ-031'] },
+	async ({ page }) => {
+		const createPage = await new CreatePage(page).goto();
+
+		await expect(page.getByRole('textbox', { name: KEY_COPY.keyLabel })).toBeVisible();
+		await expect(createPage.keyHint).toBeVisible();
+		await expect(createPage.saveKeyButton).toBeVisible();
+		await expect(createPage.modelsHeading).toBeVisible();
+		await expect(createPage.saveModelsButton).toBeVisible();
+		await expect(createPage.noKeyModelsHint).toBeVisible();
+	},
+);
+
+test(
+	'hides the model hint when a key is stored',
+	{ tag: '@REQ-234-5' },
+	async ({ page, context }) => {
+		// A stored key whose model listing fails: the hint depends on the key, not on empty lists.
+		await context.addCookies([
+			{ name: KEY_COOKIE_NAME, value: 'mock-error:auth', url: 'http://localhost:4173' },
+		]);
+		const createPage = await new CreatePage(page).goto();
+
+		await expect(createPage.saveModelsButton).toBeVisible();
+		await expect(createPage.noKeyModelsHint).toHaveCount(0);
 	},
 );
 

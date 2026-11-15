@@ -2,6 +2,7 @@ import { m } from '$lib/paraglide/messages';
 import { TEXT_MODEL_KEY } from '$lib/types';
 import type { Locator, Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
+import { KEY_COPY } from '../../../../tests/e2e/keyCopy';
 import { activate, typeInto } from '../../../../tests/e2e/keyboard';
 
 export class CreatePage {
@@ -11,6 +12,12 @@ export class CreatePage {
 	readonly keyInput: Locator;
 	readonly successMessage: Locator;
 	readonly invalidKeyMessage: Locator;
+	readonly keyStatus: Locator;
+	readonly keyHint: Locator;
+	readonly noKeyModelsHint: Locator;
+	readonly modelsHeading: Locator;
+	readonly saveKeyButton: Locator;
+	readonly saveModelsButton: Locator;
 	readonly modelsSelect: Locator;
 	readonly currentModel: Locator;
 	readonly saveSettingsButton: Locator;
@@ -30,6 +37,12 @@ export class CreatePage {
 		this.keyInput = page.getByRole('textbox', { name: m.byok() });
 		this.successMessage = page.getByText(m.keyAdded());
 		this.invalidKeyMessage = page.getByText(m.invalidKey());
+		this.keyStatus = page.getByText(KEY_COPY.keyStatus);
+		this.keyHint = page.getByText(KEY_COPY.keyHint);
+		this.noKeyModelsHint = page.getByText(KEY_COPY.noKeyModelsHint);
+		this.modelsHeading = page.getByRole('heading', { name: KEY_COPY.modelsHeading });
+		this.saveKeyButton = page.getByRole('button', { name: KEY_COPY.saveKey });
+		this.saveModelsButton = page.getByRole('button', { name: KEY_COPY.saveModels });
 		this.modelsSelect = page.getByRole('combobox', { name: m.selectTextModel() });
 		this.currentModel = page.getByRole('listitem', { name: TEXT_MODEL_KEY });
 		this.saveSettingsButton = page.getByRole('button', { name: m.saveConfig() });

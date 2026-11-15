@@ -355,7 +355,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-028 Users bring their own validated OpenAI key
 
 - Status: active
-- Statement: on `/settings`, the user enters an OpenAI API key; it is stored (HTTP-only cookie) only after the provider accepts it. A rejected key shows an error and keeps any previous key.
+- Statement: on `/settings` or in the start page's welcome section (REQ-234-1), the user enters an OpenAI API key; it is stored (HTTP-only cookie) only after the provider accepts it. A rejected key shows an error and keeps any previous key.
 - Why: no shared key; an invalid key must never become active.
 - Proven by: tagged tests
 
@@ -378,6 +378,41 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: `/settings` renders (with empty model lists) when no key is stored, so the user can enter one.
 - Why: otherwise a new user can't get started.
+- Proven by: tagged tests
+
+### REQ-234-1 A new visitor is welcomed with the key form on the start page
+
+- Status: active
+- Statement: when no API key is stored and every comic in the library is a bundled example, `/` shows a welcome section above the comic list with one sentence on why a key is needed and the API key form; the comic list stays below it.
+- Why: a new visitor otherwise doesn't know that nothing works until a key is added in Settings (#234).
+- Proven by: tagged tests
+
+### REQ-234-2 The welcome section hides once it has served its purpose
+
+- Status: active
+- Statement: when an API key is stored, or the library holds at least one comic the user created, `/` shows no welcome section.
+- Why: the section is for users who can't create a comic yet; others don't need it (#234).
+- Proven by: tagged tests
+
+### REQ-234-3 A key can be saved from the welcome section
+
+- Status: active
+- Statement: saving an accepted key in the welcome section replaces the form with "Key saved. You can now create a comic." and a "Create new comic" link; a rejected key shows the invalid-key message and keeps the form.
+- Why: the user can go straight from the first visit to creating a comic (#234).
+- Proven by: tagged tests
+
+### REQ-234-4 Settings shows whether a key is saved
+
+- Status: active
+- Statement: when a key is stored, `/settings` shows "A key is saved. Enter a new one to replace it." above the key field; without a key it doesn't. The key itself is never shown.
+- Why: users can't otherwise tell whether a key is already stored (#234).
+- Proven by: tagged tests
+
+### REQ-234-5 Settings uses plain labels
+
+- Status: active
+- Statement: on `/settings` the key field is labelled "OpenAI API key" with a hint on where the key is stored and where to get one, the key button is "Save key", the model section is "AI models" with a "Save models" button, and when no key is stored the empty model lists show "Add your API key to choose models."
+- Why: "BYOK", "Add" and "Config" don't say what they mean (#234).
 - Proven by: tagged tests
 
 ### REQ-034 Settings is reachable from the start page
@@ -443,7 +478,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-033 Routes accept only the actions their forms use
 
 - Status: active
-- Statement: each page accepts POSTs only to the form actions its own forms use; any other action name returns 404.
+- Statement: each page accepts POSTs only to the form actions its own forms use (the start page: delete and the key form); any other action name returns 404.
 - Why: limits what a crafted request can trigger (e.g. no AI generation from the settings page).
 - Proven by: tagged tests
 

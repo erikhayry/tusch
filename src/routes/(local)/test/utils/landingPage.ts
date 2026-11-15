@@ -1,7 +1,8 @@
 import { m } from '$lib/paraglide/messages';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
-import { activate } from '../../../../tests/e2e/keyboard';
+import { KEY_COPY } from '../../../../tests/e2e/keyCopy';
+import { activate, typeInto } from '../../../../tests/e2e/keyboard';
 
 export class LandingPage {
 	readonly page: Page;
@@ -21,6 +22,33 @@ export class LandingPage {
 			page.getByRole('button', {
 				name: m.deleteComic({ title }),
 			});
+	}
+
+	/** The welcome section (REQ-234-1), found by its heading since it has no other hook. */
+	get welcome(): Locator {
+		return this.page.locator('section').filter({
+			has: this.page.getByRole('heading', { name: KEY_COPY.welcomeHeading }),
+		});
+	}
+
+	get welcomeHeading(): Locator {
+		return this.page.getByRole('heading', { name: KEY_COPY.welcomeHeading });
+	}
+
+	get keyInput(): Locator {
+		return this.page.getByRole('textbox', { name: KEY_COPY.keyLabel });
+	}
+
+	get saveKeyButton(): Locator {
+		return this.page.getByRole('button', { name: KEY_COPY.saveKey });
+	}
+
+	/** Save a key through the welcome form, keyboard only. */
+	async saveKey(key = 'mock key') {
+		await typeInto(this.page, this.keyInput, key);
+		await this.page.keyboard.press('Enter');
+
+		return this;
 	}
 
 	async goto() {
