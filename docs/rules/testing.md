@@ -56,6 +56,8 @@ Drive failures from the UI with markers in submitted text:
   match the schema
 - `mock-error:invalid-crop`: a crop fix gets boxes outside the image, so the server
   rejects them (in the API key too, since the crop request has no user text)
+- `mock-error:empty-title`: a create-comic request gets the usual response with
+  `title: ''`, so a comic with an empty title can be made through the UI
 
 The response markers are read per request, never from shared state, since tests
 run in parallel against one server.
