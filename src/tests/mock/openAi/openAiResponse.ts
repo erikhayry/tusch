@@ -361,23 +361,33 @@ export const CREATE_COVER_IMAGE_RESPONSE: OpenAiOutput = {
 	],
 };
 
-export const CREATE_PANEL_RESPONSE: OpenAiOutput = {
-	output: [
-		{
-			type: 'reasoning',
-			content: [],
-		},
-		{
-			type: 'message',
-			content: [
-				{
-					type: 'output_text',
-					text: '{"data":{"editorialTitle":"","captions":["Ådalen, maj 1931. En arbetskonflikt hade skärpts kring strejkbryteriet.","Innan tåget gav sig av samlades människor för att protestera."],"dialogue":[{"characterId":"a3c916f0-539b-4ab5-86e3-8cc3f72b09f4","text":"Vi håller ihop och går lugnt."},{"characterId":"8d5307a9-0215-4f7e-9c93-f13407d2b960","text":"Ska jag följa med?"}],"visualDescription":"Vid en samlingsplats i Frånö gör sig människor redo att gå ut på vägen. Arbetaren håller en hoprullad tygbanderoll medan den unga åskådaren står intill med sin tygväska. Fler demonstranter ansluter i bakgrunden; stämningen är allvarlig men samlad. Vårgrönska kantar den öppna vägen.","place":"Frånö, Ångermanland","season":"spring","timeOfDay":"morning","year":1931,"id":"6b58b59b-4e28-4b8e-9e7b-e59515848e99"}}',
-				},
-			],
-		},
-	],
-};
+const CREATE_PANEL_TEXT =
+	'{"data":{"editorialTitle":"","captions":["Ådalen, maj 1931. En arbetskonflikt hade skärpts kring strejkbryteriet.","Innan tåget gav sig av samlades människor för att protestera."],"dialogue":[{"characterId":"a3c916f0-539b-4ab5-86e3-8cc3f72b09f4","text":"Vi håller ihop och går lugnt."},{"characterId":"8d5307a9-0215-4f7e-9c93-f13407d2b960","text":"Ska jag följa med?"}],"visualDescription":"Vid en samlingsplats i Frånö gör sig människor redo att gå ut på vägen. Arbetaren håller en hoprullad tygbanderoll medan den unga åskådaren står intill med sin tygväska. Fler demonstranter ansluter i bakgrunden; stämningen är allvarlig men samlad. Vårgrönska kantar den öppna vägen.","place":"Frånö, Ångermanland","season":"spring","timeOfDay":"morning","year":1931,"id":"6b58b59b-4e28-4b8e-9e7b-e59515848e99"}}';
+
+/**
+ * The add-panel response with a fresh panel id each time: a user can add several panels to one
+ * comic, and panels sharing an id would make the second insert vanish.
+ */
+export function createPanelResponse(): OpenAiOutput {
+	const { data } = JSON.parse(CREATE_PANEL_TEXT);
+	return {
+		output: [
+			{
+				type: 'reasoning',
+				content: [],
+			},
+			{
+				type: 'message',
+				content: [
+					{
+						type: 'output_text',
+						text: JSON.stringify({ data: { ...data, id: crypto.randomUUID() } }),
+					},
+				],
+			},
+		],
+	};
+}
 
 // Default character ids match example comic A (src/examples/example-complete.ts).
 const PANEL_IMAGE_DATA = {

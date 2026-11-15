@@ -28,7 +28,9 @@ The global baseline lives in `src/app.css`, imported once in
 ## Order of work
 
 1. Semantic HTML first: style elements (`button`, `input`, `select`, `label`,
-   `a`, `main`, `h1`–`h6`, `ul`, `pre`, `img`) before adding classes.
+   `a`, `main`, `h1`–`h6`, `ul`, `pre`, `img`) before adding classes. A component
+   may use local classes in its own scoped `<style>` for its layout; global
+   classes in `app.css` are not allowed.
 2. Narrow screens second: the base styles target 320 px.
 3. Wide screens last, with `min-width` media queries only (never `max-width`).
 
