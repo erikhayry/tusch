@@ -109,7 +109,11 @@ the server (`src/instrumentation.server.ts`, `handleError` in
 Dependabot (`.github/dependabot.yml`) opens grouped weekly PRs for npm
 packages and GitHub Actions. They go through CI like any PR; the agents ignore
 them (bot sender). `@playwright/test` is excluded: bump it by hand together
-with the CI container tag and the screenshot baselines.
+with the CI container tag and the screenshot baselines. Bump the `container:`
+tag in **both** `ci.yml` and `agents.yml`; until both match the locked version,
+`pnpm run check:agent-fixtures` fails (`scripts/check-container-tags.sh`).
+Changing those workflow files is a human step (see `agents.md`, "Workflow and
+agent files").
 
 **Cooldown:** pnpm installs only versions published at least 7 days ago
 (`minimumReleaseAge` in `pnpm-workspace.yaml`; `pnpm install --frozen-lockfile`
