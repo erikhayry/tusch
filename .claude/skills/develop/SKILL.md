@@ -69,12 +69,12 @@ block.
 
 If the ticket lists views affected, or your change alters any view:
 
-- **In the CI container** (`PLAYWRIGHT_SCREENSHOTS=1` is set): run
-  `pnpm exec playwright test screenshots --update-snapshots=all` and commit the
-  images.
-- **Locally:** push first, then run `pnpm screenshots:update`. It renders the
-  baselines in CI and copies them into `src/tests/e2e/__screenshots__/` itself,
-  so don't download or copy them by hand. Look at the changed images, then
+- Run `pnpm screenshots:update` in both cases; don't download or copy baselines by hand.
+- **In the CI container** (agent runs on GitHub: `GITHUB_ACTIONS=true` and
+  `PLAYWRIGHT_SCREENSHOTS=1`): it renders the baselines in place into
+  `src/tests/e2e/__screenshots__/`. Look at the changed images, then commit them.
+- **Locally:** push first. It runs CI, renders the baselines there and copies them
+  into `src/tests/e2e/__screenshots__/` itself. Look at the changed images, then
   commit them.
 
 ## 5. Hand off
