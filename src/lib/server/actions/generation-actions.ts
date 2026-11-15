@@ -18,6 +18,11 @@ import {
 	decodeCreatePanelImageValues,
 	type CreatePanelImageResult,
 } from '$lib/features/panels/contracts/createPanelImage';
+import {
+	decodeFixCharacterCropValues,
+	FixCharacterCropValuesSchema,
+	type FixCharacterCropResult,
+} from '$lib/features/panels/contracts/fixCharacterCrop';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { GenerationService } from '../generation/generation-service';
 import { runGeneration, type ActionResult } from './run-action';
@@ -68,6 +73,18 @@ export function createPanelImageAction(
 		event,
 		{ decode: decodeCreatePanelImageValues, schema: CreatePanelImageValuesSchema },
 		(generation, values) => generation.createPanelImage(values),
+		service,
+	);
+}
+
+export function fixCharacterCropAction(
+	event: RequestEvent,
+	{ service }: Options = {},
+): ActionResult<FixCharacterCropResult> {
+	return runGeneration(
+		event,
+		{ decode: decodeFixCharacterCropValues, schema: FixCharacterCropValuesSchema },
+		(generation, values) => generation.fixCharacterCrop(values),
 		service,
 	);
 }

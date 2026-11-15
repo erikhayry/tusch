@@ -58,10 +58,10 @@ export function createOpenAiGateway({ apiKey, textModel, imageModel }: AiCredent
 	}
 
 	return {
-		text: ({ messages, schemaName }: AiTextRequest) =>
+		text: ({ messages, schemaName, imageUrls = [] }: AiTextRequest) =>
 			parse({
 				model: textModel,
-				input: getChatMessages(messages),
+				input: [...getChatMessages(messages), ...getImageMessages(imageUrls)],
 				text: { format: getSchemaAsTextFormat(schemaName) },
 			}),
 

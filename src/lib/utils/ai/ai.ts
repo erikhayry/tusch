@@ -1,8 +1,10 @@
 import {
+	CharacterBoxesSchema,
 	CreatedImageSchema,
 	CreateImageSchema,
 	CreatePanelSchema,
 	InitialComicSchema,
+	type CharacterBoxes,
 	type CreatedImage,
 	type CreateImage,
 	type CreatePanel,
@@ -52,4 +54,10 @@ export function getPanelFromOpenAiResponse(response: OpenAiOutput): CreatePanel 
 	const output = parseOutputText(response);
 
 	return CreatePanelSchema.parse(output);
+}
+
+export function getCharacterBoxesFromOpenAiResponse(response: OpenAiOutput): CharacterBoxes {
+	const output = parseOutputText(response);
+
+	return CharacterBoxesSchema.parse(output);
 }

@@ -150,6 +150,34 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: to check that a character looks the same across panels, all of a character's images must be visible in one place.
 - Proven by: tagged tests
 
+### REQ-219-1 A character crop can be fixed with AI
+
+- Status: active
+- Statement: on the comic page, every head crop in a character's gallery whose panel has an image offers a "Fix crop" button inside its expanded `<details>`. Activating it asks the AI for new head and full-body boxes for that character in the panel's current image, and replaces both stored crops of that character image. The gallery still shows one crop for the panel, and the panel page shows the fixed head next to that character's dialogue.
+- Why: a crop is sometimes off (for example only part of the face), and the user shouldn't have to regenerate the panel image to correct it.
+- Proven by: tagged tests
+
+### REQ-219-2 A crop fix can be undone one step
+
+- Status: active
+- Statement: after a crop fix, that crop offers "Undo crop fix", which puts the previous head and full-body crops back. It survives a reload. Fixing the same crop again replaces the stored previous version, so undo always goes back exactly one step. After an undo, the undo button is gone.
+- Why: a fix can make the crop worse; it must be reversible without losing the earlier crop.
+- Proven by: tagged tests
+
+### REQ-219-3 Crop fixes leave no stray files
+
+- Status: active
+- Statement: an undo removes the fixed crop's image files. A second fix removes the files of the version it replaces as "previous". Deleting the panel or restoring its image (REQ-049) also removes the previous-version files of the crops it drops.
+- Why: image files never leak (REQ-025).
+- Proven by: tagged tests
+
+### REQ-219-4 A failed crop fix changes nothing
+
+- Status: active
+- Statement: if the crop fix fails (an AI provider error, or a response whose boxes are invalid or outside the image), the usual error is shown, both crops stay unchanged and no undo is offered.
+- Why: a failed fix must never damage a crop the user already has.
+- Proven by: tagged tests
+
 ### REQ-047 Deleting a panel removes its character images
 
 - Status: active

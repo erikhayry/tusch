@@ -5,8 +5,12 @@
 		getPanelsWithCharachter,
 	} from '$lib/features/comics/client/comic-selectors';
 	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
+	import { toCharacterPrompt } from '$lib/features/comics/contracts/prompts';
 	import { m } from '$lib/paraglide/messages';
+	import { tick } from 'svelte';
 	import CreateCharacterImageForm from '../forms/createCharacterImageForm/CreateCharacterImageForm.svelte';
+	import FixCharacterCropForm from '../forms/fixCharacterCropForm/FixCharacterCropForm.svelte';
+	import UndoCharacterCropFixForm from '../forms/undoCharacterCropFixForm/UndoCharacterCropFixForm.svelte';
 	import Image from '../image/Image.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
@@ -16,6 +20,17 @@
 	let panels = $derived(getPanelsWithCharachter(comicStore.comics, comicId, character.id));
 	let comic = $derived(getComic(comicStore.comics, comicId));
 	let gallery = $derived(getCharacterGalleryImages(comicStore.comics, comicId, character.id));
+
+	let fixButtons = $state<Record<string, HTMLButtonElement | undefined>>({});
+
+	/**
+	 * Undo removes its own button, which drops focus to <body>. Wait for the DOM to
+	 * update, then focus the crop's "Fix crop" button, which stays in place.
+	 */
+	async function focusFixAfterUndo(characterImageId: string) {
+		await tick();
+		fixButtons[characterImageId]?.focus();
+	}
 </script>
 
 <Section>
@@ -28,12 +43,38 @@
 					number: entry.number,
 					title: entry.panel.editorialTitle,
 				}}
+				{@const landscape = entry.panel.image?.landscape}
+				{@const current = landscape?.characters?.find(({ id }) => id === character.id)}
 				<li>
 					<details>
 						<summary aria-label={m.characterHeadAlt(params)}>
 							<Image image={entry.head} alt="" class="head" />
 						</summary>
 						<Image image={entry.full} alt={m.characterFullAlt(params)} />
+						{#if landscape}
+							<FixCharacterCropForm
+								bind:submitButton={fixButtons[entry.id]}
+								label={m.fixCharacterCrop(params)}
+								values={{
+									comicId,
+									panelId: entry.panel.id,
+									characterId: character.id,
+									characterImageId: entry.id,
+									character: toCharacterPrompt(character),
+									width: landscape.width,
+									height: landscape.height,
+									current: current && { head: current.head, full: current.full },
+								}}
+								imageAssetId={landscape.src}
+							/>
+						{/if}
+						{#if entry.canUndoFix}
+							<UndoCharacterCropFixForm
+								label={m.undoCharacterCropFix(params)}
+								values={{ comicId, characterId: character.id, characterImageId: entry.id }}
+								onSuccess={() => focusFixAfterUndo(entry.id)}
+							/>
+						{/if}
 					</details>
 				</li>
 			{/each}
