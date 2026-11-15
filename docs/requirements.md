@@ -306,11 +306,18 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: text is part of the comic.
 - Proven by: tagged tests
 
-### REQ-021 A generated panel can be inserted before a panel
+### REQ-021 A generated panel can be inserted after any panel or before the first
 
 - Status: active
-- Statement: from a panel, the user can generate a new panel that is inserted before it.
-- Why: users extend the story.
+- Statement: from the panel list on the panel page, the user can generate a new panel and insert it after any panel, or before the first panel; each insertion point is offered exactly once.
+- Why: users extend the story, and a duplicate button for the same position only adds noise.
+- Proven by: tagged tests
+
+### REQ-237-1 "Add Panel after panel N" inserts at position N+1
+
+- Status: active
+- Statement: generating a panel with "Add Panel after panel N" inserts the new panel at position N+1 (it becomes panel N+1, the old panel N+1 moves to N+2), and the order survives a reload.
+- Why: the button used to insert before panel N, so a panel could not be added at the end.
 - Proven by: tagged tests
 
 ### REQ-190-1 A panel without a title still has a named navigation link

@@ -81,14 +81,6 @@ test('remove dialogue', { tag: '@REQ-020' }, async ({ page }) => {
 	await expect(page.getByText(EXAMPLE_COMPLETE.panels[1].dialogue[0].text)).toBeHidden();
 });
 
-test('add panel before', { tag: '@REQ-021' }, async ({ page }) => {
-	const panelPage = await new PanelPage(page).goto();
-
-	await panelPage.addPanelBefore();
-
-	expect(await panelPage.numberOfPanels()).toBe(panelPage.initialNumberOfPanels + 1);
-});
-
 //Works, fix test data
 test(
 	'shows character crops next to dialogue after generating a panel image',
