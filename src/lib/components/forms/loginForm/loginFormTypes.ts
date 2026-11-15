@@ -5,4 +5,11 @@ export const LoginFormPropsSchema = z.object({
 	hasKey: z.boolean(),
 });
 
-export type LoginFormProps = z.infer<typeof LoginFormPropsSchema>;
+/**
+ * `onSaved` runs after the provider accepted a key. Only Settings passes it, to reload its
+ * page data (the model lists and `hasKey`); the start page must keep its welcome section,
+ * which shows the "Key saved" confirmation.
+ */
+export type LoginFormProps = z.infer<typeof LoginFormPropsSchema> & {
+	onSaved?: () => Promise<void> | void;
+};

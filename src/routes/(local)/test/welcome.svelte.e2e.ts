@@ -69,6 +69,22 @@ test.describe('welcome section', () => {
 		},
 	);
 
+	test(
+		'announces the result in a status region and keeps focus on it',
+		{ tag: '@REQ-234-3' },
+		async ({ page }) => {
+			const landingPage = await new LandingPage(page).goto();
+
+			await landingPage.saveKey('an invalid key');
+			await expect(landingPage.welcome.getByRole('status')).toHaveText(KEY_COPY.invalidKey);
+			await expect(landingPage.keyInput).toBeVisible();
+
+			await landingPage.saveKey();
+			await expect(landingPage.welcome.getByRole('status')).toHaveText(KEY_COPY.keySaved);
+			await expect(landingPage.welcome.getByRole('status')).toBeFocused();
+		},
+	);
+
 	test('is hidden when a key is stored', { tag: '@REQ-234-2' }, async ({ page, context }) => {
 		await setKeyCookie(context, 'mock key');
 

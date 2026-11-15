@@ -95,6 +95,20 @@ test(
 	},
 );
 
+test(
+	'announces the saved key and drops the add-a-key hint without a reload',
+	{ tag: ['@REQ-028', '@REQ-234-5'] },
+	async ({ page }) => {
+		const createPage = await new CreatePage(page).goto();
+		await expect(createPage.noKeyModelsHint).toBeVisible();
+
+		await createPage.submit();
+
+		await expect(page.getByRole('status').filter({ hasText: KEY_COPY.keySaved })).toBeVisible();
+		await expect(createPage.noKeyModelsHint).toHaveCount(0);
+	},
+);
+
 test('shows no key status without a key', { tag: '@REQ-234-4' }, async ({ page }) => {
 	const createPage = await new CreatePage(page).goto();
 
