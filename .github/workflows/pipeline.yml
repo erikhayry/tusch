@@ -46,8 +46,6 @@ jobs:
       pull-requests: write
       actions: write # dispatches CI and /develop
       checks: read
-    outputs:
-      screenshots: ${{ steps.sync.outputs.screenshots }}
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -68,6 +66,19 @@ jobs:
         id: sync
         run: '"$RUNNER_TEMP/scripts/sync-branches.sh" "$GITHUB_WORKSPACE/repo"'
 
+      # A branch and main both changed a screenshot baseline and the script took
+      # main's image: screenshots.yml renders the merged code again, then runs CI.
+      # A separate workflow, so no job here ever runs a PR branch's code.
+      - name: Render conflicting screenshot baselines again
+        env:
+          BRANCHES: ${{ steps.sync.outputs.screenshots }}
+        run: |
+          set -euo pipefail
+          for branch in $(jq -r '.[].branch' <<< "${BRANCHES:-[]}"); do
+            gh workflow run screenshots.yml --ref "$BRANCH" -f branch="$branch"
+            echo "Started screenshots.yml for $branch"
+          done
+
       - name: Send PRs with conflicts back to the developer
         if: ${{ !cancelled() }}
         working-directory: repo
@@ -81,126 +92,6 @@ jobs:
         env:
           SONAR_PROJECT: ${{ github.repository_owner }}_${{ github.event.repository.name }}
         run: '"$RUNNER_TEMP/scripts/checks-bounce.sh"'
-
-  # A branch and main both changed a screenshot baseline. sync-branches.sh took
-  # main's image; render the merged code again, in the same image as CI.
-  #
-  # Two jobs, because rendering runs the branch's code (install scripts, the app,
-  # the tests): `screenshots` does that with a read-only token and hands over the
-  # images, and `baselines` commits them without running anything from the branch.
-  screenshots:
-    needs: prs
-    if: needs.prs.outputs.screenshots != '' && needs.prs.outputs.screenshots != '[]'
-    strategy:
-      fail-fast: false
-      matrix:
-        include: ${{ fromJSON(needs.prs.outputs.screenshots) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    container: mcr.microsoft.com/playwright:v1.63.0-noble
-    permissions:
-      contents: read
-    env:
-      PLAYWRIGHT_SCREENSHOTS: '1'
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          ref: ${{ matrix.branch }}
-          persist-credentials: false
-
-      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
-      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-        with:
-          version: 12.6.0
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-
-      - run: pnpm install --frozen-lockfile
-
-      - run: pnpm exec paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide
-
-      # `changed` rewrites only the baselines that differ from what the code renders.
-      - name: Regenerate the changed baselines
-        run: pnpm exec svelte-kit sync && pnpm exec playwright test screenshots --update-snapshots=changed
-
-      - name: Collect them
-        run: |
-          set -euo pipefail
-          git ls-files --modified --others --exclude-standard -- ':(glob)src/**/__screenshots__/*.png' > "$RUNNER_TEMP/changed.txt"
-          cat "$RUNNER_TEMP/changed.txt"
-          tar -cf baselines.tar -T "$RUNNER_TEMP/changed.txt"
-
-      - uses: actions/upload-artifact@v7
-        with:
-          name: baselines-${{ strategy.job-index }}
-          path: baselines.tar
-
-  baselines:
-    needs: [prs, screenshots]
-    # Also when one branch failed to render: the others still get their images.
-    if: ${{ !cancelled() && needs.screenshots.result != 'skipped' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include: ${{ fromJSON(needs.prs.outputs.screenshots) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: write # pushes the regenerated baselines
-    env:
-      PR_BRANCH: ${{ matrix.branch }}
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          ref: ${{ matrix.branch }}
-
-      - uses: actions/download-artifact@v8
-        id: download
-        continue-on-error: true
-        with:
-          name: baselines-${{ strategy.job-index }}
-          path: ${{ runner.temp }}/baselines
-
-      - name: Commit and push them
-        if: steps.download.outcome == 'success'
-        run: |
-          set -euo pipefail
-          tar -xf "$RUNNER_TEMP/baselines/baselines.tar"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          # Only images in the baseline folders, whatever the archive held.
-          git add -- ':(glob)src/**/__screenshots__/*.png'
-          if git diff --cached --quiet; then
-            echo "The merged code renders main's baselines; nothing to commit."
-            exit 0
-          fi
-          git commit --quiet -m "Regenerate screenshot baselines after merging main" \
-            -m "This branch and main both changed them (scripts/sync-branches.sh)."
-          git push --quiet origin "HEAD:refs/heads/$PR_BRANCH"
-
-  # A push made with GITHUB_TOKEN starts no CI run, so start one for each branch
-  # the screenshots job handled, also when a regeneration failed: CI then fails and
-  # the PR goes back to the developer.
-  ci:
-    needs: [prs, screenshots, baselines]
-    if: always() && needs.screenshots.result != 'skipped'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      actions: write
-    steps:
-      - name: Dispatch CI for the regenerated branches
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BRANCHES: ${{ needs.prs.outputs.screenshots }}
-        run: |
-          set -euo pipefail
-          for branch in $(jq -r '.[].branch' <<< "$BRANCHES"); do
-            gh workflow run ci.yml --ref "$branch"
-          done
 
   # WIP limit: start the oldest queued issues when slots are free
   # (scripts/pipeline-wip.sh).

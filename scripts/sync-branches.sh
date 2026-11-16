@@ -14,7 +14,8 @@
 #   merged cleanly             CI is dispatched for the branch (a push made with
 #                              GITHUB_TOKEN starts no run)
 #   baselines taken from main  the branch is listed in the `screenshots` output;
-#                              pipeline.yml regenerates them and dispatches CI
+#                              pipeline.yml starts screenshots.yml, which
+#                              renders them again and dispatches CI
 #   conflicts left             nothing is pushed; conflict-bounce.sh sends the
 #                              issue to /develop
 #   push rejected              one comment per main commit (the token may not push

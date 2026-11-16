@@ -15,12 +15,13 @@
 
 Each workflow has one job to do:
 
-| Workflow       | Does                                                                |
-| -------------- | ------------------------------------------------------------------- |
-| `ci.yml`       | The one required check, `test` (see "CI")                           |
-| `agents.yml`   | Runs a role skill when a label, comment or merge asks for one       |
-| `pipeline.yml` | Upkeep with no AI: scripts that keep PRs mergeable and `main` green |
-| `claude.yml`   | Ad-hoc `@claude` mentions; not part of the pipeline                 |
+| Workflow          | Does                                                                   |
+| ----------------- | ---------------------------------------------------------------------- |
+| `ci.yml`          | The one required check, `test` (see "CI")                              |
+| `agents.yml`      | Runs a role skill when a label, comment or merge asks for one          |
+| `pipeline.yml`    | Upkeep with no AI: scripts that keep PRs mergeable and `main` green    |
+| `screenshots.yml` | Started by `pipeline.yml`: renders one PR's screenshot baselines again |
+| `claude.yml`      | Ad-hoc `@claude` mentions; not part of the pipeline                    |
 
 `agents.yml` runs the role skills:
 
@@ -168,7 +169,7 @@ Dependabot (`.github/dependabot.yml`) opens grouped weekly PRs for npm
 packages and GitHub Actions. They go through CI like any PR; the agents ignore
 them (bot sender). `@playwright/test` is excluded: bump it by hand together
 with the CI container tag and the screenshot baselines. Bump the `container:`
-tag in `ci.yml`, `agents.yml` and `pipeline.yml`; until all match the locked version,
+tag in `ci.yml`, `agents.yml` and `screenshots.yml`; until all match the locked version,
 `pnpm run check:agent-fixtures` fails (`scripts/check-container-tags.sh`).
 Changing those workflow files is a human step (see `agents.md`, "Workflow and
 agent files").

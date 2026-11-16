@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Checks that every `container:` in the workflows (ci.yml, agents.yml, pipeline.yml) uses the Playwright image
+# Checks that every `container:` in the workflows (ci.yml, agents.yml, screenshots.yml) uses the Playwright image
 # whose tag matches the @playwright/test version locked in pnpm-lock.yaml (issue #243).
 # update-screenshots.sh renders baselines in place inside the agents.yml container, so
 # a drifted tag would render them with a different browser build than CI uses.
@@ -28,7 +28,7 @@ fi
 version=${locked[0]}
 
 # ci.yml and agents.yml must run in the image; any other workflow that names a
-# container (pipeline.yml regenerates baselines too) must use the same tag.
+# container (screenshots.yml regenerates baselines too) must use the same tag.
 for name in ci.yml agents.yml; do
 	file=$root/.github/workflows/$name
 	if [[ ! -f $file ]]; then
