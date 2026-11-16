@@ -1,0 +1,372 @@
+date,issue,skill,target,model,turns,input_tokens,output_tokens,cache_read_tokens,cache_write_tokens,cost_usd,duration_s,conclusion,run_url
+2026-11-13,,tech-lead,reconcile 117,claude-sonnet-5-5,7,10,915,150267,22913,0.1158,12,success,https://github.com/erikhayry/tusch/actions/runs/43388197577
+2026-11-13,,tech-lead,reconcile 113,claude-sonnet-5-5,4,8,841,107816,18678,0.0939,11,success,https://github.com/erikhayry/tusch/actions/runs/43388235470
+2026-11-13,,tech-lead,reconcile 123,claude-sonnet-5-5,4,8,622,117809,23279,0.1111,11,success,https://github.com/erikhayry/tusch/actions/runs/43389872759
+2026-11-13,,tech-lead,reconcile 124,claude-sonnet-5-5,4,8,617,109362,18054,0.0893,9,success,https://github.com/erikhayry/tusch/actions/runs/43389912105
+2026-11-13,,tech-lead,reconcile 126,claude-sonnet-5-5,4,8,512,115255,20807,0.0999,9,success,https://github.com/erikhayry/tusch/actions/runs/43389972112
+2026-11-13,,tech-lead,reconcile 127,claude-sonnet-5-5,4,8,591,112730,19515,0.0953,9,success,https://github.com/erikhayry/tusch/actions/runs/43390603469
+2026-11-13,,tech-lead,reconcile 133,claude-sonnet-5-5,4,8,555,118846,23472,0.1113,10,success,https://github.com/erikhayry/tusch/actions/runs/43391065245
+2026-11-13,,tech-lead,reconcile 136,claude-sonnet-5-5,4,6,607,79063,19600,0.0924,8,success,https://github.com/erikhayry/tusch/actions/runs/43392546185
+2026-11-13,,tech-lead,reconcile 138,claude-sonnet-5-5,11,18,2151,294514,22608,0.1414,46,success,https://github.com/erikhayry/tusch/actions/runs/43393659226
+2026-11-13,120,plan,120,claude-sonnet-5-5,8,14,2202,213655,24000,0.1394,21,success,https://github.com/erikhayry/tusch/actions/runs/43394574619
+2026-11-13,120,plan,120,claude-sonnet-5-5,9,14,3124,239061,7630,0.0857,27,success,https://github.com/erikhayry/tusch/actions/runs/43395831200
+2026-11-13,120,test,120,claude-sonnet-5-5,81,74,27767,2693520,80128,0.8677,284,failure,https://github.com/erikhayry/tusch/actions/runs/43396086365
+2026-11-13,120,develop,120,claude-sonnet-5-5,2,4,518,49698,20468,0.0920,6,success,https://github.com/erikhayry/tusch/actions/runs/43396911941
+2026-11-13,120,develop,120,claude-sonnet-5-5,12,18,1905,308480,23877,0.1454,123,success,https://github.com/erikhayry/tusch/actions/runs/43399165018
+2026-11-13,120,review,120,claude-sonnet-5-5,19,24,3319,507732,35834,0.2273,98,success,https://github.com/erikhayry/tusch/actions/runs/43399632524
+2026-11-13,,tech-lead,reconcile 141,claude-sonnet-5-5,6,10,1019,146067,21065,0.1091,13,success,https://github.com/erikhayry/tusch/actions/runs/43401739629
+2026-11-13,,tech-lead,reconcile 107,claude-sonnet-5-5,12,20,2404,362660,28078,0.1727,33,success,https://github.com/erikhayry/tusch/actions/runs/43406330098
+2026-11-13,81,plan,81,claude-sonnet-5-5,8,12,1644,178618,20126,0.1148,26,success,https://github.com/erikhayry/tusch/actions/runs/43412175444
+2026-11-13,,tech-lead,reconcile 143,claude-sonnet-5-5,4,8,543,122296,23822,0.1130,13,success,https://github.com/erikhayry/tusch/actions/runs/43414343627
+2026-11-13,81,plan,81,claude-sonnet-5-5,8,10,3106,150130,22848,0.1375,28,success,https://github.com/erikhayry/tusch/actions/runs/43415156796
+2026-11-13,81,test,81,claude-sonnet-5-5,23,32,8275,671871,34488,0.2880,120,success,https://github.com/erikhayry/tusch/actions/runs/43415389592
+2026-11-13,81,test,81,claude-sonnet-5-5,23,30,6672,602900,32360,0.2565,108,success,https://github.com/erikhayry/tusch/actions/runs/43418852379
+2026-11-13,144,test,144,claude-sonnet-5-5,19,26,3789,458184,26533,0.1899,102,success,https://github.com/erikhayry/tusch/actions/runs/43418848982
+2026-11-13,144,develop,144,claude-sonnet-5-5,13,16,1771,260980,22747,0.1348,125,success,https://github.com/erikhayry/tusch/actions/runs/43419262769
+2026-11-13,144,review,144,claude-sonnet-5-5,12,16,2193,271302,23795,0.1443,108,success,https://github.com/erikhayry/tusch/actions/runs/43419697392
+2026-11-13,144,triage,144,claude-sonnet-5-5,2,4,457,47316,19277,0.0864,11,success,https://github.com/erikhayry/tusch/actions/runs/43420301366
+2026-11-13,81,develop,81,claude-sonnet-5-5,61,82,14032,2361298,67835,0.6480,1661,success,https://github.com/erikhayry/tusch/actions/runs/43419252727
+2026-11-13,81,review,81,claude-sonnet-5-5,11,20,3427,397714,31288,0.1992,226,success,https://github.com/erikhayry/tusch/actions/runs/43423141782
+2026-11-13,,tech-lead,reconcile 146,claude-sonnet-5-5,4,8,681,114825,20275,0.0994,12,success,https://github.com/erikhayry/tusch/actions/runs/43427438580
+2026-11-13,,tech-lead,reconcile 147,claude-sonnet-5-5,8,14,2192,220807,22756,0.1351,32,success,https://github.com/erikhayry/tusch/actions/runs/43427580477
+2026-11-13,149,test,149,claude-sonnet-5-5,20,24,3082,439867,28549,0.1891,176,success,https://github.com/erikhayry/tusch/actions/runs/43434036315
+2026-11-13,149,develop,149,claude-sonnet-5-5,32,46,5703,934690,33652,0.2852,251,success,https://github.com/erikhayry/tusch/actions/runs/43434682040
+2026-11-13,149,develop,149,claude-sonnet-5-5,13,24,2246,370637,23876,0.1551,269,success,https://github.com/erikhayry/tusch/actions/runs/43436452960
+2026-11-13,149,review,149,claude-sonnet-5-5,18,22,3225,385138,32106,0.2486,249,success,https://github.com/erikhayry/tusch/actions/runs/43437315494
+2026-11-13,,tech-lead,reconcile 152,claude-sonnet-5-5,6,10,833,168827,27124,0.1337,22,success,https://github.com/erikhayry/tusch/actions/runs/43438012833
+2026-11-13,149,develop,149,claude-sonnet-5-5,24,38,5209,724348,32965,0.2565,446,success,https://github.com/erikhayry/tusch/actions/runs/43438136310
+2026-11-13,149,review,149,claude-opus-5-5,16,22,5133,435777,34746,0.4679,258,success,https://github.com/erikhayry/tusch/actions/runs/43439563107
+2026-11-13,,tech-lead,reconcile 153,claude-sonnet-5-5,5,10,814,179168,30637,0.1486,13,success,https://github.com/erikhayry/tusch/actions/runs/43440350523
+2026-11-13,149,develop,149,claude-sonnet-5-5,9,16,1781,281097,24608,0.1444,48,success,https://github.com/erikhayry/tusch/actions/runs/43440424554
+2026-11-13,149,review,149,claude-opus-5-5,18,26,5681,549615,34281,0.4979,265,success,https://github.com/erikhayry/tusch/actions/runs/43440746612
+2026-11-13,149,develop,149,,,,,,,,,failure,https://github.com/erikhayry/tusch/actions/runs/43441679881
+2026-11-13,149,develop,149,claude-sonnet-5-5,12,20,2272,380739,27585,0.1712,67,success,https://github.com/erikhayry/tusch/actions/runs/43442077340
+2026-11-13,149,review,149,claude-opus-5-5,23,32,5689,698510,35612,0.5385,281,success,https://github.com/erikhayry/tusch/actions/runs/43442450675
+2026-11-13,,tech-lead,reconcile 154,claude-sonnet-5-5,9,18,2329,320680,26173,0.1601,25,success,https://github.com/erikhayry/tusch/actions/runs/43443786370
+2026-11-13,72,plan,72,claude-opus-5-5,14,20,3079,335778,24878,0.3278,44,success,https://github.com/erikhayry/tusch/actions/runs/43446437436
+2026-11-13,72,plan,72,claude-opus-5-5,15,22,7144,486137,39937,0.5597,95,success,https://github.com/erikhayry/tusch/actions/runs/43452733112
+2026-11-13,72,test,72,claude-sonnet-5-5,16,24,4547,540805,37154,0.2482,92,success,https://github.com/erikhayry/tusch/actions/runs/43453170345
+2026-11-13,95,plan,95,claude-opus-5-5,10,18,3829,333078,31812,0.3978,56,success,https://github.com/erikhayry/tusch/actions/runs/43453352007
+2026-11-13,95,plan,95,claude-opus-5-5,3,6,1143,98170,4841,0.0812,19,success,https://github.com/erikhayry/tusch/actions/runs/43453480679
+2026-11-13,100,plan,100,claude-opus-5-5,11,18,2878,339415,33159,0.3908,49,success,https://github.com/erikhayry/tusch/actions/runs/43453796453
+2026-11-13,101,plan,101,claude-opus-5-5,9,18,2591,321870,29029,0.3485,54,success,https://github.com/erikhayry/tusch/actions/runs/43453979676
+2026-11-13,102,plan,102,claude-opus-5-5,18,28,5049,640513,44160,0.5825,94,success,https://github.com/erikhayry/tusch/actions/runs/43453897055
+2026-11-13,100,plan,100,claude-opus-5-5,4,8,1006,133756,5060,0.0874,23,success,https://github.com/erikhayry/tusch/actions/runs/43453816434
+2026-11-13,105,plan,105,claude-opus-5-5,8,16,2360,270375,25740,0.3073,44,success,https://github.com/erikhayry/tusch/actions/runs/43454131459
+2026-11-13,101,plan,101,claude-opus-5-5,4,8,1115,133835,4889,0.0882,25,success,https://github.com/erikhayry/tusch/actions/runs/43453994280
+2026-11-13,98,plan,98,claude-opus-5-5,8,14,2451,245474,31417,0.3495,46,success,https://github.com/erikhayry/tusch/actions/runs/43454279170
+2026-11-13,102,plan,102,claude-opus-5-5,3,6,554,97534,5312,0.0731,13,success,https://github.com/erikhayry/tusch/actions/runs/43453909894
+2026-11-13,105,plan,105,claude-opus-5-5,3,6,1105,97815,4349,0.0765,20,success,https://github.com/erikhayry/tusch/actions/runs/43454147631
+2026-11-13,99,plan,99,claude-opus-5-5,19,22,4147,399067,33424,0.4302,73,success,https://github.com/erikhayry/tusch/actions/runs/43454332683
+2026-11-13,94,plan,94,claude-opus-5-5,8,16,2503,295287,32247,0.3672,45,success,https://github.com/erikhayry/tusch/actions/runs/43454473754
+2026-11-13,98,plan,98,claude-opus-5-5,3,6,878,97622,4289,0.0714,17,success,https://github.com/erikhayry/tusch/actions/runs/43454295189
+2026-11-13,74,plan,74,claude-opus-5-5,13,18,2580,298762,23958,0.3031,45,success,https://github.com/erikhayry/tusch/actions/runs/43454553572
+2026-11-13,94,plan,94,claude-opus-5-5,3,6,1091,97987,4646,0.0786,17,success,https://github.com/erikhayry/tusch/actions/runs/43454492384
+2026-11-13,102,test,102,claude-sonnet-5-5,25,32,8104,786484,48005,0.3518,138,success,https://github.com/erikhayry/tusch/actions/runs/43454356383
+2026-11-13,72,develop,72,claude-sonnet-5-5,32,42,7206,1021680,46734,0.3612,524,success,https://github.com/erikhayry/tusch/actions/runs/43453732186
+2026-11-13,102,develop,102,claude-sonnet-5-5,18,28,2483,518989,27619,0.1873,285,success,https://github.com/erikhayry/tusch/actions/runs/43455320312
+2026-11-13,72,review,72,claude-opus-5-5,23,28,5660,737656,49940,1.0654,263,success,https://github.com/erikhayry/tusch/actions/runs/43455411373
+2026-11-13,72,develop,72,claude-sonnet-5-5,7,12,1778,238176,32570,0.1719,227,success,https://github.com/erikhayry/tusch/actions/runs/43456350959
+2026-11-13,102,review,102,claude-opus-5-5,27,32,5826,679876,41138,0.5817,297,success,https://github.com/erikhayry/tusch/actions/runs/43456325953
+2026-11-13,72,review,72,claude-opus-5-5,21,28,6295,715169,46316,1.0029,272,success,https://github.com/erikhayry/tusch/actions/runs/43457231953
+2026-11-13,,tech-lead,reconcile 159,claude-sonnet-5-5,6,10,1614,155174,22798,0.1229,23,success,https://github.com/erikhayry/tusch/actions/runs/43463424798
+2026-11-13,74,plan,74,claude-opus-5-5,14,16,5539,292157,30770,0.4154,74,success,https://github.com/erikhayry/tusch/actions/runs/43464301386
+2026-11-13,74,test,74,claude-sonnet-5-5,30,40,12710,1114411,54224,0.4555,191,success,https://github.com/erikhayry/tusch/actions/runs/43464716869
+2026-11-13,74,develop,74,claude-sonnet-5-5,81,54,18875,1525040,62817,0.5926,617,success,https://github.com/erikhayry/tusch/actions/runs/43465491187
+2026-11-13,74,review,74,claude-opus-5-5,29,34,9111,1001415,57933,1.3422,335,success,https://github.com/erikhayry/tusch/actions/runs/43467438248
+2026-11-13,74,develop,74,claude-sonnet-5-5,25,28,5519,604267,35596,0.2581,294,success,https://github.com/erikhayry/tusch/actions/runs/43468592168
+2026-11-13,74,review,74,claude-opus-5-5,29,40,8401,1161696,58820,1.4099,318,success,https://github.com/erikhayry/tusch/actions/runs/43469653246
+2026-11-13,102,triage,102,claude-sonnet-5-5,6,10,2012,190994,32683,0.1700,22,success,https://github.com/erikhayry/tusch/actions/runs/43470702540
+2026-11-13,94,plan,94,claude-opus-5-5,16,28,6519,571566,35175,0.5262,102,success,https://github.com/erikhayry/tusch/actions/runs/43470865415
+2026-11-13,99,plan,99,claude-opus-5-5,18,18,9760,385731,42144,0.6096,107,success,https://github.com/erikhayry/tusch/actions/runs/43470993049
+2026-11-13,74,develop,74,claude-sonnet-5-5,15,20,5014,450162,38602,0.2496,261,success,https://github.com/erikhayry/tusch/actions/runs/43470764369
+2026-11-13,102,test,102,claude-sonnet-5-5,48,60,14324,1762740,67897,0.5912,341,success,https://github.com/erikhayry/tusch/actions/runs/43471043217
+2026-11-13,102,develop,102,claude-sonnet-5-5,7,12,1735,212291,26278,0.1437,47,success,https://github.com/erikhayry/tusch/actions/runs/43472215327
+2026-11-13,74,review,74,claude-opus-5-5,39,46,11022,1336874,56800,1.3116,317,success,https://github.com/erikhayry/tusch/actions/runs/43471754905
+2026-11-13,102,review,102,claude-opus-5-5,13,22,4242,499940,38406,0.4922,237,success,https://github.com/erikhayry/tusch/actions/runs/43472575341
+2026-11-13,98,plan,98,claude-opus-5-5,10,18,5846,373257,38944,0.5032,76,success,https://github.com/erikhayry/tusch/actions/runs/43473185515
+2026-11-13,105,plan,105,claude-opus-5-5,10,18,4173,354869,34659,0.4318,64,success,https://github.com/erikhayry/tusch/actions/runs/43473371070
+2026-11-13,102,test,102,claude-sonnet-5-5,13,16,2786,307907,29552,0.1769,44,success,https://github.com/erikhayry/tusch/actions/runs/43473406800
+2026-11-13,101,plan,101,claude-opus-5-5,28,32,8790,721612,42150,0.6575,130,success,https://github.com/erikhayry/tusch/actions/runs/43473521864
+2026-11-13,102,develop,102,claude-sonnet-5-5,6,10,1236,178893,27603,0.1407,231,success,https://github.com/erikhayry/tusch/actions/runs/43473820081
+2026-11-13,102,review,102,claude-opus-5-5,24,30,6552,764747,47018,0.6603,275,success,https://github.com/erikhayry/tusch/actions/runs/43474700009
+2026-11-13,,tech-lead,reconcile 161,claude-sonnet-5-5,9,16,1897,280524,25462,0.1489,29,success,https://github.com/erikhayry/tusch/actions/runs/43482883889
+2026-11-13,,tech-lead,reconcile 158,claude-sonnet-5-5,15,20,2983,402229,32106,0.1985,33,success,https://github.com/erikhayry/tusch/actions/runs/43483328118
+2026-11-13,94,test,94,claude-sonnet-5-5,34,46,16066,1400979,63637,0.5554,304,success,https://github.com/erikhayry/tusch/actions/runs/43482910047
+2026-11-13,86,plan,86,claude-opus-5-5,15,24,3896,459004,32417,0.4292,68,success,https://github.com/erikhayry/tusch/actions/runs/43483841743
+2026-11-13,98,test,98,claude-sonnet-5-5,57,76,19119,2497023,71612,0.7275,267,success,https://github.com/erikhayry/tusch/actions/runs/43483359533
+2026-11-13,104,plan,104,claude-opus-5-5,19,30,4618,596275,33881,0.4828,98,success,https://github.com/erikhayry/tusch/actions/runs/43483918705
+2026-11-13,84,plan,84,claude-opus-5-5,9,16,2747,278407,27360,0.3296,53,success,https://github.com/erikhayry/tusch/actions/runs/43484320451
+2026-11-13,61,plan,61,claude-opus-5-5,22,22,4019,415899,32563,0.4242,71,success,https://github.com/erikhayry/tusch/actions/runs/43484520472
+2026-11-13,94,develop,94,claude-sonnet-5-5,44,38,12855,1185494,65170,0.5079,448,success,https://github.com/erikhayry/tusch/actions/runs/43483933444
+2026-11-13,61,plan,61,claude-opus-5-5,13,22,7929,474855,23853,0.4445,96,success,https://github.com/erikhayry/tusch/actions/runs/43485469514
+2026-11-13,94,review,94,claude-opus-5-5,34,42,9534,1443229,77524,1.3066,323,success,https://github.com/erikhayry/tusch/actions/runs/43485336106
+2026-11-13,98,develop,98,claude-sonnet-5-5,111,74,30837,3237852,118763,1.1074,689,success,https://github.com/erikhayry/tusch/actions/runs/43484362279
+2026-11-13,61,test,61,claude-sonnet-5-5,75,66,23942,2421397,85301,0.8229,267,success,https://github.com/erikhayry/tusch/actions/runs/43486431713
+2026-11-13,94,develop,94,claude-sonnet-5-5,14,16,4583,338277,35957,0.2235,286,success,https://github.com/erikhayry/tusch/actions/runs/43486428461
+2026-11-13,94,review,94,claude-opus-5-5,12,20,4749,486624,47110,0.5693,65,success,https://github.com/erikhayry/tusch/actions/runs/43487387103
+2026-11-13,99,test,99,claude-sonnet-5-5,34,34,11492,861948,50098,0.4016,149,success,https://github.com/erikhayry/tusch/actions/runs/43487366417
+2026-11-13,94,develop,94,claude-sonnet-5-5,33,38,7085,1094230,54539,0.3985,314,success,https://github.com/erikhayry/tusch/actions/runs/43487762836
+2026-11-13,99,develop,99,claude-sonnet-5-5,17,22,5126,448740,33162,0.2288,299,success,https://github.com/erikhayry/tusch/actions/runs/43487956609
+2026-11-13,94,review,94,claude-opus-5-5,45,58,9718,1706585,61584,1.0286,165,success,https://github.com/erikhayry/tusch/actions/runs/43488824882
+2026-11-13,84,plan,84,claude-opus-5-5,11,18,5957,370089,38638,0.5023,77,success,https://github.com/erikhayry/tusch/actions/runs/43489153370
+2026-11-13,99,review,99,claude-opus-5-5,36,44,8142,1172132,56187,1.1757,330,success,https://github.com/erikhayry/tusch/actions/runs/43488978572
+2026-11-13,94,develop,94,claude-sonnet-5-5,11,18,2512,383114,33994,0.1994,254,success,https://github.com/erikhayry/tusch/actions/runs/43489488725
+2026-11-13,86,plan,86,claude-opus-5-5,15,22,6966,441376,33406,0.4949,97,success,https://github.com/erikhayry/tusch/actions/runs/43490204677
+2026-11-13,104,plan,104,claude-opus-5-5,13,20,7359,388448,34834,0.5036,92,success,https://github.com/erikhayry/tusch/actions/runs/43490319474
+2026-11-13,94,review,94,claude-opus-5-5,26,34,6719,822215,42878,0.6420,341,success,https://github.com/erikhayry/tusch/actions/runs/43490384283
+2026-11-13,99,triage,99,claude-sonnet-5-5,5,8,1614,140623,31521,0.1563,24,success,https://github.com/erikhayry/tusch/actions/runs/43505201421
+2026-11-13,,tech-lead,reconcile 170,claude-sonnet-5-5,13,22,2767,425633,30681,0.1930,43,success,https://github.com/erikhayry/tusch/actions/runs/43506070348
+2026-11-13,94,triage,94,claude-sonnet-5-5,8,14,1641,244529,26383,0.1464,23,success,https://github.com/erikhayry/tusch/actions/runs/43506166644
+2026-11-13,99,develop,99,claude-sonnet-5-5,18,24,5241,522251,35907,0.2483,336,success,https://github.com/erikhayry/tusch/actions/runs/43505456565
+2026-11-13,94,triage,94,claude-sonnet-5-5,16,20,2859,378622,28786,0.1816,33,success,https://github.com/erikhayry/tusch/actions/runs/43506258421
+2026-11-13,99,review,99,claude-opus-5-5,3,6,858,98604,30574,0.2815,14,success,https://github.com/erikhayry/tusch/actions/runs/43506488270
+2026-11-13,,tech-lead,reconcile 167,claude-sonnet-5-5,11,16,2051,348764,36839,0.2028,32,success,https://github.com/erikhayry/tusch/actions/runs/43506577316
+2026-11-13,94,triage,94,claude-sonnet-5-5,4,8,837,121405,23067,0.1128,13,success,https://github.com/erikhayry/tusch/actions/runs/43506454685
+2026-11-13,61,develop,61,claude-sonnet-5-5,28,36,8808,1009555,56247,0.4141,83,success,https://github.com/erikhayry/tusch/actions/runs/43506860930
+2026-11-13,84,test,84,claude-sonnet-5-5,37,44,14005,1121399,45680,0.4350,180,success,https://github.com/erikhayry/tusch/actions/runs/43506600347
+2026-11-13,86,test,86,claude-sonnet-5-5,5,8,1065,131575,25562,0.1261,13,success,https://github.com/erikhayry/tusch/actions/runs/43507312919
+2026-11-13,98,test,98,claude-sonnet-5-5,15,22,2641,459141,32359,0.2018,66,success,https://github.com/erikhayry/tusch/actions/runs/43507358422
+2026-11-13,86,develop,86,claude-sonnet-5-5,8,10,4418,180721,31349,0.1877,33,success,https://github.com/erikhayry/tusch/actions/runs/43507579501
+2026-11-13,98,develop,98,claude-sonnet-5-5,11,20,2446,410507,31423,0.1912,244,success,https://github.com/erikhayry/tusch/actions/runs/43507751635
+2026-11-13,98,review,98,claude-opus-5-5,22,28,4912,761050,68492,1.0242,104,success,https://github.com/erikhayry/tusch/actions/runs/43508596131
+2026-11-13,84,develop,84,claude-sonnet-5-5,45,52,21221,1605205,68675,0.6475,200,success,https://github.com/erikhayry/tusch/actions/runs/43509485696
+2026-11-13,95,plan,95,claude-opus-5-5,10,18,5389,346198,33061,0.4416,69,success,https://github.com/erikhayry/tusch/actions/runs/43510194406
+2026-11-13,61,develop,61,claude-sonnet-5-5,73,86,45535,4588357,128667,1.4290,596,success,https://github.com/erikhayry/tusch/actions/runs/43508920133
+2026-11-13,100,plan,100,claude-opus-5-5,11,20,6587,397702,35754,0.4974,85,success,https://github.com/erikhayry/tusch/actions/runs/43510354460
+2026-11-13,181,plan,181,claude-opus-5-5,12,20,3501,352235,27460,0.3602,58,success,https://github.com/erikhayry/tusch/actions/runs/43510629467
+2026-11-13,84,review,84,claude-opus-5-5,17,20,5276,559970,55088,1.0417,90,success,https://github.com/erikhayry/tusch/actions/runs/43520228768
+2026-11-13,181,plan,181,claude-opus-5-5,21,34,9937,757317,41314,0.6809,118,success,https://github.com/erikhayry/tusch/actions/runs/43520283732
+2026-11-13,86,develop,86,claude-sonnet-5-5,4,8,3089,133894,28791,0.1595,23,success,https://github.com/erikhayry/tusch/actions/runs/43522379515
+2026-11-13,86,review,86,claude-opus-5-5,19,26,6089,574379,38711,0.8837,324,success,https://github.com/erikhayry/tusch/actions/runs/43522828527
+2026-11-13,98,review,98,claude-opus-5-5,32,52,8797,1807111,76803,1.4154,741,success,https://github.com/erikhayry/tusch/actions/runs/43522360262
+2026-11-13,61,develop,61,claude-sonnet-5-5,95,124,55514,7628751,164608,1.9767,764,success,https://github.com/erikhayry/tusch/actions/runs/43522369031
+2026-11-13,61,review,61,claude-opus-5-5,22,28,3523,763309,70688,0.7887,87,success,https://github.com/erikhayry/tusch/actions/runs/43524153403
+2026-11-13,,tech-lead,reconcile 186,claude-sonnet-5-5,5,10,844,160153,23195,0.1173,19,success,https://github.com/erikhayry/tusch/actions/runs/43524816952
+2026-11-13,98,develop,98,claude-sonnet-5-5,23,30,8010,775066,49005,0.3537,544,success,https://github.com/erikhayry/tusch/actions/runs/43524081401
+2026-11-13,61,review,61,claude-opus-5-5,33,42,7795,1551522,100434,1.2698,309,success,https://github.com/erikhayry/tusch/actions/runs/43524724375
+2026-11-13,98,review,98,claude-opus-5-5,24,26,3596,666709,64395,1.0788,72,success,https://github.com/erikhayry/tusch/actions/runs/43525432882
+2026-11-13,98,review,98,claude-opus-5-5,28,44,6355,1385159,78910,1.4540,118,success,https://github.com/erikhayry/tusch/actions/runs/43525866412
+2026-11-13,61,develop,61,claude-sonnet-5-5,40,30,7183,759295,52955,0.3596,267,success,https://github.com/erikhayry/tusch/actions/runs/43525573084
+2026-11-13,84,review,84,claude-opus-5-5,24,28,8744,897197,67646,1.5843,360,success,https://github.com/erikhayry/tusch/actions/runs/43525426572
+2026-11-13,84,develop,84,claude-sonnet-5-5,4,4,381,48440,38773,0.1638,6,failure,https://github.com/erikhayry/tusch/actions/runs/43526337895
+2026-11-13,61,review,61,claude-opus-5-5,10,10,956,190763,38629,0.3663,24,failure,https://github.com/erikhayry/tusch/actions/runs/43526295720
+2026-11-14,95,test,95,claude-sonnet-5-5,9,14,1427,255816,29162,0.1565,39,success,https://github.com/erikhayry/tusch/actions/runs/43543406369
+2026-11-14,95,develop,95,claude-sonnet-5-5,8,10,5248,182273,32703,0.2015,30,success,https://github.com/erikhayry/tusch/actions/runs/43543603503
+2026-11-14,98,review,98,claude-opus-5-5,33,50,5691,1612872,83570,1.5067,97,success,https://github.com/erikhayry/tusch/actions/runs/43565576453
+2026-11-14,61,review,61,claude-opus-5-5,35,38,6130,1329425,86952,1.0843,305,success,https://github.com/erikhayry/tusch/actions/runs/43565574298
+2026-11-14,100,test,100,claude-sonnet-5-5,56,72,28331,2826580,97533,0.9562,349,success,https://github.com/erikhayry/tusch/actions/runs/43565539751
+2026-11-14,84,develop,84,claude-sonnet-5-5,52,50,11753,1502435,63469,0.5217,114,success,https://github.com/erikhayry/tusch/actions/runs/43566030655
+2026-11-14,61,test,61,claude-sonnet-5-5,18,22,4507,524057,43973,0.2734,334,success,https://github.com/erikhayry/tusch/actions/runs/43566294624
+2026-11-14,100,develop,100,claude-sonnet-5-5,101,100,22632,4200947,99226,1.0435,604,success,https://github.com/erikhayry/tusch/actions/runs/43566125260
+2026-11-14,100,review,100,claude-opus-5-5,22,26,5081,670748,64242,1.1926,94,success,https://github.com/erikhayry/tusch/actions/runs/43567050397
+2026-11-14,61,develop,61,claude-sonnet-5-5,9,14,1590,306495,38340,0.1999,252,success,https://github.com/erikhayry/tusch/actions/runs/43566864013
+2026-11-14,100,review,100,claude-opus-5-5,43,66,12509,2404449,79844,1.6989,221,success,https://github.com/erikhayry/tusch/actions/runs/43567295050
+2026-11-14,61,review,61,claude-opus-5-5,34,46,7886,1402992,61727,0.9323,348,success,https://github.com/erikhayry/tusch/actions/runs/43567305498
+2026-11-14,84,review,84,claude-opus-5-5,34,36,11560,1263660,90753,1.7937,398,success,https://github.com/erikhayry/tusch/actions/runs/43567549945
+2026-11-14,61,triage,61,,,,,,,,,success,https://github.com/erikhayry/tusch/actions/runs/43573035796
+2026-11-14,61,triage,61,,,,,,,,,success,https://github.com/erikhayry/tusch/actions/runs/43573082069
+2026-11-14,,tech-lead,reconcile 191,claude-sonnet-5-5,8,14,1823,293157,39116,0.2040,21,success,https://github.com/erikhayry/tusch/actions/runs/43573126552
+2026-11-14,101,test,101,claude-sonnet-5-5,33,40,10059,1050435,52116,0.4142,187,success,https://github.com/erikhayry/tusch/actions/runs/43573138267
+2026-11-14,101,develop,101,claude-sonnet-5-5,37,56,11470,1447308,50065,0.4598,603,success,https://github.com/erikhayry/tusch/actions/runs/43573491671
+2026-11-14,101,reviewer,101,claude-opus-5-5,30,36,7447,1024461,70707,1.3288,319,success,https://github.com/erikhayry/tusch/actions/runs/43574400720
+2026-11-14,101,triage,101,claude-sonnet-5-5,9,10,2885,220420,48530,0.2450,30,success,https://github.com/erikhayry/tusch/actions/runs/43575765487
+2026-11-14,101,test,101,claude-sonnet-5-5,51,42,12029,1311353,68571,0.5258,187,success,https://github.com/erikhayry/tusch/actions/runs/43575901030
+2026-11-14,84,triage,84,claude-sonnet-5-5,6,12,1345,201916,24828,0.1330,19,success,https://github.com/erikhayry/tusch/actions/runs/43576205116
+2026-11-14,84,develop,84,claude-sonnet-5-5,17,28,2660,613201,34851,0.2274,72,success,https://github.com/erikhayry/tusch/actions/runs/43576340597
+2026-11-14,84,reviewer,84,claude-opus-5-5,22,28,4627,841220,64848,0.7797,93,success,https://github.com/erikhayry/tusch/actions/runs/43576529532
+2026-11-14,84,develop,84,claude-sonnet-5-5,14,16,3262,342535,37435,0.2166,84,success,https://github.com/erikhayry/tusch/actions/runs/43576739909
+2026-11-14,98,reviewer,98,claude-opus-5-5,34,48,8785,1747476,83880,1.7536,322,success,https://github.com/erikhayry/tusch/actions/runs/43576508551
+2026-11-14,101,develop,101,claude-sonnet-5-5,25,36,6764,872000,41872,0.3224,546,success,https://github.com/erikhayry/tusch/actions/runs/43576228556
+2026-11-14,84,reviewer,84,claude-opus-5-5,31,38,6929,1062384,58239,0.8171,296,success,https://github.com/erikhayry/tusch/actions/runs/43576941642
+2026-11-14,100,reviewer,100,claude-opus-5-5,29,44,8742,1444975,71409,1.5548,689,success,https://github.com/erikhayry/tusch/actions/runs/43576511003
+2026-11-14,98,develop,98,claude-sonnet-5-5,32,46,6588,1051106,39802,0.3303,321,success,https://github.com/erikhayry/tusch/actions/runs/43577025329
+2026-11-14,,tech-lead,reconcile 193,claude-sonnet-5-5,12,20,1948,450251,36815,0.2118,22,success,https://github.com/erikhayry/tusch/actions/runs/43577681187
+2026-11-14,,tech-lead,reconcile 195,claude-sonnet-5-5,13,22,2901,506703,37754,0.2307,30,success,https://github.com/erikhayry/tusch/actions/runs/43577726638
+2026-11-14,100,develop,100,claude-sonnet-5-5,32,34,5783,876207,44816,0.3248,297,success,https://github.com/erikhayry/tusch/actions/runs/43577509599
+2026-11-14,101,reviewer,101,claude-opus-5-5,27,38,9228,1069845,53291,1.1208,690,success,https://github.com/erikhayry/tusch/actions/runs/43577044768
+2026-11-14,100,reviewer,100,claude-opus-5-5,20,26,6188,736649,70570,1.2196,121,success,https://github.com/erikhayry/tusch/actions/runs/43577987475
+2026-11-14,98,reviewer,98,claude-opus-5-5,38,54,11751,2164879,95972,1.9800,593,success,https://github.com/erikhayry/tusch/actions/runs/43577546989
+2026-11-14,100,reviewer,100,claude-opus-5-5,31,42,7639,1340280,74229,1.3995,140,success,https://github.com/erikhayry/tusch/actions/runs/43578238916
+2026-11-14,104,test,104,claude-sonnet-5-5,6,10,1416,175053,26697,0.1385,42,success,https://github.com/erikhayry/tusch/actions/runs/43579392164
+2026-11-14,104,develop,104,claude-sonnet-5-5,18,30,7731,669391,37419,0.2940,79,success,https://github.com/erikhayry/tusch/actions/runs/43579554635
+2026-11-14,104,reviewer,104,claude-opus-5-5,11,18,3466,338885,38230,0.6311,74,success,https://github.com/erikhayry/tusch/actions/runs/43579774566
+2026-11-14,104,reviewer,104,claude-opus-5-5,14,14,2890,303310,39174,0.6377,71,success,https://github.com/erikhayry/tusch/actions/runs/43579990681
+2026-11-14,98,triage,98,claude-sonnet-5-5,5,10,1917,165410,26078,0.1400,19,success,https://github.com/erikhayry/tusch/actions/runs/43583214721
+2026-11-14,98,develop,98,claude-sonnet-5-5,21,32,4556,674267,33796,0.2482,333,success,https://github.com/erikhayry/tusch/actions/runs/43583347195
+2026-11-14,98,reviewer,98,claude-opus-5-5,24,34,4393,905122,65299,1.0668,73,success,https://github.com/erikhayry/tusch/actions/runs/43583900911
+2026-11-14,98,reviewer,98,claude-opus-5-5,38,44,8912,1350016,64446,1.2208,318,success,https://github.com/erikhayry/tusch/actions/runs/43584123325
+2026-11-14,,tech-lead,reconcile 198,claude-sonnet-5-5,15,22,2860,408838,27871,0.1810,28,success,https://github.com/erikhayry/tusch/actions/runs/43585387940
+2026-11-14,171,test,171,claude-sonnet-5-5,5,8,1633,124747,24002,0.1248,14,success,https://github.com/erikhayry/tusch/actions/runs/43585418543
+2026-11-14,105,test,105,claude-sonnet-5-5,53,60,16430,1821782,60626,0.5891,316,success,https://github.com/erikhayry/tusch/actions/runs/43585401080
+2026-11-14,171,develop,171,claude-sonnet-5-5,41,42,10508,974820,41769,0.3697,302,success,https://github.com/erikhayry/tusch/actions/runs/43585539740
+2026-11-14,171,reviewer,171,claude-opus-5-5,23,30,6369,628128,44039,1.0658,113,success,https://github.com/erikhayry/tusch/actions/runs/43586070831
+2026-11-14,105,develop,105,claude-sonnet-5-5,38,42,9922,1064890,46009,0.3898,427,success,https://github.com/erikhayry/tusch/actions/runs/43585928818
+2026-11-14,171,reviewer,171,claude-opus-5-5,24,28,6891,741577,53251,0.7821,121,success,https://github.com/erikhayry/tusch/actions/runs/43586334971
+2026-11-14,181,test,181,claude-sonnet-5-5,4,6,1108,92684,25289,0.1215,29,success,https://github.com/erikhayry/tusch/actions/runs/43586703251
+2026-11-14,181,develop,181,claude-sonnet-5-5,25,38,10904,1091280,52887,0.4298,112,success,https://github.com/erikhayry/tusch/actions/runs/43586857698
+2026-11-14,105,reviewer,105,claude-opus-5-5,42,54,10157,1638665,66590,1.3670,579,success,https://github.com/erikhayry/tusch/actions/runs/43586580592
+2026-11-14,105,develop,105,claude-sonnet-5-5,14,16,4327,334910,35047,0.2170,345,success,https://github.com/erikhayry/tusch/actions/runs/43587428425
+2026-11-14,105,reviewer,105,claude-opus-5-5,29,46,7876,1309070,53196,1.2747,939,failure,https://github.com/erikhayry/tusch/actions/runs/43587977786
+2026-11-14,,tech-lead,reconcile 202,claude-sonnet-5-5,1,0,0,0,0,0.0000,1,failure,https://github.com/erikhayry/tusch/actions/runs/43590159019
+2026-11-14,181,reviewer,181,claude-opus-5-5,17,26,5185,593091,47772,0.9706,84,success,https://github.com/erikhayry/tusch/actions/runs/43595304355
+2026-11-14,181,reviewer,181,claude-opus-5-5,16,24,7033,626011,49841,1.1654,273,success,https://github.com/erikhayry/tusch/actions/runs/43595529125
+2026-11-14,181,develop,181,claude-sonnet-5-5,11,16,4425,365608,41084,0.2452,68,success,https://github.com/erikhayry/tusch/actions/runs/43595986041
+2026-11-14,104,reviewer,104,claude-opus-5-5,16,12,3846,251676,40971,0.4551,44,success,https://github.com/erikhayry/tusch/actions/runs/43601982778
+2026-11-14,95,reviewer,95,claude-opus-5-5,19,20,3703,409949,42374,0.7007,70,success,https://github.com/erikhayry/tusch/actions/runs/43602039519
+2026-11-14,100,reviewer,100,claude-opus-5-5,24,32,5079,983314,69965,1.2519,120,success,https://github.com/erikhayry/tusch/actions/runs/43601980160
+2026-11-14,181,reviewer,181,claude-opus-5-5,25,32,9968,909580,54221,1.3353,297,success,https://github.com/erikhayry/tusch/actions/runs/43602026814
+2026-11-14,95,reviewer,95,claude-opus-5-5,21,24,5638,580127,44030,0.8378,155,success,https://github.com/erikhayry/tusch/actions/runs/43602258688
+2026-11-14,100,reviewer,100,claude-opus-5-5,24,30,5346,830535,65471,1.4107,115,success,https://github.com/erikhayry/tusch/actions/runs/43602275319
+2026-11-14,171,reviewer,171,claude-opus-5-5,25,30,8489,707577,44336,0.9724,387,success,https://github.com/erikhayry/tusch/actions/runs/43602037380
+2026-11-14,104,reviewer,104,claude-opus-5-5,29,26,6753,676246,53438,1.0609,261,success,https://github.com/erikhayry/tusch/actions/runs/43602259825
+2026-11-14,95,develop,95,claude-sonnet-5-5,18,26,4832,596434,41601,0.2744,59,success,https://github.com/erikhayry/tusch/actions/runs/43602549416
+2026-11-14,181,triage,181,,,,,,,,,success,https://github.com/erikhayry/tusch/actions/runs/43602777903
+2026-11-14,171,develop,171,claude-sonnet-5-5,26,34,9773,790002,39862,0.3362,115,success,https://github.com/erikhayry/tusch/actions/runs/43602667282
+2026-11-14,,tech-lead,reconcile 205,claude-sonnet-5-5,4,8,757,137186,30756,0.1443,15,success,https://github.com/erikhayry/tusch/actions/runs/43602903263
+2026-11-14,181,triage,181,claude-sonnet-5-5,6,12,1744,257540,35509,0.1853,23,success,https://github.com/erikhayry/tusch/actions/runs/43602875153
+2026-11-14,95,reviewer,95,claude-opus-5-5,26,24,8398,595686,47394,1.0342,327,success,https://github.com/erikhayry/tusch/actions/runs/43602774272
+2026-11-14,171,reviewer,171,claude-sonnet-5-5,20,24,3653,557426,39271,0.4014,243,success,https://github.com/erikhayry/tusch/actions/runs/43602962425
+2026-11-14,,tech-lead,reconcile 207,claude-sonnet-5-5,4,8,636,121300,21765,0.1056,10,success,https://github.com/erikhayry/tusch/actions/runs/43603576333
+2026-11-14,,tech-lead,reconcile 211,claude-sonnet-5-5,4,8,751,146651,34330,0.1595,12,success,https://github.com/erikhayry/tusch/actions/runs/43604073428
+2026-11-14,100,reviewer,100,claude-sonnet-5-5,21,26,6241,751552,54175,0.3543,314,success,https://github.com/erikhayry/tusch/actions/runs/43603670424
+2026-11-14,,tech-lead,reconcile 210,claude-sonnet-5-5,4,8,776,125688,24371,0.1178,12,success,https://github.com/erikhayry/tusch/actions/runs/43604590793
+2026-11-14,168,plan,168,claude-opus-5-5,13,22,4319,442941,36816,0.4696,79,success,https://github.com/erikhayry/tusch/actions/runs/43604672130
+2026-11-14,168,plan,168,claude-opus-5-5,16,18,6096,458655,31343,0.4645,70,success,https://github.com/erikhayry/tusch/actions/runs/43605133055
+2026-11-14,168,test,168,claude-sonnet-5-5,59,34,18621,985325,55812,0.5081,142,success,https://github.com/erikhayry/tusch/actions/runs/43605336185
+2026-11-14,168,develop,168,claude-haiku-5-5,74,98,55628,4342884,121073,0.2337,540,success,https://github.com/erikhayry/tusch/actions/runs/43605666942
+2026-11-14,,tech-lead,reconcile 212,claude-sonnet-5-5,12,20,2827,461806,39502,0.2325,33,success,https://github.com/erikhayry/tusch/actions/runs/43608311526
+2026-11-14,100,develop,100,claude-haiku-5-5,44,56,11311,1480893,51842,0.0308,332,success,https://github.com/erikhayry/tusch/actions/runs/43607925371
+2026-11-14,100,reviewer,100,claude-sonnet-5-5,2,4,390,50990,23964,0.1049,8,success,https://github.com/erikhayry/tusch/actions/runs/43608551513
+2026-11-14,100,reviewer,100,claude-sonnet-5-5,2,4,279,50991,22405,0.0975,6,success,https://github.com/erikhayry/tusch/actions/runs/43608685689
+2026-11-14,185,plan,185,claude-opus-5-5,22,26,3856,553713,40642,0.5131,58,success,https://github.com/erikhayry/tusch/actions/runs/43611655871
+2026-11-14,190,test,190,claude-sonnet-5-5,24,34,5747,774655,39327,0.2923,100,success,https://github.com/erikhayry/tusch/actions/runs/43611614561
+2026-11-14,176,plan,176,claude-opus-5-5,18,20,3447,396775,35890,0.4355,49,success,https://github.com/erikhayry/tusch/actions/runs/43611708233
+2026-11-14,172,plan,172,claude-opus-5-5,18,20,5232,426404,37497,0.4900,65,success,https://github.com/erikhayry/tusch/actions/runs/43611811004
+2026-11-14,162,test,162,claude-sonnet-5-5,20,30,4831,660463,37617,0.2649,93,success,https://github.com/erikhayry/tusch/actions/runs/43611862428
+2026-11-14,190,develop,190,claude-haiku-5-5,18,28,4473,562092,31523,0.0142,267,success,https://github.com/erikhayry/tusch/actions/runs/43611883974
+2026-11-14,162,develop,162,claude-haiku-5-5,29,36,5347,916804,44489,0.0207,285,success,https://github.com/erikhayry/tusch/actions/runs/43612122546
+2026-11-14,190,reviewer,190,claude-sonnet-5-5,16,24,3337,478135,31038,0.2054,264,success,https://github.com/erikhayry/tusch/actions/runs/43612402104
+2026-11-14,162,reviewer,162,claude-sonnet-5-5,13,22,3871,434829,30493,0.2042,279,success,https://github.com/erikhayry/tusch/actions/runs/43612659983
+2026-11-14,190,develop,190,claude-haiku-5-5,20,28,9596,644852,39989,0.0192,320,success,https://github.com/erikhayry/tusch/actions/runs/43612911962
+2026-11-14,190,reviewer,190,claude-sonnet-5-5,11,20,2754,400165,31245,0.1926,276,success,https://github.com/erikhayry/tusch/actions/runs/43613550572
+2026-11-14,162,triage,162,claude-sonnet-5-5,5,10,1360,173496,28498,0.1450,18,success,https://github.com/erikhayry/tusch/actions/runs/43614187869
+2026-11-14,162,triage,162,claude-sonnet-5-5,1,2,227,14714,22642,0.0943,3,success,https://github.com/erikhayry/tusch/actions/runs/43614188266
+2026-11-14,162,test,162,claude-sonnet-5-5,12,20,3930,404526,33455,0.2136,89,success,https://github.com/erikhayry/tusch/actions/runs/43614341234
+2026-11-14,162,develop,162,claude-haiku-5-5,15,20,3428,425516,34130,0.0128,252,success,https://github.com/erikhayry/tusch/actions/runs/43614728836
+2026-11-14,,tech-lead,reconcile 216,claude-sonnet-5-5,10,18,1744,334283,27259,0.1599,25,success,https://github.com/erikhayry/tusch/actions/runs/43615120038
+2026-11-14,162,reviewer,162,claude-sonnet-5-5,2,4,258,54860,25999,0.1121,5,success,https://github.com/erikhayry/tusch/actions/runs/43615238407
+2026-11-14,,tech-lead,reconcile 215,claude-sonnet-5-5,9,16,1934,311274,30219,0.1714,27,success,https://github.com/erikhayry/tusch/actions/runs/43615213308
+2026-11-14,172,test,172,claude-sonnet-5-5,33,46,8856,1280826,52507,0.4268,147,success,https://github.com/erikhayry/tusch/actions/runs/43615138153
+2026-11-14,162,reviewer,162,claude-sonnet-5-5,2,4,239,55276,26393,0.1135,4,success,https://github.com/erikhayry/tusch/actions/runs/43615378156
+2026-11-14,219,plan,219,claude-opus-5-5,2,2,168,14790,19948,0.1659,6,failure,https://github.com/erikhayry/tusch/actions/runs/43616160102
+2026-11-14,168,reviewer,168,claude-sonnet-5-5,14,26,5155,692943,46055,0.3051,255,success,https://github.com/erikhayry/tusch/actions/runs/43619776591
+2026-11-14,219,plan,219,claude-opus-5-5,14,18,3124,356389,33756,0.4039,43,success,https://github.com/erikhayry/tusch/actions/runs/43620650078
+2026-11-14,185,plan,185,claude-opus-5-5,18,26,8240,595530,42894,0.6272,100,success,https://github.com/erikhayry/tusch/actions/runs/43620748494
+2026-11-14,185,test,185,claude-sonnet-5-5,59,68,33929,3226225,113503,1.1161,388,success,https://github.com/erikhayry/tusch/actions/runs/43620981002
+2026-11-14,185,develop,185,claude-haiku-5-5,59,74,35275,3604984,110099,0.2431,422,success,https://github.com/erikhayry/tusch/actions/runs/43621705584
+2026-11-14,185,reviewer,185,claude-sonnet-5-5,15,24,3176,645519,47640,0.2869,251,success,https://github.com/erikhayry/tusch/actions/runs/43622457885
+2026-11-14,,tech-lead,reconcile 220,claude-sonnet-5-5,4,8,655,146812,34107,0.1577,11,success,https://github.com/erikhayry/tusch/actions/runs/43624015380
+2026-11-14,,tech-lead,reconcile 221,claude-sonnet-5-5,9,18,1961,338256,28335,0.1668,26,success,https://github.com/erikhayry/tusch/actions/runs/43624692750
+2026-11-14,172,develop,172,claude-haiku-5-5,32,34,12878,977827,54463,0.0271,369,success,https://github.com/erikhayry/tusch/actions/runs/43625990483
+2026-11-14,172,reviewer,172,claude-sonnet-5-5,14,24,4621,528925,36858,0.2466,319,success,https://github.com/erikhayry/tusch/actions/runs/43626690848
+2026-11-14,,tech-lead,reconcile 224,claude-sonnet-5-5,4,8,980,132989,28522,0.1372,16,success,https://github.com/erikhayry/tusch/actions/runs/43629057345
+2026-11-14,176,plan,176,claude-opus-5-5,13,16,4273,304600,34939,0.4260,58,success,https://github.com/erikhayry/tusch/actions/runs/43629816943
+2026-11-14,176,test,176,claude-sonnet-5-5,19,24,4890,562212,41000,0.2692,114,success,https://github.com/erikhayry/tusch/actions/runs/43630028088
+2026-11-14,176,develop,176,claude-haiku-5-5,39,44,18129,1451598,65175,0.0366,387,success,https://github.com/erikhayry/tusch/actions/runs/43630347263
+2026-11-14,176,reviewer,176,claude-sonnet-5-5,10,18,2781,389417,35288,0.2079,280,success,https://github.com/erikhayry/tusch/actions/runs/43631042431
+2026-11-14,,tech-lead,reconcile 226,claude-sonnet-5-5,8,16,1751,310811,30076,0.1689,21,success,https://github.com/erikhayry/tusch/actions/runs/43633097912
+2026-11-14,225,plan,225,claude-opus-5-5,21,24,4658,516460,40373,0.5195,62,success,https://github.com/erikhayry/tusch/actions/runs/43633173195
+2026-11-14,219,plan,219,claude-opus-5-5,13,22,8141,471221,39548,0.5735,92,success,https://github.com/erikhayry/tusch/actions/runs/43633298295
+2026-11-14,178,test,178,claude-sonnet-5-5,7,12,1455,208704,26955,0.1433,17,success,https://github.com/erikhayry/tusch/actions/runs/43633422627
+2026-11-14,103,plan,103,claude-opus-5-5,12,18,3133,362540,37057,0.4317,47,success,https://github.com/erikhayry/tusch/actions/runs/43633595227
+2026-11-14,177,develop,177,claude-haiku-5-5,43,52,15404,1368895,52098,0.0318,310,success,https://github.com/erikhayry/tusch/actions/runs/43633476527
+2026-11-14,219,test,219,claude-sonnet-5-5,50,62,20052,2474962,90308,0.8094,454,success,https://github.com/erikhayry/tusch/actions/runs/43633588509
+2026-11-14,177,reviewer,177,claude-sonnet-5-5,15,26,3465,551647,34271,0.2270,258,success,https://github.com/erikhayry/tusch/actions/runs/43634045825
+2026-11-14,,tech-lead,reconcile 227,claude-sonnet-5-5,4,8,595,136105,28487,0.1335,11,success,https://github.com/erikhayry/tusch/actions/runs/43635107660
+2026-11-14,219,develop,219,claude-haiku-5-5,90,162,78617,12061112,182411,0.8319,665,success,https://github.com/erikhayry/tusch/actions/runs/43634373452
+2026-11-14,219,reviewer,219,claude-sonnet-5-5,18,30,5329,863549,59650,0.3783,363,success,https://github.com/erikhayry/tusch/actions/runs/43635470075
+2026-11-14,219,develop,219,claude-haiku-5-5,41,54,15041,1822162,66054,0.0390,370,success,https://github.com/erikhayry/tusch/actions/runs/43636151703
+2026-11-14,183,plan,183,claude-opus-5-5,17,22,9156,475025,39205,0.5919,94,success,https://github.com/erikhayry/tusch/actions/runs/43636620535
+2026-11-14,183,test,183,claude-sonnet-5-5,10,18,7917,375512,35007,0.2568,51,success,https://github.com/erikhayry/tusch/actions/runs/43636869279
+2026-11-14,219,reviewer,219,claude-sonnet-5-5,14,26,4636,659509,43198,0.2852,278,success,https://github.com/erikhayry/tusch/actions/runs/43636826849
+2026-11-14,183,test,183,claude-sonnet-5-5,39,42,12620,1075103,46622,0.4203,144,success,https://github.com/erikhayry/tusch/actions/runs/43637111933
+2026-11-14,183,develop,183,claude-haiku-5-5,29,38,16519,1082537,56526,0.0304,133,success,https://github.com/erikhayry/tusch/actions/runs/43637448485
+2026-11-14,71,plan,71,claude-opus-5-5,8,16,2605,297165,29617,0.3485,38,success,https://github.com/erikhayry/tusch/actions/runs/43639288270
+2026-11-14,71,plan,71,claude-opus-5-5,22,32,11269,827568,35468,0.6748,119,success,https://github.com/erikhayry/tusch/actions/runs/43640032751
+2026-11-14,71,test,71,claude-sonnet-5-5,27,34,11545,960993,54640,0.4302,164,success,https://github.com/erikhayry/tusch/actions/runs/43640292948
+2026-11-14,71,develop,71,claude-haiku-5-5,34,46,26024,1778460,82140,0.0472,354,success,https://github.com/erikhayry/tusch/actions/runs/43640666336
+2026-11-14,,tech-lead,reconcile 229,claude-sonnet-5-5,11,18,2132,338124,29688,0.1739,23,success,https://github.com/erikhayry/tusch/actions/runs/43646307554
+2026-11-15,183,develop,183,claude-haiku-5-5,17,28,6876,668642,44189,0.0190,301,success,https://github.com/erikhayry/tusch/actions/runs/43688660094
+2026-11-15,178,develop,178,claude-haiku-5-5,28,40,7531,1050029,52527,0.0248,302,success,https://github.com/erikhayry/tusch/actions/runs/43688700416
+2026-11-15,178,reviewer,178,claude-sonnet-5-5,12,22,3055,434204,29432,0.1917,238,success,https://github.com/erikhayry/tusch/actions/runs/43689199553
+2026-11-15,183,reviewer,183,claude-sonnet-5-5,13,24,4132,576610,42142,0.2676,290,success,https://github.com/erikhayry/tusch/actions/runs/43689151888
+2026-11-15,,tech-lead,reconcile 233,claude-sonnet-5-5,4,8,755,133741,29942,0.1407,11,success,https://github.com/erikhayry/tusch/actions/runs/43696539630
+2026-11-15,,tech-lead,reconcile 232,claude-sonnet-5-5,4,8,527,139816,30214,0.1401,9,success,https://github.com/erikhayry/tusch/actions/runs/43696564725
+2026-11-15,178,triage,178,claude-sonnet-5-5,8,16,1807,288506,27977,0.1589,20,success,https://github.com/erikhayry/tusch/actions/runs/43709589822
+2026-11-15,234,plan,234,claude-opus-5-5,22,28,4945,607628,40060,0.5410,77,success,https://github.com/erikhayry/tusch/actions/runs/43725554451
+2026-11-15,235,plan,235,claude-opus-5-5,16,24,3027,553622,42940,0.5149,56,success,https://github.com/erikhayry/tusch/actions/runs/43725735465
+2026-11-15,236,plan,236,claude-opus-5-5,23,26,4071,523222,33425,0.4536,73,success,https://github.com/erikhayry/tusch/actions/runs/43725924315
+2026-11-15,237,plan,237,claude-opus-5-5,17,26,3900,574309,39669,0.5103,75,success,https://github.com/erikhayry/tusch/actions/runs/43726044804
+2026-11-15,238,plan,238,claude-opus-5-5,19,28,4292,594441,37643,0.5060,94,success,https://github.com/erikhayry/tusch/actions/runs/43726306693
+2026-11-15,234,plan,234,claude-opus-5-5,11,20,7549,454214,20494,0.4059,124,success,https://github.com/erikhayry/tusch/actions/runs/43726460973
+2026-11-15,235,plan,235,claude-opus-5-5,22,28,7430,643929,18747,0.4275,136,success,https://github.com/erikhayry/tusch/actions/runs/43726586165
+2026-11-15,236,plan,236,claude-opus-5-5,21,26,6016,584122,18289,0.3836,103,success,https://github.com/erikhayry/tusch/actions/runs/43726679570
+2026-11-15,237,plan,237,claude-opus-5-5,15,18,4341,391377,14153,0.2784,61,success,https://github.com/erikhayry/tusch/actions/runs/43726794982
+2026-11-15,238,plan,238,claude-opus-5-5,10,18,5102,386405,20559,0.3439,70,success,https://github.com/erikhayry/tusch/actions/runs/43726950113
+2026-11-15,235,test,235,claude-sonnet-5-5,29,36,9974,1019044,53655,0.4163,161,success,https://github.com/erikhayry/tusch/actions/runs/43726894733
+2026-11-15,236,test,236,claude-sonnet-5-5,43,42,12138,1195749,55850,0.4644,161,success,https://github.com/erikhayry/tusch/actions/runs/43726908600
+2026-11-15,238,test,238,claude-sonnet-5-5,9,12,1417,225782,29556,0.1550,17,success,https://github.com/erikhayry/tusch/actions/runs/43727140487
+2026-11-15,237,test,237,claude-sonnet-5-5,25,32,8802,859184,50373,0.3755,171,success,https://github.com/erikhayry/tusch/actions/runs/43726970129
+2026-11-15,234,test,234,claude-sonnet-5-5,47,38,15758,1230032,72091,0.5690,368,success,https://github.com/erikhayry/tusch/actions/runs/43726761851
+2026-11-15,236,develop,236,claude-haiku-5-5,24,28,6631,699738,43763,0.0191,65,success,https://github.com/erikhayry/tusch/actions/runs/43727287120
+2026-11-15,237,develop,237,claude-haiku-5-5,31,42,7415,1059343,44385,0.0232,73,success,https://github.com/erikhayry/tusch/actions/runs/43727332991
+2026-11-15,235,develop,235,claude-haiku-5-5,35,46,12600,1436150,62044,0.0331,309,success,https://github.com/erikhayry/tusch/actions/runs/43727248358
+2026-11-15,236,develop,236,claude-haiku-5-5,39,52,11081,1473873,56852,0.0317,340,success,https://github.com/erikhayry/tusch/actions/runs/43727537771
+2026-11-15,234,develop,234,claude-haiku-5-5,60,60,31133,2777459,113824,0.2096,456,success,https://github.com/erikhayry/tusch/actions/runs/43727448704
+2026-11-15,237,develop,237,claude-haiku-5-5,48,62,12697,1893382,62720,0.0378,630,success,https://github.com/erikhayry/tusch/actions/runs/43727605355
+2026-11-15,236,reviewer,236,claude-sonnet-5-5,13,26,4105,634591,42775,0.2757,285,success,https://github.com/erikhayry/tusch/actions/runs/43728197609
+2026-11-15,,tech-lead,reconcile 239,claude-sonnet-5-5,8,16,1931,350408,37163,0.2030,21,success,https://github.com/erikhayry/tusch/actions/runs/43730040460
+2026-11-15,237,reviewer,237,claude-sonnet-5-5,6,10,1291,191114,30581,0.1544,14,success,https://github.com/erikhayry/tusch/actions/runs/43730754084
+2026-11-15,235,reviewer,235,claude-sonnet-5-5,12,22,2655,491712,35997,0.2198,292,success,https://github.com/erikhayry/tusch/actions/runs/43730733607
+2026-11-15,237,develop,237,claude-haiku-5-5,25,38,5746,905958,39761,0.0199,309,success,https://github.com/erikhayry/tusch/actions/runs/43730892452
+2026-11-15,235,triage,235,claude-sonnet-5-5,1,0,0,0,0,0.0000,1,failure,https://github.com/erikhayry/tusch/actions/runs/43731690293
+2026-11-15,235,triage,235,claude-sonnet-5-5,1,0,0,0,0,0.0000,1,failure,https://github.com/erikhayry/tusch/actions/runs/43731689903
+2026-11-15,237,reviewer,237,claude-sonnet-5-5,5,6,856,103457,34894,0.1585,239,failure,https://github.com/erikhayry/tusch/actions/runs/43731490014
+2026-11-15,235,reviewer,235,claude-sonnet-5-5,11,22,3273,500576,36825,0.2301,35,success,https://github.com/erikhayry/tusch/actions/runs/43739799072
+2026-11-15,237,reviewer,237,claude-sonnet-5-5,14,20,3042,448378,38738,0.2302,286,success,https://github.com/erikhayry/tusch/actions/runs/43739724827
+2026-11-15,234,reviewer,234,claude-sonnet-5-5,25,34,4343,946782,64611,0.3966,479,success,https://github.com/erikhayry/tusch/actions/runs/43739839811
+2026-11-15,234,test,234,claude-sonnet-5-5,8,14,1545,299405,34534,0.1836,92,success,https://github.com/erikhayry/tusch/actions/runs/43740714553
+2026-11-15,,tech-lead,reconcile 241,claude-sonnet-5-5,7,14,1576,271321,30754,0.1659,24,success,https://github.com/erikhayry/tusch/actions/runs/43740872460
+2026-11-15,235,develop,235,claude-haiku-5-5,49,62,19337,2120795,76548,0.0462,593,success,https://github.com/erikhayry/tusch/actions/runs/43739978252
+2026-11-15,234,develop,234,claude-haiku-5-5,12,24,6175,582849,40790,0.0171,325,success,https://github.com/erikhayry/tusch/actions/runs/43740980763
+2026-11-15,238,test,238,claude-sonnet-5-5,80,104,27607,4333624,90068,1.0699,462,success,https://github.com/erikhayry/tusch/actions/runs/43741095002
+2026-11-15,87,plan,87,claude-opus-5-5,15,20,2995,437580,49061,0.5400,70,success,https://github.com/erikhayry/tusch/actions/runs/43742648904
+2026-11-15,238,develop,238,claude-haiku-5-5,61,82,37876,3588915,94640,0.1727,581,success,https://github.com/erikhayry/tusch/actions/runs/43741967275
+2026-11-15,243,plan,243,claude-opus-5-5,17,30,5799,673677,42994,0.5948,101,success,https://github.com/erikhayry/tusch/actions/runs/43742978954
+2026-11-15,243,plan,243,claude-opus-5-5,10,18,5186,378548,18486,0.3274,71,success,https://github.com/erikhayry/tusch/actions/runs/43745287662
+2026-11-15,87,plan,87,claude-opus-5-5,15,20,5280,426102,38103,0.4957,66,success,https://github.com/erikhayry/tusch/actions/runs/43745487216
+2026-11-15,243,test,243,claude-sonnet-5-5,25,20,13638,461561,42253,0.3516,76,success,https://github.com/erikhayry/tusch/actions/runs/43745494323
+2026-11-15,243,test,243,claude-sonnet-5-5,20,28,11763,692832,42945,0.3587,109,success,https://github.com/erikhayry/tusch/actions/runs/43745779550
+2026-11-15,243,develop,243,claude-haiku-5-5,31,46,11656,1294914,52875,0.0294,78,success,https://github.com/erikhayry/tusch/actions/runs/43746085199
+2026-11-15,87,test,87,claude-sonnet-5-5,39,44,14508,1343916,64776,0.5387,318,success,https://github.com/erikhayry/tusch/actions/runs/43745687569
+2026-11-15,243,develop,243,claude-haiku-5-5,34,48,18711,1509628,63242,0.0371,389,success,https://github.com/erikhayry/tusch/actions/runs/43746355987
+2026-11-15,87,develop,87,claude-haiku-5-5,67,90,29021,3605380,87745,0.0945,637,success,https://github.com/erikhayry/tusch/actions/runs/43746348590
+2026-11-15,243,develop,243,claude-haiku-5-5,19,16,4974,377329,40248,0.0143,55,success,https://github.com/erikhayry/tusch/actions/runs/43747282049
+2026-11-15,71,test,71,claude-sonnet-5-5,19,30,6648,731148,44260,0.3167,109,success,https://github.com/erikhayry/tusch/actions/runs/43747321192
+2026-11-15,71,develop,71,claude-haiku-5-5,13,22,3352,498409,35700,0.0138,56,success,https://github.com/erikhayry/tusch/actions/runs/43747608861
+2026-11-15,71,develop,71,claude-haiku-5-5,17,22,3595,498868,35387,0.0139,71,success,https://github.com/erikhayry/tusch/actions/runs/43747825825
+2026-11-15,243,reviewer,243,claude-sonnet-5-5,12,22,3301,553589,42399,0.2580,302,success,https://github.com/erikhayry/tusch/actions/runs/43747490723
+2026-11-15,238,reviewer,238,claude-sonnet-5-5,13,24,4048,576897,40484,0.2602,263,success,https://github.com/erikhayry/tusch/actions/runs/43747734703
+2026-11-15,235,reviewer,235,claude-sonnet-5-5,17,20,4016,474996,42024,0.2558,268,success,https://github.com/erikhayry/tusch/actions/runs/43747730852
+2026-11-15,234,reviewer,234,claude-sonnet-5-5,16,28,4916,773461,49847,0.3260,297,success,https://github.com/erikhayry/tusch/actions/runs/43747727006
+2026-11-15,87,reviewer,87,claude-sonnet-5-5,12,22,3598,540403,42158,0.2587,262,success,https://github.com/erikhayry/tusch/actions/runs/43748026609
+2026-11-15,,tech-lead,reconcile 244,claude-sonnet-5-5,6,12,867,239383,33411,0.1663,13,success,https://github.com/erikhayry/tusch/actions/runs/43748616271
+2026-11-15,,tech-lead,reconcile 240,claude-sonnet-5-5,8,14,1806,283400,33440,0.1802,26,success,https://github.com/erikhayry/tusch/actions/runs/43748833537
+2026-11-15,,tech-lead,reconcile 245,claude-sonnet-5-5,11,20,2288,381938,28191,0.1739,29,success,https://github.com/erikhayry/tusch/actions/runs/43748988538
+2026-11-15,,tech-lead,reconcile 247,claude-sonnet-5-5,8,14,1474,298482,35988,0.1886,22,success,https://github.com/erikhayry/tusch/actions/runs/43749230450
+2026-11-15,234,develop,234,claude-haiku-5-5,31,48,8201,1227996,44075,0.0252,167,success,https://github.com/erikhayry/tusch/actions/runs/43749007224
+2026-11-15,234,develop,234,claude-haiku-5-5,63,96,12991,3409570,90384,0.1066,1179,success,https://github.com/erikhayry/tusch/actions/runs/43749410469
+2026-11-15,234,reviewer,234,claude-sonnet-5-5,17,30,4618,710588,44836,0.2966,276,success,https://github.com/erikhayry/tusch/actions/runs/43751427883
+2026-11-15,234,develop,234,claude-haiku-5-5,66,84,34740,4103964,118629,0.2345,1017,success,https://github.com/erikhayry/tusch/actions/runs/43751983494
+2026-11-15,234,reviewer,234,claude-sonnet-5-5,14,24,4610,569519,43871,0.2786,360,success,https://github.com/erikhayry/tusch/actions/runs/43753679281
