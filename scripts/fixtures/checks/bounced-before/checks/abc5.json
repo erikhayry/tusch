@@ -1,0 +1,1 @@
+{ "check_runs": [{ "id": 1, "name": "test", "status": "completed", "conclusion": "success", "app": { "slug": "github-actions" }, "html_url": "https://github.com/o/r/actions/runs/800/job/1" }, { "id": 2, "name": "test", "status": "completed", "conclusion": "failure", "app": { "slug": "github-actions" }, "html_url": "https://github.com/o/r/actions/runs/900/job/2" }] }

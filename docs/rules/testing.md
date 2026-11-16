@@ -132,8 +132,8 @@ run in parallel against one server.
   `landing`, `comic` and `settings` also have dark baselines (`*-dark.png`).
 - Baselines live in `src/tests/e2e/__screenshots__/` and are **Linux-only**: CI
   runs inside `mcr.microsoft.com/playwright:<version>-noble` (keep the tag in
-  sync with `@playwright/test`; `pnpm run check:agent-fixtures` checks both
-  workflows' tags against the lockfile). Locally the screenshot tests are skipped
+  sync with `@playwright/test`; `pnpm run check:agent-fixtures` checks every
+  workflow's tag against the lockfile). Locally the screenshot tests are skipped
   unless `PLAYWRIGHT_SCREENSHOTS=1`; macOS images won't match, so never commit them.
 - **Intended UI change:** run `pnpm screenshots:update`, look at the images, and
   commit them. Locally it pushes the branch first, runs CI with

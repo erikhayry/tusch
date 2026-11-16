@@ -42,16 +42,12 @@ Then collect **review lessons**: read the triage comments on the PR's issue
 caught, add a lesson to `docs/rules/review-lessons.md` following that file's
 rules. Merge it into an existing lesson or rule rather than duplicating.
 
-Then the **changelog**: read the PR body's **Release note**
-(`gh pr view <pr> --json body,labels`, and the issue's `type:*` label). Unless
-it says "No user-facing change", add one line to `CHANGELOG.md` under
-`## Unreleased`, in `### Features` (`type:feature`), `### Fixes` (`type:bug`)
-or `### Chores` (`type:chore`), creating the heading if it's missing:
-`- <release note> ([#<pr>](<pr url>))`. Newest entries go first.
+The changelog needs nothing from you: the PR brought its own entry in
+`changelog/` (`changelog/README.md`). Never edit `CHANGELOG.md`.
 
-If the ledger, the lessons or the changelog need edits, make them on a branch
-`ledger-<pr>` from `main` and open a small PR (`type:chore`). Otherwise comment
-"Ledger consistent, no new review lessons, no release note" on the PR.
+If the ledger or the lessons need edits, make them on a branch `ledger-<pr>` from
+`main` and open a small PR (`type:chore`). Otherwise comment "Ledger consistent,
+no new review lessons" on the PR.
 
 ## audit
 
