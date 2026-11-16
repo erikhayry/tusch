@@ -58,6 +58,10 @@ So:
   reviewers caught before). A hit is blocking unless the lesson says otherwise.
 - **Screenshots:** baselines changed only for the views the ticket lists, and
   the images look intended.
+- **Changelog:** a user-facing change has `changelog/$0.<type>.md` with one
+  sentence a user would understand, and the type matches the issue's `type:*`
+  label (`changelog/README.md`). A missing or wrong entry is blocking.
+  `CHANGELOG.md` itself is never edited.
 - **Accessibility:** if the diff touches `.svelte` files, CSS or `messages/`,
   apply the `a11y-reviewer` checklist to the diff. Its
   **critical** and **serious** findings are blocking; post the rest as notes.
@@ -99,9 +103,9 @@ So:
   ```
 
   The body contains: a summary, `Closes #$0`, the requirements added, changed or
-  removed, the tests, the screenshots changed, a **Release note** (one
-  user-facing sentence, or "No user-facing change"), and anything the human
-  should look at closely.
+  removed, the tests, the screenshots changed, a **Release note** (the sentence
+  from the changelog entry, or "No user-facing change" when there is none), and
+  anything the human should look at closely.
 
   Post your notes as inline review comments. First get the commit with
   `git rev-parse HEAD`, then, for each note:

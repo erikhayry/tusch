@@ -31,6 +31,13 @@ and on GitHub.
 - Never stack branches, force-push, or rewrite pushed history.
 - Commit messages: imperative subject, a body explaining why, and
   `Refs #<n>` (the PR body carries `Closes #<n>`).
+- While an issue waits in `status:needs-human`, the pipeline may add commits to
+  its branch: a merge of `main`, and regenerated screenshot baselines
+  (`docs/rules/workflow.md`, "Pipeline upkeep"). So always `git pull` before you
+  work on a branch, and never force-push.
+- A user-facing change carries its changelog entry on the branch:
+  `changelog/<issue>.<type>.md`, written by the developer and checked by the
+  reviewer (`changelog/README.md`). Nobody edits `CHANGELOG.md`.
 
 ## Comments
 

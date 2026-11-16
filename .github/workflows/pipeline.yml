@@ -1,0 +1,220 @@
+# Upkeep of the agent pipeline with no AI: everything here is a script that reads
+# state and moves it on. agents.yml runs the roles; this workflow keeps their PRs
+# mergeable and main green (docs/rules/workflow.md, "Pipeline upkeep").
+name: Pipeline
+
+on:
+  # main moved: merge it into the waiting PRs, and start queued issues.
+  push:
+    branches: [main]
+  # A CI run finished: send a failed PR back to the developer, or react to a red main.
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  # An issue left the pipeline: a WIP slot may be free.
+  issues:
+    types: [closed]
+  # Catches what no event reports: a blocked issue freeing a slot, a SonarCloud
+  # result, and a mergeable state GitHub was still computing.
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+permissions: {}
+
+env:
+  GH_REPO: ${{ github.repository }}
+  BRANCH: ${{ github.event.repository.default_branch || 'main' }}
+
+jobs:
+  # Every open pipeline PR whose issue waits for the human (status:needs-human).
+  # Each script scans them all, so a run that is skipped or replaced loses nothing.
+  prs:
+    if: github.event_name != 'issues'
+    concurrency:
+      group: pipeline-prs
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # pushes the merge of main to PR branches
+      issues: write
+      pull-requests: write
+      actions: write # dispatches CI and /develop
+      checks: read
+    outputs:
+      screenshots: ${{ steps.sync.outputs.screenshots }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Every branch and its history: the scripts merge main into PR branches.
+          fetch-depth: 0
+          path: repo
+
+      # The scripts switch branches in the clone, so they run from a copy of main's.
+      - name: Copy the pipeline scripts
+        run: |
+          cp -R repo/scripts "$RUNNER_TEMP/scripts"
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Merge main into waiting PRs
+        id: sync
+        run: '"$RUNNER_TEMP/scripts/sync-branches.sh" "$GITHUB_WORKSPACE/repo"'
+
+      - name: Send PRs with conflicts back to the developer
+        if: ${{ !cancelled() }}
+        working-directory: repo
+        env:
+          SKIP_PRS: ${{ steps.sync.outputs.handled }}
+        run: '"$RUNNER_TEMP/scripts/conflict-bounce.sh"'
+
+      - name: Send PRs with failed checks back to the developer
+        if: ${{ !cancelled() }}
+        working-directory: ${{ runner.temp }}
+        env:
+          SONAR_PROJECT: ${{ github.repository_owner }}_${{ github.event.repository.name }}
+        run: '"$RUNNER_TEMP/scripts/checks-bounce.sh"'
+
+  # A branch and main both changed a screenshot baseline. sync-branches.sh took
+  # main's image; render the merged code again, in the same image as CI.
+  screenshots:
+    needs: prs
+    if: needs.prs.outputs.screenshots != '' && needs.prs.outputs.screenshots != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.prs.outputs.screenshots) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container: mcr.microsoft.com/playwright:v1.63.0-noble
+    permissions:
+      contents: write # pushes the regenerated baselines
+    env:
+      PLAYWRIGHT_SCREENSHOTS: '1'
+      PR_BRANCH: ${{ matrix.branch }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ matrix.branch }}
+
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: 12.6.0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide
+
+      # `changed` rewrites only the baselines that differ from what the code renders.
+      - name: Regenerate the changed baselines
+        run: pnpm exec svelte-kit sync && pnpm exec playwright test screenshots --update-snapshots=changed
+
+      - name: Commit and push them
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A -- ':(glob)src/**/__screenshots__/*.png'
+          if git diff --cached --quiet; then
+            echo "The merged code renders main's baselines; nothing to commit."
+            exit 0
+          fi
+          # --no-verify: the hooks pnpm installed would lint and typecheck again; CI does that.
+          git commit --quiet --no-verify -m "Regenerate screenshot baselines after merging main" \
+            -m "This branch and main both changed them (scripts/sync-branches.sh)."
+          git push --quiet --no-verify origin "HEAD:refs/heads/$PR_BRANCH"
+
+  # A push made with GITHUB_TOKEN starts no CI run, so start one for each branch
+  # the screenshots job handled, also when a regeneration failed: CI then fails and
+  # the PR goes back to the developer.
+  ci:
+    needs: [prs, screenshots]
+    if: always() && needs.screenshots.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch CI for the regenerated branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCHES: ${{ needs.prs.outputs.screenshots }}
+        run: |
+          set -euo pipefail
+          for branch in $(jq -r '.[].branch' <<< "$BRANCHES"); do
+            gh workflow run ci.yml --ref "$branch"
+          done
+
+  # WIP limit: start the oldest queued issues when slots are free
+  # (scripts/pipeline-wip.sh).
+  queue:
+    if: github.event_name != 'workflow_run'
+    concurrency:
+      group: pipeline-queue
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      actions: write # dispatches /test
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: scripts
+
+      - name: Start queued issues while there is capacity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          free=$(scripts/pipeline-wip.sh free)
+          if [[ "$free" -eq 0 ]]; then echo 'No free slot'; exit 0; fi
+          next=$(scripts/pipeline-wip.sh next "$free")
+          if [[ -z "$next" ]]; then echo 'Nothing queued'; exit 0; fi
+          for issue in $next; do
+            gh issue edit "$issue" --remove-label queued
+            gh workflow run agents.yml --ref "$BRANCH" -f issue="$issue"
+            echo "Started /test $issue"
+          done
+
+  # CI finished on main: re-run a first failure, file an issue for a real one, close
+  # it when main is green again (scripts/main-health.sh).
+  main:
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == (github.event.repository.default_branch || 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      actions: write # re-runs CI, dispatches /plan
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: scripts
+
+      - name: React to the result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: scripts/main-health.sh

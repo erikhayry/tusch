@@ -3,15 +3,16 @@
 #
 #   sonar-bounce.sh <issue> <pr>
 #
-# Run by agents.yml's `sonar` job when the "SonarCloud Code Analysis" check
-# fails on a branch issue-<n>-…. Only acts while the issue waits for the human
-# (status:needs-human): earlier stages are still changing the code. Comments
-# the open Sonar issues and hotspots on the issue, moves it to status:needs-dev
-# and starts /develop (a dispatch, since label changes made with GITHUB_TOKEN
-# start no runs). After MAX_ROUNDS bounces it blocks instead, to avoid a loop.
+# Run by scripts/checks-bounce.sh (pipeline.yml's `prs` job) when the SonarCloud
+# check failed on the newest commit of a waiting PR. Only acts while the issue
+# waits for the human (status:needs-human): earlier stages are still changing the
+# code. Comments the open Sonar issues and hotspots on the issue, moves it to
+# status:needs-dev and starts /develop (a dispatch, since label changes made with
+# GITHUB_TOKEN start no runs). After MAX_ROUNDS bounces it blocks instead, to
+# avoid a loop.
 #
 # Needs gh (GH_TOKEN, GH_REPO), curl, jq, and SONAR_PROJECT (e.g. owner_repo).
-# The guard, round count and hand-off are shared with conflict-bounce.sh (bounce-lib.sh).
+# The guard, round count and hand-off are shared with the other bounces (bounce-lib.sh).
 set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/bounce-lib.sh"
