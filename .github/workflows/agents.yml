@@ -157,11 +157,16 @@ jobs:
           # Turn caps per role. claude-code-action fails a run that ends past its cap even
           # when the work succeeded (#120's tester took 81 turns), so leave headroom;
           # the costs in costs.csv show where a cap is too generous.
+          # /test, /develop and /reviewer run the project's own tooling and get a plain
+          # shell: narrow patterns denied every compound command (`a && b | tail`), the
+          # most common reason a run stopped without handing off. The roles that only
+          # read and comment keep their narrow lists. scripts/check-agent-commits.sh
+          # (a CI step) stands in for what the patterns used to prevent.
           case "$skill" in
             plan)      turns=60;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue create:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*)' ;;
-            test)      turns=120; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
-            develop)   turns=150; tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh workflow run:*),Bash(gh run:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
-            reviewer)    turns=100; tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*),Bash(gh issue create:*),Bash(gh pr create:*),Bash(gh pr checks:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr review:*),Bash(gh api:*),Bash(git:*),Bash(pnpm:*),mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
+            test)      turns=120; tools='Read,Grep,Glob,Edit,Write,Bash,mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
+            develop)   turns=150; tools='Read,Grep,Glob,Edit,Write,Bash,mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
+            reviewer)    turns=100; tools='Read,Grep,Glob,Write,Bash,mcp__plugin_svelte_svelte__list-sections,mcp__plugin_svelte_svelte__get-documentation,mcp__plugin_svelte_svelte__svelte-autofixer' ;;
             triage)    turns=50;  tools='Read,Grep,Glob,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh api:*)' ;;
             tech-lead) turns=50;  tools='Read,Grep,Glob,Edit,Write,Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh issue create:*),Bash(gh pr view:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh api:*),Bash(git:*),Bash(pnpm run check:requirements),Bash(pnpm exec playwright test --list:*)' ;;
             *)         turns=0;   tools='' ;;

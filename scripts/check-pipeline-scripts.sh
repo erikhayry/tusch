@@ -30,6 +30,7 @@ run bash scripts/check-bounce-fixtures.sh
 run bash scripts/check-sync-branches.sh
 run bash scripts/check-main-health.sh
 run bash scripts/check-wip-script.sh
+run bash scripts/check-agent-commits-cases.sh
 run bash scripts/check-screenshot-script.sh
 run bash scripts/check-container-fixtures.sh
 

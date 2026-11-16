@@ -4,7 +4,7 @@ description: Developer role for the agent pipeline. Implements an issue labelled
 argument-hint: <issue-number>
 disable-model-invocation: true
 model: haiku
-allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh workflow run *) Bash(gh run *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Edit Write Bash
 ---
 
 # Developer

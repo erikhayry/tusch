@@ -73,15 +73,29 @@ reviewer, then called `/review`, silently ran the built-in code review instead
 
 ## Running commands
 
-Skills pre-approve narrow command patterns (e.g. `Bash(gh pr create *)`), and on
-GitHub nobody is there to approve anything else. So:
+On GitHub nobody is there to approve a command, so each role's tools are fixed
+(`allowed-tools` in the skill, `--allowedTools` in `agents.yml`; keep them equal):
 
-- **One plain command per Bash call.** No `&&`, `;`, pipes, `$(…)`, heredocs,
-  `sleep` or loops; they don't match the patterns and get denied.
+- **`/test`, `/develop` and `/reviewer` have a plain shell** (`Bash`). They run
+  the project's tooling, and narrow patterns denied every compound command
+  (`a && b | tail`), which was the most common reason a run stopped without
+  handing off. Pipes, `&&` and `$(…)` are fine for these roles.
+- **`/plan`, `/triage`, `/tech-lead` and `/automate` keep narrow patterns**
+  (e.g. `Bash(gh issue comment *)`): they only read and comment. For them it is
+  **one plain command per Bash call**, with no `&&`, `;`, pipes, `$(…)`, heredocs,
+  `sleep` or loops; those don't match the patterns and get denied. They also
+  inspect files with Read, Glob and Grep, not `ls`, `cat` or `find`.
+
+A shell doesn't change what a role may do. For every role:
+
 - **Multi-line text goes into a file.** Write comment and PR bodies to
   `.agent-tmp/<name>.md` (gitignored), then pass the file:
   `gh issue comment <n> --body-file .agent-tmp/comment.md`.
-- Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`.
+- Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`. The reviewer has
+  no Edit on purpose and doesn't change code through the shell either.
+- Never change `.github/` or `.claude/` (see "Workflow and agent files"), never
+  force-push or rewrite history, and never read or print tokens or other secrets
+  from the environment.
 - Screenshot baselines: run `pnpm screenshots:update`. Inside the CI container
   (agent runs on GitHub: `GITHUB_ACTIONS=true` and `PLAYWRIGHT_SCREENSHOTS=1`) it
   renders the baselines in place, with no dispatch and no download. That is the
@@ -89,8 +103,6 @@ GitHub nobody is there to approve anything else. So:
   fails if the two container tags drift apart. Elsewhere it pushes the branch,
   renders the baselines in CI, then copies them into `src/`. Either way, don't
   download or copy them by hand.
-- **Inspect files with Read, Glob and Grep**, not `ls`, `cat`, `du`, `file`,
-  `find` or `wc`; those aren't on any role's allow list.
 - **A denial doesn't end your run.** Split the command into allowed single
   commands (or use Read/Glob/Grep) and carry on. Every run ends with your
   protocol comment and a label move; a run that just stops is blocked
@@ -125,9 +137,10 @@ script or workflow step, not an agent turn; `pipeline-expert` looks for these.
 
 ## Workflow and agent files
 
-Agents never change `.github/workflows/` or `.claude/` (skills, subagents,
-settings). The agents' GitHub App has no `workflows` permission, and the
-agents' Write tool was refused for `.claude/` files (#84). Keep it that way, so
+Agents never change `.github/` or `.claude/` (skills, subagents, settings). The
+agents' GitHub App has no `workflows` permission, and CI fails a PR in which a
+commit by `claude[bot]` touches either directory
+(`scripts/check-agent-commits.sh`). Keep it that way, so
 agents can't change their own permissions, models, turn caps, instructions or
 CI gates. For a new or changed skill or subagent, post the full file content in
 the comment the same way.

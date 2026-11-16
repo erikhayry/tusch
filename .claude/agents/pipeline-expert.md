@@ -51,8 +51,10 @@ it well (`docs/rules/agents.md`, "Models").
   changes; exactly one label move.
 - `allowed-tools` in the skill and `--allowedTools` in `agents.yml` list the
   same tools. Nothing broader than the role needs (e.g. no `Edit` for review).
-- Commands follow "Running commands" (one plain command, bodies via
-  `.agent-tmp/` and `--body-file`); anything else gets denied in CI.
+- Commands follow "Running commands" (bodies via `.agent-tmp/` and
+  `--body-file`; one plain command for the roles with narrow patterns, where
+  anything else gets denied). Only `/test`, `/develop` and `/reviewer` have a
+  plain `Bash`.
 - The `model:` frontmatter matches the role's model in `agents.yml`.
 - Instructions don't make the agent do what a script already did, or re-run
   checks the previous stage ran on the same commit without a reason.

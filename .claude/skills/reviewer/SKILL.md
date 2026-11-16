@@ -4,7 +4,7 @@ description: Reviewer role for the agent pipeline. Reviews an issue labelled sta
 argument-hint: <issue-number>
 disable-model-invocation: true
 model: sonnet
-allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh pr create *) Bash(gh pr checks *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Write Agent Bash
 ---
 
 # Reviewer

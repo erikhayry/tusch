@@ -78,6 +78,13 @@ jobs:
           scope=$(scripts/ci-scope.sh "$range")
           echo "Scope: $scope ($range)"
           echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "range=$range" >> "$GITHUB_OUTPUT"
+
+      # Agents have a shell; this is what keeps them out of their own instructions.
+      - name: Agent commits leave workflows and skills alone
+        env:
+          RANGE: ${{ steps.scope.outputs.range }}
+        run: scripts/check-agent-commits.sh "$RANGE"
 
       - name: Typecheck
         run: pnpm run check

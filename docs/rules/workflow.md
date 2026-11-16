@@ -115,6 +115,8 @@ changing the code.
 
 `ci.yml` has one job, `test`, the only required check: typecheck, lint, the
 requirements ledger, changelog entries, knip, the pipeline script checks and E2E.
+It also fails when a commit by an agent changes `.github/` or `.claude/`
+(`scripts/check-agent-commits.sh`).
 
 - **Light scope:** when a change touches only `docs/`, `changelog/`, `.claude/`
   or top-level `*.md` files, the E2E suite is skipped (`scripts/ci-scope.sh`);
