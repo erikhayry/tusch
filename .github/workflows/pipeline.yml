@@ -100,9 +100,14 @@ jobs:
       PLAYWRIGHT_SCREENSHOTS: '1'
       PR_BRANCH: ${{ matrix.branch }}
     steps:
+      # The steps below run the branch's code (install scripts, the app, the tests)
+      # in a job that may push. Only same-repository `issue-<n>-` branches get here
+      # (scripts/sync-branches.sh), and the token is kept out of the clone: the push
+      # step is the only one that sees it.
       - uses: actions/checkout@v7
         with:
           ref: ${{ matrix.branch }}
+          persist-credentials: false
 
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
@@ -124,6 +129,8 @@ jobs:
         run: pnpm exec svelte-kit sync && pnpm exec playwright test screenshots --update-snapshots=changed
 
       - name: Commit and push them
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -135,7 +142,7 @@ jobs:
           # --no-verify: the hooks pnpm installed would lint and typecheck again; CI does that.
           git commit --quiet --no-verify -m "Regenerate screenshot baselines after merging main" \
             -m "This branch and main both changed them (scripts/sync-branches.sh)."
-          git push --quiet --no-verify origin "HEAD:refs/heads/$PR_BRANCH"
+          git push --quiet --no-verify "https://x-access-token:$GH_TOKEN@github.com/$GH_REPO.git" "HEAD:refs/heads/$PR_BRANCH"
 
   # A push made with GITHUB_TOKEN starts no CI run, so start one for each branch
   # the screenshots job handled, also when a regeneration failed: CI then fails and
