@@ -1,6 +1,6 @@
 ---
 name: develop
-description: Developer role for the agent pipeline. Implements an issue labelled status:needs-dev on its branch until the tester's E2E tests and the full suite pass, updates screenshot baselines, then hands it to review.
+description: Developer role for the agent pipeline. Implements an issue labelled status:needs-dev on its branch until the tester's E2E tests and the full suite pass, then hands it to review.
 argument-hint: <issue-number>
 disable-model-invocation: true
 model: haiku
@@ -25,21 +25,18 @@ the tester's comment and any reviewer or triage feedback.
 
 **CI failed.** If the latest pipeline comment starts with `### Pipeline: CI failed`
 (`scripts/checks-bounce.sh`), the PR's `test` check failed after review. Fix the
-failed steps and tests it lists, then run step 3 in full, and steps 4 to 6.
+failed steps and tests it lists, then run step 3 in full, and steps 4 and 5.
 
 **Merge conflict with `main`.** If the latest pipeline comment starts with
 `### Pipeline: merge conflict with main`, the branch has to merge `main` first
 (`scripts/conflict-bounce.sh`, #168). The pipeline has already tried: it merges
-`main` into waiting PRs itself and resolves message files, the requirements ledger
-and screenshot baselines, so what reaches you needs a decision:
+`main` into waiting PRs itself and resolves message files and the requirements ledger,
+so what reaches you needs a decision:
 
 - `git fetch origin`, then `git merge origin/main`. Never rebase or force-push.
 - Resolve each conflict, then commit the merge (`Refs #$0`).
-- Screenshot baselines (`src/tests/e2e/__screenshots__/*.png`): don't choose a side
-  as the answer. Check out either side only to finish the merge, then regenerate
-  the baselines in step 4 and commit the new images.
 - An id clash in `docs/requirements.md`: keep both entries.
-- Then run step 3 in full, and steps 4 to 6. Block if a conflict is beyond you.
+- Then run step 3 in full, and steps 4 and 5. Block if a conflict is beyond you.
 
 ## 2. Implement
 
@@ -53,7 +50,6 @@ and screenshot baselines, so what reaches you needs a decision:
 - For `Removes REQ-…`: delete the requirement and its now-obsolete tests together.
 - Svelte components: Svelte 5 runes only; run the Svelte autofixer if it's
   available.
-- New views or UI: add or extend screenshots (`src/tests/e2e/screenshots.e2e.ts`).
 
 ## 3. Verify
 
@@ -71,19 +67,7 @@ pnpm run test:e2e                                  # full suite
 Repeat until everything passes. Two failed attempts at the same problem means
 block.
 
-## 4. Screenshots
-
-If the ticket lists views affected, or your change alters any view:
-
-- Run `pnpm screenshots:update` in both cases; don't download or copy baselines by hand.
-- **In the CI container** (agent runs on GitHub: `GITHUB_ACTIONS=true` and
-  `PLAYWRIGHT_SCREENSHOTS=1`): it renders the baselines in place into
-  `src/tests/e2e/__screenshots__/`. Look at the changed images, then commit them.
-- **Locally:** push first. It runs CI, renders the baselines there and copies them
-  into `src/tests/e2e/__screenshots__/` itself. Look at the changed images, then
-  commit them.
-
-## 5. Changelog entry
+## 4. Changelog entry
 
 If the change is visible to users, write one sentence for them in
 `changelog/$0.<type>.md`, where the type follows the issue's label: `feature`
@@ -91,9 +75,9 @@ If the change is visible to users, write one sentence for them in
 list marker, no link (`changelog/README.md`). Never edit `CHANGELOG.md`. Skip the
 file when nothing user-facing changed, and say so in your comment.
 
-## 6. Hand off
+## 5. Hand off
 
 Commit (`Refs #$0`, explaining why in the body), then `git push`. Comment with
 the protocol format: what changed (files), why it's built that way, what you ran
-and its results, and screenshots updated (yes/no). Then move
+and its results. Then move
 `status:needs-dev` → `status:needs-review`. Don't open the PR; the reviewer does.

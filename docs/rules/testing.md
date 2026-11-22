@@ -114,8 +114,7 @@ run in parallel against one server.
 
 - `src/tests/e2e/a11y.e2e.ts` runs axe (`@axe-core/playwright`) on every view
   in `src/tests/e2e/views.ts`, in both the light and the dark colour scheme, and
-  fails on **any** violation (REQ-035). It runs
-  locally too, unlike the screenshots.
+  fails on **any** violation (REQ-035). It runs locally too.
 - A new view goes in `views.ts`, which gives it an axe scan (and the web-vitals
   audit, where it is listed).
 - Pages render through `Page.svelte`, which sets the document title and the
@@ -154,30 +153,3 @@ run in parallel against one server.
 - Run the tests for one requirement: `pnpm exec playwright test --grep @REQ-019`.
   For an issue-scoped id, anchor the end so `@REQ-98-1` doesn't also match
   `@REQ-98-10`: `--grep "@REQ-98-1(?!\d)"`.
-
-## Screenshots
-
-**Suspended** until #264 removes the screenshot pipeline. The screenshot tests
-(`screenshots.e2e.ts`) and their baselines were deleted in #263, and no
-`pnpm screenshots:update` run is needed for a view change until then. The text
-below describes the pipeline as it was and is kept for #264 to remove.
-
-- `src/tests/e2e/screenshots.e2e.ts` captured every view in `views.ts` with
-  `toHaveScreenshot()`. A new view got a screenshot test in the same PR.
-  `landing`, `comic` and `settings` also had dark baselines (`*-dark.png`).
-- Baselines live in `src/tests/e2e/__screenshots__/` and are **Linux-only**: CI
-  runs inside `mcr.microsoft.com/playwright:<version>-noble` (keep the tag in
-  sync with `@playwright/test`; `pnpm run check:agent-fixtures` checks every
-  workflow's tag against the lockfile). Locally the screenshot tests are skipped
-  unless `PLAYWRIGHT_SCREENSHOTS=1`; macOS images won't match, so never commit them.
-- **Intended UI change:** run `pnpm screenshots:update`, look at the images, and
-  commit them. Locally it pushes the branch first, runs CI with
-  `update_screenshots` and downloads the new baselines. Inside the CI container
-  (agent runs on GitHub, where `GITHUB_ACTIONS=true` and `PLAYWRIGHT_SCREENSHOTS=1`
-  are set) it renders them in place instead, since the agent token can't dispatch
-  workflows. GitHub's image diff in the PR is the visual review.
-- A missing baseline fails CI with a "commit these baselines" error; the images
-  are in the run's `screenshots` artifact. Diffs of failed comparisons are in
-  `screenshot-diffs`.
-- Keep views deterministic: mock gateway, seeded examples, no time-dependent
-  content. Mask anything volatile (`mask: [locator]`) rather than retrying.

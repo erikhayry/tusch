@@ -46,7 +46,6 @@ Use exactly the template in [ticket-template.md](ticket-template.md).
   (`Changes REQ-019: …`). If it makes one obsolete, say `Removes REQ-0xx`.
 - Each acceptance criterion is one observable behaviour (Given/When/Then)
   that becomes one E2E test.
-- List the views whose screenshots should change.
 - Keep it small. If it's more than about one day of work, split it into several
   tickets and say in which order.
 

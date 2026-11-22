@@ -46,8 +46,6 @@ section structure: `Status: active`, `Proven by: tagged tests`. Apply any `Chang
   `mock-error:<kind>` for failures, and test-only hooks (`page.route`,
   `page.addInitScript`) rather than mocking internals.
 - A bug ticket starts with a test that reproduces the bug.
-- If the ticket lists **views affected**, don't touch screenshot baselines. The
-  developer regenerates them; mention the expected changes in your comment.
 
 ## 5. Prove they fail for the right reason
 

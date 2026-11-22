@@ -3,8 +3,8 @@ import { EXAMPLE_COMPLETE as EXAMPLE } from './examples';
 const MISSING_ID = '00000000-0000-4000-8000-000000000000';
 
 /**
- * Every view of the app, keyed by its screenshot name. The screenshot and
- * accessibility tests both visit these; a new view goes here.
+ * Every view of the app, keyed by a short name. The accessibility and web-vitals
+ * tests both visit these; a new view goes here.
  */
 export const VIEWS = {
 	landing: '/',
