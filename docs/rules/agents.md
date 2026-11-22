@@ -32,8 +32,7 @@ and on GitHub.
 - Commit messages: imperative subject, a body explaining why, and
   `Refs #<n>` (the PR body carries `Closes #<n>`).
 - While an issue waits in `status:needs-human`, the pipeline may add commits to
-  its branch: a merge of `main`, and regenerated screenshot baselines
-  (`docs/rules/workflow.md`, "Pipeline upkeep"). So always `git pull` before you
+  its branch: a merge of `main` (`docs/rules/workflow.md`, "Pipeline upkeep"). So always `git pull` before you
   work on a branch, and never force-push.
 - A user-facing change carries its changelog entry on the branch:
   `changelog/<issue>.<type>.md`, written by the developer and checked by the
@@ -96,13 +95,6 @@ A shell doesn't change what a role may do. For every role:
 - Never change `.github/` or `.claude/` (see "Workflow and agent files"), never
   force-push or rewrite history, and never read or print tokens or other secrets
   from the environment.
-- Screenshot baselines: run `pnpm screenshots:update`. Inside the CI container
-  (agent runs on GitHub: `GITHUB_ACTIONS=true` and `PLAYWRIGHT_SCREENSHOTS=1`) it
-  renders the baselines in place, with no dispatch and no download. That is the
-  same image as `ci.yml`, so the baselines match CI; `pnpm run check:agent-fixtures`
-  fails if the two container tags drift apart. Elsewhere it pushes the branch,
-  renders the baselines in CI, then copies them into `src/`. Either way, don't
-  download or copy them by hand.
 - **A denial doesn't end your run.** Split the command into allowed single
   commands (or use Read/Glob/Grep) and carry on. Every run ends with your
   protocol comment and a label move; a run that just stops is blocked
