@@ -20,42 +20,57 @@ if (!root) {
 	process.exit(2);
 }
 
+/** Replace everything but line breaks with spaces, so reported line numbers stay right. */
+function blank(text) {
+	return text.replace(/[^\n]/g, ' ');
+}
+
+/** Index just past the comment or string literal starting at `i`, or -1 if none starts there. */
+function literalEnd(source, i) {
+	const char = source[i];
+	const next = source[i + 1];
+	if (char === '/' && next === '/') {
+		const end = source.indexOf('\n', i);
+		return end === -1 ? source.length : end;
+	}
+	if (char === '/' && next === '*') {
+		const end = source.indexOf('*/', i + 2);
+		return end === -1 ? source.length : end + 2;
+	}
+	if (char === "'" || char === '"' || char === '`') {
+		return quotedEnd(source, i);
+	}
+	return -1;
+}
+
+/** Quoted strings end at their line; only template literals may span lines. */
+function quotedEnd(source, start) {
+	const quote = source[start];
+	let j = start + 1;
+	while (j < source.length && source[j] !== quote) {
+		if (quote !== '`' && source[j] === '\n') {
+			break;
+		}
+		j += source[j] === '\\' ? 2 : 1;
+	}
+	return Math.min(j + 1, source.length);
+}
+
 /**
- * Blank out comments and string literals, keeping the line breaks so reported line numbers
- * stay right. A fixed wait is code; the same word in a comment or a fixture string is not.
+ * Blank out comments and string literals. A fixed wait is code; the same word in a comment
+ * or a fixture string is not.
  */
 function stripCommentsAndStrings(source) {
 	let out = '';
 	let i = 0;
-	const blank = (text) => text.replace(/[^\n]/g, ' ');
 	while (i < source.length) {
-		const char = source[i];
-		const next = source[i + 1];
-		if (char === '/' && next === '/') {
-			const end = source.indexOf('\n', i);
-			const stop = end === -1 ? source.length : end;
-			out += blank(source.slice(i, stop));
-			i = stop;
-		} else if (char === '/' && next === '*') {
-			const end = source.indexOf('*/', i + 2);
-			const stop = end === -1 ? source.length : end + 2;
-			out += blank(source.slice(i, stop));
-			i = stop;
-		} else if (char === "'" || char === '"' || char === '`') {
-			// Quoted strings end at their line; only template literals may span lines.
-			let j = i + 1;
-			while (j < source.length && source[j] !== char) {
-				if (char !== '`' && source[j] === '\n') {
-					break;
-				}
-				j += source[j] === '\\' ? 2 : 1;
-			}
-			const stop = Math.min(j + 1, source.length);
-			out += blank(source.slice(i, stop));
-			i = stop;
-		} else {
-			out += char;
+		const end = literalEnd(source, i);
+		if (end === -1) {
+			out += source[i];
 			i += 1;
+		} else {
+			out += blank(source.slice(i, end));
+			i = end;
 		}
 	}
 	return out;
@@ -68,8 +83,35 @@ function listTestFiles(e2eDir) {
 		.sort();
 }
 
-function findProblems(rootDir) {
+/** Problems in one test file: fixed waits and fixed timeouts, by line. */
+function checkSource(name, source) {
 	const problems = [];
+	stripCommentsAndStrings(source)
+		.split('\n')
+		.forEach((line, index) => {
+			const where = `${name}:${index + 1}`;
+			if (FIXED_WAIT.test(line)) {
+				problems.push(`${where}: fixed wait (${line.trim()})`);
+			}
+			if (FIXED_TIMEOUT.test(line)) {
+				problems.push(`${where}: fixed timeout (${line.trim()})`);
+			}
+		});
+	return problems;
+}
+
+/** Problems in the Playwright config: any retries value other than 0. */
+function checkConfig(source) {
+	const problems = [];
+	for (const match of stripCommentsAndStrings(source).matchAll(RETRIES)) {
+		if (match[1] !== '0') {
+			problems.push(`playwright.config.ts: retries must be 0 (found retries: ${match[1]})`);
+		}
+	}
+	return problems;
+}
+
+function findProblems(rootDir) {
 	const e2eDir = join(rootDir, 'e2e');
 	let files;
 	try {
@@ -78,27 +120,11 @@ function findProblems(rootDir) {
 		return [`${relative(rootDir, e2eDir) || 'e2e'}: no e2e/ directory to check`];
 	}
 
-	for (const file of files) {
-		const code = stripCommentsAndStrings(readFileSync(file, 'utf8'));
-		const name = relative(rootDir, file);
-		code.split('\n').forEach((line, index) => {
-			if (FIXED_WAIT.test(line)) {
-				problems.push(`${name}:${index + 1}: fixed wait (${line.trim()})`);
-			}
-			if (FIXED_TIMEOUT.test(line)) {
-				problems.push(`${name}:${index + 1}: fixed timeout (${line.trim()})`);
-			}
-		});
-	}
-
-	const configPath = join(rootDir, 'playwright.config.ts');
-	const config = stripCommentsAndStrings(readFileSync(configPath, 'utf8'));
-	for (const match of config.matchAll(RETRIES)) {
-		if (match[1] !== '0') {
-			problems.push(`playwright.config.ts: retries must be 0 (found retries: ${match[1]})`);
-		}
-	}
-	return problems;
+	const testProblems = files.flatMap((file) =>
+		checkSource(relative(rootDir, file), readFileSync(file, 'utf8')),
+	);
+	const configSource = readFileSync(join(rootDir, 'playwright.config.ts'), 'utf8');
+	return [...testProblems, ...checkConfig(configSource)];
 }
 
 // Only run the check when executed directly, so the functions above can be imported.

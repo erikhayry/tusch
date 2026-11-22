@@ -16,24 +16,44 @@ function describeFocused(page: Page): Promise<string> {
 	});
 }
 
+/** Every focusable control currently in the document, in DOM-visible order. */
+export function focusableControls(page: Page): Locator {
+	return page.locator(
+		'a[href], button:not([disabled]), input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+	);
+}
+
+async function isFocused(target: Locator): Promise<boolean> {
+	return target.evaluate((el) => el === document.activeElement).catch(() => false);
+}
+
+/**
+ * Press Tab until `target` is focused, at most `presses` times. Recursion instead of a loop:
+ * each press depends on the focus state the previous one left behind.
+ */
+async function tabUntilFocused(page: Page, target: Locator, presses: number): Promise<boolean> {
+	if (await isFocused(target)) {
+		return true;
+	}
+	if (presses === 0) {
+		return false;
+	}
+	await page.keyboard.press('Tab');
+	return tabUntilFocused(page, target, presses - 1);
+}
+
 /**
  * Move focus to `target` the way a keyboard user does: press Tab (from wherever
  * focus is now) until the target is focused. Fails, naming the focused element,
  * if the target can't be reached within a bounded number of presses.
  */
 export async function tabTo(page: Page, target: Locator, maxTabs = MAX_TABS): Promise<void> {
-	for (let presses = 0; presses <= maxTabs; presses++) {
-		if (await target.evaluate((el) => el === document.activeElement).catch(() => false)) {
-			await expect(target).toBeFocused();
-			return;
-		}
-		if (presses < maxTabs) {
-			await page.keyboard.press('Tab');
-		}
+	if (!(await tabUntilFocused(page, target, maxTabs))) {
+		throw new Error(
+			`Could not reach ${target} with Tab in ${maxTabs} presses; focus ended on ${await describeFocused(page)}`,
+		);
 	}
-	throw new Error(
-		`Could not reach ${target} with Tab in ${maxTabs} presses; focus ended on ${await describeFocused(page)}`,
-	);
+	await expect(target).toBeFocused();
 }
 
 /** Tab to a control and press Enter (links, buttons) or Space. */
