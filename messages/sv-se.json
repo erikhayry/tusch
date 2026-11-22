@@ -42,5 +42,16 @@
 	"aiNoImage": "AI:n returnerade ingen bild. Försök igen.",
 	"aiInvalidResponse": "AI:n returnerade något vi inte kunde använda. Försök igen.",
 	"showDetails": "Visa detaljer",
+	"add": "Spara nyckel",
+	"byok": "OpenAI API-nyckel",
+	"keyHint": "Sparas bara i den här webbläsaren som en säker cookie och används bara mot OpenAI. Skapa en på platform.openai.com/api-keys.",
+	"keyStatus": "En nyckel är sparad. Ange en ny för att byta ut den.",
+	"keyAdded": "Nyckeln är sparad. Nu kan du skapa en serie.",
+	"invalidKey": "OpenAI godkände inte nyckeln. Kontrollera den och försök igen.",
+	"welcomeHeading": "Välkommen till Tusch",
+	"welcomeSentence": "Tusch använder OpenAI för att rita dina serier, så du behöver en egen OpenAI API-nyckel. Lägg till den här för att skapa en serie; exemplen nedan kan du titta på utan nyckel.",
+	"config": "AI-modeller",
+	"saveConfig": "Spara modeller",
+	"noKeyModelsHint": "Lägg till din API-nyckel för att välja modeller.",
 	"viewComic": "Visa serien"
 }
