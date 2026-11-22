@@ -28,9 +28,10 @@ git init --quiet --bare "$origin"
 git init --quiet "$seed"
 (
 	cd "$seed" || exit 1
-	mkdir -p messages docs src
+	mkdir -p messages docs src/tests/e2e/__screenshots__
 	printf '{\n\t"hello": "Hello",\n\t"bye": "Bye"\n}\n' > messages/en.json
 	printf '# Requirements\n\n- REQ-001: first\n' > docs/requirements.md
+	echo base-image > src/tests/e2e/__screenshots__/landing.png
 	echo 'export const a = 1;' > src/a.ts
 	git add -A
 	git commit --quiet -m base
@@ -60,6 +61,7 @@ add_message() { node -e '
 	m[process.argv[1]] = process.argv[2];
 	fs.writeFileSync("messages/en.json", JSON.stringify(m, null, "\t") + "\n");
 ' "$1" "$2"; }
+change_image() { echo "$1" > src/tests/e2e/__screenshots__/landing.png; }
 add_requirement() { echo "- $1" >> docs/requirements.md; }
 change_code() { echo "export const a = $1;" > src/a.ts; }
 add_file() { echo "$1" > "src/$1.ts"; }
@@ -67,14 +69,14 @@ all_of() { for step in "$@"; do eval "$step"; done; }
 
 branch issue-1-clean add_file one
 branch issue-2-messages add_message mine Mine
-branch issue-3-third add_message third Third
+branch issue-3-baseline all_of 'change_image branch-image' 'add_message third Third'
 branch issue-4-ledger add_requirement 'REQ-4-1: fourth'
 branch issue-5-code change_code 5
 branch issue-6-same-key add_message hello Hej
 branch issue-7-not-waiting add_file seven
 branch feature-x add_file feature
 
-# main moves on: a message, a requirement and a code change.
+# main moves on: a message, a requirement, a baseline and a code change.
 (
 	cd "$seed" || exit 1
 	git checkout --quiet main
@@ -86,6 +88,7 @@ branch feature-x add_file feature
 		fs.writeFileSync("messages/en.json", JSON.stringify(m, null, "\t") + "\n");
 	'
 	add_requirement 'REQ-9-1: from main'
+	change_image main-image
 	change_code 9
 	git add -A
 	git commit --quiet -m 'main moves on'
@@ -126,9 +129,11 @@ expect_merged messages
 [[ $(message mine) == Mine && $(message theirs) == Theirs && $(message hello) == 'Hello!' ]] ||
 	fail messages "keys of both sides expected: $(cat "$clone/messages/en.json")"
 
-merge_case issue-3-third
-expect_merged third
-[[ $(message third) == Third ]] || fail third "the branch's message was lost"
+merge_case issue-3-baseline
+expect_merged baseline
+grep -qx 'screenshot:src/tests/e2e/__screenshots__/landing.png' <<< "$out" || fail baseline "no screenshot line: $out"
+[[ $(cat "$clone/src/tests/e2e/__screenshots__/landing.png") == main-image ]] || fail baseline "main's image expected"
+[[ $(message third) == Third ]] || fail baseline "the branch's message was lost"
 
 merge_case issue-4-ledger
 expect_merged ledger
@@ -170,7 +175,7 @@ stub=$work/stub
 mkdir "$stub"
 n=10
 prs=''
-for b in issue-1-clean issue-2-messages issue-3-third issue-5-code issue-7-not-waiting feature-x; do
+for b in issue-1-clean issue-2-messages issue-3-baseline issue-5-code issue-7-not-waiting feature-x; do
 	n=$((n + 1))
 	prs+="{\"number\":$n,\"headRefName\":\"$b\",\"isCrossRepository\":false},"
 done
@@ -194,17 +199,19 @@ log=$(PATH="$work/bin:$PATH" STUB=$stub GITHUB_OUTPUT=$work/output bash "$root/s
 
 git -C "$seed" fetch --quiet origin
 contains_main() { git -C "$seed" merge-base --is-ancestor "$main_sha" "origin/$1"; }
-for b in issue-1-clean issue-2-messages issue-3-third; do
+for b in issue-1-clean issue-2-messages issue-3-baseline; do
 	contains_main "$b" || fail sync "$b was not merged with main on origin"
 done
 for b in issue-5-code issue-7-not-waiting feature-x; do
 	if contains_main "$b"; then fail sync "$b must not be touched"; fi
 done
 grep -qx 'handled=11 12 13' "$work/output" || fail sync "handled output: $(cat "$work/output")"
+grep -qxF 'screenshots=[{"branch":"issue-3-baseline","pr":13}]' "$work/output" || fail sync "screenshots output: $(cat "$work/output")"
 grep -qx 'gh api -X POST repos/test/repo/actions/runs/9001/approve' "$stub/calls" || fail sync "held CI run not approved for issue-1-clean"
 if grep -q 'ci.yml --ref issue-1-clean' "$stub/calls"; then fail sync "CI dispatched although a run was held for issue-1-clean"; fi
 grep -qx 'gh workflow run ci.yml --ref issue-2-messages' "$stub/calls" || fail sync "CI not dispatched for issue-2-messages, which has no held run"
-grep -qx 'gh workflow run ci.yml --ref issue-3-third' "$stub/calls" || fail sync "CI not dispatched for issue-3-third"
+if grep -q 'ci.yml --ref issue-3-baseline' "$stub/calls"; then fail sync "CI must wait for the regenerated baselines"; fi
+grep -q '^gh pr comment 13 --body-file ' "$stub/calls" || fail sync "no PR comment about the baselines"
 grep -q "can't resolve" <<< "$log" || fail sync "the unresolved conflict was not logged: $log"
 
 # start-ci.sh falls back to a dispatch when the held run can't be approved.

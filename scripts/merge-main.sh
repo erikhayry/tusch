@@ -5,11 +5,12 @@
 #   messages/*.json        merged per key (scripts/merge-json.mjs)
 #   docs/requirements.md   both sides' lines are kept (git's union merge);
 #                          check:requirements then catches a real clash
+#   screenshot baselines   main's image is taken; the caller must regenerate them
 #
 #   merge-main.sh <ref>
 #
-# Prints one line per outcome: `up-to-date`, `merged`, or `conflict:<path>` for each
-# file it can't resolve.
+# Prints one line per outcome: `up-to-date`, `merged`, `screenshot:<path>` for each
+# baseline to regenerate, or `conflict:<path>` for each file it can't resolve.
 # Exits 0 with the merge committed (or nothing to do), and 3 with the merge aborted
 # and the branch untouched. Needs a committer identity (git config user.*).
 #
@@ -42,8 +43,23 @@ if git merge --no-ff --no-commit "$ref" > /dev/null 2>&1; then
 fi
 
 unresolved=()
+screenshots=()
 while IFS= read -r file; do
-	unresolved+=("$file")
+	case "$file" in
+		*/__screenshots__/*.png)
+			# Stage 3 is main's version; it is missing when main deleted the baseline.
+			if git cat-file -e ":3:$file" 2> /dev/null; then
+				git checkout --quiet --theirs -- "$file"
+				git add -- "$file"
+			else
+				git rm --quiet -- "$file"
+			fi
+			screenshots+=("$file")
+			;;
+		*)
+			unresolved+=("$file")
+			;;
+	esac
 done < <(git diff --name-only --diff-filter=U)
 
 if [[ ${#unresolved[@]} -gt 0 ]]; then
@@ -53,5 +69,8 @@ if [[ ${#unresolved[@]} -gt 0 ]]; then
 fi
 
 git commit --quiet --no-verify -m "$message" \
-	-m "Resolved by the pipeline (scripts/merge-main.sh): messages merged per key, requirements by keeping both sides."
+	-m "Resolved by the pipeline (scripts/merge-main.sh). Screenshot baselines that conflicted were taken from main and are regenerated in the next commit."
 echo merged
+if [[ ${#screenshots[@]} -gt 0 ]]; then
+	printf 'screenshot:%s\n' "${screenshots[@]}"
+fi

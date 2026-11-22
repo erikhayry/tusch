@@ -102,7 +102,7 @@ while IFS=$'\t' read -r pr branch mergeable; do
 		if [[ "$rounds" -ge "$max_rounds" ]]; then
 			echo 'This conflicted '"$rounds"' times already, so the issue is **blocked**: a human must resolve the conflict with `main` (or close the PR).'
 		else
-			echo 'Developer: merge `origin/main` into the branch (`git fetch origin`, then `git merge origin/main`), resolve each conflict, commit the merge, run the usual checks, push, and hand off to review as usual. Never rebase or force-push. Requirement ids have special rules; see `/develop`.'
+			echo 'Developer: merge `origin/main` into the branch (`git fetch origin`, then `git merge origin/main`), resolve each conflict, commit the merge, run the usual checks, push, and hand off to review as usual. Never rebase or force-push. Screenshot baselines and requirement ids have special rules; see `/develop`.'
 		fi
 	} > conflict-comment.md
 

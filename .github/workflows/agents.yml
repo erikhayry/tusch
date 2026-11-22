@@ -211,7 +211,7 @@ jobs:
       cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 60 # audit (up to 100 turns) plus /automate (30 turns), #84
-    # Same image as CI.
+    # Same image as CI so screenshot baselines render identically.
     container: mcr.microsoft.com/playwright:v1.63.0-noble
     permissions:
       contents: read
@@ -220,6 +220,7 @@ jobs:
       id-token: write
       actions: write # the hand-off check re-dispatches a stage once
     env:
+      PLAYWRIGHT_SCREENSHOTS: '1'
       GH_REPO: ${{ github.repository }}
     steps:
       # The Playwright image lacks unzip (claude-code-action's Bun setup needs it)

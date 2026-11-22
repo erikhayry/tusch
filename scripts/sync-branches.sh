@@ -14,13 +14,16 @@
 #   merged cleanly             CI is started for the branch (start-ci.sh: the PR's
 #                              held run is approved, since a push made with
 #                              GITHUB_TOKEN starts no run of its own)
+#   baselines taken from main  the branch is listed in the `screenshots` output;
+#                              pipeline.yml starts screenshots.yml, which
+#                              renders them again and dispatches CI
 #   conflicts left             nothing is pushed; conflict-bounce.sh sends the
 #                              issue to /develop
 #   push rejected              one comment per main commit (the token may not push
 #                              workflow file changes); a human merges main
 #
-# Output (to $GITHUB_OUTPUT when set, else stdout): `handled`, the PR numbers it
-# pushed to.
+# Outputs (to $GITHUB_OUTPUT when set, else stdout): `handled`, the PR numbers it
+# pushed to, and `screenshots`, a JSON array of {branch, pr} to regenerate.
 # Needs gh (GH_TOKEN, GH_REPO), node and git. DRY_RUN=1 prints gh changes and
 # pushes instead of making them.
 set -euo pipefail
@@ -31,6 +34,7 @@ source "$root/bounce-lib.sh"
 clone=${1:?usage: sync-branches.sh <clone>}
 base=${BRANCH:-main}
 handled=()
+screenshots=()
 # Outside the clone, so a comment body never ends up in a merge.
 comment=$(mktemp -d)/sync-comment.md
 
@@ -107,12 +111,35 @@ while IFS=$'\t' read -r pr branch; do
 	fi
 	handled+=("$pr")
 
-	echo "PR #$pr: merged $base into $branch."
-	"$root/start-ci.sh" "$branch" "$(git rev-parse HEAD)"
+	baselines=$(printf '%s\n' "$out" | sed -n 's/^screenshot://p')
+	if [[ -z $baselines ]]; then
+		echo "PR #$pr: merged $base into $branch."
+		"$root/start-ci.sh" "$branch" "$(git rev-parse HEAD)"
+		continue
+	fi
+	echo "PR #$pr: merged $base into $branch; baselines to regenerate."
+	screenshots+=("{\"branch\":\"$branch\",\"pr\":$pr}")
+	{
+		echo "### Pipeline: merged \`$base\`, regenerating screenshot baselines"
+		echo
+		echo "This branch and \`$base\` both changed these baselines, so they are rendered again from the merged code:"
+		echo
+		printf '%s\n' "$baselines" | sed 's/^/- `/; s/$/`/'
+		echo
+		echo "Look at the new images in this PR's diff before merging."
+	} > "$comment"
+	bounce_gh pr comment "$pr" --body-file "$comment"
 done < <(gh pr list --state open --base "$base" --limit 500 --json number,headRefName,isCrossRepository |
 	node -e '
 		const prs = JSON.parse(require("fs").readFileSync(0, "utf8"));
 		for (const p of prs) if (!p.isCrossRepository) console.log([p.number, p.headRefName].join("\t"));
 	')
 
-echo "handled=${handled[*]:-}" >> "${GITHUB_OUTPUT:-/dev/stdout}"
+list=$(
+	IFS=,
+	echo "[${screenshots[*]:-}]"
+)
+{
+	echo "handled=${handled[*]:-}"
+	echo "screenshots=$list"
+} >> "${GITHUB_OUTPUT:-/dev/stdout}"
