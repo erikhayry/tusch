@@ -4,7 +4,7 @@ description: Tester role for the agent pipeline. Writes failing, requirement-tag
 argument-hint: <issue-number>
 disable-model-invocation: true
 model: sonnet
-allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Edit Write Bash
 ---
 
 # Tester

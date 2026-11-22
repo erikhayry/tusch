@@ -1,32 +1,6 @@
 # Changelog
 
-User-facing changes. `/tech-lead reconcile` adds each merged pipeline PR's
-release note under **Unreleased** (see `.claude/skills/tech-lead/SKILL.md`).
-
-## Unreleased
-
-### Features
-
-- The panel list on the panel page is now a scrollable row of cards, each with a small image and the panel's title. ([#245](https://github.com/erikhayry/tusch/pull/245))
-- The panel list now shows one "add panel" button per position, and "Add Panel after panel N" now really inserts after panel N. ([#241](https://github.com/erikhayry/tusch/pull/241))
-- You can fix a wrongly cropped character image with AI from the comic page, and undo the fix. ([#229](https://github.com/erikhayry/tusch/pull/229))
-- When generating a panel image, you can now attach a character's look from another panel so the character stays consistent. ([#212](https://github.com/erikhayry/tusch/pull/212))
-- You can now save global instructions on the Settings page; they are kept in your browser and added to every AI generation. ([#198](https://github.com/erikhayry/tusch/pull/198))
-- The comic page now shows every character's generated images, one per panel, and you can open each one to see the full-body crop. ([#195](https://github.com/erikhayry/tusch/pull/195))
-- Tusch now switches to a dark theme automatically when your system or browser is set to dark mode. ([#170](https://github.com/erikhayry/tusch/pull/170))
-- After generating a new panel image, you can restore the previous one with "Restore previous image". ([#167](https://github.com/erikhayry/tusch/pull/167))
-- Deleting a panel now also removes the character images taken from it, so they no longer take up storage. ([#158](https://github.com/erikhayry/tusch/pull/158))
-- While an action runs, Tusch now shows what it is doing, a progress bar and the seconds elapsed. ([#161](https://github.com/erikhayry/tusch/pull/161))
-- The app now has a clean black-and-white style that is readable on small screens, with a clear blue focus outline for keyboard users. ([#159](https://github.com/erikhayry/tusch/pull/159))
-
-### Fixes
-
-- Failed AI image requests are retried automatically, and when the AI still returns nothing usable you now see a readable message instead of raw technical text. ([#221](https://github.com/erikhayry/tusch/pull/221))
-- After replacing a panel image, the character heads next to the dialogue now match the new image. ([#215](https://github.com/erikhayry/tusch/pull/215))
-- Panels without a title now have a named link in the panel list, so screen readers can announce them. ([#216](https://github.com/erikhayry/tusch/pull/216))
-- Example comics now show their own panel images, and a missing image shows a clear placeholder instead of an unrelated picture. ([#138](https://github.com/erikhayry/tusch/pull/138))
-- Every page now has a proper title and a main landmark, so screen readers and browser tabs show where you are. ([#115](https://github.com/erikhayry/tusch/pull/115))
-
-### Chores
-
-- The example comics shown on first visit are now three small, simple comics instead of the Nirvana example. ([#191](https://github.com/erikhayry/tusch/pull/191))
+User-facing changes are kept as one file per issue in [`changelog/`](changelog/),
+so open PRs can't conflict on this file. Print them as one list with
+`pnpm run changelog`; the rules for an entry are in
+[`changelog/README.md`](changelog/README.md).

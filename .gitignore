@@ -25,6 +25,9 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 # Playwright
 test-results
+# CI: Playwright's JSON report and the failed tests listed from it
+/playwright-results.json
+/ci-failures.md
 # Lighthouse CI output from manual `lhci collect` runs
 .lighthouseci
 # Paraglide

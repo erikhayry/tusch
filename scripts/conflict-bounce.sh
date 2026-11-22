@@ -3,10 +3,12 @@
 #
 #   conflict-bounce.sh
 #
-# Run by agents.yml's `conflict` job, on a merged pull request and on the
-# 30-minute schedule, so it scans every open PR, not only the one that merged. A
-# PR counts when its branch is issue-<n>-… and GitHub reports it CONFLICTING, and
-# its issue waits for the human (status:needs-human). The script comments the
+# Run by pipeline.yml's `prs` job after sync-branches.sh, which has already merged
+# main wherever that needed no judgement; what is left needs the developer. It
+# scans every open PR. A PR counts when its branch is issue-<n>-… and GitHub
+# reports it CONFLICTING, and its issue waits for the human (status:needs-human).
+# SKIP_PRS lists PR numbers to leave alone: the ones sync-branches.sh just pushed
+# to, for which GitHub may still report the old state. The script comments the
 # conflicting files on the issue, moves it to status:needs-dev and dispatches
 # /develop, which merges origin/main into the branch. After MAX_ROUNDS bounces it
 # blocks the issue instead. No AI: it only reads state and writes a comment.
@@ -14,7 +16,7 @@
 # Needs gh (GH_TOKEN, GH_REPO), node (JSON) and git 2.38+ (merge-tree --write-tree). With
 # CONFLICT_FIXTURES=<case dir> the PR list, issue state and conflicting files are
 # read from that directory instead; with DRY_RUN=1 changes are printed, not made.
-# The contract is in check-conflict-fixtures.sh.
+# The contract is in check-bounce-fixtures.sh.
 set -euo pipefail
 
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -29,7 +31,7 @@ open_prs() {
 		cat "$fixtures/prs.json"
 	else
 		# gh lists 30 PRs by default; a busy repo needs more to scan them all.
-		gh pr list --state open --limit 500 --json number,headRefName,mergeable
+		gh pr list --state open --limit 500 --json number,headRefName,mergeable,isCrossRepository
 	fi
 }
 
@@ -66,6 +68,10 @@ while IFS=$'\t' read -r pr branch mergeable; do
 	fi
 	issue=${BASH_REMATCH[1]}
 
+	if [[ " ${SKIP_PRS:-} " == *" $pr "* ]]; then
+		echo "PR #$pr was just merged with main by sync-branches.sh; left alone."
+		continue
+	fi
 	if [[ $mergeable == UNKNOWN ]]; then
 		echo "PR #$pr mergeable is UNKNOWN (GitHub is still computing it); the next scheduled run checks again."
 		continue
@@ -104,5 +110,6 @@ while IFS=$'\t' read -r pr branch mergeable; do
 	bounce_hand_off "$issue" "$rounds" "$max_rounds"
 done < <(open_prs | node -e '
 	const prs = JSON.parse(require("fs").readFileSync(0, "utf8"));
-	for (const p of prs) console.log([p.number, p.headRefName, p.mergeable].join("\t"));
+	// A fork may name its branch issue-<n>-… too; only branches of this repo are pipeline PRs.
+	for (const p of prs) if (!p.isCrossRepository) console.log([p.number, p.headRefName, p.mergeable].join("\t"));
 ')

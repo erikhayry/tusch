@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Shared by sonar-bounce.sh (#80) and conflict-bounce.sh (#168): the guard, the
-# round count, the comment and the hand-off. Sourced, so it runs nothing itself.
+# Shared by the scripts pipeline.yml runs (sync-branches.sh, conflict-bounce.sh,
+# checks-bounce.sh, sonar-bounce.sh): the guard, the round count, the comment and
+# the hand-off. Sourced, so it runs nothing itself.
 #
 # DRY_RUN=1 prints each change instead of making it, and prints the comment body
-# with `| ` prefixes; check-conflict-fixtures.sh relies on that output.
+# with `| ` prefixes; check-bounce-fixtures.sh relies on that output.
 #
 # A label change made with GITHUB_TOKEN starts no runs, so the hand-off ends with
 # a dispatch of agents.yml.
@@ -47,8 +48,12 @@ bounce_rounds() {
 	' "$1"
 }
 
-# Posts the comment in file $2 on issue $1.
+# Posts the comment in file $2 on issue $1. BOUNCE_FOOTER, when set, is appended
+# first: checks-bounce.sh uses it to mark the commit a bounce was for.
 bounce_comment() {
+	if [[ -n ${BOUNCE_FOOTER:-} ]]; then
+		printf '\n%s\n' "$BOUNCE_FOOTER" >> "$2"
+	fi
 	bounce_gh issue comment "$1" --body-file "$2"
 	if [[ -n ${DRY_RUN:-} ]]; then
 		sed 's/^/| /' "$2"
