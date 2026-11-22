@@ -620,3 +620,12 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: the landing, comic and panel views, audited by Lighthouse (desktop preset) on the production build, meet LCP ≤ 2.5 s, CLS ≤ 0.1 and TBT ≤ 200 ms (median of 3 runs). A view that exceeds a budget fails the check, and the failure names the view and the metric.
 - Why: nothing else stops a change from making the app slow or visually unstable. TBT is the lab proxy for INP, which Lighthouse navigation audits can't measure.
 - Proven by: tagged tests
+
+## Test suite
+
+### REQ-263-1 The E2E suite is stable
+
+- Status: active
+- Statement: the E2E suite has no fixed waits (`waitForTimeout`, sleeps) and runs with no retries, and every test passes when repeated five times in the CI container (`--repeat-each=5 --retries=0`); a check script fails on a fixed wait in `e2e/` or a non-zero `retries` in the Playwright config.
+- Why: a flaky suite can't serve as the regression net for the framework migration (#263).
+- Proven by: tagged tests

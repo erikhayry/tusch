@@ -35,7 +35,8 @@ export default defineConfig({
 	projects: [
 		{
 			name: 'default',
-			testMatch: '**/*.e2e.{ts,js}',
+			// `e2e/` is the framework-agnostic suite that replaces the one under `src/`.
+			testMatch: ['**/*.e2e.{ts,js}', 'e2e/**/*.e2e.ts'],
 			testIgnore: SENTRY_TESTS,
 		},
 		{
