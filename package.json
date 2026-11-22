@@ -14,6 +14,7 @@
 		"lint:css": "stylelint \"src/**/*.{css,svelte}\"",
 		"lint:deps": "depcruise src",
 		"check:requirements": "node scripts/check-requirements.mjs",
+		"check:e2e-stability": "node scripts/check-e2e-stability.mjs",
 		"check:agent-fixtures": "bash scripts/check-pipeline-scripts.sh",
 		"check:changelog": "node scripts/changelog.mjs check",
 		"changelog": "node scripts/changelog.mjs",

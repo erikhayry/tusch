@@ -69,7 +69,7 @@ function e2eFiles(dir) {
 }
 
 const tagged = new Map(); // id -> [test locations]
-for (const file of e2eFiles(join(root, 'src'))) {
+for (const file of [...e2eFiles(join(root, 'src')), ...e2eFiles(join(root, 'e2e'))]) {
 	const lines = readFileSync(file, 'utf8').split('\n');
 	lines.forEach((line, index) => {
 		const ids = line.match(TAG);
