@@ -71,4 +71,5 @@ Judgement checks stay with the `css-reviewer`. `lint-staged` runs
 or CSS. It checks the conventions here that a linter can't judge.
 
 REQ-035, REQ-037, REQ-038, REQ-039 and REQ-040 (no horizontal scroll at 320 px)
-must pass.
+must pass. Every visual change updates the screenshot baselines
+(`testing.md`, "Screenshots").

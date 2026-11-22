@@ -66,6 +66,19 @@ jobs:
         id: sync
         run: '"$RUNNER_TEMP/scripts/sync-branches.sh" "$GITHUB_WORKSPACE/repo"'
 
+      # A branch and main both changed a screenshot baseline and the script took
+      # main's image: screenshots.yml renders the merged code again, then runs CI.
+      # A separate workflow, so no job here ever runs a PR branch's code.
+      - name: Render conflicting screenshot baselines again
+        env:
+          BRANCHES: ${{ steps.sync.outputs.screenshots }}
+        run: |
+          set -euo pipefail
+          for branch in $(jq -r '.[].branch' <<< "${BRANCHES:-[]}"); do
+            gh workflow run screenshots.yml --ref "$BRANCH" -f branch="$branch"
+            echo "Started screenshots.yml for $branch"
+          done
+
       - name: Send PRs with conflicts back to the developer
         if: ${{ !cancelled() }}
         working-directory: repo

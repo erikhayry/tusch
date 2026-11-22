@@ -56,6 +56,8 @@ So:
   naming (`docs/rules/*`). No unrelated changes.
 - **Lessons:** every entry in `docs/rules/review-lessons.md` (what human
   reviewers caught before). A hit is blocking unless the lesson says otherwise.
+- **Screenshots:** baselines changed only for the views the ticket lists, and
+  the images look intended.
 - **Changelog:** a user-facing change has `changelog/$0.<type>.md` with one
   sentence a user would understand, and the type matches the issue's `type:*`
   label (`changelog/README.md`). A missing or wrong entry is blocking.
@@ -101,7 +103,7 @@ So:
   ```
 
   The body contains: a summary, `Closes #$0`, the requirements added, changed or
-  removed, the tests, a **Release note** (the sentence
+  removed, the tests, the screenshots changed, a **Release note** (the sentence
   from the changelog entry, or "No user-facing change" when there is none), and
   anything the human should look at closely.
 

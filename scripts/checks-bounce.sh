@@ -116,7 +116,7 @@ bounce_ci() {
 		if [[ "$rounds" -ge "$max_rounds" ]]; then
 			echo "This failed $rounds times already, so the issue is **blocked**: a human needs to look at the run."
 		else
-			echo 'Developer: reproduce the failure, fix it on the branch without weakening a test, run the usual checks, push, and hand off to review as usual.'
+			echo 'Developer: reproduce the failure, fix it on the branch without weakening a test, run the usual checks, push, and hand off to review as usual. A failed screenshot test after a merge means the baselines need `pnpm screenshots:update`.'
 		fi
 	} > checks-comment.md
 	bounce_comment "$issue" checks-comment.md

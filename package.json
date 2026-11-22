@@ -14,7 +14,6 @@
 		"lint:css": "stylelint \"src/**/*.{css,svelte}\"",
 		"lint:deps": "depcruise src",
 		"check:requirements": "node scripts/check-requirements.mjs",
-		"check:e2e-stability": "node scripts/check-e2e-stability.mjs",
 		"check:agent-fixtures": "bash scripts/check-pipeline-scripts.sh",
 		"check:changelog": "node scripts/changelog.mjs check",
 		"changelog": "node scripts/changelog.mjs",
@@ -23,6 +22,7 @@
 		"test": "pnpm run test:e2e",
 		"test:e2e": "svelte-kit sync && playwright test",
 		"test:e2e:ui": "svelte-kit sync && playwright test --ui",
+		"screenshots:update": "scripts/update-screenshots.sh",
 		"generate": "plop"
 	},
 	"devDependencies": {
