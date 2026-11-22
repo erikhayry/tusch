@@ -13,23 +13,11 @@
 
 ## Where and how
 
-- The suite is being rewritten into `e2e/` (#263 and the tickets after it, see
-  the issue for the split). Tests there live by feature area, `e2e/<area>/<name>.e2e.ts`,
-  not next to routes. Shared helpers go in `e2e/support/`.
-- **Framework-agnostic.** Tests in `e2e/` import no app module except the
-  translations (`e2e/support/messages.ts`, the Paraglide `m`) and the mock fixtures.
-  They select by role and translated name only, so the suite survives a change of
-  UI framework (the Foldkit migration, #265).
-- **Readiness contract.** Navigate with `goto(page, url)` (`e2e/support/goto.ts`).
-  It waits for `<html data-hydrated>`, the one app contract for "interactive". Any
-  app, including a future one, must set that attribute once it accepts input; the
-  suite waits on nothing else framework-specific. Interacting earlier can turn a
-  submit into a native POST.
-- The old suite still lives next to its route: `src/routes/**/test/*.svelte.e2e.ts`,
-  with a page object in `test/utils/` (e.g. `(local)/comic/create/test/utils/createPage.ts`).
-  Each ticket moves one area into `e2e/` and deletes its old tests.
-  Navigate with `gotoHydrated(page, url)` (`src/tests/e2e/gotoHydrated.ts`), or
-  a page object's async `goto()` that uses it.
+- Tests live next to their route: `src/routes/**/test/*.svelte.e2e.ts`, with a
+  page object in `test/utils/` (e.g. `(local)/comic/create/test/utils/createPage.ts`).
+- Navigate with `gotoHydrated(page, url)` (`src/tests/e2e/gotoHydrated.ts`), or
+  a page object's async `goto()` that uses it. It waits for `<html data-hydrated>`;
+  interacting earlier can turn a submit into a native POST.
 - Drive the UI by keyboard only (REQ-037): no `.click()`, `.fill()`, `.check()`
   or `.selectOption()` on controls. Use the helpers in
   `src/tests/e2e/keyboard.ts`: `tabTo` (Tab until focused, asserted with
@@ -48,24 +36,6 @@
 - Each test starts from fresh storage (Playwright context); examples are seeded
   by the app. Create data through the UI when a test needs a user-made comic
   (see `createComic` in `(local)/test/navigation.svelte.e2e.ts`).
-
-## Stability
-
-The bar for `e2e/` (REQ-263-1). Old tests under `src/` keep their current rules
-until they are moved.
-
-- No fixed waits: no `waitForTimeout`, `setTimeout` or `sleep`, and no numeric
-  per-step `timeout` option. Wait on a web-first assertion or on the readiness
-  contract instead.
-- `retries: 0` in `playwright.config.ts`. A flaky test is a bug to fix, not a
-  retry to add.
-- Each test creates its own data through the UI (`createComicViaUi`, `e2e/support/`).
-  No shared state and no dependence on the order of tests.
-- The new tests pass `--repeat-each=5` in the CI container:
-  `pnpm exec playwright test e2e/ --repeat-each=5 --retries=0`.
-- `pnpm run check:e2e-stability` (`scripts/check-e2e-stability.mjs`) fails on any
-  of the above in `e2e/` or a non-zero `retries` in the Playwright config. It
-  ignores comments and string literals, so a fixture can mention a wait.
 
 ## AI is always mocked
 
@@ -116,8 +86,8 @@ run in parallel against one server.
   in `src/tests/e2e/views.ts`, in both the light and the dark colour scheme, and
   fails on **any** violation (REQ-035). It runs
   locally too, unlike the screenshots.
-- A new view goes in `views.ts`, which gives it an axe scan (and the web-vitals
-  audit, where it is listed).
+- A new view goes in `views.ts`, which gives it both a screenshot and an axe
+  scan.
 - Pages render through `Page.svelte`, which sets the document title and the
   `<main>` landmark. Every form control needs a label (a visible `<label>`, or
   `aria-label` when there's no room for one).
@@ -157,14 +127,9 @@ run in parallel against one server.
 
 ## Screenshots
 
-**Suspended** until #264 removes the screenshot pipeline. The screenshot tests
-(`screenshots.e2e.ts`) and their baselines were deleted in #263, and no
-`pnpm screenshots:update` run is needed for a view change until then. The text
-below describes the pipeline as it was and is kept for #264 to remove.
-
-- `src/tests/e2e/screenshots.e2e.ts` captured every view in `views.ts` with
-  `toHaveScreenshot()`. A new view got a screenshot test in the same PR.
-  `landing`, `comic` and `settings` also had dark baselines (`*-dark.png`).
+- `src/tests/e2e/screenshots.e2e.ts` captures every view in `views.ts` with
+  `toHaveScreenshot()`. **A new view gets a screenshot test in the same PR.**
+  `landing`, `comic` and `settings` also have dark baselines (`*-dark.png`).
 - Baselines live in `src/tests/e2e/__screenshots__/` and are **Linux-only**: CI
   runs inside `mcr.microsoft.com/playwright:<version>-noble` (keep the tag in
   sync with `@playwright/test`; `pnpm run check:agent-fixtures` checks every

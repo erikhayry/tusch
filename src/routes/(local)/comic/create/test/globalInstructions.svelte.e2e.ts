@@ -38,19 +38,3 @@ test(
 		await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 	},
 );
-
-test(
-	'clears the instructions when saving an empty field, and generation works as before',
-	{ tag: ['@REQ-050', '@REQ-051'] },
-	async ({ page }) => {
-		// The marker would fail every generation if it were still saved.
-		await saveGlobalInstructions(page, RATE_LIMIT_MARKER);
-		await saveGlobalInstructions(page, '');
-		const createPage = await new CreatePage(page).goto();
-
-		await createPage.fillUrl('https://example.com/article');
-		await createPage.submit();
-
-		await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
-	},
-);

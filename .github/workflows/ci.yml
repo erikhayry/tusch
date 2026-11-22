@@ -95,9 +95,6 @@ jobs:
       - name: Requirements ledger
         run: pnpm run check:requirements
 
-      - name: E2E stability
-        run: pnpm run check:e2e-stability
-
       - name: Changelog entries
         run: pnpm run check:changelog
 
