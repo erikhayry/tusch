@@ -16,10 +16,6 @@ Each item becomes one E2E test tagged with its requirement.
 - [ ] Given <state>, when <action>, then <observable result>. (REQ-…)
 - [ ] …
 
-## Views affected
-
-<Views whose screenshot baselines should change, e.g. `landing`, `panel`. "None" if no UI change.>
-
 ## Out of scope
 
 <What this ticket deliberately doesn't do.>

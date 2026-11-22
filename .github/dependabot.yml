@@ -17,8 +17,7 @@ updates:
         dependency-type: production
         update-types: [minor, patch]
     ignore:
-      # Must move together with the CI container tag and the screenshot
-      # baselines (docs/rules/testing.md, "Screenshots"); bump by hand.
+      # Must move together with the CI container tag (docs/rules/workflow.md, "Dependencies"); bump by hand.
       - dependency-name: '@playwright/test'
       # Types follow the Node runtime (24 in CI, agents and Vercel); move both together.
       - dependency-name: '@types/node'
