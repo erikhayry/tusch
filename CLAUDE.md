@@ -21,7 +21,9 @@ when a convention changes):
 
 Role skills live in `.claude/skills/` (`/plan`, `/test`, `/develop`, `/reviewer`,
 `/triage`, `/tech-lead`, and `/automate`, which runs after the weekly audit). They
-follow `docs/rules/agents.md` (labels, branches, comments, blocking) and `docs/agent-workflow-plan.md`. Subagents live in
+follow `docs/rules/agents.md` (labels, branches, comments, blocking) and `docs/agent-workflow-plan.md`.
+On GitHub, `agents.yml` runs them and `pipeline.yml` does the upkeep that needs no
+AI (`docs/rules/workflow.md`, "Running the pipeline on GitHub"). Subagents live in
 `.claude/agents/`: `a11y-reviewer` (accessibility review; `/reviewer` applies it to
 UI diffs), `css-reviewer` (styling conventions; `/reviewer` applies it to UI diffs),
 `ux-reviewer` (flow, states, copy; advisory, `/reviewer` applies it to UI diffs),

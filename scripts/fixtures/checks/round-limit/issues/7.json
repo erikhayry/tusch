@@ -1,0 +1,4 @@
+{
+	"labels": [{ "name": "status:needs-human" }],
+	"comments": [{ "body": "### Pipeline: CI failed (round 1 of 2)\n\n<!-- bounced:old1 -->" }, { "body": "### Pipeline: CI failed (round 2 of 2)\n\n<!-- bounced:old2 -->" }]
+}

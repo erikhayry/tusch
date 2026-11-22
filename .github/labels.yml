@@ -33,3 +33,6 @@
 - name: queued
   color: d4c5f9
   description: Waiting for a free pipeline slot (WIP limit); starts automatically
+- name: main-broken
+  color: b60205
+  description: CI fails on main; filed and closed by scripts/main-health.sh

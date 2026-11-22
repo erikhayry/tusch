@@ -2,8 +2,8 @@
 # Checks scripts/pipeline-wip.sh against a stubbed `gh` (issue #183). There is
 # no E2E layer for pipeline scripts, so each script acceptance criterion is a
 # case below. The stub (scripts/fixtures/wip/gh) serves the issues a case
-# declares; `release` and `queue` in agents.yml are covered by the
-# human-applied workflow diff, not here.
+# declares; the jobs that call it (`queue` in agents.yml and in pipeline.yml) are
+# workflow steps, not covered here.
 #
 # Run: bash scripts/check-wip-script.sh
 set -uo pipefail

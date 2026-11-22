@@ -4,7 +4,7 @@ description: Developer role for the agent pipeline. Implements an issue labelled
 argument-hint: <issue-number>
 disable-model-invocation: true
 model: haiku
-allowed-tools: Read Grep Glob Edit Write Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh workflow run *) Bash(gh run *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Edit Write Bash
 ---
 
 # Developer
@@ -23,9 +23,15 @@ The status label must be `status:needs-dev`; otherwise stop. Switch to the
 issue's branch (`git fetch`, then `git switch issue-$0-…`, then `git pull`), and read
 the tester's comment and any reviewer or triage feedback.
 
+**CI failed.** If the latest pipeline comment starts with `### Pipeline: CI failed`
+(`scripts/checks-bounce.sh`), the PR's `test` check failed after review. Fix the
+failed steps and tests it lists, then run step 3 in full, and steps 4 to 6.
+
 **Merge conflict with `main`.** If the latest pipeline comment starts with
 `### Pipeline: merge conflict with main`, the branch has to merge `main` first
-(`scripts/conflict-bounce.sh`, #168):
+(`scripts/conflict-bounce.sh`, #168). The pipeline has already tried: it merges
+`main` into waiting PRs itself and resolves message files, the requirements ledger
+and screenshot baselines, so what reaches you needs a decision:
 
 - `git fetch origin`, then `git merge origin/main`. Never rebase or force-push.
 - Resolve each conflict, then commit the merge (`Refs #$0`).
@@ -33,7 +39,7 @@ the tester's comment and any reviewer or triage feedback.
   as the answer. Check out either side only to finish the merge, then regenerate
   the baselines in step 4 and commit the new images.
 - An id clash in `docs/requirements.md`: keep both entries.
-- Then run step 3 in full, and steps 4 and 5. Block if a conflict is beyond you.
+- Then run step 3 in full, and steps 4 to 6. Block if a conflict is beyond you.
 
 ## 2. Implement
 
@@ -77,7 +83,15 @@ If the ticket lists views affected, or your change alters any view:
   into `src/tests/e2e/__screenshots__/` itself. Look at the changed images, then
   commit them.
 
-## 5. Hand off
+## 5. Changelog entry
+
+If the change is visible to users, write one sentence for them in
+`changelog/$0.<type>.md`, where the type follows the issue's label: `feature`
+(`type:feature`), `fix` (`type:bug`) or `chore` (`type:chore`). One line, no
+list marker, no link (`changelog/README.md`). Never edit `CHANGELOG.md`. Skip the
+file when nothing user-facing changed, and say so in your comment.
+
+## 6. Hand off
 
 Commit (`Refs #$0`, explaining why in the body), then `git push`. Comment with
 the protocol format: what changed (files), why it's built that way, what you ran

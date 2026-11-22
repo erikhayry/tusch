@@ -1,0 +1,4 @@
+{
+	"labels": [{ "name": "status:needs-review" }],
+	"comments": [{ "body": "### Reviewer: PR opened" }]
+}
