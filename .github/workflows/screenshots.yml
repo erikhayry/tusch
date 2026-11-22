@@ -114,7 +114,8 @@ jobs:
             -m "This branch and main both changed them (scripts/sync-branches.sh)."
           git push --quiet origin "HEAD:refs/heads/$PR_BRANCH"
 
-  # A push made with GITHUB_TOKEN starts no CI run, so start one, also when the
+  # A push made with GITHUB_TOKEN starts no CI run, and the PR's own run is held for
+  # approval: scripts/start-ci.sh approves it (or dispatches CI). It also runs when the
   # rendering failed: CI then fails and the PR goes back to the developer.
   ci:
     needs: [render, baselines]
@@ -123,8 +124,15 @@ jobs:
     timeout-minutes: 5
     permissions:
       actions: write
+      contents: read
     steps:
-      - name: Dispatch CI for the branch
+      # The default branch's scripts, not the PR branch's: nothing here runs its code.
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: scripts
+          persist-credentials: false
+
+      - name: Start CI for the branch
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run ci.yml --ref "$PR_BRANCH"
+        run: scripts/start-ci.sh "$PR_BRANCH"

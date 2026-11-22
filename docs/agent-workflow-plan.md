@@ -154,7 +154,7 @@ derived from the current code:
 - `.github/workflows/pipeline.yml`: upkeep without AI, for a pipeline PR whose
   issue waits in `status:needs-human` (`docs/rules/workflow.md`, "Pipeline upkeep"):
   - `scripts/sync-branches.sh`: merges `main` into the branch when `main` moves,
-    resolving what needs no judgement (`scripts/merge-main.sh`), and dispatches CI.
+    resolving what needs no judgement (`scripts/merge-main.sh`), and starts CI (`scripts/start-ci.sh`).
   - `scripts/conflict-bounce.sh` (#168): a PR that GitHub still reports as
     `CONFLICTING` sends the issue to `/develop`, which merges `main`. `UNKNOWN`
     is checked on the next run.

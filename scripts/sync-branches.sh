@@ -11,8 +11,9 @@
 # for the human (status:needs-human) and is behind main, it merges main with
 # scripts/merge-main.sh and pushes. Then:
 #
-#   merged cleanly             CI is dispatched for the branch (a push made with
-#                              GITHUB_TOKEN starts no run)
+#   merged cleanly             CI is started for the branch (start-ci.sh: the PR's
+#                              held run is approved, since a push made with
+#                              GITHUB_TOKEN starts no run of its own)
 #   baselines taken from main  the branch is listed in the `screenshots` output;
 #                              pipeline.yml starts screenshots.yml, which
 #                              renders them again and dispatches CI
@@ -113,7 +114,7 @@ while IFS=$'\t' read -r pr branch; do
 	baselines=$(printf '%s\n' "$out" | sed -n 's/^screenshot://p')
 	if [[ -z $baselines ]]; then
 		echo "PR #$pr: merged $base into $branch."
-		bounce_gh workflow run ci.yml --ref "$branch"
+		"$root/start-ci.sh" "$branch" "$(git rev-parse HEAD)"
 		continue
 	fi
 	echo "PR #$pr: merged $base into $branch; baselines to regenerate."
