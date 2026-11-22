@@ -18,18 +18,15 @@ export default defineConfig({
 		},
 		{
 			// Only the Sentry project talks to this server, so enabling Sentry here can't
-			// change the other tests, the screenshots or the web-vitals audit.
+			// change the other tests or the web-vitals audit.
 			command: `PLAYWRIGHT_TEST=true PUBLIC_SENTRY_DSN=${SENTRY_DSN} npm run preview -- --port ${SENTRY_APP_PORT} --strictPort`,
 			port: SENTRY_APP_PORT,
 			reuseExistingServer: true,
 		},
 	],
 	timeout: 10000,
-	// Baselines are Linux-only (CI container), so drop the platform suffix.
-	snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{arg}{ext}',
-	expect: {
-		toHaveScreenshot: { animations: 'disabled', caret: 'hide', maxDiffPixelRatio: 0.001 },
-	},
+	// No retries: a flaky test is a bug to fix (scripts/check-e2e-stability.mjs enforces 0).
+	retries: 0,
 	// With several web servers Playwright no longer infers the base URL.
 	use: { baseURL: 'http://localhost:4173', viewport: { width: 1280, height: 800 } },
 	projects: [

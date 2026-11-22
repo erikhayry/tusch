@@ -62,10 +62,3 @@ export async function chooseOption(page: Page, target: Locator, label: string): 
 	await tabTo(page, target);
 	await page.keyboard.type(label);
 }
-
-/** Every focusable control currently in the document, in DOM-visible order. */
-export function focusableControls(page: Page): Locator {
-	return page.locator(
-		'a[href], button:not([disabled]), input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-	);
-}
