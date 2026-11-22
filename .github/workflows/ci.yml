@@ -5,8 +5,8 @@ on:
   pull_request:
   push:
     branches: [main]
-  # Dispatched for a branch by scripts/sync-branches.sh (a push made with GITHUB_TOKEN
-  # starts no run) and by `pnpm screenshots:update`.
+  # Dispatched by scripts/start-ci.sh when the PR's own run can't be approved, and by
+  # `pnpm screenshots:update`.
   workflow_dispatch:
     inputs:
       update_screenshots:

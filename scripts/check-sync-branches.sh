@@ -156,10 +156,16 @@ out=$(cd "$clone" && bash "$root/scripts/merge-main.sh" origin/main 2>&1)
 mkdir "$work/bin"
 cat > "$work/bin/gh" <<'SHIM'
 #!/usr/bin/env bash
-# Serves `pr list` and `issue view` from $STUB; logs every other call.
+# Serves `pr list` and `issue view` from $STUB; logs every other call. `run list`
+# answers what start-ci.sh asks for (the id of a held run), from $STUB/held-<branch>.
 case "$1 $2" in
 'pr list') cat "$STUB/prs.json" ;;
 'issue view') cat "$STUB/issue-$3.json" ;;
+'run list')
+	while [[ $# -gt 0 && $1 != --branch ]]; do shift; done
+	[[ ! -f "$STUB/held-$2" ]] || cat "$STUB/held-$2"
+	;;
+api*) [[ -z ${REFUSE_APPROVE:-} ]] || exit 1; echo "gh $*" >> "$STUB/calls" ;;
 *) echo "gh $*" >> "$STUB/calls" ;;
 esac
 SHIM
@@ -179,6 +185,12 @@ for i in 1 2 3 5; do
 done
 echo '{"labels":[{"name":"status:needs-dev"}],"comments":[]}' > "$stub/issue-7.json"
 
+# issue-1-clean has its pull_request run held for approval; issue-2-messages has none.
+echo 9001 > "$stub/held-issue-1-clean"
+
+# No waiting for the held run in the check.
+export GH_REPO=test/repo CI_POLL_TRIES=1 CI_POLL_SLEEP=0
+
 sync=$work/sync
 git clone --quiet "$origin" "$sync"
 : > "$stub/calls"
@@ -195,11 +207,18 @@ for b in issue-5-code issue-7-not-waiting feature-x; do
 done
 grep -qx 'handled=11 12 13' "$work/output" || fail sync "handled output: $(cat "$work/output")"
 grep -qxF 'screenshots=[{"branch":"issue-3-baseline","pr":13}]' "$work/output" || fail sync "screenshots output: $(cat "$work/output")"
-grep -qx 'gh workflow run ci.yml --ref issue-1-clean' "$stub/calls" || fail sync "CI not dispatched for issue-1-clean"
-grep -qx 'gh workflow run ci.yml --ref issue-2-messages' "$stub/calls" || fail sync "CI not dispatched for issue-2-messages"
+grep -qx 'gh api -X POST repos/test/repo/actions/runs/9001/approve' "$stub/calls" || fail sync "held CI run not approved for issue-1-clean"
+if grep -q 'ci.yml --ref issue-1-clean' "$stub/calls"; then fail sync "CI dispatched although a run was held for issue-1-clean"; fi
+grep -qx 'gh workflow run ci.yml --ref issue-2-messages' "$stub/calls" || fail sync "CI not dispatched for issue-2-messages, which has no held run"
 if grep -q 'ci.yml --ref issue-3-baseline' "$stub/calls"; then fail sync "CI must wait for the regenerated baselines"; fi
 grep -q '^gh pr comment 13 --body-file ' "$stub/calls" || fail sync "no PR comment about the baselines"
 grep -q "can't resolve" <<< "$log" || fail sync "the unresolved conflict was not logged: $log"
+
+# start-ci.sh falls back to a dispatch when the held run can't be approved.
+: > "$stub/calls"
+PATH="$work/bin:$PATH" STUB=$stub REFUSE_APPROVE=1 bash "$root/scripts/start-ci.sh" issue-1-clean abc123 > /dev/null 2>&1 ||
+	fail start-ci "exit $?"
+grep -qx 'gh workflow run ci.yml --ref issue-1-clean' "$stub/calls" || fail start-ci "no dispatch after a refused approval: $(cat "$stub/calls")"
 
 # A second run finds nothing to do.
 : > "$stub/calls"

@@ -41,17 +41,20 @@ closes and every 15 minutes. It only acts on a pipeline PR (branch
 `issue-<n>-…`) whose issue is `status:needs-human`; earlier stages are still
 changing the code.
 
-| When                                             | What happens (script)                                                                                                                                       |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `main` moved and the PR is behind it             | `main` is merged into the branch and CI runs again, so what you merge was tested against the `main` it lands on (`sync-branches.sh`, `merge-main.sh`)       |
-| …and both sides added messages or requirements   | Merged per key (`messages/*.json`) or by keeping both sides' lines (`docs/requirements.md`)                                                                 |
-| …and both sides changed a screenshot baseline    | `main`'s image is taken, the baselines are rendered again from the merged code and committed; look at them in the PR's diff                                 |
-| …and anything else conflicts                     | `/develop <n>` merges `main` (`conflict-bounce.sh`; blocked after 2 rounds)                                                                                 |
-| The `test` check fails on the PR's newest commit | `/develop <n>` with the failed steps and tests (`checks-bounce.sh`; blocked after 2 rounds)                                                                 |
-| SonarCloud fails on the PR's newest commit       | `/develop <n>` with the findings (`sonar-bounce.sh`; blocked after 2 rounds)                                                                                |
-| CI fails on `main`                               | The failed jobs run again once. A second failure opens one `main-broken` issue and starts `/plan` for it; it closes when `main` is green (`main-health.sh`) |
-| A WIP slot is free                               | The oldest queued issues start (`pipeline-wip.sh`)                                                                                                          |
+| When                                             | What happens (script)                                                                                                                                                |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `main` moved and the PR is behind it             | `main` is merged into the branch and CI runs again, so what you merge was tested against the `main` it lands on (`sync-branches.sh`, `merge-main.sh`, `start-ci.sh`) |
+| …and both sides added messages or requirements   | Merged per key (`messages/*.json`) or by keeping both sides' lines (`docs/requirements.md`)                                                                          |
+| …and both sides changed a screenshot baseline    | `main`'s image is taken, the baselines are rendered again from the merged code and committed; look at them in the PR's diff                                          |
+| …and anything else conflicts                     | `/develop <n>` merges `main` (`conflict-bounce.sh`; blocked after 2 rounds)                                                                                          |
+| The `test` check fails on the PR's newest commit | `/develop <n>` with the failed steps and tests (`checks-bounce.sh`; blocked after 2 rounds)                                                                          |
+| SonarCloud fails on the PR's newest commit       | `/develop <n>` with the findings (`sonar-bounce.sh`; blocked after 2 rounds)                                                                                         |
+| CI fails on `main`                               | The failed jobs run again once. A second failure opens one `main-broken` issue and starts `/plan` for it; it closes when `main` is green (`main-health.sh`)          |
+| A WIP slot is free                               | The oldest queued issues start (`pipeline-wip.sh`)                                                                                                                   |
 
+- The pipeline's push starts no CI run, and GitHub holds the PR's own run for
+  approval. `start-ci.sh` approves that run; only when none appears does it
+  dispatch `ci.yml`, whose result the PR doesn't count.
 - A commit is sent back once. Moving a blocked issue back to `status:needs-human`
   without a new commit leaves it with you.
 - While CI runs on the merged branch, the PR's `test` check is pending and the PR
