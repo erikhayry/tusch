@@ -10,9 +10,8 @@
 	import Page from '#lib/components/page/Page.svelte';
 	import Heading from '#lib/components/relativeHeading/Heading.svelte';
 	import Section from '#lib/components/relativeHeading/Section.svelte';
-	import { isExampleComic } from '#lib/features/comics/client/comic-selectors.ts';
+	import { comicMetaLine } from '#lib/features/comics/client/comic-selectors.ts';
 	import { m } from '#lib/paraglide/messages.js';
-	import type { Comic, ComicStyle } from '#lib/types/index.ts';
 	import { primaryVariant } from '#lib/types/image-variants.ts';
 	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
 	import type { Props } from './+page.ts';
@@ -20,12 +19,6 @@
 	// The first four covers in the grid load eagerly; the rest lazily, so the first paint
 	// isn't held up by covers below the fold (REQ-039, REQ-235-3).
 	const EAGER_COVERS = 4;
-
-	const STYLE_NAMES: Record<ComicStyle, () => string> = {
-		anime: m.styleAnime,
-		'classic-marvel': m.styleClassicMarvel,
-		'franco-belgian': m.styleFrancoBelgian,
-	};
 
 	let { data }: { data: Props } = $props();
 
@@ -37,14 +30,6 @@
 				.map((comic) => comic.id),
 		),
 	);
-
-	function metaLine(comic: Comic): string {
-		const panels =
-			comic.panels.length === 1 ? m.panelCountOne() : m.panelCount({ count: comic.panels.length });
-		return [isExampleComic(comic) ? m.exampleComic() : null, STYLE_NAMES[comic.style](), panels]
-			.filter((part) => part !== null)
-			.join(' · ');
-	}
 </script>
 
 <Page title={m.tusch()}>
@@ -81,7 +66,7 @@
 						{/if}
 					</div>
 					<p class="title">{comic.title}</p>
-					<p class="meta">{metaLine(comic)}</p>
+					<p class="meta">{comicMetaLine(comic)}</p>
 					<div class="actions">
 						<a
 							class="action"
@@ -178,7 +163,7 @@
 
 	.title {
 		margin: 0;
-		font-weight: 600;
+		font-weight: var(--font-weight-semibold);
 		overflow-wrap: anywhere;
 	}
 
@@ -223,7 +208,7 @@
 	}
 
 	.tile-title {
-		font-weight: 600;
+		font-weight: var(--font-weight-semibold);
 		text-decoration: underline;
 	}
 
