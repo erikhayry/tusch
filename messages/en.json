@@ -113,5 +113,9 @@
 	"createPortraitImage": "Create portrait image",
 	"createLandscapeImage": "Create landscape image",
 	"removePortraitImage": "Remove portrait image",
-	"removeLandscapeImage": "Remove landscape image"
+	"removeLandscapeImage": "Remove landscape image",
+	"createPortraitCover": "Create portrait cover",
+	"createLandscapeCover": "Create landscape cover",
+	"removePortraitCover": "Remove portrait cover",
+	"removeLandscapeCover": "Remove landscape cover"
 }
