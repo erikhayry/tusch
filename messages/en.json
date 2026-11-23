@@ -109,5 +109,9 @@
 	"portraitImage": "Portrait",
 	"landscapeImage": "Landscape",
 	"portraitImageFailed": "The portrait image couldn't be created. The landscape image was saved.",
-	"landscapeImageFailed": "The landscape image couldn't be created. The portrait image was saved."
+	"landscapeImageFailed": "The landscape image couldn't be created. The portrait image was saved.",
+	"createPortraitImage": "Create portrait image",
+	"createLandscapeImage": "Create landscape image",
+	"removePortraitImage": "Remove portrait image",
+	"removeLandscapeImage": "Remove landscape image"
 }

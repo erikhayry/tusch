@@ -63,5 +63,9 @@
 	"portraitImage": "Stående",
 	"landscapeImage": "Liggande",
 	"portraitImageFailed": "Den stående bilden kunde inte skapas. Den liggande bilden sparades.",
-	"landscapeImageFailed": "Den liggande bilden kunde inte skapas. Den stående bilden sparades."
+	"landscapeImageFailed": "Den liggande bilden kunde inte skapas. Den stående bilden sparades.",
+	"createPortraitImage": "Skapa stående bild",
+	"createLandscapeImage": "Skapa liggande bild",
+	"removePortraitImage": "Ta bort stående bild",
+	"removeLandscapeImage": "Ta bort liggande bild"
 }
