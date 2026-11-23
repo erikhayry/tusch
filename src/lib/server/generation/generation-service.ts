@@ -226,6 +226,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			imageUrl,
 			referenceImages,
 			imageFormat = ImageFormatEnum.enum.both,
+			existingImage,
 		}: CreatePanelImageValues): Promise<CreatePanelImageResult> {
 			const prompt = buildPanelImageMessages({
 				panel,
@@ -242,6 +243,12 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			// One request per variant. A failed variant doesn't stop the others (REQ-103-3).
 			for (const variant of variantsFor(imageFormat)) {
 				try {
+					// The landscape image is drawn from the portrait one, so the two match. A
+					// variant made alone (REQ-279-1) is drawn from the one the image already has.
+					const reference =
+						variant === 'landscape' && generated.portrait
+							? `data:image/webp;base64,${generated.portrait.image.src}`
+							: existingImage;
 					const output = await generateImage(gateway, {
 						messages: prompt,
 						schemaName: SchemaName.enum.createImage,
@@ -249,10 +256,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 						imageUrls: [
 							...(includeImage && imageUrl ? [imageUrl] : []),
 							...referenceImages,
-							// The landscape image is drawn from the portrait one, so the two match.
-							...(variant === 'landscape' && generated.portrait
-								? [`data:image/webp;base64,${generated.portrait.image.src}`]
-								: []),
+							...(reference ? [reference] : []),
 						],
 					});
 					generated[variant] = {

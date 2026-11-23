@@ -4,7 +4,9 @@ import type {
 	CharacterImage,
 	Comic,
 	ImageFormat,
+	ImageVariant,
 	Panel,
+	PanelImageAsset,
 	ResponsiveImage,
 	ResponsivePanelImage,
 } from '#lib/types/index.ts';
@@ -94,6 +96,22 @@ function updateCharacter(
 			current.id === characterId ? next.value : current,
 		),
 	});
+}
+
+/** Adds each crop to its character; the crops are new, so they never clash with existing ones. */
+function addCropImages(
+	comic: Outcome<Comic>,
+	cropImages: readonly { characterId: string; image: CharacterImage }[],
+): Outcome<Comic> {
+	return cropImages.reduce<Outcome<Comic>>(
+		(current, { characterId, image: characterImage }) =>
+			current.ok
+				? updateCharacter(current.value, characterId, (character) =>
+						ok({ ...character, images: [...character.images, characterImage] }),
+					)
+				: current,
+		comic,
+	);
 }
 
 function updateCharacterImage(
@@ -257,15 +275,63 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 					}),
 				);
 
-				return characterImages.reduce<Outcome<Comic>>(
-					(current, { characterId, image: characterImage }) =>
-						current.ok
-							? updateCharacter(current.value, characterId, (character) =>
-									ok({ ...character, images: [...character.images, characterImage] }),
-								)
-							: current,
-					withImage,
+				return addCropImages(withImage, characterImages);
+			});
+		},
+
+		/**
+		 * Sets one variant of a panel image: stores a created one, or removes it when `asset`
+		 * is undefined (REQ-279-1, REQ-279-2). Only the portrait variant is the crop source, so
+		 * only a change to it passes `cropImages`, which replace the crops. Neither makes a
+		 * restore point, so `previousImage` is kept.
+		 */
+		setPanelImageVariant(
+			comicId: string,
+			panelId: string,
+			variant: ImageVariant,
+			asset: PanelImageAsset | undefined,
+			cropImages?: readonly { characterId: string; image: CharacterImage }[],
+		): CommandResult {
+			return updateComic(comicId, (comic) => {
+				const panel = comic.panels.find(({ id }) => id === panelId);
+				if (!panel) {
+					return fail(CommandFailureCodes['panel-not-found'], `Panel ${panelId} not found`);
+				}
+				if (!panel.image) {
+					return fail(CommandFailureCodes['image-not-found'], `Panel ${panelId} has no image`);
+				}
+
+				const image: ResponsivePanelImage = { ...panel.image, [variant]: asset };
+				if (!image.portrait && !image.landscape) {
+					return fail(
+						CommandFailureCodes['image-not-found'],
+						`Panel ${panelId} would have no image`,
+					);
+				}
+
+				// The replaced crops leave the characters in the same commit as the new ones.
+				const dropped = new Set(panel.imageCropIds ?? []);
+				const base: Comic = cropImages
+					? {
+							...comic,
+							characters: comic.characters.map((character) => ({
+								...character,
+								images: character.images.filter(({ id }) => !dropped.has(id)),
+							})),
+						}
+					: comic;
+
+				const updated = updatePanel(base, panelId, (current) =>
+					ok({
+						...current,
+						image,
+						imageCropIds: cropImages
+							? cropImages.map(({ image: crop }) => crop.id)
+							: current.imageCropIds,
+					}),
 				);
+
+				return cropImages ? addCropImages(updated, cropImages) : updated;
 			});
 		},
 

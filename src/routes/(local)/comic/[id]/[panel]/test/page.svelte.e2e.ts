@@ -34,7 +34,7 @@ test('creates image', { tag: '@REQ-015' }, async ({ page }) => {
 });
 
 test('replace image', { tag: '@REQ-016' }, async ({ page }) => {
-	const panelPage = await new PanelPage(page).goto();
+	const panelPage = await PanelPage.gotoWithBothVariants(page);
 
 	await activate(page, panelPage.replaceImageButton);
 
@@ -42,7 +42,7 @@ test('replace image', { tag: '@REQ-016' }, async ({ page }) => {
 });
 
 test('removes image', { tag: '@REQ-017' }, async ({ page }) => {
-	const panelPage = await new PanelPage(page).goto(1);
+	const panelPage = await new PanelPage(page).goto();
 
 	await activate(page, panelPage.deleteImageButton);
 

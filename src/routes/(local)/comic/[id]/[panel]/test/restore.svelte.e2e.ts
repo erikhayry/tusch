@@ -88,7 +88,7 @@ test(
 );
 
 test('offers to restore after the image is replaced', { tag: '@REQ-048' }, async ({ page }) => {
-	const panelPage = await new PanelPage(page).goto();
+	const panelPage = await PanelPage.gotoWithBothVariants(page);
 
 	await replace(panelPage);
 
@@ -98,7 +98,7 @@ test('offers to restore after the image is replaced', { tag: '@REQ-048' }, async
 });
 
 test('restores the previous image with the keyboard', { tag: '@REQ-048' }, async ({ page }) => {
-	const panelPage = await new PanelPage(page).goto();
+	const panelPage = await PanelPage.gotoWithBothVariants(page);
 	await replace(panelPage);
 
 	await activate(page, panelPage.restoreImageButton);
@@ -115,7 +115,7 @@ test(
 	'keeps the restorable image across a reload',
 	{ tag: ['@REQ-048', '@REQ-022'] },
 	async ({ page }) => {
-		const panelPage = await new PanelPage(page).goto();
+		const panelPage = await PanelPage.gotoWithBothVariants(page);
 		await replace(panelPage);
 
 		await page.reload();
@@ -161,6 +161,10 @@ test(
 		const a = await generateFirstImage(panelPage);
 		const b = await replace(panelPage);
 		expect(await storedFiles(page)).toContain(a);
+
+		// Two variants: no plain "Remove image" yet (REQ-279-2). Removing one leaves that button.
+		await activate(page, page.getByRole('button', { name: m.removeLandscapeImage(), exact: true }));
+		await expect(panelPage.deleteImageButton).toBeVisible();
 
 		await activate(page, panelPage.deleteImageButton);
 
@@ -265,7 +269,7 @@ test(
 	'moves focus to "Generate new image" after restoring the previous image',
 	{ tag: ['@REQ-176-1', '@REQ-048', '@REQ-037'] },
 	async ({ page }) => {
-		const panelPage = await new PanelPage(page).goto();
+		const panelPage = await PanelPage.gotoWithBothVariants(page);
 		await replace(panelPage);
 
 		await activate(page, panelPage.restoreImageButton);
