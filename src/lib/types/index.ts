@@ -70,13 +70,6 @@ export const CharacterImageSchema = CharacterImageCropsSchema.extend({
 });
 export type CharacterImage = z.infer<typeof CharacterImageSchema>;
 
-export const ResponsiveImageSchema = z.object({
-	landscape: ImageAssetSchema,
-	portrait: ImageAssetSchema,
-	alt: z.string(),
-});
-export type ResponsiveImage = z.infer<typeof ResponsiveImageSchema>;
-
 /** The two shapes a panel image can be stored in; a comic's image format asks for one or both. */
 export const ImageVariantEnum = z.enum(['portrait', 'landscape']);
 export type ImageVariant = z.infer<typeof ImageVariantEnum>;
@@ -201,7 +194,8 @@ export const ComicSchema = z.object({
 	title: z.string(),
 	source: z.optional(z.url()),
 	story: z.optional(z.string()),
-	cover: z.optional(ResponsiveImageSchema),
+	/** Has the variants the comic's format asks for, like a panel image (REQ-280-1). */
+	cover: z.optional(ResponsivePanelImageSchema),
 	style: ComicStyleEnum,
 	/** Unset for existing and example comics, which mean `both` (REQ-103-1). */
 	imageFormat: z.optional(ImageFormatEnum),

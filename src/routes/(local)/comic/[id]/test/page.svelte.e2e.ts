@@ -34,7 +34,8 @@ test('create cover', { tag: '@REQ-011' }, async ({ page }) => {
 	await activate(page, comicPage.deleteCoverButton);
 	await activate(page, comicPage.addCoverButton);
 
-	await expect(comicPage.newCoverImage).toBeVisible();
+	// Both variants of the format are made, so the cover shows two images.
+	await expect(comicPage.newCoverImage).toHaveCount(2);
 });
 
 test('delete panel', { tag: '@REQ-013' }, async ({ page }) => {

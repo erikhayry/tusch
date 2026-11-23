@@ -7,7 +7,6 @@ import type {
 	ImageVariant,
 	Panel,
 	PanelImageAsset,
-	ResponsiveImage,
 	ResponsivePanelImage,
 } from '#lib/types/index.ts';
 import {
@@ -238,8 +237,27 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 			return updateComic(comicId, (comic) => ok({ ...comic, imageFormat }));
 		},
 
-		replaceCover(comicId: string, cover: ResponsiveImage): CommandResult {
+		replaceCover(comicId: string, cover: ResponsivePanelImage): CommandResult {
 			return updateComic(comicId, (comic) => ok({ ...comic, cover }));
+		},
+
+		/** Removes one variant of a cover that has two (REQ-280-1); the other one stays. */
+		removeCoverVariant(comicId: string, variant: ImageVariant): CommandResult {
+			return updateComic(comicId, (comic) => {
+				if (!comic.cover) {
+					return fail(CommandFailureCodes['image-not-found'], `Comic ${comicId} has no cover`);
+				}
+
+				const cover: ResponsivePanelImage = { ...comic.cover, [variant]: undefined };
+				if (!cover.portrait && !cover.landscape) {
+					return fail(
+						CommandFailureCodes['image-not-found'],
+						`Comic ${comicId} would have no cover`,
+					);
+				}
+
+				return ok({ ...comic, cover });
+			});
 		},
 
 		removeCover(comicId: string): CommandResult {

@@ -1,4 +1,5 @@
 import { m } from '#lib/paraglide/messages.js';
+import { primaryVariant } from '#lib/types/image-variants.ts';
 import { expect, test, type Page } from '@playwright/test';
 import { createComic, storedComic } from '../../../tests/e2e/createdComic';
 import {
@@ -6,6 +7,7 @@ import {
 	exampleMinimal,
 	exampleNoImages,
 } from '../../../tests/e2e/examples';
+import { deleteCover } from '../../../tests/e2e/cover';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
 import { activate, tabTo } from '../../../tests/e2e/keyboard';
 import { LandingPage } from './utils/landingPage';
@@ -16,10 +18,11 @@ const MISSING_IMAGE = '/missing-image.svg';
 async function createdComicWithCover(page: Page) {
 	const id = await createComic(page);
 	const { title, cover } = await storedComic(page, id);
-	if (!cover) {
+	const coverFile = primaryVariant(cover)?.asset.src;
+	if (!coverFile) {
 		throw new Error('created comic has no cover');
 	}
-	return { id, title, coverFile: cover.portrait.src };
+	return { id, title, coverFile };
 }
 
 test.describe('covers on the landing page', () => {
@@ -62,7 +65,7 @@ test.describe('covers on the landing page', () => {
 				expect(example.cover).toBeDefined();
 				await expect(landingPage.comicLink(example.title).locator('img')).toHaveAttribute(
 					'src',
-					example.cover?.portrait.src ?? '',
+					example.cover?.portrait?.src ?? '',
 				);
 			}
 		},
@@ -82,7 +85,7 @@ test.describe('covers on the landing page', () => {
 		{ tag: '@REQ-235-2' },
 		async ({ page }) => {
 			const { id, title } = await createdComicWithCover(page);
-			await activate(page, page.getByRole('button', { name: m.deleteCover() }));
+			await deleteCover(page);
 			await expect(page.getByRole('button', { name: m.addCover() })).toBeVisible();
 			expect((await storedComic(page, id)).cover).toBeUndefined();
 

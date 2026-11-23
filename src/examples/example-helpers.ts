@@ -1,9 +1,4 @@
-import type {
-	Character,
-	PanelImageAsset,
-	ResponsiveImage,
-	ResponsivePanelImage,
-} from '#lib/types/index.ts';
+import type { Character, PanelImageAsset, ResponsivePanelImage } from '#lib/types/index.ts';
 
 type PanelCharacters = NonNullable<PanelImageAsset['characters']>;
 
@@ -21,12 +16,17 @@ const asset = (
 	...size,
 });
 
-export function exampleCover(name: string, alt: string): ResponsiveImage {
+export function exampleCover(name: string, alt: string): ResponsivePanelImage {
 	return {
 		landscape: asset(name, 'landscape', LANDSCAPE),
 		portrait: asset(name, 'portrait', PORTRAIT),
 		alt,
 	};
+}
+
+/** A cover as it was before the landscape variant (REQ-280-1): the page offers to create it. */
+export function examplePortraitCover(name: string, alt: string): ResponsivePanelImage {
+	return { portrait: asset(name, 'portrait', PORTRAIT), alt };
 }
 
 export function examplePanelImage(

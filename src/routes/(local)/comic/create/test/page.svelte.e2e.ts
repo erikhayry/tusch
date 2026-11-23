@@ -105,9 +105,10 @@ test('a new comic gets a generated cover', { tag: '@REQ-006' }, async ({ page })
 	await createPage.submit();
 
 	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
+	// Both variants of the default format are stored (REQ-006).
 	await expect(
 		page.getByRole('img', { name: getImageFromOpenAiResponse(CREATE_COVER_IMAGE_RESPONSE).alt }),
-	).toBeVisible();
+	).toHaveCount(2);
 });
 
 test(

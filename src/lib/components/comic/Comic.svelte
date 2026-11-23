@@ -2,12 +2,19 @@
 	import { resolve } from '$app/paths';
 	import { toCoverPrompt } from '#lib/features/comics/contracts/createCoverImage.ts';
 	import { m } from '#lib/paraglide/messages.js';
-	import { imageFormatOf } from '#lib/types/image-variants.ts';
-	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
+	import {
+		imageFormatOf,
+		missingVariantFor,
+		primaryVariant,
+		storedVariants,
+	} from '#lib/types/image-variants.ts';
+	import type { ImageVariant } from '#lib/types/index.ts';
+	import { DB_ITEM_TYPE, IMAGE_FORMAT_VALUE_KEY } from '#lib/utils/db/dbTypes.ts';
 	import Character from '../charachter/Character.svelte';
 	import CreateCoverImageForm from '../forms/createCoverImageForm/CreateCoverImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
 	import ImageFormatForm from '../forms/imageFormatForm/ImageFormatForm.svelte';
+	import RemoveCoverVariantForm from '../forms/removeCoverVariantForm/RemoveCoverVariantForm.svelte';
 	import Image from '../image/Image.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
@@ -16,27 +23,62 @@
 	import { type ComicProps } from './comicTypes';
 
 	let { comic }: ComicProps = $props();
+
+	const imageFormat = $derived(imageFormatOf(comic));
+	/** The variant the format asks for that the cover lacks (REQ-280-1). */
+	const missingVariant = $derived(
+		comic.cover ? missingVariantFor(comic.cover, imageFormat) : undefined,
+	);
+
+	const VARIANT_LABELS: Record<ImageVariant, () => string> = {
+		portrait: () => m.portraitImage(),
+		landscape: () => m.landscapeImage(),
+	};
+	const CREATE_LABELS: Record<ImageVariant, () => string> = {
+		portrait: () => m.createPortraitCover(),
+		landscape: () => m.createLandscapeCover(),
+	};
+	const REMOVE_LABELS: Record<ImageVariant, () => string> = {
+		portrait: () => m.removePortraitCover(),
+		landscape: () => m.removeLandscapeCover(),
+	};
 </script>
 
 <!-- The page's <h1> already shows the comic title, so the sections start at h2. -->
 <Section>
 	<Heading>{m.settings()}</Heading>
 	{#if comic.cover}
-		<Image
-			image={comic.cover.landscape}
-			alt={comic.cover.alt}
-			fetchpriority="high"
-			decoding="async"
-		/>
-		<DeleteItemForm
-			label={m.deleteCover()}
-			values={{
-				comicId: comic.id,
-				type: DB_ITEM_TYPE.enum.coverImage,
-			}}
-		/>
+		{#each storedVariants(comic.cover) as { variant, asset } (variant)}
+			<figure>
+				<Image image={asset} alt={comic.cover.alt} fetchpriority="high" decoding="async" />
+				<figcaption>{VARIANT_LABELS[variant]()}</figcaption>
+			</figure>
+		{/each}
+		{#if missingVariant}
+			<CreateCoverImageForm
+				label={CREATE_LABELS[missingVariant]()}
+				baseImage={primaryVariant(comic.cover)?.asset.src}
+				values={{ comic: toCoverPrompt(comic), [IMAGE_FORMAT_VALUE_KEY]: missingVariant }}
+			/>
+		{/if}
+		{#if storedVariants(comic.cover).length === 2}
+			{#each storedVariants(comic.cover) as { variant } (variant)}
+				<RemoveCoverVariantForm label={REMOVE_LABELS[variant]()} comicId={comic.id} {variant} />
+			{/each}
+		{:else}
+			<DeleteItemForm
+				label={m.deleteCover()}
+				values={{
+					comicId: comic.id,
+					type: DB_ITEM_TYPE.enum.coverImage,
+				}}
+			/>
+		{/if}
 	{:else}
-		<CreateCoverImageForm values={{ comic: toCoverPrompt(comic) }} label={m.addCover()} />
+		<CreateCoverImageForm
+			values={{ comic: toCoverPrompt(comic), [IMAGE_FORMAT_VALUE_KEY]: imageFormat }}
+			label={m.addCover()}
+		/>
 	{/if}
 	<ImageFormatForm comicId={comic.id} imageFormat={imageFormatOf(comic)} />
 	<Section>

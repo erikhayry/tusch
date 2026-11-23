@@ -9,8 +9,8 @@ import {
 	openDetails,
 	submitWithInstructions,
 } from '../../../../../tests/e2e/aiFailures';
+import { deleteCover } from '../../../../../tests/e2e/cover';
 import { createComic, storedComic } from '../../../../../tests/e2e/createdComic';
-import { activate } from '../../../../../tests/e2e/keyboard';
 import { storedFiles } from '../../../../../tests/e2e/storage';
 import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../tests/mock/openAi/openAiResponse';
 
@@ -24,7 +24,7 @@ const addCover = (page: Page) => page.getByRole('button', { name: m.addCover() }
  */
 async function createComicWithoutCover(page: Page) {
 	const comicId = await createComic(page);
-	await activate(page, page.getByRole('button', { name: m.deleteCover() }));
+	await deleteCover(page);
 	await expect(cover(page)).toHaveCount(0);
 	return comicId;
 }
@@ -37,7 +37,8 @@ test(
 
 		await submitWithInstructions(page, addCover(page), NO_IMAGE_ONCE);
 
-		await expect(cover(page)).toBeVisible();
+		// Both variants: the portrait one needed the retry, and the landscape one is made as well.
+		await expect(cover(page)).toHaveCount(2);
 		await expect(errorRegion(page)).toBeEmpty();
 	},
 );

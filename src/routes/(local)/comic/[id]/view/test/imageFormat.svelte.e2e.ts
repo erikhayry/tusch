@@ -42,9 +42,11 @@ test(
 			await new ViewPage(page, comicId).goto();
 
 			const image = await panelOneImage(page, comicId);
-			// A <picture> picks the file; the <img> inside it is what the reader sees.
-			await expect(page.locator('picture')).toHaveCount(1);
-			await expect(page.locator('picture').getByRole('img')).toHaveCount(1);
+			// A <picture> picks the file; the <img> inside it is what the reader sees. The cover is a
+			// <picture> too (REQ-280-2), so the panel's is the one directly in its own block.
+			const panelPicture = page.locator('.picture > picture');
+			await expect(panelPicture).toHaveCount(1);
+			await expect(panelPicture.getByRole('img')).toHaveCount(1);
 			expect(await orientationOf(image)).toBe(expected);
 		}
 	},

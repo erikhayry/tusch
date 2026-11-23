@@ -67,5 +67,9 @@
 	"createPortraitImage": "Skapa stående bild",
 	"createLandscapeImage": "Skapa liggande bild",
 	"removePortraitImage": "Ta bort stående bild",
-	"removeLandscapeImage": "Ta bort liggande bild"
+	"removeLandscapeImage": "Ta bort liggande bild",
+	"createPortraitCover": "Skapa stående omslag",
+	"createLandscapeCover": "Skapa liggande omslag",
+	"removePortraitCover": "Ta bort stående omslag",
+	"removeLandscapeCover": "Ta bort liggande omslag"
 }

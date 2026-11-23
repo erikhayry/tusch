@@ -11,6 +11,7 @@
 	import Section from '#lib/components/relativeHeading/Section.svelte';
 	import { m } from '#lib/paraglide/messages.js';
 	import Image from '#lib/components/image/Image.svelte';
+	import { primaryVariant } from '#lib/types/image-variants.ts';
 	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
 	import type { Props } from './+page.ts';
 
@@ -34,13 +35,14 @@
 		<Heading id={comicsListId}>{m.comics()}</Heading>
 		<ul class="comics" aria-labelledby={comicsListId}>
 			{#each data.comics as comic, index (comic.id)}
+				{@const cover = primaryVariant(comic.cover)}
 				<li class="comic">
 					<!-- The cover is decorative: the link's name stays the title. The delete button sits outside the link. -->
 
 					<a class="comic-link" href={resolve(`comic/${comic.id}`)}>
-						{#if comic.cover}
+						{#if cover}
 							<Image
-								image={comic.cover.portrait}
+								image={cover.asset}
 								alt=""
 								loading={index < EAGER_COVERS ? 'eager' : 'lazy'}
 								decoding="async"

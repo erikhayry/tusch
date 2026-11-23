@@ -74,7 +74,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-006 A new comic gets a generated cover
 
 - Status: active
-- Statement: creating a comic also generates its cover image; the cover is stored locally and shown on the comic page.
+- Statement: creating a comic also generates its cover image; the cover is stored locally and shown on the comic page. The cover gets the variants of the default image format (REQ-103-1): portrait first, then landscape with the portrait cover as reference; if one fails the other is kept, as for panel images (REQ-103-3).
 - Why: every comic has a cover from the start.
 - Proven by: tagged tests
 
@@ -230,7 +230,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-011 A cover can be generated or replaced
 
 - Status: active
-- Statement: on the comic page, the user can generate a new cover (optionally with instructions and the current cover as reference); it replaces the old one.
+- Statement: on the comic page, the user can generate a new cover (optionally with instructions and the current cover as reference); it replaces the old one. It has the variants the comic's image format asks for, with the same partial-failure rule as REQ-103-3. A "Landscape only" comic gets a landscape cover only; the landing page shows the portrait cover if there is one, otherwise the landscape one.
 - Why: users iterate on the cover.
 - Proven by: tagged tests
 
@@ -381,6 +381,20 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: creating a missing portrait variant replaces the character crops taken from the landscape one with crops from the new portrait image; removing the portrait variant of a panel image with both moves its crops to the landscape one (REQ-018). The replaced crop files are deleted (REQ-025).
 - Why: crops come from the portrait variant if there is one, otherwise from the landscape one (#103, #279).
+- Proven by: tagged tests
+
+### REQ-280-1 The comic page shows, creates and removes cover variants
+
+- Status: active
+- Statement: the comic page shows every stored cover variant with a visible "Portrait" or "Landscape" caption. When the comic's image format asks for a variant the cover lacks (an example comic, a partial failure, or a format changed later), "Create portrait cover" or "Create landscape cover" generates only that variant, using the existing one as reference, and keeps the existing one. A cover with two variants offers "Remove portrait cover" and "Remove landscape cover"; removing one keeps the other and deletes the removed file from OPFS (REQ-025). With one variant left, "Delete Cover" (REQ-012) applies.
+- Why: users see which variants a cover has and can add or drop one without losing the other (#280).
+- Proven by: tagged tests
+
+### REQ-280-2 The viewer shows the cover variant that fits the screen
+
+- Status: active
+- Statement: in the viewer (`/comic/<id>/view`) a cover with both variants is a `<picture>` that shows the landscape cover when the viewport is landscape and the portrait cover otherwise; a cover with one variant shows that one at every size.
+- Why: readers get a cover that fits their screen (#280).
 - Proven by: tagged tests
 
 ### REQ-017 A panel image can be removed

@@ -17,12 +17,17 @@
 	} from '#lib/features/comics/contracts/createComic.ts';
 	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { variantFailedMessage } from '#lib/forms/variant-failure.ts';
 	import { m } from '#lib/paraglide/messages.js';
 	import { STYLES } from '#lib/utils/comicStyles.ts';
 
 	const handleSubmit = withGlobalInstructions(
-		enhanceAction<CreateComicResult>(m.loadingCreateComic(), async ({ data }) => {
+		enhanceAction<CreateComicResult>(m.loadingCreateComic(), async ({ data, showError }) => {
 			expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
+			// The comic is saved with the cover variant that was made (REQ-011).
+			if (data.failedVariant) {
+				showError(variantFailedMessage(data.failedVariant));
+			}
 			await goto(resolve(`comic/${data.comic.id}`));
 		}),
 	);
