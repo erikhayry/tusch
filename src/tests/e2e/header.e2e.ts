@@ -1,20 +1,15 @@
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 import { m } from '#lib/paraglide/messages.js';
-import { localizeHref } from '#lib/paraglide/runtime.js';
+import { locales, localizeHref } from '#lib/paraglide/runtime.js';
 import { EXAMPLE_COMPLETE as EXAMPLE } from './examples';
 import { gotoHydrated } from './gotoHydrated';
 import { activate, tabTo } from './keyboard';
 import { VIEWS } from './views';
+import { HeaderPage } from './utils/headerPage';
 
 const WIDE = { width: 1024, height: 768 };
 const NARROW = { width: 320, height: 640 };
-
-const banner = (page: Page) => page.getByRole('banner');
-const bannerLink = (page: Page, name: string) => banner(page).getByRole('link', { name });
-const mainNav = (page: Page, locale?: 'sv-se') =>
-	page.getByRole('navigation', { name: m.mainNavigation({}, { locale }) });
-const languageNav = (page: Page, locale?: 'sv-se') =>
-	page.getByRole('navigation', { name: m.languageNavigation({}, { locale }) });
+const [ENGLISH, SWEDISH] = locales;
 
 async function expectCurrent(link: Locator, current: boolean) {
 	if (current) {
@@ -27,11 +22,12 @@ async function expectCurrent(link: Locator, current: boolean) {
 test.describe('every view has a header with the wordmark', { tag: '@REQ-294-1' }, () => {
 	for (const [name, url] of Object.entries(VIEWS)) {
 		test(name, async ({ page }) => {
+			const header = new HeaderPage(page);
 			await gotoHydrated(page, url);
 
-			await expect(banner(page)).toHaveCount(1);
+			await expect(header.banner).toHaveCount(1);
 			await expect(page.locator('main').getByRole('banner')).toHaveCount(0);
-			const wordmark = bannerLink(page, m.tusch());
+			const wordmark = header.bannerLink(m.tusch());
 			await expect(wordmark).toHaveAttribute('href', '/');
 
 			await activate(page, wordmark);
@@ -48,8 +44,9 @@ test.describe('wide screens: main navigation', { tag: '@REQ-294-2' }, () => {
 		['settings', VIEWS.settings, 'settings'],
 	] as const) {
 		test(`marks the current page on ${view}`, async ({ page }) => {
+			const header = new HeaderPage(page);
 			await gotoHydrated(page, url);
-			const nav = mainNav(page);
+			const nav = header.mainNav();
 			const comics = nav.getByRole('link', { name: m.comics() });
 			const settings = nav.getByRole('link', { name: m.settings() });
 
@@ -61,9 +58,10 @@ test.describe('wide screens: main navigation', { tag: '@REQ-294-2' }, () => {
 	}
 
 	test('Create New Comic opens the create view from the landing page', async ({ page }) => {
+		const header = new HeaderPage(page);
 		await gotoHydrated(page, VIEWS.landing);
 
-		await activate(page, bannerLink(page, m.createNewComic()));
+		await activate(page, header.bannerLink(m.createNewComic()));
 
 		await expect(page).toHaveURL((u) => u.pathname === VIEWS.create);
 	});
@@ -73,33 +71,34 @@ test.describe('wide screens: language links', { tag: '@REQ-294-3' }, () => {
 	test.use({ viewport: WIDE });
 
 	test('switch the page between English and Swedish', async ({ page }) => {
+		const header = new HeaderPage(page);
 		await gotoHydrated(page, VIEWS.settings);
-		const english = languageNav(page).getByRole('link', { name: m.languageEnglish() });
-		const swedish = languageNav(page).getByRole('link', { name: m.languageSwedish() });
+		const english = header.languageNav().getByRole('link', { name: m.languageEnglish() });
+		const swedish = header.languageNav().getByRole('link', { name: m.languageSwedish() });
 		await expect(english).toHaveAttribute('aria-current', 'true');
 		await expect(swedish).not.toHaveAttribute('aria-current');
 
 		await activate(page, swedish);
 
 		await expect(page).toHaveURL(
-			(u) => u.pathname === localizeHref(VIEWS.settings, { locale: 'sv-se' }),
+			(u) => u.pathname === localizeHref(VIEWS.settings, { locale: SWEDISH }),
 		);
-		await expect(mainNav(page, 'sv-se')).toBeVisible();
+		await expect(header.mainNav(SWEDISH)).toBeVisible();
 		await expect(
-			languageNav(page, 'sv-se').getByRole('link', {
-				name: m.languageSwedish({}, { locale: 'sv-se' }),
+			header.languageNav(SWEDISH).getByRole('link', {
+				name: m.languageSwedish({}, { locale: SWEDISH }),
 			}),
 		).toHaveAttribute('aria-current', 'true');
 
 		await activate(
 			page,
-			languageNav(page, 'sv-se').getByRole('link', {
-				name: m.languageEnglish({}, { locale: 'sv-se' }),
+			header.languageNav(SWEDISH).getByRole('link', {
+				name: m.languageEnglish({}, { locale: SWEDISH }),
 			}),
 		);
 
 		await expect(page).toHaveURL((u) => u.pathname === VIEWS.settings);
-		await expect(mainNav(page)).toBeVisible();
+		await expect(header.mainNav(ENGLISH)).toBeVisible();
 		await expect(english).toHaveAttribute('aria-current', 'true');
 	});
 });
@@ -108,13 +107,14 @@ test.describe('narrow screens: icon links', { tag: '@REQ-294-4' }, () => {
 	test.use({ viewport: NARROW });
 
 	test('show only the wordmark and two icon links', async ({ page }) => {
+		const header = new HeaderPage(page);
 		await gotoHydrated(page, VIEWS.comic);
 
-		await expect(bannerLink(page, m.tusch())).toBeVisible();
-		await expect(mainNav(page)).toBeHidden();
-		await expect(languageNav(page)).toBeHidden();
+		await expect(header.bannerLink(m.tusch())).toBeVisible();
+		await expect(header.mainNav()).toBeHidden();
+		await expect(header.languageNav()).toBeHidden();
 		for (const name of [m.createNewComic(), m.settings()]) {
-			const link = bannerLink(page, name);
+			const link = header.bannerLink(name);
 			await expect(link).toBeVisible();
 			await expect(link).toHaveAttribute('aria-label', name);
 			await expect(link.locator('[aria-hidden="true"]')).not.toHaveCount(0);
@@ -126,8 +126,9 @@ test.describe('narrow screens: icon links', { tag: '@REQ-294-4' }, () => {
 		[m.settings(), VIEWS.settings],
 	] as const) {
 		test(`${name} is reachable by Tab and leads to its page`, async ({ page }) => {
+			const header = new HeaderPage(page);
 			await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
-			const link = bannerLink(page, name);
+			const link = header.bannerLink(name);
 
 			await tabTo(page, link, 10);
 			await page.keyboard.press('Enter');

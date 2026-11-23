@@ -1,36 +1,31 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import type { Path } from '$app/types';
 	import { m } from '#lib/paraglide/messages.js';
-	import { deLocalizeHref, getLocaleForUrl, localizeHref } from '#lib/paraglide/runtime.js';
+	import { resolve } from '$app/paths';
+	import { currentPath, languageLinks, localizedHref } from './header-navigation';
 
-	// Locale prefixes are stripped, so the same page is recognised in either language.
-	const path = $derived(deLocalizeHref(page.url.pathname));
+	const path = $derived(currentPath(page.url));
 	const onHome = $derived(path === '/');
 	const onSettings = $derived(path === '/settings');
-	const currentLocale = $derived(getLocaleForUrl(page.url.href));
-
-	const languages = [
-		{ locale: 'en', lang: 'en', abbreviation: 'EN', name: m.languageEnglish },
-		{ locale: 'sv-se', lang: 'sv', abbreviation: 'SV', name: m.languageSwedish },
-	] as const;
-
-	const link = (target: string, locale?: 'en' | 'sv-se') =>
-		resolve(localizeHref(target, locale ? { locale } : undefined) as Path);
+	const languages = $derived(languageLinks(page.url));
 </script>
 
 <header class="header">
 	<div class="bar">
-		<a class="wordmark" href={link('/')}>{m.tusch()}</a>
+		<a class="wordmark" href={resolve(localizedHref('/'))}>{m.tusch()}</a>
 
 		<nav class="wide-only" aria-label={m.mainNavigation()}>
 			<ul class="nav-list">
 				<li>
-					<a href={link('/')} aria-current={onHome ? 'page' : undefined}>{m.comics()}</a>
+					<a href={resolve(localizedHref('/'))} aria-current={onHome ? 'page' : undefined}
+						>{m.comics()}</a
+					>
 				</li>
 				<li>
-					<a href={link('/settings')} aria-current={onSettings ? 'page' : undefined}>
+					<a
+						href={resolve(localizedHref('/settings'))}
+						aria-current={onSettings ? 'page' : undefined}
+					>
 						{m.settings()}
 					</a>
 				</li>
@@ -38,7 +33,9 @@
 		</nav>
 
 		{#if onHome}
-			<a class="create wide-only" href={link('/comic/create')}>{m.createNewComic()}</a>
+			<a class="create wide-only" href={resolve(localizedHref('/comic/create'))}
+				>{m.createNewComic()}</a
+			>
 		{/if}
 
 		<nav class="wide-only" aria-label={m.languageNavigation()}>
@@ -51,8 +48,8 @@
 						-->
 						<!-- The visible abbreviation stays part of the name (WCAG 2.5.3): "EN English". -->
 						<a
-							href={link(path, language.locale)}
-							aria-current={currentLocale === language.locale ? 'true' : undefined}
+							href={resolve(language.href)}
+							aria-current={language.current ? 'true' : undefined}
 							data-sveltekit-reload
 						>
 							<abbr lang={language.lang}>{language.abbreviation}</abbr>
@@ -64,12 +61,16 @@
 		</nav>
 
 		<div class="icon-links narrow-only">
-			<a class="icon-link" href={link('/comic/create')} aria-label={m.createNewComic()}>
+			<a
+				class="icon-link"
+				href={resolve(localizedHref('/comic/create'))}
+				aria-label={m.createNewComic()}
+			>
 				<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
 					<path d="M12 5v14M5 12h14" />
 				</svg>
 			</a>
-			<a class="icon-link" href={link('/settings')} aria-label={m.settings()}>
+			<a class="icon-link" href={resolve(localizedHref('/settings'))} aria-label={m.settings()}>
 				<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
 					<path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
 					<circle cx="16" cy="7" r="2" />
