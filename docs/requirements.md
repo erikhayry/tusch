@@ -174,7 +174,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-87-2 The viewer shows the comic as a reader sees it
 
 - Status: active
-- Statement: `/comic/<id>/view` shows the comic's title (or "Untitled comic") as its only `<h1>`, then the cover if there is one, then every panel in stored order as an `<h2>` "Panel <n>" section with its image, captions as text and dialogue lines as "<character name>: <text>" (text alone if the character is unknown).
+- Statement: `/comic/<id>/view` shows the comic's title (or "Untitled comic") as its only `<h1>`, then the cover if there is one, then every panel in stored order as a section with a visually hidden `<h2>` "Panel <n>", its image, its captions and its dialogue lines as "<character name>" + text (text alone if the character is unknown).
 - Why: the editor mixes content with controls and notes; a reader wants the story.
 - Proven by: tagged tests
 
@@ -190,6 +190,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: a viewer panel without an image still shows its heading, captions and dialogue and renders no image. A comic without panels shows only its title and cover (if any), with no panel headings.
 - Why: users edit comics in any order; a half-finished comic must still be readable.
+- Proven by: tagged tests
+
+### REQ-283-1 Viewer captions and dialogue are boxes over the panel image
+
+- Status: active
+- Statement: on the viewer, a panel with an image shows its captions as boxes over the top-left of the image and its dialogue as speech boxes over the bottom of the image. With only one of the two, only that one is shown, in its place. With both, the captions are above every speech box.
+- Why: readers see captions and dialogue the way a printed comic shows them (#283).
+- Proven by: tagged tests
+
+### REQ-283-2 Viewer panels without an image show boxes below the heading
+
+- Status: active
+- Statement: on the viewer, a panel without an image shows its captions and then its dialogue as boxes below the (hidden) heading, in reading order, and renders no image.
+- Why: a half-finished comic must stay readable in the same style (#283).
+- Proven by: tagged tests
+
+### REQ-283-3 Viewer speech boxes label the speaker in bold
+
+- Status: active
+- Statement: in a viewer speech box, the character's name is a bold label (`<strong>` or `<b>`) before the text, with no head crop. A line of an unknown character shows the text alone.
+- Why: readers need to know who speaks without the editor's head crops (#283).
 - Proven by: tagged tests
 
 ### REQ-011 A cover can be generated or replaced

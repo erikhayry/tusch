@@ -1,6 +1,6 @@
 import { m } from '#lib/paraglide/messages.js';
 import type { Comic } from '#lib/types/index.ts';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import {
 	createComic,
 	deletePanel,
@@ -15,11 +15,52 @@ import { ViewPage } from './utils/viewPage';
 const MISSING_ID = '00000000-0000-4000-8000-000000000000';
 const EMPTY_TITLE_URL = 'https://example.com/article/mock-error:empty-title';
 
-/** The line a reader sees for one dialogue entry. */
-function dialogueLine(comic: Comic, panelIndex: number, lineIndex: number): string {
-	const line = comic.panels[panelIndex].dialogue[lineIndex];
-	const name = comic.characters.find(({ id }) => id === line.characterId)?.name;
-	return name ? `${name}: ${line.text}` : line.text;
+/** The text of one dialogue entry; the speaker's name is a separate bold label in the box. */
+function dialogueText(comic: Comic, panelIndex: number, lineIndex: number): string {
+	return comic.panels[panelIndex].dialogue[lineIndex].text;
+}
+
+/** The name of the character who speaks a dialogue entry, if known. */
+function speakerName(comic: Comic, panelIndex: number, lineIndex: number): string | undefined {
+	const { characterId } = comic.panels[panelIndex].dialogue[lineIndex];
+	return comic.characters.find(({ id }) => id === characterId)?.name;
+}
+
+/** Edit a stored panel, as a user's comic can have any mix of captions and dialogue. */
+async function editStoredPanel(
+	page: Page,
+	comicId: string,
+	panelIndex: number,
+	patch: Partial<Pick<Comic['panels'][number], 'captions' | 'dialogue'>>,
+) {
+	await page.evaluate(
+		({ id, index, changes }) => {
+			const db = JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}');
+			const comic = db.comics.find((c: { id: string }) => c.id === id);
+			Object.assign(comic.panels[index], changes);
+			localStorage.setItem('comics_db', JSON.stringify(db));
+		},
+		{ id: comicId, index: panelIndex, changes: patch },
+	);
+}
+
+type Box = { x: number; y: number; width: number; height: number };
+
+async function boxOf(locator: Locator): Promise<Box> {
+	await expect(locator).toBeVisible();
+	const box = await locator.boundingBox();
+	if (!box) {
+		throw new Error('element has no bounding box');
+	}
+	return box;
+}
+
+/** `inner` lies inside `outer`, give or take a rounding pixel. */
+function expectInside(inner: Box, outer: Box) {
+	expect(inner.x).toBeGreaterThanOrEqual(outer.x - 1);
+	expect(inner.y).toBeGreaterThanOrEqual(outer.y - 1);
+	expect(inner.x + inner.width).toBeLessThanOrEqual(outer.x + outer.width + 1);
+	expect(inner.y + inner.height).toBeLessThanOrEqual(outer.y + outer.height + 1);
 }
 
 /**
@@ -108,9 +149,7 @@ test.describe('viewer content', () => {
 					await expect(page.getByText(caption, { exact: true })).toBeVisible();
 				}
 				for (const lineIndex of panel.dialogue.keys()) {
-					await expect(
-						page.getByText(dialogueLine(comic, index, lineIndex), { exact: true }),
-					).toBeVisible();
+					await expect(page.getByText(dialogueText(comic, index, lineIndex))).toBeVisible();
 				}
 			}
 			// Panel 1 has a generated image. Scoped to its section: the cover has the same mock alt text.
@@ -165,6 +204,141 @@ test.describe('viewer content', () => {
 	});
 });
 
+test.describe('viewer boxes', () => {
+	test(
+		'panel headings are in the accessibility tree but not visible',
+		{ tag: '@REQ-87-2' },
+		async ({ page }) => {
+			const comic = await createViewableComic(page);
+			const view = await new ViewPage(page, comic.id).goto();
+
+			await expect(view.panelHeadings).toHaveCount(comic.panels.length);
+			for (const number of [1, 2]) {
+				const heading = view.panelHeading(number);
+				await expect(heading).toBeAttached();
+				const box = await heading.boundingBox();
+				// Visually hidden text collapses to at most a pixel.
+				expect(box === null || (box.width <= 1 && box.height <= 1)).toBe(true);
+			}
+		},
+	);
+
+	test(
+		'a caption box lies in the top-left of the image when the panel has no dialogue',
+		{ tag: '@REQ-283-1' },
+		async ({ page }) => {
+			const comic = await createViewableComic(page);
+			await editStoredPanel(page, comic.id, 0, { dialogue: [] });
+			const view = await new ViewPage(page, comic.id).goto();
+
+			const image = await boxOf(view.panelImage(1));
+			const caption = await boxOf(page.getByText(comic.panels[0].captions[0], { exact: true }));
+			expectInside(caption, image);
+			expect(caption.y + caption.height).toBeLessThanOrEqual(image.y + image.height / 2 + 1);
+			expect(caption.x + caption.width).toBeLessThanOrEqual(image.x + image.width / 2 + 1);
+		},
+	);
+
+	test(
+		'speech boxes lie in the bottom half of the image when the panel has no captions',
+		{ tag: '@REQ-283-1' },
+		async ({ page }) => {
+			const comic = await createViewableComic(page);
+			await editStoredPanel(page, comic.id, 0, { captions: [] });
+			const view = await new ViewPage(page, comic.id).goto();
+
+			const image = await boxOf(view.panelImage(1));
+			for (const lineIndex of comic.panels[0].dialogue.keys()) {
+				const box = await boxOf(page.getByText(dialogueText(comic, 0, lineIndex)));
+				expectInside(box, image);
+				expect(box.y + 1).toBeGreaterThanOrEqual(image.y + image.height / 2);
+			}
+		},
+	);
+
+	test(
+		'with a caption and dialogue the caption is above every speech box, all inside the image',
+		{ tag: '@REQ-283-1' },
+		async ({ page }) => {
+			const comic = await createViewableComic(page);
+			const [panel] = comic.panels;
+			expect(panel.captions.length).toBeGreaterThan(0);
+			expect(panel.dialogue.length).toBeGreaterThan(0);
+			const view = await new ViewPage(page, comic.id).goto();
+
+			const image = await boxOf(view.panelImage(1));
+			const captions = [];
+			for (const caption of panel.captions) {
+				captions.push(await boxOf(page.getByText(caption, { exact: true })));
+			}
+			for (const lineIndex of panel.dialogue.keys()) {
+				const speech = await boxOf(page.getByText(dialogueText(comic, 0, lineIndex)));
+				expectInside(speech, image);
+				for (const caption of captions) {
+					expectInside(caption, image);
+					expect(caption.y + caption.height).toBeLessThanOrEqual(speech.y + 1);
+				}
+			}
+		},
+	);
+
+	test(
+		'a panel without an image lists captions before dialogue and renders no image',
+		{ tag: ['@REQ-283-2', '@REQ-87-4'] },
+		async ({ page }) => {
+			const comic = await createViewableComic(page);
+			const [, panel] = comic.panels;
+			expect(panel.image).toBeUndefined();
+			const view = await new ViewPage(page, comic.id).goto();
+
+			const section = view.panelSection(2);
+			await expect(section.getByRole('img')).toHaveCount(0);
+			const lastCaption = await boxOf(
+				section.getByText(panel.captions[panel.captions.length - 1], { exact: true }),
+			);
+			const firstSpeech = await boxOf(section.getByText(dialogueText(comic, 1, 0)));
+			expect(lastCaption.y + lastCaption.height).toBeLessThanOrEqual(firstSpeech.y + 1);
+			// DOM order: every caption precedes every dialogue line.
+			const texts = await section.evaluate((el) => el.textContent ?? '');
+			expect(texts.indexOf(panel.captions[panel.captions.length - 1])).toBeLessThan(
+				texts.indexOf(dialogueText(comic, 1, 0)),
+			);
+		},
+	);
+
+	test(
+		'a speech box shows the speaker in bold before the text; an unknown speaker shows the text alone',
+		{ tag: ['@REQ-283-3', '@REQ-87-2'] },
+		async ({ page }) => {
+			const comic = await createViewableComic(page);
+			const name = speakerName(comic, 0, 0);
+			expect(name).toBeTruthy();
+			const unknownText = 'Said by someone no longer in the cast';
+			await editStoredPanel(page, comic.id, 0, {
+				dialogue: [
+					...comic.panels[0].dialogue,
+					{ characterId: '00000000-0000-4000-8000-000000000001', text: unknownText },
+				],
+			});
+			const view = await new ViewPage(page, comic.id).goto();
+			const section = view.panelSection(1);
+
+			const known = section.getByText(dialogueText(comic, 0, 0));
+			const label = known.locator('strong, b').first();
+			await expect(label).toHaveText(String(name));
+			const content = ((await known.textContent()) ?? '').trim();
+			expect(content.startsWith(String(name))).toBe(true);
+			expect(content.endsWith(dialogueText(comic, 0, 0))).toBe(true);
+
+			const unknown = section.getByText(unknownText);
+			await expect(unknown).toBeVisible();
+			await expect(unknown.locator('strong, b')).toHaveCount(0);
+			// No head crops: only the cover and panel 1's image.
+			await expect(view.images).toHaveCount(2);
+		},
+	);
+});
+
 test.describe('viewer without images or panels', () => {
 	test(
 		'a panel without an image still shows its heading, captions and dialogue',
@@ -176,14 +350,12 @@ test.describe('viewer without images or panels', () => {
 
 			// Panel 2 was never given an image.
 			expect(second.image).toBeUndefined();
-			await expect(view.panelHeading(2)).toBeVisible();
+			await expect(view.panelHeading(2)).toBeAttached();
 			for (const caption of second.captions) {
 				await expect(page.getByText(caption, { exact: true })).toBeVisible();
 			}
 			for (const lineIndex of second.dialogue.keys()) {
-				await expect(
-					page.getByText(dialogueLine(comic, 1, lineIndex), { exact: true }),
-				).toBeVisible();
+				await expect(page.getByText(dialogueText(comic, 1, lineIndex))).toBeVisible();
 			}
 			// Cover plus panel 1 only.
 			expect(first.image).toBeDefined();
