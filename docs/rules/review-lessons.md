@@ -18,4 +18,5 @@ a merge (see `.claude/skills/tech-lead/SKILL.md`).
 - Derive return and prop types from Zod schemas (`.pick`, `.extend`); no handwritten inline object types for app-owned shapes (#195).
 - Keep logic out of `.svelte` files and assign as few variables as possible; extract to a selector or util function (#195).
 - E2E tests use a page object for locators and setup (`test/utils/`), so the test body reads as behaviour only (#195).
-- A form control that needs explaining gets a short helper line, tied to it with `aria-describedby`, in the same PR; don't treat a UX hint as optional (#212).
+- A form control that needs explaining gets a short helper line, tied to it with `aria-describedby`, in the same PR; don't treat a UX hint as optional, and a "not blocking" reviewer note for a missing one is a fix (#212, #281).
+- Grep new code for string literals that belong to a fixed set (variant, format, status); each use imports the shared enum or constant (#281).
