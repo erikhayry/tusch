@@ -48,6 +48,8 @@ async function comicWithoutCover(page: Page, format: ImageFormat) {
 		await setImageFormat(page, comicId, format);
 	}
 	await gotoHydrated(page, `/comic/${comicId}`);
+	// "Delete Cover" is only offered for a single variant (REQ-280-1).
+	await press(page, removeVariantButton(page, 'landscape'));
 	await press(page, deleteCoverButton(page));
 	await expect(page.getByRole('button', { name: m.addCover(), exact: true })).toBeVisible();
 	expect((await storedComic(page, comicId)).cover).toBeUndefined();
