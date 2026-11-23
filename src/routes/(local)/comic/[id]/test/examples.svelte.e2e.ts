@@ -38,7 +38,7 @@ test(
 
 		for (const character of EXAMPLE_COMPLETE.characters) {
 			const panels = EXAMPLE_COMPLETE.panels.filter((panel) =>
-				panel.image?.landscape.characters?.some(({ id }) => id === character.id),
+				panel.image?.portrait?.characters?.some(({ id }) => id === character.id),
 			);
 			expect(panels.length).toBeGreaterThan(0);
 

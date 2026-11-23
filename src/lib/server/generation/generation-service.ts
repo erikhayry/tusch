@@ -24,7 +24,14 @@ import {
 	type FixCharacterCropResult,
 	type FixCharacterCropValues,
 } from '#lib/features/panels/contracts/fixCharacterCrop.ts';
-import type { Comic, Crop, ResponsiveImage } from '#lib/types/index.ts';
+import {
+	ImageFormatEnum,
+	type Comic,
+	type Crop,
+	type ImageVariant,
+	type ResponsiveImage,
+} from '#lib/types/index.ts';
+import { variantsFor } from '#lib/types/image-variants.ts';
 import {
 	getCharacterBoxesFromOpenAiResponse,
 	getComicFromOpenAiResponse,
@@ -46,6 +53,12 @@ import {
 	buildPanelMessages,
 } from '#lib/utils/ai/utils/messages.ts';
 import { IMAGE_SIZE } from '#lib/utils/ai/utils/settings.ts';
+
+/** The image size each variant is generated at (REQ-103-2). */
+const VARIANT_SIZE: Record<ImageVariant, (typeof IMAGE_SIZE)[keyof typeof IMAGE_SIZE]> = {
+	portrait: IMAGE_SIZE.PORTRAIT,
+	landscape: IMAGE_SIZE.LANDSCAPE,
+};
 import { INSTRUCTIONS_VALUE_KEY } from '#lib/utils/db/dbTypes.ts';
 import { generateId } from '#lib/utils/id.ts';
 import type { AiGateway, PingResult } from '../ai/ai-gateway';
@@ -212,26 +225,62 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			includeImage,
 			imageUrl,
 			referenceImages,
+			imageFormat = ImageFormatEnum.enum.both,
 		}: CreatePanelImageValues): Promise<CreatePanelImageResult> {
-			const output = await generateImage(gateway, {
-				messages: buildPanelImageMessages({
-					panel,
-					characters,
-					instructions,
-					globalInstructions,
-					style,
-				}),
-				schemaName: SchemaName.enum.createImage,
-				size: IMAGE_SIZE.PORTRAIT,
-				imageUrls: [...(includeImage && imageUrl ? [imageUrl] : []), ...referenceImages],
+			const prompt = buildPanelImageMessages({
+				panel,
+				characters,
+				instructions,
+				globalInstructions,
+				style,
 			});
+			const generated: Partial<
+				Record<ImageVariant, { image: CreatedImage; output: OpenAiOutput['output'] }>
+			> = {};
+			const failures: { variant: ImageVariant; cause: unknown }[] = [];
+
+			// One request per variant. A failed variant doesn't stop the others (REQ-103-3).
+			for (const variant of variantsFor(imageFormat)) {
+				try {
+					const output = await generateImage(gateway, {
+						messages: prompt,
+						schemaName: SchemaName.enum.createImage,
+						size: VARIANT_SIZE[variant],
+						imageUrls: [
+							...(includeImage && imageUrl ? [imageUrl] : []),
+							...referenceImages,
+							// The landscape image is drawn from the portrait one, so the two match.
+							...(variant === 'landscape' && generated.portrait
+								? [`data:image/webp;base64,${generated.portrait.image.src}`]
+								: []),
+						],
+					});
+					generated[variant] = {
+						image: interpret(() => getImageFromOpenAiResponse(output)),
+						output: output.output,
+					};
+				} catch (cause) {
+					failures.push({ variant, cause });
+				}
+			}
+
+			const primary = generated.portrait ?? generated.landscape;
+			if (!primary) {
+				// Nothing to save: report the first failure as a single-request failure would be.
+				throw failures[0]?.cause ?? new InvalidAiResponseError('ai_no_image', 'no image requested');
+			}
 
 			return interpret(() =>
 				CreatePanelImageResultSchema.parse({
 					comicId,
 					panelId: panel.id,
-					image: responsive(getImageFromOpenAiResponse(output)),
-					output: output.output,
+					image: {
+						alt: primary.image.alt,
+						portrait: generated.portrait?.image,
+						landscape: generated.landscape?.image,
+					},
+					failedVariant: failures[0]?.variant,
+					output: primary.output,
 				}),
 			);
 		},

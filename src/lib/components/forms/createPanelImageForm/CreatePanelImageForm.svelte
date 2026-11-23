@@ -13,6 +13,7 @@
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
 	import { encodeFormValue } from '#lib/forms/form-data.ts';
 	import { m } from '#lib/paraglide/messages.js';
+	import { ImageVariantEnum, type ImageVariant } from '#lib/types/index.ts';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
@@ -22,20 +23,40 @@
 	import Image from '../../image/Image.svelte';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
+	const FAILED_MESSAGES: Record<ImageVariant, () => string> = {
+		[ImageVariantEnum.enum.portrait]: () => m.portraitImageFailed(),
+		[ImageVariantEnum.enum.landscape]: () => m.landscapeImageFailed(),
+	};
+
 	const handleSubmit = withGlobalInstructions(
-		enhanceAction<CreatePanelImageResult>(m.loadingCreatePanelImage(), async ({ data, update }) => {
-			expectWorkflow(await commitGeneratedPanelImage(workflowDeps, data));
-			await update();
-		}),
+		enhanceAction<CreatePanelImageResult>(
+			m.loadingCreatePanelImage(),
+			async ({ data, update, showError }) => {
+				expectWorkflow(await commitGeneratedPanelImage(workflowDeps, data));
+				// The image that succeeded is saved; say which one wasn't made (REQ-103-3).
+				if (data.failedVariant) {
+					showError(FAILED_MESSAGES[data.failedVariant]());
+				}
+				await update();
+			},
+		),
 	);
 
 	let {
 		label,
 		values,
 		imageName,
+		imageVariant = ImageVariantEnum.enum.portrait,
 		characterReferences,
 		submitButton = $bindable(),
 	}: CreatePanelImageFormProps & { submitButton?: HTMLButtonElement } = $props();
+
+	// The preview keeps the orientation of the image it shows, at the same 2:3 or 3:2 box.
+	const previewSize = $derived(
+		imageVariant === ImageVariantEnum.enum.landscape
+			? { width: 75, height: 50 }
+			: { width: 50, height: 75 },
+	);
 
 	const referenceFieldName = (characterId: string) => `reference-${characterId}`;
 
@@ -82,7 +103,7 @@
 	{/each}
 
 	{#if imageName}
-		<img width={50} height={75} src={imageUrl} alt="" />
+		<img width={previewSize.width} height={previewSize.height} src={imageUrl} alt="" />
 		<label for={INCLUDE_IMAGE_VALUE_KEY}>
 			<input type="hidden" name={IMAGE_VALUE_KEY} value={imageUrl} />
 			<input type="checkbox" id={INCLUDE_IMAGE_VALUE_KEY} name={INCLUDE_IMAGE_VALUE_KEY} />

@@ -30,10 +30,15 @@ export class PanelPage {
 		this.deleteImageButton = page.getByRole('button', { name: m.removeImage() });
 		this.replaceImageButton = page.getByRole('button', { name: m.generateNewImage() });
 		this.restoreImageButton = page.getByRole('button', { name: m.restorePreviousImage() });
-		this.initialImage = page.getByRole('img', { name: EXAMPLE_COMPLETE.panels[0].image?.alt });
-		this.newImage = page.getByRole('img', {
-			name: getImageFromOpenAiResponse(CREATE_PANEL_IMAGE_RESPONSE).alt,
-		});
+		// The portrait comes first; a panel with both variants shows two images with the same alt text.
+		this.initialImage = page
+			.getByRole('img', { name: EXAMPLE_COMPLETE.panels[0].image?.alt })
+			.first();
+		this.newImage = page
+			.getByRole('img', {
+				name: getImageFromOpenAiResponse(CREATE_PANEL_IMAGE_RESPONSE).alt,
+			})
+			.first();
 
 		this.editCaptionButton = page.getByRole('button', { name: m.editCaption({ number: 1 }) });
 		this.editCaptionInput = page.getByRole('textbox', { name: m.editCaption({ number: 1 }) });

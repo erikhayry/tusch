@@ -233,7 +233,7 @@ test.describe('viewer edge cases', () => {
 		async ({ page }) => {
 			const comic = await createViewableComic(page);
 			const coverSrc = comic.cover?.landscape.src;
-			const panelSrc = comic.panels[0].image?.landscape.src;
+			const panelSrc = comic.panels[0].image?.portrait?.src;
 			expect(coverSrc).toBeTruthy();
 			expect(panelSrc).toBeTruthy();
 			await removeStoredFile(page, String(coverSrc));

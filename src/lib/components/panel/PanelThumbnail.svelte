@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { primaryVariant } from '#lib/types/image-variants.ts';
 	import Image from '../image/Image.svelte';
 	import { type PanelThumbnailProps } from './panelTypes';
 
@@ -6,7 +7,12 @@
 </script>
 
 {#if panel.image}
-	<Image image={panel.image.landscape} alt={panel.editorialTitle} loading="lazy" decoding="async" />
+	<Image
+		image={primaryVariant(panel.image)?.asset}
+		alt={panel.editorialTitle}
+		loading="lazy"
+		decoding="async"
+	/>
 {:else}
 	{panel.editorialTitle || '??'}
 {/if}

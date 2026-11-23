@@ -8,6 +8,11 @@ export type UpdateForm = () => Promise<void>;
 export type ActionSuccessHandler<T> = (parameters: {
 	data: T;
 	update: UpdateForm;
+	/**
+	 * Shows an error that doesn't fail the action, e.g. one of two images couldn't be made
+	 * and the other was saved (REQ-103-3). Components never set the error state themselves.
+	 */
+	showError: (message: string) => void;
 }) => Promise<void> | void;
 
 export function enhanceAction<T extends Record<string, unknown>>(
@@ -31,7 +36,11 @@ export function enhanceAction<T extends Record<string, unknown>>(
 		return async ({ result, update }) => {
 			try {
 				if (result.type === 'success' && result.data !== undefined) {
-					await onSuccess({ data: result.data as T, update });
+					await onSuccess({
+						data: result.data as T,
+						update,
+						showError: (message) => globalError.set(message),
+					});
 					succeeded = true;
 				} else if (result.type === 'error') {
 					globalError.set(result.error.message);

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import Image from '#lib/components/image/Image.svelte';
+	import PanelPicture from '#lib/components/image/PanelPicture.svelte';
 	import Page from '#lib/components/page/Page.svelte';
 	import Heading from '#lib/components/relativeHeading/Heading.svelte';
 	import Section from '#lib/components/relativeHeading/Section.svelte';
@@ -19,7 +20,7 @@
 		<Section>
 			<Heading>{m.panel({ number: index + 1 })}</Heading>
 			{#if panel.image}
-				<Image image={panel.image.landscape} alt={panel.image.alt} />
+				<PanelPicture image={panel.image} alt={panel.image.alt} />
 			{/if}
 			{#if panel.captions.length > 0}
 				<ul>

@@ -4,6 +4,7 @@ import {
 } from '#lib/features/panels/contracts/createPanelImage.ts';
 import { CharacterReferenceGroupSchema } from '#lib/features/comics/client/comic-selectors.ts';
 import { GLOBAL_INSTRUCTIONS_VALUE_KEY } from '#lib/features/settings/contracts/globalInstructions.ts';
+import { ImageVariantEnum } from '#lib/types/index.ts';
 import { INCLUDE_IMAGE_VALUE_KEY, INSTRUCTIONS_VALUE_KEY } from '#lib/utils/db/dbTypes.ts';
 import { z } from 'zod';
 
@@ -16,6 +17,8 @@ export const CreatePanelImageFormPropsSchema = z.object({
 		[REFERENCE_IMAGES_KEY]: true,
 	}),
 	imageName: z.string().optional(),
+	/** The variant `imageName` is; sets the preview's orientation (REQ-172-1). */
+	imageVariant: ImageVariantEnum.optional(),
 	characterReferences: z.array(CharacterReferenceGroupSchema),
 });
 

@@ -72,6 +72,8 @@ export type EditValues = z.infer<typeof EditValuesSchema>;
 export const INSTRUCTIONS_VALUE_KEY = 'instructions';
 export const INCLUDE_IMAGE_VALUE_KEY = 'includeImage';
 export const IMAGE_VALUE_KEY = 'imageUrl';
+/** The comic's image format, from the settings form and the panel image form (REQ-103-1). */
+export const IMAGE_FORMAT_VALUE_KEY = 'imageFormat';
 
 export const ConfigValuesSchema = ConfigSchema;
 

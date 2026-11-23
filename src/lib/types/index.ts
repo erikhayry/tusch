@@ -54,6 +54,7 @@ export type ImageAsset = z.infer<typeof ImageAssetSchema>;
 export const PanelImageAssetSchema = ImageAssetSchema.extend({
 	characters: z.optional(z.array(CharachterPositionsSchema)),
 });
+export type PanelImageAsset = z.infer<typeof PanelImageAssetSchema>;
 
 /** The head and full-body crops of one version of a character image. */
 export const CharacterImageCropsSchema = z.object({
@@ -76,11 +77,38 @@ export const ResponsiveImageSchema = z.object({
 });
 export type ResponsiveImage = z.infer<typeof ResponsiveImageSchema>;
 
-export const ResponsivePanelImageSchema = z.object({
-	landscape: PanelImageAssetSchema,
-	portrait: PanelImageAssetSchema,
-	alt: z.string(),
-});
+/** The two shapes a panel image can be stored in; a comic's image format asks for one or both. */
+export const ImageVariantEnum = z.enum(['portrait', 'landscape']);
+export type ImageVariant = z.infer<typeof ImageVariantEnum>;
+
+/** A comic's image format (REQ-103-1). A comic without one saved is `both`. */
+export const ImageFormatEnum = z.enum(['both', 'portrait', 'landscape']);
+export type ImageFormat = z.infer<typeof ImageFormatEnum>;
+
+/**
+ * Old data stored the one generated file under both keys. Read it as portrait only,
+ * so no migration is needed (REQ-103-2); new images never share a file.
+ */
+function withoutLegacyLandscapeCopy<
+	T extends { portrait?: { src: string }; landscape?: { src: string } },
+>(image: T): T {
+	if (image.portrait && image.landscape && image.portrait.src === image.landscape.src) {
+		return { ...image, landscape: undefined };
+	}
+
+	return image;
+}
+
+export const ResponsivePanelImageSchema = z
+	.object({
+		portrait: z.optional(PanelImageAssetSchema),
+		landscape: z.optional(PanelImageAssetSchema),
+		alt: z.string(),
+	})
+	.refine((image) => image.portrait !== undefined || image.landscape !== undefined, {
+		message: 'A panel image has at least one variant',
+	})
+	.transform(withoutLegacyLandscapeCopy);
 export type ResponsivePanelImage = z.infer<typeof ResponsivePanelImageSchema>;
 
 export const CharacterDescriptionSchema = z.object({
@@ -175,6 +203,8 @@ export const ComicSchema = z.object({
 	story: z.optional(z.string()),
 	cover: z.optional(ResponsiveImageSchema),
 	style: ComicStyleEnum,
+	/** Unset for existing and example comics, which mean `both` (REQ-103-1). */
+	imageFormat: z.optional(ImageFormatEnum),
 	panels: PanelArraySchema,
 	setting: z.optional(SettingSchema),
 	characters: z.array(CharacterSchema),

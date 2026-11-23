@@ -7,6 +7,7 @@ import {
 } from '#lib/features/comics/client/workflows/asset-workflow.ts';
 import type { FixCharacterCropResult } from '../../contracts/fixCharacterCrop';
 import type { Crop, ImageAsset } from '#lib/types/index.ts';
+import { primaryVariant } from '#lib/types/image-variants.ts';
 import type { CropBlob } from './crop-adapter';
 
 export interface FixCharacterCropDeps extends AssetWorkflowDeps {
@@ -24,7 +25,7 @@ export function fixCharacterCrop(
 	{ comicId, panelId, characterId, characterImageId, head, full }: FixCharacterCropResult,
 ): Promise<WorkflowResult> {
 	return runAssetWorkflow(deps, async (stage) => {
-		const source = getPanel(deps.store.comics, comicId, panelId)?.image?.landscape.src;
+		const source = primaryVariant(getPanel(deps.store.comics, comicId, panelId)?.image)?.asset.src;
 		if (!source) {
 			return { ok: false, code: 'image-not-found', message: `Panel ${panelId} has no image` };
 		}

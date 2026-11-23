@@ -52,7 +52,7 @@ test.describe('deleting a panel removes its character images', () => {
 			const { comicId, first } = await createComicWithPanelImages(page, 1);
 			const comic = await storedComic(page, comicId);
 			const cropFiles = filesOf(imagesFromPanel(comic, first.id));
-			const panelFile = comic.panels.find(({ id }) => id === first.id)?.image?.landscape.src;
+			const panelFile = comic.panels.find(({ id }) => id === first.id)?.image?.portrait?.src;
 			if (!panelFile) {
 				throw new Error('generated panel image was not stored');
 			}

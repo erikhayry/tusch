@@ -33,7 +33,7 @@ async function generatePanelImage(page: Page, times: 1 | 2 = 1) {
 	await gotoHydrated(page, `/comic/${EXAMPLE.id}/${PANEL.id}`);
 	await activate(page, page.getByRole('button', { name: m.removeImage() }));
 	await activate(page, page.getByRole('button', { name: m.addImage() }));
-	await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+	await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 	await expect.poll(() => storedCropCounts(page, PANEL.id)).toEqual([1, 1]);
 	if (times === 2) {
 		await activate(page, page.getByRole('button', { name: m.generateNewImage() }));

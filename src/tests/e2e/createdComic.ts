@@ -72,7 +72,8 @@ export async function expectValidPreviewSize(preview: Locator) {
 export async function generatePanelImage(page: Page, comicId: string, panelId: string) {
 	await gotoHydrated(page, `/comic/${comicId}/${panelId}`);
 	await activate(page, page.getByRole('button', { name: m.addImage() }));
-	await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+	// `.first()`: a "Portrait and landscape" comic shows two images with the same alt text.
+	await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 	await expect
 		.poll(async () => imagesFromPanel(await storedComic(page, comicId), panelId))
 		.not.toEqual([]);
