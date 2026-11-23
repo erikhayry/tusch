@@ -1,24 +1,21 @@
+import { m } from '#lib/paraglide/messages.js';
 import type { Comic } from '#lib/types/index.ts';
 
-/**
- * The English copy issue #295 adds for the home view. Literals on purpose: the keys don't
- * exist yet, and `m.createNewComic()` ("Create New Comic") keeps its value in the header while
- * the tile reads "Create new comic". The playwright locale is English.
- */
+/** The copy of the home view (#295), read from the messages so the tests follow the locale. */
 export const LANDING_COPY = {
-	yourComics: 'Your comics',
-	noCoverYet: 'No cover yet',
-	example: 'Example',
-	createTile: 'Create new comic',
-	readComic: (title: string) => `Read ${title}`,
-	editComic: (title: string) => `Edit ${title}`,
-	panelCount: (count: number) => (count === 1 ? '1 panel' : `${count} panels`),
+	yourComics: m.yourComics(),
+	noCoverYet: m.noCoverYet(),
+	example: m.exampleComic(),
+	createTile: m.createNewComic(),
+	readComic: (title: string) => m.readComic({ title }),
+	editComic: (title: string) => m.editComic({ title }),
+	panelCount: (count: number) => (count === 1 ? m.panelCountOne() : m.panelCount({ count })),
 } as const;
 
 const STYLE_NAMES = {
-	anime: 'Anime',
-	'classic-marvel': 'Classic Marvel',
-	'franco-belgian': 'Franco-Belgian',
+	anime: m.styleAnime(),
+	'classic-marvel': m.styleClassicMarvel(),
+	'franco-belgian': m.styleFrancoBelgian(),
 } as const;
 
 /** The meta line of a card (REQ-295-1). */

@@ -83,6 +83,11 @@ export function hasOnlyExampleComics(comics: readonly Comic[]): boolean {
 	return comics.every(({ id }) => EXAMPLE_IDS.has(id));
 }
 
+/** A bundled example, not a comic the user made (REQ-295-1 shows "Example" on it). */
+export function isExampleComic({ id }: Pick<Comic, 'id'>): boolean {
+	return EXAMPLE_IDS.has(id);
+}
+
 export function getComic(comics: readonly Comic[], comicId: string): Comic | undefined {
 	return comics.find((comic) => comic.id === comicId);
 }

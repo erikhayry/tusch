@@ -1,8 +1,18 @@
 import { m } from '#lib/paraglide/messages.js';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { exampleTitles } from '../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
 import { LandingPage } from './utils/landingPage';
+
+/** Each library card has one "Read <title>" link (REQ-235-1); the create tile has none. */
+async function expectLibraryTitles(page: Page, titles: string[]) {
+	for (const title of titles) {
+		await expect(new LandingPage(page).readLink(title)).toBeVisible();
+	}
+	await expect(
+		page.getByRole('list', { name: m.comics() }).getByRole('link', { name: /^Read / }),
+	).toHaveCount(titles.length);
+}
 
 test(
 	'seeds exactly the three example comics on a fresh library',
@@ -13,8 +23,7 @@ test(
 
 		await new LandingPage(page).goto();
 
-		const links = page.getByRole('list', { name: m.comics() }).getByRole('link');
-		await expect(links).toHaveText(titles);
+		await expectLibraryTitles(page, titles);
 	},
 );
 
@@ -31,7 +40,6 @@ test(
 
 		await gotoHydrated(page, '/');
 
-		const links = page.getByRole('list', { name: m.comics() }).getByRole('link');
-		await expect(links).toHaveText(titles);
+		await expectLibraryTitles(page, titles);
 	},
 );

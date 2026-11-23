@@ -60,7 +60,9 @@ test(
 	{ tag: '@REQ-008' },
 	async ({ page }) => {
 		await gotoHydrated(page, '/');
-		await expect(page.getByRole('link', { name: EXAMPLE_COMPLETE.title })).toBeVisible();
+		await expect(
+			page.getByRole('link', { name: m.readComic({ title: EXAMPLE_COMPLETE.title }), exact: true }),
+		).toBeVisible();
 		const before = await page.evaluate(
 			() => JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}').comics.length,
 		);

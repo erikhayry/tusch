@@ -10,7 +10,7 @@
 	import { m } from '#lib/paraglide/messages.js';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
 
-	let { label, values, onSuccess }: DeleteItemFormProps = $props();
+	let { label, values, onSuccess, iconOnly = false }: DeleteItemFormProps = $props();
 
 	const handleSubmit = enhanceClientCommand(
 		m.loadingDelete(),
@@ -33,5 +33,39 @@
 		<input type="hidden" name={entry[0]} value={entry[1]} />
 	{/each}
 
-	<button type="submit">{label}</button>
+	{#if iconOnly}
+		<button type="submit" class="icon-only" aria-label={label}>
+			<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+				<path
+					d="M5 7h14M10 7V4.5h4V7M7 7l1 12.5h8L17 7"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/>
+			</svg>
+		</button>
+	{:else}
+		<button type="submit">{label}</button>
+	{/if}
 </form>
+
+<style>
+	.icon-only {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-inline-size: var(--control-min-size);
+		min-block-size: var(--control-min-size);
+		color: var(--color-danger);
+		background: transparent;
+		border: var(--border-width) solid var(--color-control-border);
+		border-radius: var(--radius);
+	}
+
+	.icon-only svg {
+		inline-size: var(--icon-size);
+		block-size: var(--icon-size);
+	}
+</style>
