@@ -14,8 +14,9 @@ export class LandingPage {
 
 	constructor(page: Page) {
 		this.page = page;
-		this.createComicButton = page.getByRole('link', { name: 'Create' });
-		this.settingsLink = page.getByRole('link', { name: m.settings() });
+		// The header repeats these links, so the page's own links are scoped to <main>.
+		this.createComicButton = page.getByRole('main').getByRole('link', { name: 'Create' });
+		this.settingsLink = page.getByRole('main').getByRole('link', { name: m.settings() });
 		this.comicsHeading = page.getByRole('heading', { name: m.comics() });
 		this.comicLink = (title: string) => page.getByRole('link', { name: title, exact: true });
 		this.deleteComicButton = (title: string) =>

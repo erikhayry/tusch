@@ -778,8 +778,50 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-044 Every view follows the OS/browser colour scheme
 
 - Status: active
-- Statement: every view follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it looks as before: black text on white. There is no toggle and nothing is stored.
+- Statement: every view follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it shows dark text on a light background. There is no toggle and nothing is stored.
 - Why: users with a dark system setting otherwise get a bright white page.
+- Proven by: tagged tests
+
+### REQ-294-1 Every view has a header with the Tusch wordmark
+
+- Status: active
+- Statement: every view has a header (`<header>` banner landmark, outside `<main>`) holding a "Tusch" link that leads to `/`.
+- Why: users can always get back to the start, and the header is the shared frame of the design (#294).
+- Proven by: tagged tests
+
+### REQ-294-2 The header has main navigation on wide screens
+
+- Status: active
+- Statement: at 48em and wider the header has a navigation landmark with a "Comics" link (`/`) and a "Settings" link (`/settings`); the link for the current page has `aria-current="page"` and the other has none. On `/` the header also has a "Create New Comic" link to `/comic/create`.
+- Why: the main places are one activation away from every view, and the current place is announced (#294).
+- Proven by: tagged tests
+
+### REQ-294-3 The header switches language on wide screens
+
+- Status: active
+- Statement: at 48em and wider the header has a language navigation landmark with EN and SV links (accessible names "English" and "Swedish"). Activating one shows the same page in that language, and the link for the current language has `aria-current="true"`.
+- Why: the language was reachable only by editing the URL (#294).
+- Proven by: tagged tests
+
+### REQ-294-4 The header shows icon links on narrow screens
+
+- Status: active
+- Statement: below 48em the header shows only the wordmark, a "Create New Comic" icon link and a "Settings" icon link; the navigation and language links are hidden. The icons are hidden from assistive technology and the links are named by `aria-label`. Both links can be reached with Tab and lead to `/comic/create` and `/settings`.
+- Why: a full navigation doesn't fit at 320 px, but the two main actions must stay reachable (#294).
+- Proven by: tagged tests
+
+### REQ-294-5 Fonts load from the app's own origin
+
+- Status: active
+- Statement: no view makes a request to a host other than the app's, so fonts are self-hosted.
+- Why: a third-party font host sees every visitor's IP address, adds a render-blocking request and fails offline in a local-first app (#294).
+- Proven by: tagged tests
+
+### REQ-294-6 Form fields are at least 16 px on narrow screens
+
+- Status: active
+- Statement: at a viewport 320 CSS px wide, every text input, textarea and select on the create and settings views has a computed font size of at least 16 CSS px.
+- Why: smaller field text makes iOS Safari zoom the page when a field gets focus (#294).
 - Proven by: tagged tests
 
 ## Performance

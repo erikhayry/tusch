@@ -9,16 +9,54 @@
  * place they are defined):
  *   wide: 48em
  */
-:root {
-	--color-text: #000;
-	--color-background: #fff;
-	--color-muted: #595959;
-	--color-border: #000;
-	--color-surface: #f2f2f2;
-	/* Accent: used only for the focus indicator. 3:1+ against white. */
-	--color-focus: #0057d8;
+/* Self-hosted Inter (latin, OFL; see static/fonts/). Same origin, so no third-party request (REQ-294-5). */
+@font-face {
+	font-family: 'Inter';
+	src: url('/fonts/inter-latin-400-normal.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
 
-	--font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+@font-face {
+	font-family: 'Inter';
+	src: url('/fonts/inter-latin-500-normal.woff2') format('woff2');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Inter';
+	src: url('/fonts/inter-latin-600-normal.woff2') format('woff2');
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Inter';
+	src: url('/fonts/inter-latin-700-normal.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	/* Warm greys. Every text pair is at least 4.5:1 (the control border 3:1, non-text). */
+	--color-background: #faf9f7;
+	--color-surface: #f1efeb;
+	--color-text: #1c1b19;
+	--color-muted: #5c5852;
+	--color-border: #d9d5ce;
+	--color-control-border: #8c867d;
+	--color-link: #1d4ed8;
+	--color-danger: #b42318;
+	/* Kept apart from the link colour so focus can be tuned for the dark scheme alone. */
+	--color-focus: #1d4ed8;
+
+	--font-family:
+		'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 	--font-family-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 	--font-size-base: 1rem;
 	--font-size-small: 0.875rem;
@@ -39,8 +77,16 @@
 	--border-width-thick: 3px;
 	--focus-width: 3px;
 	--focus-offset: 2px;
-	--radius: 0.25rem;
-	--content-width: 60rem;
+	--radius: 0.5rem;
+	--icon-size: 1.25rem;
+	--transition-duration: 150ms;
+
+	/* Content widths per view. Only the default is applied here; each view sets its own. */
+	--width-compact: 45rem;
+	--width-form: 55rem;
+	--width-reader: 60rem;
+	--width-content: 70rem;
+	--width-wide: 77.5rem;
 	/* Portrait covers are generated at 1024×1536. A placeholder of the same shape keeps rows aligned. */
 	--cover-aspect-ratio: 2 / 3;
 	--control-min-size: 2.75rem;
@@ -55,14 +101,19 @@
 }
 
 /* Dark scheme: follows the OS/browser. Overrides colour tokens only. The focus
-   accent stays: #0057d8 is about 3.35:1 on black and 6.3:1 on white. */
+   ring is lighter here: #1d4ed8 is about 2.75:1 on the dark background and fails
+   REQ-038. */
 @media (prefers-color-scheme: dark) {
 	:root {
-		--color-text: #fff;
-		--color-background: #000;
-		--color-muted: #a6a6a6;
-		--color-border: #fff;
-		--color-surface: #1a1a1a;
+		--color-background: #141416;
+		--color-surface: #1c1c1f;
+		--color-text: #f4f4f5;
+		--color-muted: #a1a1aa;
+		--color-border: #2e2e33;
+		--color-control-border: #8f8f99;
+		--color-link: #93b4ff;
+		--color-danger: #fda29b;
+		--color-focus: #6b9bff;
 	}
 }
 
@@ -89,7 +140,7 @@ body {
 
 main {
 	display: block;
-	max-inline-size: var(--content-width);
+	max-inline-size: var(--width-content);
 	margin-inline: auto;
 	padding: var(--space-3);
 }
@@ -133,7 +184,7 @@ ol {
 }
 
 a {
-	color: var(--color-text);
+	color: var(--color-link);
 	text-decoration: underline;
 }
 
@@ -188,6 +239,7 @@ fieldset label {
 	font-weight: normal;
 }
 
+/* Fields stay at 1rem (16px): smaller text makes iOS Safari zoom when a field is focused (REQ-294-6). */
 input,
 select,
 textarea,
@@ -197,9 +249,13 @@ button {
 	max-inline-size: 100%;
 	min-block-size: var(--control-min-size);
 	padding: var(--space-2) var(--space-3);
-	border: var(--border-width) solid var(--color-border);
+	border: var(--border-width) solid var(--color-control-border);
 	border-radius: var(--radius);
 	background: var(--color-background);
+	transition:
+		background-color var(--transition-duration),
+		border-color var(--transition-duration),
+		color var(--transition-duration);
 }
 
 input:not([type='checkbox']):not([type='radio']):not([type='file']),
@@ -292,6 +348,13 @@ progress:indeterminate::-moz-progress-bar {
 }
 
 @media (prefers-reduced-motion: reduce) {
+	input,
+	select,
+	textarea,
+	button {
+		transition: none;
+	}
+
 	progress:indeterminate,
 	progress:indeterminate::-webkit-progress-bar,
 	progress:indeterminate::-moz-progress-bar {

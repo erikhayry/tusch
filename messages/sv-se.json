@@ -75,5 +75,9 @@
 	"removeLandscapeCover": "Ta bort liggande omslag",
 	"createComicPanelCount": "Antal rutor",
 	"createComicPanelCountHint": "1–30.",
-	"createComicPanelCountError": "Antal rutor måste vara ett heltal från 1 till 30."
+	"createComicPanelCountError": "Antal rutor måste vara ett heltal från 1 till 30.",
+	"mainNavigation": "Huvudmeny",
+	"languageNavigation": "Språk",
+	"languageEnglish": "Engelska",
+	"languageSwedish": "Svenska"
 }
