@@ -1,8 +1,8 @@
 import type { Comic } from '#lib/types/index.ts';
 import type { ComicCommands } from '../comic-commands';
 import {
-	base64ImageToBlob,
 	runAssetWorkflow,
+	stageVariants,
 	type AssetWorkflowDeps,
 	type WorkflowResult,
 } from './asset-workflow';
@@ -11,7 +11,7 @@ export interface ComicWorkflowDeps extends AssetWorkflowDeps {
 	commands: Pick<ComicCommands, 'addComic'>;
 }
 
-/** Stores a generated comic. Its cover `src` arrives as base64 and is staged first. */
+/** Stores a generated comic. Its cover variants' `src` arrive as base64 and are staged first. */
 export function commitGeneratedComic(
 	deps: ComicWorkflowDeps,
 	comic: Comic,
@@ -21,14 +21,9 @@ export function commitGeneratedComic(
 			return () => deps.commands.addComic(comic);
 		}
 
-		const src = await stage(base64ImageToBlob(comic.cover.landscape.src));
 		const stored: Comic = {
 			...comic,
-			cover: {
-				...comic.cover,
-				landscape: { ...comic.cover.landscape, src },
-				portrait: { ...comic.cover.portrait, src },
-			},
+			cover: { ...comic.cover, ...(await stageVariants(stage, comic.cover)) },
 		};
 
 		return () => deps.commands.addComic(stored);

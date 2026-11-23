@@ -160,7 +160,9 @@ const mockAiGateway: AiGateway = {
 		const { messages } = request;
 		failIfRequested(messages);
 		if (messages[0] === COVER_IMAGE.WHAT) {
-			return CREATE_COVER_IMAGE_RESPONSE;
+			return request.size === IMAGE_SIZE.LANDSCAPE
+				? createLandscapeImageResponse([])
+				: CREATE_COVER_IMAGE_RESPONSE;
 		}
 		const characterIds = charactersInPrompt(messages);
 		if (request.size === IMAGE_SIZE.LANDSCAPE) {

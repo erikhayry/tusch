@@ -14,8 +14,9 @@
 	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
 	import { encodeFormValue } from '#lib/forms/form-data.ts';
+	import { variantFailedMessage } from '#lib/forms/variant-failure.ts';
 	import { m } from '#lib/paraglide/messages.js';
-	import { ImageVariantEnum, type ImageVariant } from '#lib/types/index.ts';
+	import { ImageVariantEnum } from '#lib/types/index.ts';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
@@ -24,11 +25,6 @@
 
 	import Image from '../../image/Image.svelte';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
-
-	const FAILED_MESSAGES: Record<ImageVariant, () => string> = {
-		[ImageVariantEnum.enum.portrait]: () => m.portraitImageFailed(),
-		[ImageVariantEnum.enum.landscape]: () => m.landscapeImageFailed(),
-	};
 
 	const handleSubmit = withGlobalInstructions(
 		enhanceAction<CreatePanelImageResult>(
@@ -41,7 +37,7 @@
 				);
 				// The image that succeeded is saved; say which one wasn't made (REQ-103-3).
 				if (data.failedVariant) {
-					showError(FAILED_MESSAGES[data.failedVariant]());
+					showError(variantFailedMessage(data.failedVariant));
 				}
 				await update();
 				onSuccess?.();

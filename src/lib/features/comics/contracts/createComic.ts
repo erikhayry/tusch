@@ -4,7 +4,7 @@ import {
 	GlobalInstructionsSchema,
 	decodeGlobalInstructions,
 } from '#lib/features/settings/contracts/globalInstructions.ts';
-import { ComicSchema, ComicStyleEnum } from '#lib/types/index.ts';
+import { ComicSchema, ComicStyleEnum, ImageVariantEnum } from '#lib/types/index.ts';
 import { m } from '#lib/paraglide/messages.js';
 import z from 'zod';
 
@@ -28,6 +28,8 @@ export type CreateComicValues = z.output<typeof CreateComicValuesSchema>;
 
 export const CreateComicResultSchema = z.object({
 	comic: ComicSchema,
+	/** Set when one cover variant couldn't be made and the other was saved (REQ-011). */
+	failedVariant: ImageVariantEnum.optional(),
 	output: z.string(),
 });
 export type CreateComicResult = z.infer<typeof CreateComicResultSchema>;

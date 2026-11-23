@@ -85,5 +85,6 @@ test('minimal example lists exactly one panel', { tag: '@REQ-010' }, async ({ pa
 
 	await expect(comicPage.heading).toBeVisible();
 	await expect(comicPage.listItems).toHaveCount(1);
-	await expect(comicPage.initialCoverImage).toBeVisible();
+	// The minimal example's cover has both variants (REQ-280-1).
+	await expect(comicPage.initialCoverImage).toHaveCount(2);
 });

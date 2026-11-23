@@ -474,11 +474,14 @@ test.describe('viewer edge cases', () => {
 		{ tag: '@REQ-036' },
 		async ({ page }) => {
 			const comic = await createViewableComic(page);
-			const coverSrc = comic.cover?.landscape.src;
+			// A cover has two variants (REQ-280-2): both files are missing, so the cover shows the placeholder.
+			const coverSrcs = [comic.cover?.landscape?.src, comic.cover?.portrait?.src];
 			const panelSrc = comic.panels[0].image?.portrait?.src;
-			expect(coverSrc).toBeTruthy();
+			expect(coverSrcs.every(Boolean)).toBe(true);
 			expect(panelSrc).toBeTruthy();
-			await removeStoredFile(page, String(coverSrc));
+			for (const coverSrc of coverSrcs) {
+				await removeStoredFile(page, String(coverSrc));
+			}
 			await removeStoredFile(page, String(panelSrc));
 
 			const view = await new ViewPage(page, comic.id).goto();

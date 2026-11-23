@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Image from '#lib/components/image/Image.svelte';
 	import PanelPicture from '#lib/components/image/PanelPicture.svelte';
 	import PanelBoxes from '#lib/components/panelBoxes/PanelBoxes.svelte';
 	import Page from '#lib/components/page/Page.svelte';
@@ -17,7 +16,7 @@
 	<!-- The title is an inverted caption over the cover, or on its own without one. -->
 	<div class="cover">
 		{#if data.comic.cover}
-			<Image image={data.comic.cover.landscape} alt={data.comic.cover.alt} />
+			<PanelPicture image={data.comic.cover} alt={data.comic.cover.alt} />
 		{/if}
 		<h1 class:overlay={Boolean(data.comic.cover)}>{title}</h1>
 	</div>
@@ -48,6 +47,10 @@
 		position: relative;
 		inline-size: 100%;
 		margin-block-end: var(--space-2);
+	}
+
+	.cover :global(picture) {
+		display: block;
 	}
 
 	.cover :global(img) {

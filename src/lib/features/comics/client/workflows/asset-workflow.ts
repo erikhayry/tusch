@@ -4,6 +4,7 @@ import {
 	type AssetStore,
 	type CleanupResult,
 } from '#lib/client/assets/asset-store.ts';
+import { ImageVariantEnum, type ImageAsset, type ImageVariant } from '#lib/types/index.ts';
 import { base64ToBlob } from '#lib/utils/storage/utils/base64ToBlob.ts';
 import type { CommandFailure, CommandFailureCode, CommandResult } from '../comic-commands';
 import type { ComicStoreState } from '../comic-store.svelte';
@@ -32,6 +33,22 @@ type Prepare = (stage: Stage) => Promise<(() => CommandResult) | CommandFailure>
 
 export function base64ImageToBlob(base64: string): Blob {
 	return base64ToBlob(`data:image/webp;base64,${base64}`);
+}
+
+/** Stages the file of each variant that is present and returns the variants with their staged `src`. */
+export async function stageVariants<T extends ImageAsset>(
+	stage: Stage,
+	variants: Partial<Record<ImageVariant, T>>,
+): Promise<Partial<Record<ImageVariant, T>>> {
+	const staged: Partial<Record<ImageVariant, T>> = {};
+	for (const variant of ImageVariantEnum.options) {
+		const asset = variants[variant];
+		if (asset) {
+			staged[variant] = { ...asset, src: await stage(base64ImageToBlob(asset.src)) };
+		}
+	}
+
+	return staged;
 }
 
 /**

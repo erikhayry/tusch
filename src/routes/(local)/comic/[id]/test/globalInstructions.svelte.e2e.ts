@@ -7,12 +7,13 @@ import {
 	createComicThroughUi,
 	saveGlobalInstructions,
 } from '../../../../../tests/e2e/globalInstructions';
+import { deleteCover } from '../../../../../tests/e2e/cover';
 import { activate } from '../../../../../tests/e2e/keyboard';
 
 test('global instructions reach the cover prompt', { tag: '@REQ-051' }, async ({ page }) => {
 	// A comic the user made, without a cover so "Add Cover" is offered.
 	const { comicId } = await createComicThroughUi(page);
-	await activate(page, page.getByRole('button', { name: m.deleteCover() }));
+	await deleteCover(page);
 	await expect(page.getByRole('button', { name: m.addCover() })).toBeVisible();
 	await saveGlobalInstructions(page, RATE_LIMIT_MARKER);
 

@@ -28,9 +28,9 @@ import {
 	ImageFormatEnum,
 	type Comic,
 	type Crop,
+	type ImageFormat,
 	type ImageVariant,
 	ImageVariantEnum,
-	type ResponsiveImage,
 } from '#lib/types/index.ts';
 import { variantsFor } from '#lib/types/image-variants.ts';
 import {
@@ -108,12 +108,6 @@ async function generateImage(gateway: AiGateway, request: AiImageRequest): Promi
 	throw new InvalidAiResponseError('ai_no_image', 'the response has no image');
 }
 
-/** Both orientations use the single generated image. */
-function responsive(image: CreatedImage) {
-	const copy = structuredClone(image);
-	return { landscape: copy, portrait: copy, alt: copy.alt };
-}
-
 /**
  * The crop is cut from the image in the browser, so a box outside the picture
  * would produce an empty or shifted crop. Whole pixels only, like the stored sizes.
@@ -131,28 +125,86 @@ function isInsideImage(box: Crop, width: number, height: number): boolean {
 }
 
 export function createGenerationService(gateway: AiGateway, createId: () => string = generateId) {
+	/**
+	 * One request per variant the format asks for. A failed variant doesn't stop the others
+	 * (REQ-103-3). The landscape one is drawn from the portrait one so the two match; when
+	 * only one variant is made, `existingImage` (the other variant) is the reference (REQ-279-1).
+	 */
+	async function generateVariants(
+		format: ImageFormat,
+		existingImage: string | undefined,
+		request: (variant: ImageVariant, reference: string | undefined) => AiImageRequest,
+	) {
+		const generated: Partial<
+			Record<ImageVariant, { image: CreatedImage; output: OpenAiOutput['output'] }>
+		> = {};
+		const failures: { variant: ImageVariant; cause: unknown }[] = [];
+
+		for (const variant of variantsFor(format)) {
+			try {
+				const reference =
+					variant === ImageVariantEnum.enum.landscape && generated.portrait
+						? `data:image/webp;base64,${generated.portrait.image.src}`
+						: existingImage;
+				const output = await generateImage(gateway, request(variant, reference));
+				generated[variant] = {
+					image: interpret(() => getImageFromOpenAiResponse(output)),
+					output: output.output,
+				};
+			} catch (cause) {
+				failures.push({ variant, cause });
+			}
+		}
+
+		const primary = generated.portrait ?? generated.landscape;
+		if (!primary) {
+			// Nothing to save: report the first failure as a single-request failure would be.
+			throw failures[0]?.cause ?? new InvalidAiResponseError('ai_no_image', 'no image requested');
+		}
+
+		return {
+			primary,
+			variants: {
+				portrait: generated.portrait?.image,
+				landscape: generated.landscape?.image,
+			},
+			failedVariant: failures[0]?.variant,
+		};
+	}
+
 	async function createCoverImage({
 		comic,
 		instructions,
 		globalInstructions,
 		imageUrl,
 		includeImage,
+		imageFormat = ImageFormatEnum.enum.both,
+		existingImage,
 	}: CreateCoverImageValues): Promise<CreateCoverImageResult> {
-		const output = await generateImage(gateway, {
-			messages: [
-				...buildCoverImageMessages({ comic, globalInstructions }),
-				`USER INSTRUCTION: ${instructions}`,
-			],
-			schemaName: SchemaName.enum.createImage,
-			size: IMAGE_SIZE.PORTRAIT,
-			imageUrls: includeImage && imageUrl ? [imageUrl] : [],
-		});
+		const messages = [
+			...buildCoverImageMessages({ comic, globalInstructions }),
+			`USER INSTRUCTION: ${instructions}`,
+		];
+		const { primary, variants, failedVariant } = await generateVariants(
+			imageFormat,
+			existingImage,
+			(variant, reference) => ({
+				messages,
+				schemaName: SchemaName.enum.createImage,
+				size: VARIANT_SIZE[variant],
+				imageUrls: [
+					...(includeImage && imageUrl ? [imageUrl] : []),
+					...(reference ? [reference] : []),
+				],
+			}),
+		);
 
 		return interpret(() =>
 			CreateCoverImageResultSchema.parse({
 				comicId: comic.id,
-				image: responsive(getImageFromOpenAiResponse(output)),
-				output: output.output,
+				image: { alt: primary.image.alt, ...variants },
+				failedVariant,
+				output: primary.output,
 			}),
 		);
 	}
@@ -182,16 +234,19 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 				};
 			});
 
-			const cover: ResponsiveImage = (
-				await createCoverImage({
-					comic: toCoverPrompt(comic),
-					[INSTRUCTIONS_VALUE_KEY]: '',
-					globalInstructions,
-				})
-			).image;
+			// A comic gets the cover variants of the default format (REQ-006).
+			const { image: cover, failedVariant } = await createCoverImage({
+				comic: toCoverPrompt(comic),
+				[INSTRUCTIONS_VALUE_KEY]: '',
+				globalInstructions,
+			});
 
 			return interpret(() =>
-				CreateComicResultSchema.parse({ comic: { ...comic, cover }, output: '' }),
+				CreateComicResultSchema.parse({
+					comic: { ...comic, cover },
+					failedVariant,
+					output: '',
+				}),
 			);
 		},
 
@@ -236,55 +291,27 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 				globalInstructions,
 				style,
 			});
-			const generated: Partial<
-				Record<ImageVariant, { image: CreatedImage; output: OpenAiOutput['output'] }>
-			> = {};
-			const failures: { variant: ImageVariant; cause: unknown }[] = [];
-
-			// One request per variant. A failed variant doesn't stop the others (REQ-103-3).
-			for (const variant of variantsFor(imageFormat)) {
-				try {
-					// The landscape image is drawn from the portrait one, so the two match. A
-					// variant made alone (REQ-279-1) is drawn from the one the image already has.
-					const reference =
-						variant === ImageVariantEnum.enum.landscape && generated.portrait
-							? `data:image/webp;base64,${generated.portrait.image.src}`
-							: existingImage;
-					const output = await generateImage(gateway, {
-						messages: prompt,
-						schemaName: SchemaName.enum.createImage,
-						size: VARIANT_SIZE[variant],
-						imageUrls: [
-							...(includeImage && imageUrl ? [imageUrl] : []),
-							...referenceImages,
-							...(reference ? [reference] : []),
-						],
-					});
-					generated[variant] = {
-						image: interpret(() => getImageFromOpenAiResponse(output)),
-						output: output.output,
-					};
-				} catch (cause) {
-					failures.push({ variant, cause });
-				}
-			}
-
-			const primary = generated.portrait ?? generated.landscape;
-			if (!primary) {
-				// Nothing to save: report the first failure as a single-request failure would be.
-				throw failures[0]?.cause ?? new InvalidAiResponseError('ai_no_image', 'no image requested');
-			}
+			const { primary, variants, failedVariant } = await generateVariants(
+				imageFormat,
+				existingImage,
+				(variant, reference) => ({
+					messages: prompt,
+					schemaName: SchemaName.enum.createImage,
+					size: VARIANT_SIZE[variant],
+					imageUrls: [
+						...(includeImage && imageUrl ? [imageUrl] : []),
+						...referenceImages,
+						...(reference ? [reference] : []),
+					],
+				}),
+			);
 
 			return interpret(() =>
 				CreatePanelImageResultSchema.parse({
 					comicId,
 					panelId: panel.id,
-					image: {
-						alt: primary.image.alt,
-						portrait: generated.portrait?.image,
-						landscape: generated.landscape?.image,
-					},
-					failedVariant: failures[0]?.variant,
+					image: { alt: primary.image.alt, ...variants },
+					failedVariant,
 					output: primary.output,
 				}),
 			);

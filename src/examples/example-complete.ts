@@ -1,8 +1,8 @@
 import type { Comic } from '#lib/types/index.ts';
 import {
 	exampleCharacter,
-	exampleCover,
 	examplePanelImage,
+	examplePortraitCover,
 	examplePortraitPanelImage,
 } from './example-helpers';
 
@@ -16,7 +16,7 @@ export const EXAMPLE_COMPLETE: Comic = {
 	style: 'anime',
 	source: 'https://example.com/lighthouse-keepers',
 	title: 'Example: The Lighthouse Keepers',
-	cover: exampleCover('cover-a', 'A flat dark slate cover labelled "Comic A · cover".'),
+	cover: examplePortraitCover('cover-a', 'A flat dark slate cover labelled "Comic A · cover".'),
 	characters: [
 		exampleCharacter(MARA, 'Mara', 'yellow raincoat'),
 		exampleCharacter(TOBIAS, 'Tobias', 'grey wool sweater'),

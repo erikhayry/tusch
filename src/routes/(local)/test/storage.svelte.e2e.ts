@@ -1,5 +1,6 @@
 import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type Page } from '@playwright/test';
+import { deleteCover } from '../../../tests/e2e/cover';
 import { EXAMPLE_COMPLETE as EXAMPLE } from '../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../tests/e2e/keyboard';
@@ -47,9 +48,10 @@ test.describe('image files', { tag: '@REQ-025' }, () => {
 		await gotoHydrated(page, `/comic/${EXAMPLE.id}`);
 		await activate(page, page.getByRole('button', { name: m.deleteCover() }));
 		await activate(page, page.getByRole('button', { name: m.addCover() }));
-		await expect.poll(async () => (await storedFiles(page)).length).toBe(1);
+		// The new cover has both variants, one file each.
+		await expect.poll(async () => (await storedFiles(page)).length).toBe(2);
 
-		await activate(page, page.getByRole('button', { name: m.deleteCover() }));
+		await deleteCover(page);
 
 		await expect.poll(() => storedFiles(page)).toEqual([]);
 	});
