@@ -1,18 +1,18 @@
-import { CreateComicResultSchema } from '$lib/features/comics/contracts/createComic';
+import { CreateComicResultSchema } from '#lib/features/comics/contracts/createComic.ts';
 import {
 	CreateCoverImageResultSchema,
 	toCoverPrompt,
-} from '$lib/features/comics/contracts/createCoverImage';
+} from '#lib/features/comics/contracts/createCoverImage.ts';
 import {
 	CreatePanelResultSchema,
 	toCreatePanelValues,
-} from '$lib/features/panels/contracts/createPanel';
+} from '#lib/features/panels/contracts/createPanel.ts';
 import {
 	CreatePanelImageResultSchema,
 	toCreatePanelImageValues,
-} from '$lib/features/panels/contracts/createPanelImage';
-import type { Comic } from '$lib/types';
-import { KEY_COOKIE_NAME } from '$lib/utils/cookies';
+} from '#lib/features/panels/contracts/createPanelImage.ts';
+import type { Comic } from '#lib/types/index.ts';
+import { KEY_COOKIE_NAME } from '#lib/utils/cookies.ts';
 import { expect, test, type APIRequestContext } from '@playwright/test';
 import type { z } from 'zod';
 import { INVALID_TEXT, NO_IMAGE } from '../../../../tests/e2e/aiFailures';

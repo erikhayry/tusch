@@ -1,5 +1,5 @@
-import { CreateComicValuesSchema } from '$lib/features/comics/contracts/createComic';
-import { generationEndpoint } from '$lib/server/actions/generation-endpoints';
+import { CreateComicValuesSchema } from '#lib/features/comics/contracts/createComic.ts';
+import { generationEndpoint } from '#lib/server/actions/generation-endpoints.ts';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = ({ request }) =>

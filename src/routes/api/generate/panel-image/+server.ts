@@ -1,5 +1,5 @@
-import { CreatePanelImageValuesSchema } from '$lib/features/panels/contracts/createPanelImage';
-import { generationEndpoint } from '$lib/server/actions/generation-endpoints';
+import { CreatePanelImageValuesSchema } from '#lib/features/panels/contracts/createPanelImage.ts';
+import { generationEndpoint } from '#lib/server/actions/generation-endpoints.ts';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = ({ request }) =>
