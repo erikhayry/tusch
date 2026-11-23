@@ -32,11 +32,12 @@
 	<input type="hidden" name="comicId" value={comicId} />
 	<label>
 		<span>{m.imageFormat()}</span>
-		<select name={IMAGE_FORMAT_VALUE_KEY}>
+		<select name={IMAGE_FORMAT_VALUE_KEY} aria-describedby="image-format-hint">
 			{#each ImageFormatEnum.options as format (format)}
 				<option value={format} selected={format === imageFormat}>{LABELS[format]()}</option>
 			{/each}
 		</select>
 	</label>
+	<p id="image-format-hint">{m.imageFormatHint()}</p>
 	<button type="submit">{m.saveImageFormat()}</button>
 </form>

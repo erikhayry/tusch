@@ -13,7 +13,7 @@
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
 	import { encodeFormValue } from '#lib/forms/form-data.ts';
 	import { m } from '#lib/paraglide/messages.js';
-	import type { ImageVariant } from '#lib/types/index.ts';
+	import { ImageVariantEnum, type ImageVariant } from '#lib/types/index.ts';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
@@ -24,8 +24,8 @@
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 
 	const FAILED_MESSAGES: Record<ImageVariant, () => string> = {
-		portrait: () => m.portraitImageFailed(),
-		landscape: () => m.landscapeImageFailed(),
+		[ImageVariantEnum.enum.portrait]: () => m.portraitImageFailed(),
+		[ImageVariantEnum.enum.landscape]: () => m.landscapeImageFailed(),
 	};
 
 	const handleSubmit = withGlobalInstructions(
@@ -46,14 +46,16 @@
 		label,
 		values,
 		imageName,
-		imageVariant = 'portrait',
+		imageVariant = ImageVariantEnum.enum.portrait,
 		characterReferences,
 		submitButton = $bindable(),
 	}: CreatePanelImageFormProps & { submitButton?: HTMLButtonElement } = $props();
 
 	// The preview keeps the orientation of the image it shows, at the same 2:3 or 3:2 box.
 	const previewSize = $derived(
-		imageVariant === 'landscape' ? { width: 75, height: 50 } : { width: 50, height: 75 },
+		imageVariant === ImageVariantEnum.enum.landscape
+			? { width: 75, height: 50 }
+			: { width: 50, height: 75 },
 	);
 
 	const referenceFieldName = (characterId: string) => `reference-${characterId}`;

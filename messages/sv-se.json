@@ -59,6 +59,7 @@
 	"imageFormatPortrait": "Endast stående",
 	"imageFormatLandscape": "Endast liggande",
 	"saveImageFormat": "Spara bildformat",
+	"imageFormatHint": "Gäller bilder som skapas från och med nu. Befintliga bilder behåller sina varianter.",
 	"portraitImage": "Stående",
 	"landscapeImage": "Liggande",
 	"portraitImageFailed": "Den stående bilden kunde inte skapas. Den liggande bilden sparades.",
