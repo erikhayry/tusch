@@ -216,10 +216,11 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			url,
 			story,
 			style,
+			panelCount,
 			globalInstructions,
 		}: CreateComicValues): Promise<CreateComicResult> {
 			const output: OpenAiOutput = await gateway.text({
-				messages: buildInitialMessages({ url, story }, style, globalInstructions),
+				messages: buildInitialMessages({ url, story, panelCount }, style, globalInstructions),
 				schemaName: SchemaName.enum.initComic,
 			});
 

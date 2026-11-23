@@ -8,6 +8,7 @@ export class CreatePage {
 	readonly heading: Locator;
 	readonly urlInput: Locator;
 	readonly storyInput: Locator;
+	readonly panelCountInput: Locator;
 	readonly submitButton: Locator;
 	readonly error: Locator;
 
@@ -16,6 +17,7 @@ export class CreatePage {
 		this.heading = page.getByRole('heading', { name: m.createNewComic(), level: 1 });
 		this.urlInput = page.getByRole('textbox', { name: m.urlToSource() });
 		this.storyInput = page.getByRole('textbox', { name: m.yourStory() });
+		this.panelCountInput = page.getByRole('spinbutton', { name: m.createComicPanelCount() });
 		this.submitButton = page.getByRole('button', { name: m.submit() });
 		this.error = page.getByTestId('error-test-id');
 	}
@@ -34,6 +36,21 @@ export class CreatePage {
 		await this.page.keyboard.insertText(story);
 
 		return this;
+	}
+
+	async setPanelCount(count: string) {
+		await typeInto(this.page, this.panelCountInput, count);
+
+		return this;
+	}
+
+	/** Skip the browser's own validation so the server's check is what answers. */
+	async submitToServer() {
+		await this.page.locator('form[action$="create-comic"]').evaluate((form) => {
+			form.setAttribute('novalidate', '');
+		});
+
+		return this.submit();
 	}
 
 	async submit() {
