@@ -1,11 +1,11 @@
-import type { Crop } from '$lib/types';
+import type { Crop } from '#lib/types/index.ts';
 import {
 	CharacterBoxesSchema,
 	SchemaName,
 	type CharacterBoxes,
 	type OpenAiOutput,
-} from '$lib/utils/ai/aiTypes';
-import { COVER_IMAGE, CURRENT_BOXES_PREFIX } from '$lib/utils/ai/utils/messages';
+} from '#lib/utils/ai/aiTypes.ts';
+import { COVER_IMAGE, CURRENT_BOXES_PREFIX } from '#lib/utils/ai/utils/messages.ts';
 import {
 	CREATE_COMIC_RESPONSE,
 	createComicResponse,

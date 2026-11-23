@@ -6,7 +6,7 @@ import {
 	ModelSchema,
 	PanelSchema,
 	TEXT_MODEL_KEY,
-} from '$lib/types';
+} from '#lib/types/index.ts';
 import { z } from 'zod';
 
 /** Server load data for `/`: whether a key is stored, never the key itself (REQ-029). */

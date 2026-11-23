@@ -1,4 +1,4 @@
-import { CharacterSchema, PanelSchema, type Character, type Panel } from '$lib/types';
+import { CharacterSchema, PanelSchema, type Character, type Panel } from '#lib/types/index.ts';
 import z from 'zod';
 
 export const PanelPromptSchema = PanelSchema.omit({ image: true }).extend({

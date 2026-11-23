@@ -1,4 +1,4 @@
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type Page } from '@playwright/test';
 import { createComic, storedComic } from '../../../tests/e2e/createdComic';
 import {

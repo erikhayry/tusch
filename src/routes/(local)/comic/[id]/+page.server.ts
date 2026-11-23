@@ -1,11 +1,11 @@
-import { CREATE_COVER_IMAGE_ACTION } from '$lib/features/comics/contracts/createCoverImage';
-import { FIX_CHARACTER_CROP_ACTION } from '$lib/features/panels/contracts/fixCharacterCrop';
-import { CLIENT_ACTION_NAME } from '$lib/forms/action-names';
+import { CREATE_COVER_IMAGE_ACTION } from '#lib/features/comics/contracts/createCoverImage.ts';
+import { FIX_CHARACTER_CROP_ACTION } from '#lib/features/panels/contracts/fixCharacterCrop.ts';
+import { CLIENT_ACTION_NAME } from '#lib/forms/action-names.ts';
 import {
 	createCoverImageAction,
 	fixCharacterCropAction,
-} from '$lib/server/actions/generation-actions';
-import { clientCommandAction } from '$lib/server/actions/settings-actions';
+} from '#lib/server/actions/generation-actions.ts';
+import { clientCommandAction } from '#lib/server/actions/settings-actions.ts';
 import type { Actions } from './$types';
 
 export const actions = {

@@ -1,4 +1,4 @@
-import type { InitialComic, OpenAiOutput } from '$lib/utils/ai/aiTypes';
+import type { InitialComic, OpenAiOutput } from '#lib/utils/ai/aiTypes.ts';
 import { MOCK_COVER_IMAGE_BASE64 } from './mockCoverImage';
 import { MOCK_PANEL_IMAGE_BASE64 } from './mockPanelImage';
 

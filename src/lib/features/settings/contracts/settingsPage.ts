@@ -1,4 +1,4 @@
-import { SettingsPageDataSchema } from '$lib/types/routeData';
+import { SettingsPageDataSchema } from '#lib/types/routeData.ts';
 import { z } from 'zod';
 import { SelectedModelsSchema } from './saveModelSettings';
 

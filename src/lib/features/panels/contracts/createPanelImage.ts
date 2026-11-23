@@ -1,17 +1,22 @@
-import { readCheckbox, readJsonField, readString, readStringList } from '$lib/forms/form-data';
+import { readCheckbox, readJsonField, readString, readStringList } from '#lib/forms/form-data.ts';
 import {
 	GLOBAL_INSTRUCTIONS_VALUE_KEY,
 	GlobalInstructionsSchema,
 	decodeGlobalInstructions,
-} from '$lib/features/settings/contracts/globalInstructions';
-import type { Character } from '$lib/types';
-import { ComicStyleEnum, PanelSchema, ResponsivePanelImageSchema, type Panel } from '$lib/types';
-import { OpenAiOutputSchema } from '$lib/utils/ai/aiTypes';
+} from '#lib/features/settings/contracts/globalInstructions.ts';
+import type { Character } from '#lib/types/index.ts';
+import {
+	ComicStyleEnum,
+	PanelSchema,
+	ResponsivePanelImageSchema,
+	type Panel,
+} from '#lib/types/index.ts';
+import { OpenAiOutputSchema } from '#lib/utils/ai/aiTypes.ts';
 import {
 	IMAGE_VALUE_KEY,
 	INCLUDE_IMAGE_VALUE_KEY,
 	INSTRUCTIONS_VALUE_KEY,
-} from '$lib/utils/db/dbTypes';
+} from '#lib/utils/db/dbTypes.ts';
 import z from 'zod';
 import { CharacterPromptSchema, toCharacterPrompt } from '../../comics/contracts/prompts';
 

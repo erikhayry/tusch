@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type Page } from '@playwright/test';
 import { storedComics } from '../../../../../tests/e2e/storage';
 import { CreatePage } from '../../create/test/utils/createPage';

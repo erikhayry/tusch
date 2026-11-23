@@ -1,5 +1,5 @@
 import { expect, test, type BrowserContext } from '@playwright/test';
-import { KEY_COOKIE_NAME } from '$lib/utils/cookies';
+import { KEY_COOKIE_NAME } from '#lib/utils/cookies.ts';
 import { createComic } from '../../../tests/e2e/createdComic';
 import { EXAMPLE_COMPLETE as EXAMPLE, exampleTitles } from '../../../tests/e2e/examples';
 import { KEY_COPY } from '../../../tests/e2e/keyCopy';

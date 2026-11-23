@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { readAssetDataUrl } from '$lib/client/assets/read-data-url';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
-	import { commitGeneratedPanelImage } from '$lib/features/panels/client/workflows/commit-generated-panel-image';
+	import { enhance, type SubmitFunction } from '$app/forms';
+	import { readAssetDataUrl } from '#lib/client/assets/read-data-url.ts';
+	import { workflowDeps } from '#lib/client/workflow-deps.ts';
+	import { expectWorkflow } from '#lib/features/comics/client/workflows/asset-workflow.ts';
+	import { commitGeneratedPanelImage } from '#lib/features/panels/client/workflows/commit-generated-panel-image.ts';
 	import {
 		CREATE_PANEL_IMAGE_ACTION,
 		REFERENCE_IMAGES_KEY,
 		type CreatePanelImageResult,
-	} from '$lib/features/panels/contracts/createPanelImage';
-	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
-	import { enhanceAction } from '$lib/forms/enhance-action';
-	import { encodeFormValue } from '$lib/forms/form-data';
-	import { m } from '$lib/paraglide/messages';
+	} from '#lib/features/panels/contracts/createPanelImage.ts';
+	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
+	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { encodeFormValue } from '#lib/forms/form-data.ts';
+	import { m } from '#lib/paraglide/messages.js';
 	import {
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
 		INSTRUCTIONS_VALUE_KEY,
-	} from '$lib/utils/db/dbTypes';
-	import type { SubmitFunction } from '@sveltejs/kit';
+	} from '#lib/utils/db/dbTypes.ts';
+
 	import Image from '../../image/Image.svelte';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
 

@@ -1,4 +1,4 @@
-import { CharacterSchema } from '$lib/types';
+import { CharacterSchema } from '#lib/types/index.ts';
 import { z } from 'zod';
 
 export const CharacterPropsSchema = z.object({

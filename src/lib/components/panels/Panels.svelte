@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Section from '$lib/components/relativeHeading/Section.svelte';
-	import { toCreatePanelValues } from '$lib/features/panels/contracts/createPanel';
-	import { m } from '$lib/paraglide/messages';
+	import Section from '#lib/components/relativeHeading/Section.svelte';
+	import { toCreatePanelValues } from '#lib/features/panels/contracts/createPanel.ts';
+	import { m } from '#lib/paraglide/messages.js';
 	import Image from '../image/Image.svelte';
 	import CreatePanelForm from '../forms/createPanelForm/CreatePanelForm.svelte';
 	import Panel from '../panel/Panel.svelte';
@@ -42,7 +42,7 @@
 				<li class="card">
 					<a
 						class="card-link"
-						href={resolve(`/comic/${comicId}/${panel.id}`)}
+						href={resolve(`comic/${comicId}/${panel.id}`)}
 						aria-current={index === current.index ? 'page' : undefined}
 					>
 						<span class="thumb">
@@ -78,7 +78,7 @@
 		{style}
 		{characters}
 	/>
-	<a href={resolve(`/comic/${comicId}`)}>{m.backToComic()}</a>
+	<a href={resolve(`comic/${comicId}`)}>{m.backToComic()}</a>
 </Section>
 
 <style>

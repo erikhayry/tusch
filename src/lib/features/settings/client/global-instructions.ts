@@ -1,5 +1,6 @@
-import { browser } from '$app/environment';
-import type { SubmitFunction } from '@sveltejs/kit';
+import type { SubmitFunction } from '$app/forms';
+import { browser } from '$app/env';
+
 import {
 	GLOBAL_INSTRUCTIONS_MAX_LENGTH,
 	GLOBAL_INSTRUCTIONS_VALUE_KEY,

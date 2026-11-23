@@ -1,5 +1,5 @@
-import { generateId } from '$lib/utils/id';
-import { deleteImage, getImageUrl, readImage, saveBlobImage } from '$lib/utils/storage/storage';
+import { generateId } from '#lib/utils/id.ts';
+import { deleteImage, getImageUrl, readImage, saveBlobImage } from '#lib/utils/storage/storage.ts';
 import type { AssetStore } from './asset-store';
 
 // Example comics ship their images in static/ and reference them by URL path

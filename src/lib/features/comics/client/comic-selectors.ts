@@ -4,7 +4,7 @@ import {
 	type Comic,
 	type ImageAsset,
 	type Panel,
-} from '$lib/types';
+} from '#lib/types/index.ts';
 import { z } from 'zod';
 import { EXAMPLES } from '../../../../examples/examples';
 

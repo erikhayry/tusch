@@ -1,9 +1,9 @@
-import type { ComicCommands } from '$lib/features/comics/client/comic-commands';
+import type { ComicCommands } from '#lib/features/comics/client/comic-commands.ts';
 import {
 	runAssetWorkflow,
 	type AssetWorkflowDeps,
 	type WorkflowResult,
-} from '$lib/features/comics/client/workflows/asset-workflow';
+} from '#lib/features/comics/client/workflows/asset-workflow.ts';
 import type { UndoCharacterCropFixValues } from '../../contracts/undoCharacterCropFix';
 
 export interface UndoCharacterCropFixDeps extends AssetWorkflowDeps {

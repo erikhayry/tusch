@@ -1,4 +1,4 @@
-import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '#lib/types/index.ts';
 
 export const KEY_COOKIE_NAME = 'byok_openai_key';
 export const TEXT_MODEL_COOKIE_NAME = TEXT_MODEL_KEY;

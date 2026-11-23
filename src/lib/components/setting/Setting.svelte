@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-	import { m } from '$lib/paraglide/messages';
+	import { m } from '#lib/paraglide/messages.js';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Section from '../relativeHeading/Section.svelte';
 

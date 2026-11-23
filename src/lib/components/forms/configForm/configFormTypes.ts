@@ -1,5 +1,5 @@
-import { SettingsPageDataSchema } from '$lib/types/routeData';
-import { ConfigStateSchema } from '$lib/utils/db/dbTypes';
+import { SettingsPageDataSchema } from '#lib/types/routeData.ts';
+import { ConfigStateSchema } from '#lib/utils/db/dbTypes.ts';
 import { z } from 'zod';
 
 export const ConfigFormPropsSchema = z.object({

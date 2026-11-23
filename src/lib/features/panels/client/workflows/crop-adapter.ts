@@ -1,5 +1,5 @@
-import type { Crop } from '$lib/types';
-import { cropImage } from '$lib/utils/crop/crop';
+import type { Crop } from '#lib/types/index.ts';
+import { cropImage } from '#lib/utils/crop/crop.ts';
 
 export type CropBlob = (source: Blob, crop: Crop) => Promise<Blob>;
 

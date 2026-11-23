@@ -2,27 +2,27 @@ import {
 	CreateComicValuesSchema,
 	decodeCreateComicValues,
 	type CreateComicResult,
-} from '$lib/features/comics/contracts/createComic';
+} from '#lib/features/comics/contracts/createComic.ts';
 import {
 	CreateCoverImageValuesSchema,
 	decodeCreateCoverImageValues,
 	type CreateCoverImageResult,
-} from '$lib/features/comics/contracts/createCoverImage';
+} from '#lib/features/comics/contracts/createCoverImage.ts';
 import {
 	CreatePanelValuesSchema,
 	decodeCreatePanelValues,
 	type CreatePanelResult,
-} from '$lib/features/panels/contracts/createPanel';
+} from '#lib/features/panels/contracts/createPanel.ts';
 import {
 	CreatePanelImageValuesSchema,
 	decodeCreatePanelImageValues,
 	type CreatePanelImageResult,
-} from '$lib/features/panels/contracts/createPanelImage';
+} from '#lib/features/panels/contracts/createPanelImage.ts';
 import {
 	decodeFixCharacterCropValues,
 	FixCharacterCropValuesSchema,
 	type FixCharacterCropResult,
-} from '$lib/features/panels/contracts/fixCharacterCrop';
+} from '#lib/features/panels/contracts/fixCharacterCrop.ts';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { GenerationService } from '../generation/generation-service';
 import { runGeneration, type ActionResult } from './run-action';

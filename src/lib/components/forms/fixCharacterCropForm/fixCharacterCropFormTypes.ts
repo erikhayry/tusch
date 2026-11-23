@@ -1,4 +1,4 @@
-import { FixCharacterCropValuesSchema } from '$lib/features/panels/contracts/fixCharacterCrop';
+import { FixCharacterCropValuesSchema } from '#lib/features/panels/contracts/fixCharacterCrop.ts';
 import { z } from 'zod';
 
 export const FixCharacterCropFormPropsSchema = z.object({

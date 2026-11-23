@@ -1,11 +1,11 @@
-import { readString } from '$lib/forms/form-data';
+import { readString } from '#lib/forms/form-data.ts';
 import {
 	GLOBAL_INSTRUCTIONS_VALUE_KEY,
 	GlobalInstructionsSchema,
 	decodeGlobalInstructions,
-} from '$lib/features/settings/contracts/globalInstructions';
-import { ComicSchema, ComicStyleEnum } from '$lib/types';
-import { m } from '$lib/paraglide/messages';
+} from '#lib/features/settings/contracts/globalInstructions.ts';
+import { ComicSchema, ComicStyleEnum } from '#lib/types/index.ts';
+import { m } from '#lib/paraglide/messages.js';
 import z from 'zod';
 
 export const CREATE_COMIC_ACTION = 'create-comic' as const;

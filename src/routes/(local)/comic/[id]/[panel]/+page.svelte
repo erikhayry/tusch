@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Page from '$lib/components/page/Page.svelte';
-	import Panels from '$lib/components/panels/Panels.svelte';
-	import { m } from '$lib/paraglide/messages';
+	import Page from '#lib/components/page/Page.svelte';
+	import Panels from '#lib/components/panels/Panels.svelte';
+	import { m } from '#lib/paraglide/messages.js';
 	import type { Props } from './+page';
 
 	let { data }: { data: Props } = $props();

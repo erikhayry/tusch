@@ -1,4 +1,4 @@
-import type { Comic } from '$lib/types';
+import type { Comic } from '#lib/types/index.ts';
 import { exampleCharacter } from './example-helpers';
 
 const NORA = 'bbbbbbbb-0000-4000-8000-0000000000c1';

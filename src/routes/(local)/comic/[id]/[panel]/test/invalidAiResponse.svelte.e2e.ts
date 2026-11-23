@@ -1,4 +1,4 @@
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import {

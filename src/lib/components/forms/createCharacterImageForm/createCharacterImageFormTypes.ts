@@ -1,4 +1,4 @@
-import { CreateCharacterImageValueSchema } from '$lib/utils/db/dbTypes';
+import { CreateCharacterImageValueSchema } from '#lib/utils/db/dbTypes.ts';
 import { z } from 'zod';
 
 export const CreateCharacterImageFormPropsSchema = z.object({

@@ -1,4 +1,4 @@
-import { ComicSchema, ConfigSchema, CropSchema } from '$lib/types';
+import { ComicSchema, ConfigSchema, CropSchema } from '#lib/types/index.ts';
 import z from 'zod';
 
 export const STORAGE = {

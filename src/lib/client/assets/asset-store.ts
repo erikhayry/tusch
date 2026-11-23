@@ -1,4 +1,4 @@
-import type { Comic } from '$lib/types';
+import type { Comic } from '#lib/types/index.ts';
 
 export interface AssetStore {
 	/** Persists a blob and resolves with the id used to reference it from metadata. */

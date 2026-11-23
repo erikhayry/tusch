@@ -1,6 +1,6 @@
-import { CREATE_PANEL_IMAGE_ACTION } from '$lib/features/panels/contracts/createPanelImage';
-import { m } from '$lib/paraglide/messages';
-import type { Comic } from '$lib/types';
+import { CREATE_PANEL_IMAGE_ACTION } from '#lib/features/panels/contracts/createPanelImage.ts';
+import { m } from '#lib/paraglide/messages.js';
+import type { Comic } from '#lib/types/index.ts';
 import { expect, type Locator, type Page } from '@playwright/test';
 import {
 	createComic,

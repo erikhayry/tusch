@@ -1,12 +1,12 @@
-import type { ComicCommands } from '$lib/features/comics/client/comic-commands';
-import { getPanel } from '$lib/features/comics/client/comic-selectors';
+import type { ComicCommands } from '#lib/features/comics/client/comic-commands.ts';
+import { getPanel } from '#lib/features/comics/client/comic-selectors.ts';
 import {
 	runAssetWorkflow,
 	type AssetWorkflowDeps,
 	type WorkflowResult,
-} from '$lib/features/comics/client/workflows/asset-workflow';
+} from '#lib/features/comics/client/workflows/asset-workflow.ts';
 import type { FixCharacterCropResult } from '../../contracts/fixCharacterCrop';
-import type { Crop, ImageAsset } from '$lib/types';
+import type { Crop, ImageAsset } from '#lib/types/index.ts';
 import type { CropBlob } from './crop-adapter';
 
 export interface FixCharacterCropDeps extends AssetWorkflowDeps {

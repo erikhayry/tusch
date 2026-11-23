@@ -7,11 +7,11 @@
 		getCharacterImageForPanel,
 		getCharacterReferenceGroups,
 		getCharacterName,
-	} from '$lib/features/comics/client/comic-selectors';
-	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
-	import { toCreatePanelImageValues } from '$lib/features/panels/contracts/createPanelImage';
-	import { m } from '$lib/paraglide/messages';
-	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
+	} from '#lib/features/comics/client/comic-selectors.ts';
+	import { comicStore } from '#lib/features/comics/client/comic-store.svelte.ts';
+	import { toCreatePanelImageValues } from '#lib/features/panels/contracts/createPanelImage.ts';
+	import { m } from '#lib/paraglide/messages.js';
+	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
 	import { tick } from 'svelte';
 	import AddCaptionForm from '../forms/addCaptionForm/AddCaptionForm.svelte';
 	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';

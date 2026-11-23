@@ -1,6 +1,6 @@
-import { m } from '$lib/paraglide/messages';
-import type { Comic } from '$lib/types';
-import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
+import { m } from '#lib/paraglide/messages.js';
+import type { Comic } from '#lib/types/index.ts';
+import { getImageFromOpenAiResponse } from '#lib/utils/ai/ai.ts';
 import type { Locator, Page } from '@playwright/test';
 import { CREATE_COVER_IMAGE_RESPONSE } from '../../../../../../tests/mock/openAi/openAiResponse';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';

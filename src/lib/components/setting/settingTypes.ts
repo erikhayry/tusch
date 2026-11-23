@@ -1,4 +1,4 @@
-import { SettingSchema } from '$lib/types';
+import { SettingSchema } from '#lib/types/index.ts';
 import z from 'zod';
 
 export const SettingPropsSchema = z.object({

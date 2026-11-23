@@ -24,8 +24,6 @@ export default defineConfig(({ mode }) => {
 						filename.split(/[/\\]/).includes('node_modules') ? undefined : true,
 				},
 				adapter: adapter(),
-				// Sentry's server init (src/instrumentation.server.ts) runs before the app.
-				experimental: { instrumentation: { server: true } },
 			}),
 
 			paraglideVitePlugin({
@@ -33,7 +31,7 @@ export default defineConfig(({ mode }) => {
 				outdir: './src/lib/paraglide',
 				emitTsDeclarations: true,
 				// v3 defaults the Vite plugin to virtual message modules. E2E tests import
-				// `$lib/paraglide/messages` in plain Node (Playwright), which can't load
+				// `#lib/paraglide/messages` in plain Node (Playwright), which can't load
 				// `virtual:` URLs, so keep real files on disk.
 				outputStructure: 'message-modules',
 			}),

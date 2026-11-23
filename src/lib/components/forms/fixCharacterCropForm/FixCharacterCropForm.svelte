@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { readAssetDataUrl } from '$lib/client/assets/read-data-url';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
-	import { fixCharacterCrop } from '$lib/features/panels/client/workflows/fix-character-crop';
+	import { enhance, type SubmitFunction } from '$app/forms';
+	import { readAssetDataUrl } from '#lib/client/assets/read-data-url.ts';
+	import { workflowDeps } from '#lib/client/workflow-deps.ts';
+	import { expectWorkflow } from '#lib/features/comics/client/workflows/asset-workflow.ts';
+	import { fixCharacterCrop } from '#lib/features/panels/client/workflows/fix-character-crop.ts';
 	import {
 		FIX_CHARACTER_CROP_ACTION,
 		type FixCharacterCropResult,
-	} from '$lib/features/panels/contracts/fixCharacterCrop';
-	import { enhanceAction } from '$lib/forms/enhance-action';
-	import { encodeFormValue } from '$lib/forms/form-data';
-	import { m } from '$lib/paraglide/messages';
-	import type { SubmitFunction } from '@sveltejs/kit';
+	} from '#lib/features/panels/contracts/fixCharacterCrop.ts';
+	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { encodeFormValue } from '#lib/forms/form-data.ts';
+	import { m } from '#lib/paraglide/messages.js';
 	import type { FixCharacterCropFormProps } from './fixCharacterCropFormTypes';
 
 	let {

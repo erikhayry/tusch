@@ -1,5 +1,5 @@
-import { m } from '$lib/paraglide/messages';
-import { ComicSchema, type Comic } from '$lib/types';
+import { m } from '#lib/paraglide/messages.js';
+import { ComicSchema, type Comic } from '#lib/types/index.ts';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from './gotoHydrated';
 import { activate, typeInto } from './keyboard';

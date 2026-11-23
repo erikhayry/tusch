@@ -1,11 +1,11 @@
-import { BYOK_ACTION } from '$lib/features/settings/contracts/validateApiKey';
-import { DELETE_ITEM_ACTION } from '$lib/features/comics/contracts/deleteItem';
+import { BYOK_ACTION } from '#lib/features/settings/contracts/validateApiKey.ts';
+import { DELETE_ITEM_ACTION } from '#lib/features/comics/contracts/deleteItem.ts';
 import {
 	clientCommandAction,
 	hasStoredKey,
 	validateApiKeyAction,
-} from '$lib/server/actions/settings-actions';
-import { ComicsServerDataSchema } from '$lib/types/routeData';
+} from '#lib/server/actions/settings-actions.ts';
+import { ComicsServerDataSchema } from '#lib/types/routeData.ts';
 import type { Actions, PageServerLoad } from './$types';
 
 // Only whether a key is stored: the start page's welcome section reads this flag (REQ-029).

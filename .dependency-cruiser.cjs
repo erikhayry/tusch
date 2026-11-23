@@ -85,7 +85,7 @@ module.exports = {
 	options: {
 		doNotFollow: { path: 'node_modules' },
 		exclude: { path: ['^src/lib/paraglide/', '\\.svelte-kit/'] },
-		tsConfig: { fileName: '.svelte-kit/tsconfig.json' },
+		tsConfig: { fileName: 'tsconfig.json' },
 		tsPreCompilationDeps: true,
 		enhancedResolveOptions: {
 			exportsFields: ['exports'],

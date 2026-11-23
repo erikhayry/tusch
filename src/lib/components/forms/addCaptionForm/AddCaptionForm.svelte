@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { addCaption } from '$lib/features/panels/client/add-caption';
+	import { addCaption } from '#lib/features/panels/client/add-caption.ts';
 	import {
 		ADD_CAPTION_ACTION,
 		CAPTION_VALUE_KEY,
 		getAddCaptionValues,
-	} from '$lib/features/panels/contracts/addCaption';
-	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
-	import { m } from '$lib/paraglide/messages';
+	} from '#lib/features/panels/contracts/addCaption.ts';
+	import { enhanceClientCommand } from '#lib/forms/enhance-client-command.ts';
+	import { m } from '#lib/paraglide/messages.js';
 	import type { AddCaptionFormProps } from './addCaptionFormTypes';
 
 	let { comicId, panelId }: AddCaptionFormProps = $props();

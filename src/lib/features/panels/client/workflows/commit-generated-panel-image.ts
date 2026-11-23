@@ -1,16 +1,16 @@
 import {
 	CommandFailureCodes,
 	type ComicCommands,
-} from '$lib/features/comics/client/comic-commands';
-import { getCharacter, getPanel } from '$lib/features/comics/client/comic-selectors';
+} from '#lib/features/comics/client/comic-commands.ts';
+import { getCharacter, getPanel } from '#lib/features/comics/client/comic-selectors.ts';
 import {
 	base64ImageToBlob,
 	runAssetWorkflow,
 	type AssetWorkflowDeps,
 	type WorkflowResult,
-} from '$lib/features/comics/client/workflows/asset-workflow';
-import type { CreatePanelImageResult } from '$lib/features/panels/contracts/createPanelImage';
-import type { CharacterImage, Crop, ResponsivePanelImage } from '$lib/types';
+} from '#lib/features/comics/client/workflows/asset-workflow.ts';
+import type { CreatePanelImageResult } from '#lib/features/panels/contracts/createPanelImage.ts';
+import type { CharacterImage, Crop, ResponsivePanelImage } from '#lib/types/index.ts';
 import type { CropBlob } from './crop-adapter';
 
 export interface PanelImageWorkflowDeps extends AssetWorkflowDeps {

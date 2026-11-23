@@ -3,10 +3,10 @@
 		getCharacterGalleryImages,
 		getComic,
 		getPanelsWithCharachter,
-	} from '$lib/features/comics/client/comic-selectors';
-	import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
-	import { toCharacterPrompt } from '$lib/features/comics/contracts/prompts';
-	import { m } from '$lib/paraglide/messages';
+	} from '#lib/features/comics/client/comic-selectors.ts';
+	import { comicStore } from '#lib/features/comics/client/comic-store.svelte.ts';
+	import { toCharacterPrompt } from '#lib/features/comics/contracts/prompts.ts';
+	import { m } from '#lib/paraglide/messages.js';
 	import { tick } from 'svelte';
 	import CreateCharacterImageForm from '../forms/createCharacterImageForm/CreateCharacterImageForm.svelte';
 	import FixCharacterCropForm from '../forms/fixCharacterCropForm/FixCharacterCropForm.svelte';

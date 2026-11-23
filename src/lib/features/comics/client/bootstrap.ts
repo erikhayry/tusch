@@ -1,4 +1,4 @@
-import type { Comic } from '$lib/types';
+import type { Comic } from '#lib/types/index.ts';
 import { EXAMPLES } from '../../../../examples/examples';
 import {
 	localComicStorage,

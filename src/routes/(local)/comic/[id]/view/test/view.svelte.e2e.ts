@@ -1,5 +1,5 @@
-import { m } from '$lib/paraglide/messages';
-import type { Comic } from '$lib/types';
+import { m } from '#lib/paraglide/messages.js';
+import type { Comic } from '#lib/types/index.ts';
 import { expect, test, type Page } from '@playwright/test';
 import {
 	createComic,

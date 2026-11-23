@@ -1,4 +1,4 @@
-import { CharachterPositionsSchema, ComicSchema, PanelSchema } from '$lib/types';
+import { CharachterPositionsSchema, ComicSchema, PanelSchema } from '#lib/types/index.ts';
 import z from 'zod';
 import { ImageSizeSchema } from './utils/settings';
 

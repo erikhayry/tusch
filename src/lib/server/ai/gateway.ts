@@ -3,7 +3,7 @@ import {
 	IMAGE_MODEL_COOKIE_NAME,
 	KEY_COOKIE_NAME,
 	TEXT_MODEL_COOKIE_NAME,
-} from '$lib/utils/cookies';
+} from '#lib/utils/cookies.ts';
 import type { Cookies } from '@sveltejs/kit';
 import type { AiCredentials, AiGateway } from './ai-gateway';
 import { createMockAiGateway } from './mock-gateway';

@@ -1,7 +1,7 @@
 import { resolve } from '$app/paths';
-import { getComics, hasOnlyExampleComics } from '$lib/features/comics/client/comic-selectors';
-import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
-import { ComicsPageDataSchema } from '$lib/types/routeData';
+import { getComics, hasOnlyExampleComics } from '#lib/features/comics/client/comic-selectors.ts';
+import { comicStore } from '#lib/features/comics/client/comic-store.svelte.ts';
+import { ComicsPageDataSchema } from '#lib/types/routeData.ts';
 import { redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 
@@ -13,7 +13,7 @@ export async function load({ parent, data }) {
 
 	// Empty collection (e.g. every comic deleted this session): start a new one.
 	if (comics.length === 0) {
-		redirect(307, resolve('/comic/create'));
+		redirect(307, resolve('comic/create'));
 	}
 
 	return ComicsPageDataSchema.parse({

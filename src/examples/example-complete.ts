@@ -1,4 +1,4 @@
-import type { Comic } from '$lib/types';
+import type { Comic } from '#lib/types/index.ts';
 import { exampleCharacter, exampleCover, examplePanelImage } from './example-helpers';
 
 // The mock gateway's default crops point at these ids (openAiResponse.ts).

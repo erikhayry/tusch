@@ -1,4 +1,4 @@
-import type { CreateCoverImageResult } from '$lib/features/comics/contracts/createCoverImage';
+import type { CreateCoverImageResult } from '#lib/features/comics/contracts/createCoverImage.ts';
 import { CommandFailureCodes, type ComicCommands } from '../comic-commands';
 import { getComic } from '../comic-selectors';
 import {

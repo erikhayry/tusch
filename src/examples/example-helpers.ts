@@ -1,4 +1,4 @@
-import type { Character, ResponsiveImage, ResponsivePanelImage } from '$lib/types';
+import type { Character, ResponsiveImage, ResponsivePanelImage } from '#lib/types/index.ts';
 
 type PanelCharacters = NonNullable<ResponsivePanelImage['landscape']['characters']>;
 

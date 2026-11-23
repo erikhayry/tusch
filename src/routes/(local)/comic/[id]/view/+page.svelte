@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Image from '$lib/components/image/Image.svelte';
-	import Page from '$lib/components/page/Page.svelte';
-	import Heading from '$lib/components/relativeHeading/Heading.svelte';
-	import Section from '$lib/components/relativeHeading/Section.svelte';
-	import { m } from '$lib/paraglide/messages';
+	import Image from '#lib/components/image/Image.svelte';
+	import Page from '#lib/components/page/Page.svelte';
+	import Heading from '#lib/components/relativeHeading/Heading.svelte';
+	import Section from '#lib/components/relativeHeading/Section.svelte';
+	import { m } from '#lib/paraglide/messages.js';
 	import type { Data } from '../+page';
 
 	let { data }: { data: Data } = $props();
@@ -39,5 +39,5 @@
 		</Section>
 	{/each}
 
-	<a href={resolve(`/comic/${data.comic.id}`)}>{m.back()}</a>
+	<a href={resolve(`comic/${data.comic.id}`)}>{m.back()}</a>
 </Page>

@@ -1,9 +1,9 @@
-import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '#lib/types/index.ts';
 import {
 	SettingsRouteDataSchema,
 	type SettingsRouteData,
-} from '$lib/features/settings/contracts/settingsPage';
-import { AiModelsResponseSchema } from '$lib/types/routeData';
+} from '#lib/features/settings/contracts/settingsPage.ts';
+import { AiModelsResponseSchema } from '#lib/types/routeData.ts';
 
 export type Props = SettingsRouteData;
 

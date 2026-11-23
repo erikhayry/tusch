@@ -1,6 +1,6 @@
 <script lang="ts">
-	import DeleteItemForm from '$lib/components/forms/deleteItemForm/DeleteItemForm.svelte';
-	import EditTextFieldForm from '$lib/components/forms/editTextFieldForm/EditTextFieldForm.svelte';
+	import DeleteItemForm from '#lib/components/forms/deleteItemForm/DeleteItemForm.svelte';
+	import EditTextFieldForm from '#lib/components/forms/editTextFieldForm/EditTextFieldForm.svelte';
 	import { type FieldActionsProps } from './fieldActionsTypes';
 
 	let {

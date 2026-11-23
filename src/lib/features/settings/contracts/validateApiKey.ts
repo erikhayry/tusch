@@ -1,4 +1,4 @@
-import { readString } from '$lib/forms/form-data';
+import { readString } from '#lib/forms/form-data.ts';
 import z from 'zod';
 
 export const BYOK_ACTION = 'byok' as const;

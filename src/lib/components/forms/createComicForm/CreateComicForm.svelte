@@ -7,23 +7,23 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
-	import Section from '$lib/components/relativeHeading/Section.svelte';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
-	import { commitGeneratedComic } from '$lib/features/comics/client/workflows/commit-generated-comic';
+	import Section from '#lib/components/relativeHeading/Section.svelte';
+	import { workflowDeps } from '#lib/client/workflow-deps.ts';
+	import { expectWorkflow } from '#lib/features/comics/client/workflows/asset-workflow.ts';
+	import { commitGeneratedComic } from '#lib/features/comics/client/workflows/commit-generated-comic.ts';
 	import {
 		CREATE_COMIC_ACTION,
 		type CreateComicResult,
-	} from '$lib/features/comics/contracts/createComic';
-	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
-	import { enhanceAction } from '$lib/forms/enhance-action';
-	import { m } from '$lib/paraglide/messages';
-	import { STYLES } from '$lib/utils/comicStyles';
+	} from '#lib/features/comics/contracts/createComic.ts';
+	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
+	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { m } from '#lib/paraglide/messages.js';
+	import { STYLES } from '#lib/utils/comicStyles.ts';
 
 	const handleSubmit = withGlobalInstructions(
 		enhanceAction<CreateComicResult>(m.loadingCreateComic(), async ({ data }) => {
 			expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
-			await goto(resolve(`/comic/${data.comic.id}`));
+			await goto(resolve(`comic/${data.comic.id}`));
 		}),
 	);
 </script>

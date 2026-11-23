@@ -1,5 +1,5 @@
-import type { AssetStore } from '$lib/client/assets/asset-store';
-import type { Crop } from '$lib/types';
+import type { AssetStore } from '#lib/client/assets/asset-store.ts';
+import type { Crop } from '#lib/types/index.ts';
 import type { CropBlob } from './crop-adapter';
 
 export interface CharacterCropDeps {
