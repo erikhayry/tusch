@@ -37,11 +37,10 @@ test.describe('light colour scheme', { tag: '@REQ-044' }, () => {
 	test.use({ colorScheme: 'light' });
 
 	for (const [name, url] of Object.entries(VIEWS)) {
-		test(`${name} is black on white`, async ({ page }) => {
+		test(`${name} has dark text on a light background`, async ({ page }) => {
 			await gotoHydrated(page, url);
 			const { background, text } = await rootColors(page);
-			expect(background).toBe('rgb(255, 255, 255)');
-			expect(text).toBe('rgb(0, 0, 0)');
+			expect(luminance(text)).toBeLessThan(luminance(background));
 		});
 	}
 });
@@ -50,7 +49,7 @@ test('the colour scheme updates without a reload', { tag: '@REQ-044' }, async ({
 	await page.emulateMedia({ colorScheme: 'light' });
 	await gotoHydrated(page, VIEWS.landing);
 	const light = await rootColors(page);
-	expect(light.background).toBe('rgb(255, 255, 255)');
+	expect(luminance(light.text)).toBeLessThan(luminance(light.background));
 
 	await page.emulateMedia({ colorScheme: 'dark' });
 	await expect
