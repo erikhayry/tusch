@@ -409,3 +409,4 @@ date,issue,skill,target,model,turns,input_tokens,output_tokens,cache_read_tokens
 2026-11-23,103,develop,103,claude-haiku-5-5,98,170,98327,13553707,215687,1.0155,1659,success,https://github.com/erikhayry/tusch/actions/runs/45153097312
 2026-11-23,103,reviewer,103,claude-sonnet-5-5,14,24,4074,683937,62396,0.3588,389,success,https://github.com/erikhayry/tusch/actions/runs/45157862632
 2026-11-23,103,triage,103,claude-sonnet-5-5,6,12,2172,227688,30613,0.1670,25,success,https://github.com/erikhayry/tusch/actions/runs/45159836868
+2026-11-23,103,triage,103,claude-sonnet-5-5,1,2,300,14714,26276,0.1096,4,success,https://github.com/erikhayry/tusch/actions/runs/45159915334
