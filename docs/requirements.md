@@ -213,6 +213,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: readers need to know who speaks without the editor's head crops (#283).
 - Proven by: tagged tests
 
+### REQ-283-4 Viewer panel images fill the width and nearly the height
+
+- Status: active
+- Statement: on the viewer, a panel image is as wide as the content area and almost as tall as the viewport, but leaves room so the top of the next panel shows below it, whatever its shape.
+- Why: readers see one panel at a time and a hint of the next, as in the reference viewer (#283).
+- Proven by: tagged tests
+
 ### REQ-011 A cover can be generated or replaced
 
 - Status: active

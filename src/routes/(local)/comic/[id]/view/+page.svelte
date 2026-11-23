@@ -39,14 +39,24 @@
 </Page>
 
 <style>
-	/* Sized by the picture, so the boxes overlay exactly the image. */
+	/* Full width, almost full height; the gap below shows the next panel. The picture
+	   is the positioning box for the overlaid boxes. */
 	.picture {
 		position: relative;
-		inline-size: fit-content;
-		max-inline-size: 100%;
+		inline-size: 100%;
+		block-size: var(--viewer-panel-height);
+		margin-block-end: var(--space-2);
+		overflow: hidden;
 	}
 
 	.picture :global(picture) {
 		display: block;
+		block-size: 100%;
+	}
+
+	.picture :global(img) {
+		inline-size: 100%;
+		block-size: 100%;
+		object-fit: cover;
 	}
 </style>

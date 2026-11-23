@@ -224,6 +224,27 @@ test.describe('viewer boxes', () => {
 	);
 
 	test(
+		'a panel image fills the width and nearly the height, so the next panel shows below',
+		{ tag: '@REQ-283-4' },
+		async ({ page }) => {
+			const comic = await createViewableComic(page);
+			const view = await new ViewPage(page, comic.id).goto();
+
+			const viewport = page.viewportSize();
+			const image = await boxOf(view.panelImage(1));
+			const main = await boxOf(page.getByRole('main'));
+			expect(viewport).not.toBeNull();
+			const height = viewport?.height ?? 0;
+			expect(image.width).toBeGreaterThanOrEqual(main.width * 0.9);
+			expect(image.height).toBeGreaterThan(height * 0.8);
+			expect(image.height).toBeLessThan(height);
+
+			const next = await boxOf(view.panelSection(2));
+			expect(next.y).toBeGreaterThan(image.y + image.height);
+		},
+	);
+
+	test(
 		'a caption box lies in the top-left of the image when the panel has no dialogue',
 		{ tag: '@REQ-283-1' },
 		async ({ page }) => {

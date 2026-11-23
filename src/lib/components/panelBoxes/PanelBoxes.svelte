@@ -66,6 +66,10 @@
 		margin: var(--space-2);
 	}
 
+	.speech .box {
+		font-style: italic;
+	}
+
 	.overlay .speech {
 		grid-area: 2 / 1 / 3 / -1;
 		align-self: end;
