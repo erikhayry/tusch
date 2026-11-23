@@ -45,6 +45,8 @@
 	--cover-aspect-ratio: 2 / 3;
 	--control-min-size: 2.75rem;
 	--panel-card-width: 8rem;
+	/* Viewer panel: nearly a full screen, so the next panel peeks in below. */
+	--viewer-panel-height: 90dvh;
 	--progress-duration: 1s;
 	--visually-hidden-size: 1px;
 	--visually-hidden-clip: inset(50%);
