@@ -3,8 +3,10 @@ import {
 	type Character,
 	type Comic,
 	type ImageAsset,
+	type ImageFormat,
 	type Panel,
 } from '#lib/types/index.ts';
+import { imageFormatOf, primaryVariant } from '#lib/types/image-variants.ts';
 import { z } from 'zod';
 import { EXAMPLES } from '../../../../examples/examples';
 
@@ -157,12 +159,17 @@ export function getCharacterGalleryImages(
 	});
 }
 
+/** The comic's image format; a missing comic reads as the default. */
+export function getImageFormat(comics: readonly Comic[], comicId: string): ImageFormat {
+	return imageFormatOf({ imageFormat: getComic(comics, comicId)?.imageFormat });
+}
+
 export function getPanelsWithCharachter(
 	comics: readonly Comic[],
 	comicId: string,
 	characterId: string,
 ): Panel[] | undefined {
 	return getComic(comics, comicId)?.panels.filter(({ image }) =>
-		image?.landscape.characters?.some(({ id }) => id === characterId),
+		primaryVariant(image)?.asset.characters?.some(({ id }) => id === characterId),
 	);
 }

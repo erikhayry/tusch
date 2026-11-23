@@ -7,10 +7,13 @@
 		getCharacterImageForPanel,
 		getCharacterReferenceGroups,
 		getCharacterName,
+		getImageFormat,
 	} from '#lib/features/comics/client/comic-selectors.ts';
 	import { comicStore } from '#lib/features/comics/client/comic-store.svelte.ts';
 	import { toCreatePanelImageValues } from '#lib/features/panels/contracts/createPanelImage.ts';
 	import { m } from '#lib/paraglide/messages.js';
+	import { primaryVariant, storedVariants } from '#lib/types/image-variants.ts';
+	import type { ImageVariant } from '#lib/types/index.ts';
 	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
 	import { tick } from 'svelte';
 	import AddCaptionForm from '../forms/addCaptionForm/AddCaptionForm.svelte';
@@ -28,6 +31,12 @@
 	const characterReferences = $derived(
 		getCharacterReferenceGroups(comicStore.comics, comicId, panel.id),
 	);
+	const imageFormat = $derived(getImageFormat(comicStore.comics, comicId));
+
+	const VARIANT_LABELS: Record<ImageVariant, () => string> = {
+		portrait: () => m.portraitImage(),
+		landscape: () => m.landscapeImage(),
+	};
 
 	let generateImageButton = $state<HTMLButtonElement>();
 	let addImageButton = $state<HTMLButtonElement>();
@@ -49,16 +58,22 @@
 		<CreatePanelImageForm
 			label={m.addImage()}
 			{characterReferences}
-			values={toCreatePanelImageValues(comicId, panel, characters, style)}
+			values={toCreatePanelImageValues(comicId, panel, characters, style, imageFormat)}
 			bind:submitButton={addImageButton}
 		/>
 	{:else}
-		<Image image={panel.image.landscape} alt={panel.image.alt} />
+		{#each storedVariants(panel.image) as { variant, asset } (variant)}
+			<figure>
+				<Image image={asset} alt={panel.image.alt} />
+				<figcaption>{VARIANT_LABELS[variant]()}</figcaption>
+			</figure>
+		{/each}
 		<CreatePanelImageForm
 			label={m.generateNewImage()}
-			imageName={panel.image?.landscape.src}
+			imageName={primaryVariant(panel.image)?.asset.src}
+			imageVariant={primaryVariant(panel.image)?.variant}
 			{characterReferences}
-			values={toCreatePanelImageValues(comicId, panel, characters, style)}
+			values={toCreatePanelImageValues(comicId, panel, characters, style, imageFormat)}
 			bind:submitButton={generateImageButton}
 		/>
 		<DeleteItemForm

@@ -58,6 +58,9 @@ Drive failures from the UI with markers in submitted text:
   rejects them (in the API key too, since the crop request has no user text)
 - `mock-error:empty-title`: a create-comic request gets the usual response with
   `title: ''`, so a comic with an empty title can be made through the UI
+- `mock-error:no-portrait`, `mock-error:no-landscape`: the portrait (or landscape)
+  request of a "Portrait and landscape" panel image gets no image, told apart by
+  the requested `size`; the other variant is still made (REQ-103-3)
 
 The response markers are read per request, never from shared state, since tests
 run in parallel against one server.

@@ -3,6 +3,7 @@
 	import Section from '#lib/components/relativeHeading/Section.svelte';
 	import { toCreatePanelValues } from '#lib/features/panels/contracts/createPanel.ts';
 	import { m } from '#lib/paraglide/messages.js';
+	import { primaryVariant } from '#lib/types/image-variants.ts';
 	import Image from '../image/Image.svelte';
 	import CreatePanelForm from '../forms/createPanelForm/CreatePanelForm.svelte';
 	import Panel from '../panel/Panel.svelte';
@@ -48,7 +49,12 @@
 						<span class="thumb">
 							{#if panel.image}
 								<!-- The title names the link, so the image is decorative. -->
-								<Image image={panel.image.landscape} alt="" loading="lazy" decoding="async" />
+								<Image
+									image={primaryVariant(panel.image)?.asset}
+									alt=""
+									loading="lazy"
+									decoding="async"
+								/>
 							{:else}
 								<span class="placeholder" aria-hidden="true"></span>
 							{/if}

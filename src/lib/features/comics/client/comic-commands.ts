@@ -3,6 +3,7 @@ import type {
 	Character,
 	CharacterImage,
 	Comic,
+	ImageFormat,
 	Panel,
 	ResponsiveImage,
 	ResponsivePanelImage,
@@ -212,6 +213,11 @@ export function createComicCommands({ store, storage, ensureLoaded }: ComicComma
 					})),
 				});
 			});
+		},
+
+		/** Applies to every panel image made from now on; existing images keep their variants. */
+		setImageFormat(comicId: string, imageFormat: ImageFormat): CommandResult {
+			return updateComic(comicId, (comic) => ok({ ...comic, imageFormat }));
 		},
 
 		replaceCover(comicId: string, cover: ResponsiveImage): CommandResult {

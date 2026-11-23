@@ -49,7 +49,7 @@ export function storedComics(page: Page): Promise<Record<string, unknown>[]> {
 	);
 }
 
-/** The stored src of a panel's current image, if any. */
+/** The stored src of a panel's current image (its portrait, or landscape if that is all), if any. */
 export function panelImageSrc(
 	page: Page,
 	comicId: string,
@@ -59,7 +59,8 @@ export function panelImageSrc(
 		({ comicId, panelId }) => {
 			const { comics } = JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}');
 			const comic = comics.find((c: { id: string }) => c.id === comicId);
-			return comic?.panels.find((p: { id: string }) => p.id === panelId)?.image?.landscape.src;
+			const panel = comic?.panels.find((p: { id: string }) => p.id === panelId);
+			return (panel?.image?.portrait ?? panel?.image?.landscape)?.src;
 		},
 		{ comicId, panelId },
 	);

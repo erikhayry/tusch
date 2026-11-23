@@ -19,7 +19,7 @@ test(
 
 		await activate(page, page.locator('ul[aria-labelledby="panels"] > li a').first());
 		await activate(page, page.getByRole('button', { name: m.addImage() }));
-		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+		await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 		// Crops of the comic's own characters sit next to the dialogue.
 		await expect(
 			page

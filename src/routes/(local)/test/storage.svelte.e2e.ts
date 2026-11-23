@@ -23,7 +23,7 @@ test.describe('image files', { tag: '@REQ-025' }, () => {
 	}) => {
 		await gotoHydrated(page, PANEL_URL);
 		await generatePanelImage(page);
-		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+		await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 		const first = await panelImageSrc(page);
 		expect(await storedFiles(page)).toContain(first);
 
@@ -101,13 +101,13 @@ test(
 test.describe('missing images', { tag: '@REQ-036' }, () => {
 	test('example comics show their bundled images', async ({ page }) => {
 		await gotoHydrated(page, PANEL_URL);
-		await expect(page.locator(`img[src="${PANEL.image!.landscape.src}"]`).first()).toBeVisible();
+		await expect(page.locator(`img[src="${PANEL.image!.portrait!.src}"]`).first()).toBeVisible();
 	});
 
 	test('a stored image whose file is gone shows the placeholder', async ({ page }) => {
 		await gotoHydrated(page, PANEL_URL);
 		await generatePanelImage(page);
-		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+		await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 
 		const src = await panelImageSrc(page);
 		await page.evaluate(async (name) => {
@@ -116,7 +116,7 @@ test.describe('missing images', { tag: '@REQ-036' }, () => {
 		}, src);
 		await page.reload();
 
-		await expect(page.getByRole('img', { name: 'mock alt text' })).toHaveAttribute(
+		await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toHaveAttribute(
 			'src',
 			'/missing-image.svg',
 		);
@@ -126,7 +126,7 @@ test.describe('missing images', { tag: '@REQ-036' }, () => {
 		await page.emulateMedia({ colorScheme: 'light' });
 		await gotoHydrated(page, PANEL_URL);
 		await generatePanelImage(page);
-		await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+		await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 
 		const src = await panelImageSrc(page);
 		await page.evaluate(async (name) => {
@@ -135,7 +135,7 @@ test.describe('missing images', { tag: '@REQ-036' }, () => {
 		}, src);
 		await page.reload();
 
-		const placeholder = page.getByRole('img', { name: 'mock alt text' });
+		const placeholder = page.getByRole('img', { name: 'mock alt text' }).first();
 		await expect(placeholder).toHaveAttribute('src', '/missing-image.svg');
 		await expect(placeholder).toHaveJSProperty('complete', true);
 		const light = await placeholder.screenshot();

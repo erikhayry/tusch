@@ -6,11 +6,13 @@ import {
 	type OpenAiOutput,
 } from '#lib/utils/ai/aiTypes.ts';
 import { COVER_IMAGE, CURRENT_BOXES_PREFIX } from '#lib/utils/ai/utils/messages.ts';
+import { IMAGE_SIZE } from '#lib/utils/ai/utils/settings.ts';
 import {
 	CREATE_COMIC_RESPONSE,
 	createComicResponse,
 	CREATE_COVER_IMAGE_RESPONSE,
 	CREATE_PANEL_IMAGE_RESPONSE,
+	createLandscapeImageResponse,
 	createPanelImageResponse,
 	createPanelResponse,
 	IMAGE_WITHOUT_IMAGE_RESPONSE,
@@ -47,6 +49,14 @@ const INVALID_TEXT = 'mock-error:invalid-text';
 const EMPTY_TITLE = 'mock-error:empty-title';
 /** A crop fix answered with boxes outside the image (REQ-219-4). Read from the API key too. */
 const INVALID_CROP = 'mock-error:invalid-crop';
+/**
+ * One variant of a "Portrait and landscape" panel image gets no image, told apart by
+ * the size the request asks for (REQ-103-3). Checked on every attempt, so the retry fails too.
+ */
+const NO_VARIANT_IMAGE = [
+	{ marker: 'mock-error:no-portrait', size: IMAGE_SIZE.PORTRAIT },
+	{ marker: 'mock-error:no-landscape', size: IMAGE_SIZE.LANDSCAPE },
+] as const;
 
 /** Used when the request has no boxes to start from (a character the panel image doesn't place). */
 const DEFAULT_BOXES: CharacterBoxes = {
@@ -146,12 +156,16 @@ const mockAiGateway: AiGateway = {
 		}
 		return createPanelResponse();
 	},
-	image: async ({ messages }) => {
+	image: async (request) => {
+		const { messages } = request;
 		failIfRequested(messages);
 		if (messages[0] === COVER_IMAGE.WHAT) {
 			return CREATE_COVER_IMAGE_RESPONSE;
 		}
 		const characterIds = charactersInPrompt(messages);
+		if (request.size === IMAGE_SIZE.LANDSCAPE) {
+			return createLandscapeImageResponse(characterIds ?? []);
+		}
 		return characterIds ? createPanelImageResponse(characterIds) : CREATE_PANEL_IMAGE_RESPONSE;
 	},
 	ping: async () => ({ success: true, message: 'test' }),
@@ -179,7 +193,12 @@ export function createMockAiGateway({ apiKey }: AiCredentials = {}): AiGateway {
 			const text = request.messages.join('\n');
 			const isFirstCall = imageCalls === 0;
 			imageCalls += 1;
-			const withoutImage = text.includes(NO_IMAGE_ONCE) ? isFirstCall : text.includes(NO_IMAGE);
+			const withoutVariant = NO_VARIANT_IMAGE.some(
+				({ marker, size }) => request.size === size && text.includes(marker),
+			);
+			const withoutImage = text.includes(NO_IMAGE_ONCE)
+				? isFirstCall
+				: text.includes(NO_IMAGE) || withoutVariant;
 			if (withoutImage) {
 				return IMAGE_WITHOUT_IMAGE_RESPONSE;
 			}

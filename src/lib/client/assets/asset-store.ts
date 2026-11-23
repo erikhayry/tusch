@@ -12,15 +12,16 @@ export interface AssetStore {
 
 export type CleanupResult = { ok: true } | { ok: false; failed: string[] };
 
+/** A panel image may have one variant (REQ-103-2); each stored file is referenced once. */
 function addImageIds(
 	ids: Set<string>,
-	image?: { landscape: { src: string }; portrait: { src: string } },
+	image?: { landscape?: { src: string }; portrait?: { src: string } },
 ) {
-	if (!image) {
-		return;
+	for (const variant of [image?.landscape, image?.portrait]) {
+		if (variant) {
+			ids.add(variant.src);
+		}
 	}
-	ids.add(image.landscape.src);
-	ids.add(image.portrait.src);
 }
 
 /** Every asset id referenced by the given comics. */

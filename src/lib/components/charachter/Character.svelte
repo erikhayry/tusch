@@ -6,6 +6,7 @@
 	} from '#lib/features/comics/client/comic-selectors.ts';
 	import { comicStore } from '#lib/features/comics/client/comic-store.svelte.ts';
 	import { toCharacterPrompt } from '#lib/features/comics/contracts/prompts.ts';
+	import { primaryVariant } from '#lib/types/image-variants.ts';
 	import { m } from '#lib/paraglide/messages.js';
 	import { tick } from 'svelte';
 	import CreateCharacterImageForm from '../forms/createCharacterImageForm/CreateCharacterImageForm.svelte';
@@ -43,15 +44,15 @@
 					number: entry.number,
 					title: entry.panel.editorialTitle,
 				}}
-				{@const landscape = entry.panel.image?.landscape}
-				{@const current = landscape?.characters?.find(({ id }) => id === character.id)}
+				{@const primary = primaryVariant(entry.panel.image)?.asset}
+				{@const current = primary?.characters?.find(({ id }) => id === character.id)}
 				<li>
 					<details>
 						<summary aria-label={m.characterHeadAlt(params)}>
 							<Image image={entry.head} alt="" class="head" />
 						</summary>
 						<Image image={entry.full} alt={m.characterFullAlt(params)} />
-						{#if landscape}
+						{#if primary}
 							<FixCharacterCropForm
 								bind:submitButton={fixButtons[entry.id]}
 								label={m.fixCharacterCrop(params)}
@@ -61,11 +62,11 @@
 									characterId: character.id,
 									characterImageId: entry.id,
 									character: toCharacterPrompt(character),
-									width: landscape.width,
-									height: landscape.height,
+									width: primary.width,
+									height: primary.height,
 									current: current && { head: current.head, full: current.full },
 								}}
-								imageAssetId={landscape.src}
+								imageAssetId={primary.src}
 							/>
 						{/if}
 						{#if entry.canUndoFix}
@@ -84,18 +85,18 @@
 	{/if}
 	<ul aria-label={m.characterPanels()}>
 		{#each panels as panel (panel.id)}
-			{@const landscape = panel.image?.landscape}
-			{@const crop = landscape?.characters?.find(({ id }) => id === character.id)?.head}
+			{@const primary = primaryVariant(panel.image)?.asset}
+			{@const crop = primary?.characters?.find(({ id }) => id === character.id)?.head}
 			{@const stored = character.images.some((image) => image.panelId === panel.id)}
 			<li>
 				{panel.editorialTitle}
-				{#if landscape && crop && !stored}
+				{#if primary && crop && !stored}
 					<CreateCharacterImageForm
 						label={m.characterPreviewCrop({
 							name: character.name,
 							number: (comic?.panels.findIndex(({ id }) => id === panel.id) ?? 0) + 1,
 						})}
-						values={{ comicId, characterId: character.id, image: landscape.src, crop }}
+						values={{ comicId, characterId: character.id, image: primary.src, crop }}
 					/>
 				{/if}
 			</li>

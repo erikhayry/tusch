@@ -1,6 +1,11 @@
-import type { Character, ResponsiveImage, ResponsivePanelImage } from '#lib/types/index.ts';
+import type {
+	Character,
+	PanelImageAsset,
+	ResponsiveImage,
+	ResponsivePanelImage,
+} from '#lib/types/index.ts';
 
-type PanelCharacters = NonNullable<ResponsivePanelImage['landscape']['characters']>;
+type PanelCharacters = NonNullable<PanelImageAsset['characters']>;
 
 // The example images are flat PNGs in static/examples/simple/. The sizes must
 // match the files, because crops are drawn from them on a canvas.

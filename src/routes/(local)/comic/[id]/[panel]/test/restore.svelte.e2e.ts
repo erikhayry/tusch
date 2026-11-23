@@ -107,8 +107,8 @@ test('restores the previous image with the keyboard', { tag: '@REQ-048' }, async
 	await expect(panelPage.newImage).toBeHidden();
 	await expect(panelPage.restoreImageButton).toBeHidden();
 	// The bundled example file is shared: it is referenced again, never copied into OPFS.
-	expect(await panelImageSrc(page)).toBe(PANEL.image?.landscape.src);
-	await expect(page.locator(`img[src="${PANEL.image?.landscape.src}"]`).first()).toBeVisible();
+	expect(await panelImageSrc(page)).toBe(PANEL.image?.portrait?.src);
+	await expect(page.locator(`img[src="${PANEL.image?.portrait?.src}"]`).first()).toBeVisible();
 });
 
 test(

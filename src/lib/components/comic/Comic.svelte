@@ -2,10 +2,12 @@
 	import { resolve } from '$app/paths';
 	import { toCoverPrompt } from '#lib/features/comics/contracts/createCoverImage.ts';
 	import { m } from '#lib/paraglide/messages.js';
+	import { imageFormatOf } from '#lib/types/image-variants.ts';
 	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
 	import Character from '../charachter/Character.svelte';
 	import CreateCoverImageForm from '../forms/createCoverImageForm/CreateCoverImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
+	import ImageFormatForm from '../forms/imageFormatForm/ImageFormatForm.svelte';
 	import Image from '../image/Image.svelte';
 	import PanelThumbnail from '../panel/PanelThumbnail.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
@@ -36,6 +38,7 @@
 	{:else}
 		<CreateCoverImageForm values={{ comic: toCoverPrompt(comic) }} label={m.addCover()} />
 	{/if}
+	<ImageFormatForm comicId={comic.id} imageFormat={imageFormatOf(comic)} />
 	<Section>
 		<Heading>{m.comicStyle()}</Heading>
 		<p>{comic.style}</p>

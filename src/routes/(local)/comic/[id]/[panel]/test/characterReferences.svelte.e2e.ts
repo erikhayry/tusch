@@ -139,13 +139,13 @@ test.describe('character references on the panel image form', () => {
 			expect(body).toContain(bytes.full);
 			expect(body).not.toContain(bytes.head);
 			expect(body).not.toContain(otherBytes.full);
-			await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+			await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 			await expect
 				.poll(async () => imagesFromPanel(await storedComic(page, comicId), b.id))
 				.not.toEqual([]);
 
 			await page.reload();
-			await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+			await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 			expect(await panelImageSrc(page, comicId, b.id)).toBeDefined();
 			expect(imagesFromPanel(await storedComic(page, comicId), b.id)).not.toEqual([]);
 		},
@@ -167,7 +167,7 @@ test.describe('character references on the panel image form', () => {
 				expect(body).not.toContain(bytes.head);
 				expect(body).not.toContain(bytes.full);
 			}
-			await expect(page.getByRole('img', { name: 'mock alt text' })).toBeVisible();
+			await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 		},
 	);
 

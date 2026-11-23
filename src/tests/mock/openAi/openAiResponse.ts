@@ -1,5 +1,6 @@
-import type { InitialComic, OpenAiOutput } from '#lib/utils/ai/aiTypes.ts';
+import type { CharacterBoxes, InitialComic, OpenAiOutput } from '#lib/utils/ai/aiTypes.ts';
 import { MOCK_COVER_IMAGE_BASE64 } from './mockCoverImage';
+import { MOCK_LANDSCAPE_IMAGE_BASE64 } from './mockLandscapeImage';
 import { MOCK_PANEL_IMAGE_BASE64 } from './mockPanelImage';
 
 const COMIC_DATA: { data: InitialComic } = {
@@ -390,6 +391,30 @@ export function createPanelResponse(): OpenAiOutput {
 }
 
 // Default character ids match example comic A (src/examples/example-complete.ts).
+/** The image data the mock answers with; boxes are in the pixels of its own image. */
+type CannedImage = {
+	alt: string;
+	width: number;
+	height: number;
+	characters: CharacterBoxes[];
+};
+
+const LANDSCAPE_IMAGE_DATA: CannedImage = {
+	alt: 'mock alt text',
+	width: 1536,
+	height: 1024,
+	characters: [
+		{
+			head: { x: 120, y: 120, width: 200, height: 220 },
+			full: { x: 60, y: 90, width: 420, height: 900 },
+		},
+		{
+			head: { x: 980, y: 200, width: 210, height: 240 },
+			full: { x: 900, y: 180, width: 330, height: 820 },
+		},
+	],
+};
+
 const PANEL_IMAGE_DATA = {
 	data: {
 		alt: 'mock alt text',
@@ -464,10 +489,23 @@ export const CREATE_PANEL_IMAGE_RESPONSE: OpenAiOutput = {
  * produce no crops for it. The two canned positions are reused in turn.
  */
 export function createPanelImageResponse(characterIds: string[]): OpenAiOutput {
-	const positions = PANEL_IMAGE_DATA.data.characters;
+	return cannedImageResponse(MOCK_PANEL_IMAGE_BASE64, PANEL_IMAGE_DATA.data, characterIds);
+}
+
+/** The landscape variant (REQ-103-2): the same canned characters, boxes inside 1536×1024. */
+export function createLandscapeImageResponse(characterIds: string[]): OpenAiOutput {
+	return cannedImageResponse(MOCK_LANDSCAPE_IMAGE_BASE64, LANDSCAPE_IMAGE_DATA, characterIds);
+}
+
+function cannedImageResponse(
+	base64: string,
+	image: CannedImage,
+	characterIds: string[],
+): OpenAiOutput {
+	const positions = image.characters;
 	const data = {
 		data: {
-			...PANEL_IMAGE_DATA.data,
+			...image,
 			characters: characterIds.map((id, index) => ({
 				...positions[index % positions.length],
 				id,
@@ -476,11 +514,14 @@ export function createPanelImageResponse(characterIds: string[]): OpenAiOutput {
 	};
 
 	return {
-		output: CREATE_PANEL_IMAGE_RESPONSE.output.map((item) =>
-			item.type === 'message'
+		output: CREATE_PANEL_IMAGE_RESPONSE.output.map((item) => {
+			if (item.type === 'image_generation_call') {
+				return { ...item, result: base64 };
+			}
+			return item.type === 'message'
 				? { ...item, content: [{ type: 'output_text' as const, text: JSON.stringify(data) }] }
-				: item,
-		),
+				: item;
+		}),
 	};
 }
 

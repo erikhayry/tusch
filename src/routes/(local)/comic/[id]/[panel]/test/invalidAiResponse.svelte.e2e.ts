@@ -17,7 +17,7 @@ import {
 import { panelImageSrc, storedFiles } from '../../../../../../tests/e2e/storage';
 
 const addImage = (page: Page) => page.getByRole('button', { name: m.addImage() });
-const panelImage = (page: Page) => page.getByRole('img', { name: 'mock alt text' });
+const panelImage = (page: Page) => page.getByRole('img', { name: 'mock alt text' }).first();
 
 /** A panel image that is shown, stored in OPFS and recorded in the snapshot like any other. */
 async function expectStoredImage(page: Page, comicId: string, panelId: string, files: string[]) {

@@ -39,6 +39,8 @@ export async function setImageFormat(page: Page, comicId: string, format: ImageF
 	await chooseOption(page, imageFormatSelect(page), IMAGE_FORMATS[format]());
 	await expect.poll(() => selectedImageFormat(page)).toBe(IMAGE_FORMATS[format]());
 	await activate(page, saveImageFormatButton(page));
+	// The save is a client command: wait until it is stored, or a navigation or reload can outrun it.
+	await expect.poll(async () => (await storedComic(page, comicId)).imageFormat).toBe(format);
 }
 
 /** A comic made through the UI with the given image format, and its first panel (no image yet). */
