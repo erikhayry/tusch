@@ -6,7 +6,6 @@ import { EXAMPLE_COMPLETE } from '../../../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 import {
 	NO_LANDSCAPE,
-	orientationOf,
 	orientationsOf,
 	setImageFormat,
 	variantCaption,
@@ -100,7 +99,8 @@ test(
 		const landing = await new LandingPage(page).goto();
 		const image = landing.comicLink(title).locator('img');
 		await expect(image).toBeVisible();
-		expect(await orientationOf(image)).toBe('landscape');
+		// Waits for the lazy-loaded image; a bare natural-size read of an unloaded one says portrait.
+		expect(await orientationsOf(image)).toEqual(['landscape']);
 	},
 );
 
