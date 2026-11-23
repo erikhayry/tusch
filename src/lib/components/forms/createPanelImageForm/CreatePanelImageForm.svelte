@@ -3,9 +3,11 @@
 	import { readAssetDataUrl } from '#lib/client/assets/read-data-url.ts';
 	import { workflowDeps } from '#lib/client/workflow-deps.ts';
 	import { expectWorkflow } from '#lib/features/comics/client/workflows/asset-workflow.ts';
+	import { commitCreatedPanelImageVariant } from '#lib/features/panels/client/workflows/commit-created-panel-image-variant.ts';
 	import { commitGeneratedPanelImage } from '#lib/features/panels/client/workflows/commit-generated-panel-image.ts';
 	import {
 		CREATE_PANEL_IMAGE_ACTION,
+		EXISTING_IMAGE_VALUE_KEY,
 		REFERENCE_IMAGES_KEY,
 		type CreatePanelImageResult,
 	} from '#lib/features/panels/contracts/createPanelImage.ts';
@@ -32,12 +34,17 @@
 		enhanceAction<CreatePanelImageResult>(
 			m.loadingCreatePanelImage(),
 			async ({ data, update, showError }) => {
-				expectWorkflow(await commitGeneratedPanelImage(workflowDeps, data));
+				expectWorkflow(
+					await (baseImage
+						? commitCreatedPanelImageVariant(workflowDeps, data)
+						: commitGeneratedPanelImage(workflowDeps, data)),
+				);
 				// The image that succeeded is saved; say which one wasn't made (REQ-103-3).
 				if (data.failedVariant) {
 					showError(FAILED_MESSAGES[data.failedVariant]());
 				}
 				await update();
+				onSuccess?.();
 			},
 		),
 	);
@@ -48,6 +55,8 @@
 		imageName,
 		imageVariant = ImageVariantEnum.enum.portrait,
 		characterReferences,
+		baseImage,
+		onSuccess,
 		submitButton = $bindable(),
 	}: CreatePanelImageFormProps & { submitButton?: HTMLButtonElement } = $props();
 
@@ -76,6 +85,12 @@
 					await readAssetDataUrl(workflowDeps.assets, chosen.full.src),
 				);
 			}
+		}
+		if (baseImage) {
+			input.formData.append(
+				EXISTING_IMAGE_VALUE_KEY,
+				await readAssetDataUrl(workflowDeps.assets, baseImage),
+			);
 		}
 		return handleSubmit(input);
 	};

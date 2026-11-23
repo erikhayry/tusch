@@ -48,6 +48,13 @@ export const REFERENCE_IMAGES_KEY = 'referenceImages' as const;
 /** One per character; bounds the request body, which Vercel caps at about 4.5 MB. */
 const MAX_REFERENCE_IMAGES = 10;
 
+/**
+ * The variant a panel image already has, as a data URL, when the request makes the
+ * missing other variant (REQ-279-1). The new image is drawn from it, like the landscape
+ * one is drawn from the portrait one.
+ */
+export const EXISTING_IMAGE_VALUE_KEY = 'existingImage' as const;
+
 export const CreatePanelImageValuesSchema = z.object({
 	panel: PanelImagePromptSchema,
 	comicId: z.string(),
@@ -60,6 +67,7 @@ export const CreatePanelImageValuesSchema = z.object({
 	[REFERENCE_IMAGES_KEY]: z.array(z.string().startsWith('data:image/')).max(MAX_REFERENCE_IMAGES),
 	/** Optional for API callers, which get both variants as before (REQ-103-2). */
 	[IMAGE_FORMAT_VALUE_KEY]: ImageFormatEnum.optional(),
+	[EXISTING_IMAGE_VALUE_KEY]: z.string().startsWith('data:image/').optional(),
 });
 export type CreatePanelImageValues = z.output<typeof CreatePanelImageValuesSchema>;
 
@@ -101,5 +109,6 @@ export function decodeCreatePanelImageValues(formData: FormData) {
 		[INCLUDE_IMAGE_VALUE_KEY]: readCheckbox(formData, INCLUDE_IMAGE_VALUE_KEY),
 		[REFERENCE_IMAGES_KEY]: readStringList(formData, REFERENCE_IMAGES_KEY),
 		[IMAGE_FORMAT_VALUE_KEY]: readString(formData, IMAGE_FORMAT_VALUE_KEY),
+		[EXISTING_IMAGE_VALUE_KEY]: readString(formData, EXISTING_IMAGE_VALUE_KEY),
 	};
 }

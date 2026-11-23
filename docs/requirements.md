@@ -362,6 +362,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: readers get an image that fits their screen (#103).
 - Proven by: tagged tests
 
+### REQ-279-1 A panel page offers to create a missing image variant
+
+- Status: active
+- Statement: on the panel page, when the comic's image format asks for a variant the panel image lacks (images made before #103, a partial failure, or a format changed later), a "Create landscape image" or "Create portrait image" button generates only that variant, using the existing variant as reference, and keeps the existing one. No such button is offered when the panel image has every variant the format asks for, or when the panel has no image. A failed request shows the error and leaves the panel image unchanged.
+- Why: users shouldn't have to replace a whole image to get the variant they lack (#279).
+- Proven by: tagged tests
+
+### REQ-279-2 Either variant of a panel image can be removed alone
+
+- Status: active
+- Statement: on the panel page, a panel image with two variants offers "Remove portrait image" and "Remove landscape image"; removing one keeps the other and deletes the removed file from OPFS (REQ-025). With one variant left, "Remove image" (REQ-017) applies. Neither makes a restore point (REQ-048).
+- Why: users can drop the variant they don't want without losing the other (#279).
+- Proven by: tagged tests
+
+### REQ-279-3 Character crops follow the variant that is created or removed
+
+- Status: active
+- Statement: creating a missing portrait variant replaces the character crops taken from the landscape one with crops from the new portrait image; removing the portrait variant of a panel image with both moves its crops to the landscape one (REQ-018). The replaced crop files are deleted (REQ-025).
+- Why: crops come from the portrait variant if there is one, otherwise from the landscape one (#103, #279).
+- Proven by: tagged tests
+
 ### REQ-017 A panel image can be removed
 
 - Status: active

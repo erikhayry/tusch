@@ -18,6 +18,17 @@ export function variantsFor(format: ImageFormat): readonly ImageVariant[] {
 	return VARIANTS_BY_FORMAT[format];
 }
 
+/**
+ * The variant the format asks for that the image lacks (images made before #103, a
+ * partial failure, or a format changed later). An image has one or both, so at most one.
+ */
+export function missingVariantFor(
+	image: ResponsivePanelImage,
+	format: ImageFormat,
+): ImageVariant | undefined {
+	return variantsFor(format).find((variant) => !image[variant]);
+}
+
 /** A comic without a saved format is `both` (REQ-103-1). */
 export function imageFormatOf(comic: Pick<Comic, 'imageFormat'>): ImageFormat {
 	return comic.imageFormat ?? ImageFormatEnum.enum.both;

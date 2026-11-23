@@ -1,6 +1,6 @@
 import { m } from '#lib/paraglide/messages.js';
 import { getImageFromOpenAiResponse } from '#lib/utils/ai/ai.ts';
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { EXAMPLE_COMPLETE } from '../../../../../../../tests/e2e/examples';
 import { CREATE_PANEL_IMAGE_RESPONSE } from '../../../../../../../tests/mock/openAi/openAiResponse';
 import { gotoHydrated } from '../../../../../../../tests/e2e/gotoHydrated';
@@ -101,6 +101,18 @@ export class PanelPage {
 		await activate(this.page, this.editDialogueButton);
 		await typeInto(this.page, this.editDialogueInput, newDialogue);
 		await activate(this.page, this.saveDialogueButton);
+	}
+
+	/**
+	 * The example panel with both variants: its page first offers the missing landscape
+	 * image (REQ-279-1), which the user creates through the UI. Tests that replace or
+	 * remove the image start here.
+	 */
+	static async gotoWithBothVariants(page: Page) {
+		const panelPage = await new PanelPage(page).goto();
+		await activate(page, page.getByRole('button', { name: m.createLandscapeImage(), exact: true }));
+		await expect(page.getByText(m.landscapeImage(), { exact: true })).toBeVisible();
+		return panelPage;
 	}
 
 	async goto(panel = 0) {

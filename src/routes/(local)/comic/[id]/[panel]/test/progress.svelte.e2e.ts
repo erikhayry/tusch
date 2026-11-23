@@ -8,7 +8,7 @@ test(
 	'the loader names the panel image action with an indeterminate bar',
 	{ tag: ['@REQ-041'] },
 	async ({ page }) => {
-		const panelPage = await new PanelPage(page).goto();
+		const panelPage = await PanelPage.gotoWithBothVariants(page);
 		const release = await holdRequest(page, /\?\/create-panel-image/);
 
 		await activate(page, panelPage.replaceImageButton);

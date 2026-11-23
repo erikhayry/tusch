@@ -12,13 +12,14 @@
 	import { comicStore } from '#lib/features/comics/client/comic-store.svelte.ts';
 	import { toCreatePanelImageValues } from '#lib/features/panels/contracts/createPanelImage.ts';
 	import { m } from '#lib/paraglide/messages.js';
-	import { primaryVariant, storedVariants } from '#lib/types/image-variants.ts';
+	import { missingVariantFor, primaryVariant, storedVariants } from '#lib/types/image-variants.ts';
 	import type { ImageVariant } from '#lib/types/index.ts';
 	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
 	import { tick } from 'svelte';
 	import AddCaptionForm from '../forms/addCaptionForm/AddCaptionForm.svelte';
 	import CreatePanelImageForm from '../forms/createPanelImageForm/CreatePanelImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
+	import RemovePanelImageVariantForm from '../forms/removePanelImageVariantForm/RemovePanelImageVariantForm.svelte';
 	import RestorePanelImageForm from '../forms/restorePanelImageForm/RestorePanelImageForm.svelte';
 	import Image from '../image/Image.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
@@ -32,14 +33,27 @@
 		getCharacterReferenceGroups(comicStore.comics, comicId, panel.id),
 	);
 	const imageFormat = $derived(getImageFormat(comicStore.comics, comicId));
+	/** The variant the format asks for that the image lacks (REQ-279-1). */
+	const missingVariant = $derived(
+		panel.image ? missingVariantFor(panel.image, imageFormat) : undefined,
+	);
 
 	const VARIANT_LABELS: Record<ImageVariant, () => string> = {
 		portrait: () => m.portraitImage(),
 		landscape: () => m.landscapeImage(),
 	};
+	const CREATE_LABELS: Record<ImageVariant, () => string> = {
+		portrait: () => m.createPortraitImage(),
+		landscape: () => m.createLandscapeImage(),
+	};
+	const REMOVE_LABELS: Record<ImageVariant, () => string> = {
+		portrait: () => m.removePortraitImage(),
+		landscape: () => m.removeLandscapeImage(),
+	};
 
 	let generateImageButton = $state<HTMLButtonElement>();
 	let addImageButton = $state<HTMLButtonElement>();
+	let createVariantButton = $state<HTMLButtonElement>();
 
 	/**
 	 * Restore and remove swap out the control that had focus, which drops focus to
@@ -68,19 +82,44 @@
 				<figcaption>{VARIANT_LABELS[variant]()}</figcaption>
 			</figure>
 		{/each}
-		<CreatePanelImageForm
-			label={m.generateNewImage()}
-			imageName={primaryVariant(panel.image)?.asset.src}
-			imageVariant={primaryVariant(panel.image)?.variant}
-			{characterReferences}
-			values={toCreatePanelImageValues(comicId, panel, characters, style, imageFormat)}
-			bind:submitButton={generateImageButton}
-		/>
-		<DeleteItemForm
-			label={m.removeImage()}
-			values={{ type: DB_ITEM_TYPE.enum.panelImage, comicId, panelId: panel.id }}
-			onSuccess={() => focusAfterUpdate(() => addImageButton)}
-		/>
+		{#if missingVariant}
+			<!-- While a variant is missing, only that variant is offered: the two forms
+			     would both have an instructions field, and regenerating replaces both. -->
+			<CreatePanelImageForm
+				label={CREATE_LABELS[missingVariant]()}
+				baseImage={primaryVariant(panel.image)?.asset.src}
+				{characterReferences}
+				values={toCreatePanelImageValues(comicId, panel, characters, style, missingVariant)}
+				bind:submitButton={createVariantButton}
+				onSuccess={() => focusAfterUpdate(() => generateImageButton)}
+			/>
+		{:else}
+			<CreatePanelImageForm
+				label={m.generateNewImage()}
+				imageName={primaryVariant(panel.image)?.asset.src}
+				imageVariant={primaryVariant(panel.image)?.variant}
+				{characterReferences}
+				values={toCreatePanelImageValues(comicId, panel, characters, style, imageFormat)}
+				bind:submitButton={generateImageButton}
+			/>
+		{/if}
+		{#if storedVariants(panel.image).length === 2}
+			{#each storedVariants(panel.image) as { variant } (variant)}
+				<RemovePanelImageVariantForm
+					label={REMOVE_LABELS[variant]()}
+					{comicId}
+					panelId={panel.id}
+					{variant}
+					onSuccess={() => focusAfterUpdate(() => createVariantButton ?? generateImageButton)}
+				/>
+			{/each}
+		{:else}
+			<DeleteItemForm
+				label={m.removeImage()}
+				values={{ type: DB_ITEM_TYPE.enum.panelImage, comicId, panelId: panel.id }}
+				onSuccess={() => focusAfterUpdate(() => addImageButton)}
+			/>
+		{/if}
 		{#if panel.previousImage}
 			<RestorePanelImageForm
 				{comicId}

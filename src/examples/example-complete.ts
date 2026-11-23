@@ -1,5 +1,10 @@
 import type { Comic } from '#lib/types/index.ts';
-import { exampleCharacter, exampleCover, examplePanelImage } from './example-helpers';
+import {
+	exampleCharacter,
+	exampleCover,
+	examplePanelImage,
+	examplePortraitPanelImage,
+} from './example-helpers';
 
 // The mock gateway's default crops point at these ids (openAiResponse.ts).
 const MARA = 'aaaaaaaa-0000-4000-8000-0000000000c1';
@@ -30,32 +35,18 @@ export const EXAMPLE_COMPLETE: Comic = {
 			season: 'autumn',
 			timeOfDay: 'dusk',
 			year: 1952,
-			image: examplePanelImage('a1', 'A flat blue panel labelled "A · panel 1".', {
-				landscape: [
-					{
-						id: MARA,
-						head: { x: 100, y: 80, width: 90, height: 100 },
-						full: { x: 60, y: 80, width: 200, height: 400 },
-					},
-					{
-						id: TOBIAS,
-						head: { x: 450, y: 90, width: 90, height: 100 },
-						full: { x: 410, y: 90, width: 200, height: 400 },
-					},
-				],
-				portrait: [
-					{
-						id: MARA,
-						head: { x: 60, y: 100, width: 80, height: 90 },
-						full: { x: 30, y: 100, width: 180, height: 600 },
-					},
-					{
-						id: TOBIAS,
-						head: { x: 300, y: 150, width: 80, height: 90 },
-						full: { x: 270, y: 150, width: 180, height: 600 },
-					},
-				],
-			}),
+			image: examplePortraitPanelImage('a1', 'A flat blue panel labelled "A · panel 1".', [
+				{
+					id: MARA,
+					head: { x: 60, y: 100, width: 80, height: 90 },
+					full: { x: 30, y: 100, width: 180, height: 600 },
+				},
+				{
+					id: TOBIAS,
+					head: { x: 300, y: 150, width: 80, height: 90 },
+					full: { x: 270, y: 150, width: 180, height: 600 },
+				},
+			]),
 		},
 		{
 			id: 'aaaaaaaa-0000-4000-8000-0000000000a2',

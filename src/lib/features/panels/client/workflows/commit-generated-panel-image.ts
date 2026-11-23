@@ -2,7 +2,7 @@ import {
 	CommandFailureCodes,
 	type ComicCommands,
 } from '#lib/features/comics/client/comic-commands.ts';
-import { getCharacter, getPanel } from '#lib/features/comics/client/comic-selectors.ts';
+import { getPanel } from '#lib/features/comics/client/comic-selectors.ts';
 import {
 	base64ImageToBlob,
 	runAssetWorkflow,
@@ -10,20 +10,12 @@ import {
 	type WorkflowResult,
 } from '#lib/features/comics/client/workflows/asset-workflow.ts';
 import type { CreatePanelImageResult } from '#lib/features/panels/contracts/createPanelImage.ts';
-import type {
-	CharacterImage,
-	Crop,
-	ImageVariant,
-	PanelImageAsset,
-	ResponsivePanelImage,
-} from '#lib/types/index.ts';
+import type { ImageVariant, PanelImageAsset, ResponsivePanelImage } from '#lib/types/index.ts';
 import { primaryVariant, storedVariants } from '#lib/types/image-variants.ts';
-import type { CropBlob } from './crop-adapter';
+import { cropCharacterImages, type CharacterCropDeps } from './character-crops';
 
-export interface PanelImageWorkflowDeps extends AssetWorkflowDeps {
+export interface PanelImageWorkflowDeps extends AssetWorkflowDeps, CharacterCropDeps {
 	commands: Pick<ComicCommands, 'commitPanelImage'>;
-	crop: CropBlob;
-	createId: () => string;
 }
 
 /**
@@ -59,36 +51,23 @@ export function commitGeneratedPanelImage(
 			const src = await stage(
 				variant === primary.variant ? primaryBlob : base64ImageToBlob(asset.src),
 			);
-			// Only the primary variant's boxes match its pixels, so the others store none.
-			stored[variant] =
-				variant === primary.variant
-					? { src, width: asset.width, height: asset.height, characters: asset.characters ?? [] }
-					: { src, width: asset.width, height: asset.height };
+			// Each variant keeps the boxes the model drew on its own pixels; crops use the primary's.
+			stored[variant] = {
+				src,
+				width: asset.width,
+				height: asset.height,
+				characters: asset.characters ?? [],
+			};
 		}
 
-		const storeCrop = async (area: Crop) => ({
-			src: await stage(await deps.crop(primaryBlob, area), 'webp'),
-			width: area.width,
-			height: area.height,
-		});
-
-		const characterImages: { characterId: string; image: CharacterImage }[] = [];
-		for (const character of primary.asset.characters ?? []) {
-			// The model can reference characters that are not in this comic; skip those crops.
-			if (!getCharacter(deps.store.comics, comicId, character.id)) {
-				continue;
-			}
-
-			characterImages.push({
-				characterId: character.id,
-				image: {
-					id: deps.createId(),
-					panelId,
-					head: await storeCrop(character.head),
-					full: await storeCrop(character.full),
-				},
-			});
-		}
+		const characterImages = await cropCharacterImages(
+			deps,
+			stage,
+			comicId,
+			panelId,
+			primaryBlob,
+			primary.asset.characters ?? [],
+		);
 
 		const panelImage: ResponsivePanelImage = { ...stored, alt: image.alt };
 		return () => deps.commands.commitPanelImage(comicId, panelId, panelImage, characterImages);

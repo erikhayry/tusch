@@ -25,7 +25,8 @@ export type WorkflowFailure = {
 export type WorkflowSuccess = { ok: true; cleanup: CleanupResult };
 export type WorkflowResult = WorkflowSuccess | WorkflowFailure;
 
-type Stage = (blob: Blob, extension?: string) => Promise<string>;
+/** Stages one asset and resolves with its id, rolled back if the workflow fails. */
+export type Stage = (blob: Blob, extension?: string) => Promise<string>;
 /** Builds the final metadata from staged assets and returns the single commit to run. */
 type Prepare = (stage: Stage) => Promise<(() => CommandResult) | CommandFailure>;
 

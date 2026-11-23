@@ -44,6 +44,18 @@ export function examplePanelImage(
 	};
 }
 
+/**
+ * A panel image as the app stored it before #103: portrait only. The example panel uses
+ * it, so the panel page offers to create the landscape variant (REQ-279-1).
+ */
+export function examplePortraitPanelImage(
+	name: string,
+	alt: string,
+	characters: PanelCharacters = [],
+): ResponsivePanelImage {
+	return { portrait: { ...asset(name, 'portrait', PORTRAIT), characters }, alt };
+}
+
 export function exampleCharacter(id: string, name: string, top: string): Character {
 	return {
 		id,
