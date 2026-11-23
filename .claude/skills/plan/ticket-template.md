@@ -1,29 +1,35 @@
+Keep the whole ticket under about 60 lines. Say each thing once; link
+`docs/requirements.md` and the code instead of copying them.
+
 ## Problem / idea
 
-<What the user wants and why, in two or three sentences.>
+<What the user wants and why, in at most three sentences.>
 
 ## Requirements
 
-- REQ-0xx <title> (existing; unchanged)
+- REQ-0xx (existing; unchanged), one line each, no restating
 - Changes REQ-0xx: <new statement> (only if behaviour changes)
 - Removes REQ-0xx (only if obsolete)
 - REQ-NEW: <one-sentence statement> (the tester assigns the id)
 
 ## Acceptance criteria
 
-Each item becomes one E2E test tagged with its requirement.
+One line each; each becomes one E2E test tagged with its requirement.
 
 - [ ] Given <state>, when <action>, then <observable result>. (REQ-…)
-- [ ] …
+
+## Copy
+
+<Only when text changes: a table of key, en, sv-se. Omit otherwise.>
 
 ## Views affected
 
-<Views whose screenshot baselines should change, e.g. `landing`, `panel`. "None" if no UI change.>
+<Views whose screenshot baselines should change, e.g. `landing`. "None" if no UI change.>
 
 ## Out of scope
 
-<What this ticket deliberately doesn't do.>
+<One line per item.>
 
 ## Notes for the tester and developer
 
-<Pointers: files to start from, the mock-gateway markers to use, risks.>
+<At most 5 pointers: files to start from, mock markers, risks.>

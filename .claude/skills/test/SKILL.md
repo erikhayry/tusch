@@ -15,7 +15,7 @@ and `docs/rules/testing.md`.
 
 ## Issue
 
-!`gh issue view $0 --json number,title,labels,body,comments`
+!`gh issue view $0 --json number,title,labels,body,comments --jq '{number,title,labels:[.labels[].name],body,comments:(.comments|map(select(.body|startswith("<!-- cost-so-far")|not))|.[-4:]|map({author:.author.login,body}))}'`
 
 ## 1. Check entry
 
@@ -61,6 +61,6 @@ own command.
 ## 6. Hand off
 
 Commit (`Refs #$0`), then push with `git push -u origin HEAD`. The pre-push hook
-runs the checks. Comment with the protocol format, listing each test, its
-requirement tags and how it currently fails. Then move
+runs the checks. Comment with the protocol format (short: `docs/rules/agents.md`,
+"Comments"): one line per test with its tags and how it fails, nothing else. Then move
 `status:needs-tests` → `status:needs-dev`.

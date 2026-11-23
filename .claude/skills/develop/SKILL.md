@@ -15,7 +15,7 @@ Follow `docs/rules/agents.md` (especially "Running commands") and every file in
 
 ## Issue
 
-!`gh issue view $0 --json number,title,labels,body,comments`
+!`gh issue view $0 --json number,title,labels,body,comments --jq '{number,title,labels:[.labels[].name],body,comments:(.comments|map(select(.body|startswith("<!-- cost-so-far")|not))|.[-4:]|map({author:.author.login,body}))}'`
 
 ## 1. Check entry
 
@@ -94,6 +94,6 @@ file when nothing user-facing changed, and say so in your comment.
 ## 6. Hand off
 
 Commit (`Refs #$0`, explaining why in the body), then `git push`. Comment with
-the protocol format: what changed (files), why it's built that way, what you ran
-and its results, and screenshots updated (yes/no). Then move
+the protocol format (short: `docs/rules/agents.md`, "Comments"): files changed, one line on
+why, checks in one line, screenshots updated (yes/no). Then move
 `status:needs-dev` → `status:needs-review`. Don't open the PR; the reviewer does.

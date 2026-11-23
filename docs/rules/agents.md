@@ -41,19 +41,41 @@ and on GitHub.
 
 ## Comments
 
-Every role ends with **one** issue comment, in this shape:
+Every role ends with **one** issue comment. The reader is a human who has to act
+on it and the next agent, who has little context. Write for both:
 
 ```md
-### <Role>: <one-line outcome>
+### <Role>: <outcome in one line>
 
-- What I did (files, tests, decisions)
-- What the next role needs to know
-- Anything left out on purpose
+Do next: <the one thing the reader must do, or "nothing">
+
+- <what changed or was found, one line each, at most 5>
 
 Next: `status:<next>`
 ```
 
-Keep it short. Link files and commits rather than pasting code.
+Rules (adapted from [i-have-adhd](https://github.com/ayghri/i-have-adhd)):
+
+1. **Lead with the action.** The line after the heading says what the human or
+   next role does. A decision a human must make goes there, as one question with
+   your recommendation.
+2. **Hard limit: 10 lines and 1,200 characters.** Detail goes in the diff, the
+   tests or the PR body, never the thread. Link files (`path:line`) and commits.
+3. **No recap.** Don't restate the ticket, earlier comments, your branch or your
+   steps. The next role reads the diff.
+4. **Checks: one line.** `check, lint, knip, e2e: pass`. For a failure, paste only
+   the failing test name and its first error line.
+5. **Number what a human must do**, one bounded action per step, with a time
+   estimate in minutes when it is not instant.
+6. **Cap lists at 5 items**, most important first. If more matter, say how many
+   more and where they are.
+7. **Errors are matter-of-fact**: cause, then fix. No apologies, no "unfortunately".
+8. **No preamble or closers**: no "I've now…", "Let me know…", "Hope this helps".
+9. **Tangents become follow-up issues** (see "Follow-ups"), not paragraphs.
+10. **Tickets** follow `ticket-template.md`: a short problem, one line per
+    criterion, and no copy of what a test or the code already says.
+
+When a role blocks, the first line is the decision a human must make.
 
 **Trust marker (planner only).** When `/plan` writes the ticket after the human
 answered its questions, its comment carries one hidden line
