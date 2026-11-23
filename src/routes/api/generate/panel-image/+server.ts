@@ -2,7 +2,7 @@ import { CreatePanelImageValuesSchema } from '$lib/features/panels/contracts/cre
 import { generationEndpoint } from '$lib/server/actions/generation-endpoints';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = (event) =>
-	generationEndpoint(event, CreatePanelImageValuesSchema, (generation, values) =>
+export const POST: RequestHandler = ({ request }) =>
+	generationEndpoint(request, CreatePanelImageValuesSchema, (generation, values) =>
 		generation.createPanelImage(values),
 	);

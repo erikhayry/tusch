@@ -1,4 +1,4 @@
-import { json, type RequestEvent } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { credentialsFromAuthorizationHeader, getAiGateway } from '../ai/gateway';
 import { createGenerationService, type GenerationService } from '../generation/generation-service';
@@ -16,7 +16,7 @@ function failureResponse({ status, body }: Failure): Response {
  * is stored. Auth runs before the body is read, so no AI request is made without a key.
  */
 export async function generationEndpoint<T extends z.ZodType, R>(
-	{ request }: RequestEvent,
+	request: Request,
 	schema: T,
 	run: (service: GenerationService, values: z.output<T>) => Promise<R>,
 ): Promise<Response> {

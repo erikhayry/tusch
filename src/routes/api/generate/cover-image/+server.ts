@@ -2,7 +2,7 @@ import { CreateCoverImageValuesSchema } from '$lib/features/comics/contracts/cre
 import { generationEndpoint } from '$lib/server/actions/generation-endpoints';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = (event) =>
-	generationEndpoint(event, CreateCoverImageValuesSchema, (generation, values) =>
+export const POST: RequestHandler = ({ request }) =>
+	generationEndpoint(request, CreateCoverImageValuesSchema, (generation, values) =>
 		generation.createCoverImage(values),
 	);
