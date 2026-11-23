@@ -24,10 +24,18 @@ export type Outcome<R> = { ok: true; result: R } | ({ ok: false } & Failure);
 interface FormContract<T extends z.ZodType> {
 	decode: (formData: FormData) => unknown;
 	schema: T;
+	/** Copy for an invalid field the error region must name; otherwise the generic message. */
+	failureMessage?: (error: z.ZodError) => string | undefined;
 }
 
+const INVALID_VALUES_MESSAGE = 'Submitted values are invalid';
+
 /** Invalid input is a 400 with the field errors, whatever decoded the values. */
-export function parseValues<T extends z.ZodType>(schema: T, input: unknown): Outcome<z.output<T>> {
+export function parseValues<T extends z.ZodType>(
+	schema: T,
+	input: unknown,
+	failureMessage?: (error: z.ZodError) => string | undefined,
+): Outcome<z.output<T>> {
 	const result = schema.safeParse(input);
 	if (result.success) {
 		return { ok: true, result: result.data };
@@ -38,7 +46,7 @@ export function parseValues<T extends z.ZodType>(schema: T, input: unknown): Out
 		status: 400,
 		body: {
 			code: 'invalid_input',
-			message: 'Submitted values are invalid',
+			message: failureMessage?.(result.error) ?? INVALID_VALUES_MESSAGE,
 			fieldErrors: z.flattenError(result.error).fieldErrors,
 		},
 	};
@@ -46,9 +54,9 @@ export function parseValues<T extends z.ZodType>(schema: T, input: unknown): Out
 
 export async function decodeForm<T extends z.ZodType>(
 	event: RequestEvent,
-	{ decode, schema }: FormContract<T>,
+	{ decode, schema, failureMessage }: FormContract<T>,
 ): Promise<{ ok: true; values: z.output<T> } | { ok: false; failure: ActionFailure<FormFailure> }> {
-	const parsed = parseValues(schema, decode(await event.request.formData()));
+	const parsed = parseValues(schema, decode(await event.request.formData()), failureMessage);
 	return parsed.ok
 		? { ok: true, values: parsed.result }
 		: { ok: false, failure: fail(parsed.status, parsed.body) };
