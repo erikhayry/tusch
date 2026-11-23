@@ -14,7 +14,7 @@ you don't fix. Follow `docs/rules/agents.md`, especially "Running commands".
 
 ## Issue
 
-!`gh issue view $0 --json number,title,labels,body,comments`
+!`gh issue view $0 --json number,title,labels,body,comments --jq '{number,title,labels:[.labels[].name],body,comments:(.comments|map(select(.body|startswith("<!-- cost-so-far")|not))|.[-4:]|map({author:.author.login,body}))}'`
 
 ## 1. Check entry
 
@@ -92,8 +92,8 @@ So:
 
 ## 3. Decide
 
-- **Blocking issues:** don't open a PR. Comment with the protocol format,
-  listing each blocking item with file and line, and move the issue back to
+- **Blocking issues:** don't open a PR. Comment with the protocol format (short: `docs/rules/agents.md`,
+  "Comments"), one line per blocking item with file and line, and move the issue back to
   `status:needs-dev`, or to `status:needs-tests` if the tests are what's wrong.
 - **Otherwise:** write the PR body with the Write tool to `.agent-tmp/pr-$0.md`,
   then open the PR:

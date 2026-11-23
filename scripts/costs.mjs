@@ -357,14 +357,18 @@ function denials(file) {
 		return '';
 	}
 	const result = messages.findLast((message) => message?.type === 'result') ?? {};
-	return (result.permission_denials ?? [])
-		.map(({ tool_name: tool, tool_input: input = {} }) => {
-			const detail = String(input.command ?? input.file_path ?? input.path ?? '')
-				.replace(/\s+/g, ' ')
-				.slice(0, 160);
-			return `- \`${tool}\`${detail ? `: \`${detail.replaceAll('`', "'")}\`` : ''}`;
-		})
-		.join('\n');
+	const all = result.permission_denials ?? [];
+	// Five lines are enough to see the pattern; the rest repeat it.
+	const lines = all.slice(0, 5).map(({ tool_name: tool, tool_input: input = {} }) => {
+		const detail = String(input.command ?? input.file_path ?? input.path ?? '')
+			.replace(/\s+/g, ' ')
+			.slice(0, 160);
+		return `- \`${tool}\`${detail ? `: \`${detail.replaceAll('`', "'")}\`` : ''}`;
+	});
+	if (all.length > lines.length) {
+		lines.push(`- …and ${all.length - lines.length} more`);
+	}
+	return lines.join('\n');
 }
 
 // The agent's last message, shortened. When a run ends without handing off, this is
@@ -380,7 +384,7 @@ function finalMessage(file) {
 	const result = messages.findLast((message) => message?.type === 'result') ?? {};
 	return String(result.result ?? '')
 		.trim()
-		.slice(0, 3000);
+		.slice(0, 800);
 }
 
 const [command, arg, issue] = process.argv.slice(2);

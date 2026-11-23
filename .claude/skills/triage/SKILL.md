@@ -14,7 +14,7 @@ change code or tests. Follow `docs/rules/agents.md`, especially "Running command
 
 ## Issue
 
-!`gh issue view $0 --json number,title,labels,body,comments`
+!`gh issue view $0 --json number,title,labels,body,comments --jq '{number,title,labels:[.labels[].name],body,comments:(.comments|map(select(.body|startswith("<!-- cost-so-far")|not))|.[-4:]|map({author:.author.login,body}))}'`
 
 ## 1. Check entry
 
