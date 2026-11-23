@@ -21,6 +21,17 @@ export function credentialsFromCookies(cookies: Cookies): AiCredentials {
 	};
 }
 
+const BEARER_PATTERN = /^Bearer\s+(\S+)$/;
+
+/**
+ * The key from `Authorization: Bearer <key>`, the only way the JSON API takes it.
+ * No cookie fallback: a cross-site page can't set this header without a CORS preflight.
+ */
+export function credentialsFromAuthorizationHeader(request: Request): AiCredentials | undefined {
+	const apiKey = BEARER_PATTERN.exec(request.headers.get('authorization') ?? '')?.[1];
+	return apiKey ? { apiKey } : undefined;
+}
+
 /** The gateway for one request. Playwright runs get canned responses. */
 export function getAiGateway(credentials: AiCredentials): AiGateway {
 	return useMockGateway() ? createMockAiGateway(credentials) : createOpenAiGateway(credentials);

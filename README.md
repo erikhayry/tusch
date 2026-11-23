@@ -40,3 +40,26 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+## Generation API
+
+Scripts can run the four server-backed generation steps over HTTP. Each takes a
+JSON body with the same fields as its form, returns the same result as JSON, and
+stores nothing on the server. Send your OpenAI key on every request:
+
+```http
+POST /api/generate/comic
+Authorization: Bearer <OpenAI key>
+Content-Type: application/json
+
+{ "story": "A lighthouse keeper discovers that the fog carries messages.", "style": "anime" }
+```
+
+- `POST /api/generate/comic`: create a comic from `url` or `story`
+- `POST /api/generate/cover-image`
+- `POST /api/generate/panel`
+- `POST /api/generate/panel-image`
+
+The key is read only from the `Authorization` header; cookies and a server key are
+never used. Failures are JSON `{ code, message }` (plus `fieldErrors` for invalid
+input), with the same codes and statuses as the app's forms.

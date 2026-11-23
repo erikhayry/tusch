@@ -12,58 +12,107 @@ import { reportProviderError } from '../report-error';
 
 export type ActionResult<T> = Promise<T | ActionFailure<FormFailure>>;
 
+/** Unexpected provider failure, as the JSON API reports it. */
+export const PROVIDER_ERROR_CODE = 'provider_error' as const;
+
+/** A failure as an HTTP status and a body. */
+export type Failure = { status: number; body: FormFailure };
+
+/** The operation's result, or the failure to report. */
+export type Outcome<R> = { ok: true; result: R } | ({ ok: false } & Failure);
+
 interface FormContract<T extends z.ZodType> {
 	decode: (formData: FormData) => unknown;
 	schema: T;
+}
+
+/** Invalid input is a 400 with the field errors, whatever decoded the values. */
+export function parseValues<T extends z.ZodType>(schema: T, input: unknown): Outcome<z.output<T>> {
+	const result = schema.safeParse(input);
+	if (result.success) {
+		return { ok: true, result: result.data };
+	}
+
+	return {
+		ok: false,
+		status: 400,
+		body: {
+			code: 'invalid_input',
+			message: 'Submitted values are invalid',
+			fieldErrors: z.flattenError(result.error).fieldErrors,
+		},
+	};
 }
 
 export async function decodeForm<T extends z.ZodType>(
 	event: RequestEvent,
 	{ decode, schema }: FormContract<T>,
 ): Promise<{ ok: true; values: z.output<T> } | { ok: false; failure: ActionFailure<FormFailure> }> {
-	const result = schema.safeParse(decode(await event.request.formData()));
-	if (result.success) {
-		return { ok: true, values: result.data };
-	}
-
-	return {
-		ok: false,
-		failure: fail(400, {
-			code: 'invalid_input',
-			message: 'Submitted values are invalid',
-			fieldErrors: z.flattenError(result.error).fieldErrors,
-		}),
-	};
+	const parsed = parseValues(schema, decode(await event.request.formData()));
+	return parsed.ok
+		? { ok: true, values: parsed.result }
+		: { ok: false, failure: fail(parsed.status, parsed.body) };
 }
 
 /**
- * Expected provider outcomes become form failures the UI can show (and retry,
- * for rate limits). Invalid responses are form failures too, so the UI can show a
- * friendly message; they are reported to Sentry here (REQ-185-3), since `fail()`
- * never reaches `handleError`. Anything else becomes a thrown 502, which
- * `handleError` reports, so it must not also be reported here.
+ * Expected provider outcomes become failures the UI can show (and retry, for
+ * rate limits). Invalid responses are failures too, so the UI can show a friendly
+ * message; they are reported to Sentry here (REQ-185-3), since a returned failure
+ * never reaches `handleError`. Returns `null` for anything unexpected.
  */
-export function toActionFailure(cause: unknown): ActionFailure<FormFailure> {
+function knownFailure(cause: unknown): Failure | null {
 	if (cause instanceof InvalidAiResponseError) {
 		reportProviderError(cause.code, cause.message);
-		return fail(502, { code: cause.code, message: cause.message });
+		return { status: 502, body: { code: cause.code, message: cause.message } };
 	}
 
 	if (cause instanceof AiGatewayError) {
 		switch (cause.kind) {
 			case 'missing-key':
 			case 'auth':
-				return fail(401, { code: 'provider_auth', message: cause.message });
+				return { status: 401, body: { code: 'provider_auth', message: cause.message } };
 			case 'permission':
-				return fail(403, { code: 'provider_permission', message: cause.message });
+				return { status: 403, body: { code: 'provider_permission', message: cause.message } };
 			case 'rate-limit':
-				return fail(429, { code: 'rate_limited', message: cause.message });
+				return { status: 429, body: { code: 'rate_limited', message: cause.message } };
 		}
 	}
 
-	// Thrown, so SvelteKit passes it to `handleError`, which reports 5xx to Sentry once.
-	const message = cause instanceof Error ? cause.message : 'AI request failed';
-	error(502, message);
+	return null;
+}
+
+function unexpectedMessage(cause: unknown): string {
+	return cause instanceof Error ? cause.message : 'AI request failed';
+}
+
+/** Forms: an unexpected failure is thrown as a 502, so `handleError` reports it once. */
+export function toActionFailure(cause: unknown): ActionFailure<FormFailure> {
+	const known = knownFailure(cause);
+	if (known) {
+		return fail(known.status, known.body);
+	}
+
+	error(502, unexpectedMessage(cause));
+}
+
+/**
+ * Runs one generation operation for the JSON API. Failures come back as an `Outcome`,
+ * never thrown: SvelteKit's `error()` would answer the API with an HTML page, and it
+ * is reported here, since `handleError` only sees thrown errors.
+ */
+export async function runOperation<R>(run: () => Promise<R>): Promise<Outcome<R>> {
+	try {
+		return { ok: true, result: await run() };
+	} catch (cause) {
+		const known = knownFailure(cause);
+		if (known) {
+			return { ok: false, ...known };
+		}
+
+		const message = unexpectedMessage(cause);
+		reportProviderError('unexpected', message);
+		return { ok: false, status: 502, body: { code: PROVIDER_ERROR_CODE, message } };
+	}
 }
 
 /** Decode the form, then run one generation operation against the request's gateway. */
