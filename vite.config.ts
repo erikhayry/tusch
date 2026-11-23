@@ -34,6 +34,9 @@ export default defineConfig(({ mode }) => {
 				// `#lib/paraglide/messages` in plain Node (Playwright), which can't load
 				// `virtual:` URLs, so keep real files on disk.
 				outputStructure: 'message-modules',
+				// The header's language links change the locale through the path (/sv-se/…,
+				// REQ-294-3). Without `url` the server ignores the prefix and renders English.
+				strategy: ['url', 'cookie', 'baseLocale'],
 			}),
 		],
 	};

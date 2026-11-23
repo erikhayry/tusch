@@ -17,13 +17,21 @@ The global baseline lives in `src/app.css`, imported once in
 
 ## Palette
 
-- Black and white, plus greys derived from them if needed. Light and dark, from the
-  same tokens: the dark scheme (`prefers-color-scheme`, no toggle) only
+- Warm greys for backgrounds, surfaces, text and borders (#294). Light and dark,
+  from the same tokens: the dark scheme (`prefers-color-scheme`, no toggle) only
   overrides colour tokens in one block in `app.css`.
-- The one accent colour, `--color-focus`, is used **only** for the focus
-  indicator (`:focus-visible` `outline`). Never for text, links, buttons or
-  state. Keep it at 3:1 contrast or better against both the white and the black background.
+- Four semantic colours, each its own token: `--color-link` (links),
+  `--color-danger` (error text), `--color-control-border` (field and button
+  borders, 3:1 or better) and `--color-focus`. Link and danger text must pass
+  4.5:1 on the surfaces they sit on. Don't reuse one token for another role:
+  a token is changed for its role, not for its look.
+- `--color-focus` is used **only** for the focus indicator (`:focus-visible`
+  `outline`). Never for text, links, buttons or state. It keeps 3:1 or better
+  against the background in both schemes; the dark value is lighter than the
+  light one, because the light focus blue is too dark on the dark background.
 - Text colours must pass axe `color-contrast` (REQ-035).
+- Fonts are self-hosted (Inter, `static/fonts/`, OFL licence beside the files).
+  No request to a third-party font host (REQ-294-5).
 
 ## Order of work
 

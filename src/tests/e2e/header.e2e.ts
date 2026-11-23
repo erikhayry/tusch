@@ -13,7 +13,8 @@ const banner = (page: Page) => page.getByRole('banner');
 const bannerLink = (page: Page, name: string) => banner(page).getByRole('link', { name });
 const mainNav = (page: Page, locale?: 'sv-se') =>
 	page.getByRole('navigation', { name: m.mainNavigation({}, { locale }) });
-const languageNav = (page: Page) => page.getByRole('navigation', { name: m.languageNavigation() });
+const languageNav = (page: Page, locale?: 'sv-se') =>
+	page.getByRole('navigation', { name: m.languageNavigation({}, { locale }) });
 
 async function expectCurrent(link: Locator, current: boolean) {
 	if (current) {
@@ -85,12 +86,16 @@ test.describe('wide screens: language links', { tag: '@REQ-294-3' }, () => {
 		);
 		await expect(mainNav(page, 'sv-se')).toBeVisible();
 		await expect(
-			languageNav(page).getByRole('link', { name: m.languageSwedish({}, { locale: 'sv-se' }) }),
+			languageNav(page, 'sv-se').getByRole('link', {
+				name: m.languageSwedish({}, { locale: 'sv-se' }),
+			}),
 		).toHaveAttribute('aria-current', 'true');
 
 		await activate(
 			page,
-			languageNav(page).getByRole('link', { name: m.languageEnglish({}, { locale: 'sv-se' }) }),
+			languageNav(page, 'sv-se').getByRole('link', {
+				name: m.languageEnglish({}, { locale: 'sv-se' }),
+			}),
 		);
 
 		await expect(page).toHaveURL((u) => u.pathname === VIEWS.settings);
