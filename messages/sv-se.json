@@ -54,6 +54,7 @@
 	"saveConfig": "Spara modeller",
 	"noKeyModelsHint": "Lägg till din API-nyckel för att välja modeller.",
 	"viewComic": "Visa serien",
+	"downloadComic": "Ladda ner serien",
 	"imageFormat": "Bildformat",
 	"imageFormatBoth": "Stående och liggande",
 	"imageFormatPortrait": "Endast stående",
