@@ -27,6 +27,24 @@
 	});
 </script>
 
-{#if src}
-	<img {...imgAttributes} {src} alt={imageData.alt} />
+{#if imageData.image || src}
+	<!--
+		Mounted before the OPFS URL resolves and sized from the stored asset, so the
+		box is reserved and the page doesn't shift when the image appears (CLS).
+		Hidden until it has a src, so its alt text doesn't flash.
+	-->
+	<img
+		{...imgAttributes}
+		src={src ?? undefined}
+		width={imageData.image?.width}
+		height={imageData.image?.height}
+		alt={imageData.alt}
+		class:pending={!src}
+	/>
 {/if}
+
+<style>
+	.pending {
+		visibility: hidden;
+	}
+</style>
