@@ -53,5 +53,14 @@
 	"config": "AI-modeller",
 	"saveConfig": "Spara modeller",
 	"noKeyModelsHint": "Lägg till din API-nyckel för att välja modeller.",
-	"viewComic": "Visa serien"
+	"viewComic": "Visa serien",
+	"imageFormat": "Bildformat",
+	"imageFormatBoth": "Stående och liggande",
+	"imageFormatPortrait": "Endast stående",
+	"imageFormatLandscape": "Endast liggande",
+	"saveImageFormat": "Spara bildformat",
+	"portraitImage": "Stående",
+	"landscapeImage": "Liggande",
+	"portraitImageFailed": "Den stående bilden kunde inte skapas. Den liggande bilden sparades.",
+	"landscapeImageFailed": "Den liggande bilden kunde inte skapas. Den stående bilden sparades."
 }

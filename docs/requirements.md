@@ -136,6 +136,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: overview and navigation for one comic.
 - Proven by: tagged tests
 
+### REQ-103-1 A comic has an image format setting
+
+- Status: active
+- Statement: the comic page's "Settings" section has an "Image format" setting (Portrait and landscape / Portrait only / Landscape only), saved with the comic and changeable at any time; it is "Portrait and landscape" for every comic that has none saved (existing and example comics).
+- Why: wide screens should get a wide image and narrow screens a tall one, and some comics only need one (#103).
+- Proven by: tagged tests
+
 ### REQ-236-1 The comic's title is the comic page's only h1
 
 - Status: active
@@ -288,8 +295,36 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-172-1 The current-image preview has valid dimension attributes
 
 - Status: active
-- Statement: the current-image preview on the panel image form (panel page) is an `<img>` whose `width` and `height` attributes are the bare integers `50` and `75` (the 2:3 ratio of generated images), and it renders 50 CSS px wide.
+- Statement: the current-image preview on the panel image form (panel page) is an `<img>` whose `width` and `height` attributes are the bare integers `50` and `75` (the 2:3 ratio of generated portrait images), and it renders 50 CSS px wide. It uses the portrait variant if the panel image has one (also for "include current image"); otherwise it uses the landscape variant with `width="75"` and `height="50"`, rendered 75 CSS px wide.
 - Why: `50px` and `auto` are invalid HTML, so the browser drops `height` and can't reserve space before the image loads.
+- Proven by: tagged tests
+
+### REQ-103-2 A panel image is generated once per variant the image format asks for
+
+- Status: active
+- Statement: generating a panel image makes one image request per variant the comic's image format asks for: portrait first, then landscape with the new portrait image as reference (no reference if the portrait failed); a portrait-only or landscape-only comic makes one request. Each variant is stored, so the panel page shows the portrait and the landscape image of a "Portrait and landscape" comic and only the chosen one otherwise. Every other rule for panel images (REQ-015, REQ-016, REQ-025, REQ-185-1, REQ-185-2, REQ-049, REQ-162-1) applies per variant.
+- Why: each screen shape gets an image made for it, and the landscape one matches the portrait one (#103).
+- Proven by: tagged tests
+
+### REQ-103-3 A panel image keeps the variant that succeeded
+
+- Status: active
+- Statement: if one variant's request fails (after the REQ-185-1 retry) and the other succeeds, the successful variant is saved and the error region says which variant couldn't be created; if all fail, nothing is saved.
+- Why: one failed request shouldn't throw away a paid-for image (#103).
+- Proven by: tagged tests
+
+### REQ-103-4 The panel page labels each stored variant of the panel image
+
+- Status: active
+- Statement: the panel page shows every stored variant of the panel image, each with a visible "Portrait" or "Landscape" caption.
+- Why: the user must see which variants a panel has (#103).
+- Proven by: tagged tests
+
+### REQ-103-5 The viewer shows the variant that fits the screen
+
+- Status: active
+- Statement: in the viewer (`/comic/<id>/view`) a panel with both variants is a `<picture>` that shows the landscape image when the viewport is landscape and the portrait image otherwise; a panel with one variant shows that one at every size.
+- Why: readers get an image that fits their screen (#103).
 - Proven by: tagged tests
 
 ### REQ-017 A panel image can be removed
@@ -302,14 +337,14 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-018 Generated panel images produce character crops
 
 - Status: active
-- Statement: generating a panel image also stores head and full-body crops for each known character in it, and the head crop is shown next to that character's dialogue.
+- Statement: generating a panel image also stores head and full-body crops for each known character in it, and the head crop is shown next to that character's dialogue. Crops are cut from the portrait variant if the panel image has one, otherwise from the landscape one (also for REQ-014 previews and crop fixes).
 - Why: character references for later images.
 - Proven by: tagged tests
 
 ### REQ-048 A replaced panel image can be restored
 
 - Status: active
-- Statement: after a panel image is replaced, the panel page offers "Restore previous image", which brings back the image shown just before the latest replacement. It is a single step: once restored, or once the panel image is replaced again, removed, or the panel or comic deleted, only the newest previous image or none is kept. It survives a reload. A panel image that was never replaced offers nothing to restore.
+- Statement: after a panel image is replaced, the panel page offers "Restore previous image", which brings back the image shown just before the latest replacement, with all the variants it had. It is a single step: once restored, or once the panel image is replaced again, removed, or the panel or comic deleted, only the newest previous image or none is kept. It survives a reload. A panel image that was never replaced offers nothing to restore.
 - Why: a worse new image shouldn't destroy the one the user had.
 - Proven by: tagged tests
 

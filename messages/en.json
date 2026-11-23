@@ -99,5 +99,14 @@
 	"aiNoImage": "The AI didn't return an image. Try again.",
 	"aiInvalidResponse": "The AI returned something we couldn't use. Try again.",
 	"showDetails": "Show details",
-	"viewComic": "View comic"
+	"viewComic": "View comic",
+	"imageFormat": "Image format",
+	"imageFormatBoth": "Portrait and landscape",
+	"imageFormatPortrait": "Portrait only",
+	"imageFormatLandscape": "Landscape only",
+	"saveImageFormat": "Save image format",
+	"portraitImage": "Portrait",
+	"landscapeImage": "Landscape",
+	"portraitImageFailed": "The portrait image couldn't be created. The landscape image was saved.",
+	"landscapeImageFailed": "The landscape image couldn't be created. The portrait image was saved."
 }
