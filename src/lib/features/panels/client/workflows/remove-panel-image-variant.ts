@@ -27,9 +27,7 @@ export function removePanelImageVariant(
 ): Promise<WorkflowResult> {
 	return runAssetWorkflow(deps, async (stage) => {
 		const image = getPanel(deps.store.comics, comicId, panelId)?.image;
-		const remaining = image
-			? storedVariants(image).find((stored) => stored.variant !== variant)
-			: undefined;
+		const remaining = image && storedVariants(image).find((stored) => stored.variant !== variant);
 		if (!image || !image[variant] || !remaining) {
 			return {
 				ok: false,

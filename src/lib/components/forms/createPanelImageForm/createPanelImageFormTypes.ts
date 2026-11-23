@@ -1,9 +1,9 @@
-import { CreatePanelImageValuesSchema } from '#lib/features/panels/contracts/createPanelImage.ts';
-import { CharacterReferenceGroupSchema } from '#lib/features/comics/client/comic-selectors.ts';
 import {
+	CreatePanelImageValuesSchema,
 	EXISTING_IMAGE_VALUE_KEY,
 	REFERENCE_IMAGES_KEY,
 } from '#lib/features/panels/contracts/createPanelImage.ts';
+import { CharacterReferenceGroupSchema } from '#lib/features/comics/client/comic-selectors.ts';
 import { GLOBAL_INSTRUCTIONS_VALUE_KEY } from '#lib/features/settings/contracts/globalInstructions.ts';
 import { ImageVariantEnum } from '#lib/types/index.ts';
 import { INCLUDE_IMAGE_VALUE_KEY, INSTRUCTIONS_VALUE_KEY } from '#lib/utils/db/dbTypes.ts';
