@@ -174,7 +174,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-87-2 The viewer shows the comic as a reader sees it
 
 - Status: active
-- Statement: `/comic/<id>/view` shows the comic's title (or "Untitled comic") as its only `<h1>`, then the cover if there is one, then every panel in stored order as a section with a visually hidden `<h2>` "Panel <n>", its image, its captions and its dialogue lines as "<character name>" + text (text alone if the character is unknown).
+- Statement: `/comic/<id>/view` shows the comic's title (or "Untitled comic") as its only `<h1>` (placed over the cover, see REQ-283-5), then every panel in stored order as a section with a visually hidden `<h2>` "Panel <n>", its image, its captions and its dialogue lines as "<character name>" + text (text alone if the character is unknown).
 - Why: the editor mixes content with controls and notes; a reader wants the story.
 - Proven by: tagged tests
 
@@ -218,6 +218,13 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: on the viewer, a panel image is as wide as the content area and almost as tall as the viewport, but leaves room so the top of the next panel shows below it, whatever its shape.
 - Why: readers see one panel at a time and a hint of the next, as in the reference viewer (#283).
+- Proven by: tagged tests
+
+### REQ-283-5 Viewer cover is full width with the title as an inverted caption on it
+
+- Status: active
+- Statement: on the viewer, the cover is as wide as the content area, with space below it before the first panel. The comic's title is the page's `<h1>`, shown as a box over the top-left of the cover with the caption box's colours swapped (light text on a dark box in the light scheme). A comic without a cover shows the same box on its own.
+- Why: the cover works as the opening panel of the comic (#283).
 - Proven by: tagged tests
 
 ### REQ-011 A cover can be generated or replaced

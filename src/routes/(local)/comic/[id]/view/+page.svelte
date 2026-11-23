@@ -10,12 +10,17 @@
 	import type { Data } from '../+page';
 
 	let { data }: { data: Data } = $props();
+	const title = $derived(data.comic.title.trim() || m.untitledComic());
 </script>
 
-<Page title={data.comic.title.trim() || m.untitledComic()}>
-	{#if data.comic.cover}
-		<Image image={data.comic.cover.landscape} alt={data.comic.cover.alt} />
-	{/if}
+<Page {title} showTitle={false}>
+	<!-- The title is an inverted caption over the cover, or on its own without one. -->
+	<div class="cover">
+		{#if data.comic.cover}
+			<Image image={data.comic.cover.landscape} alt={data.comic.cover.alt} />
+		{/if}
+		<h1 class:overlay={Boolean(data.comic.cover)}>{title}</h1>
+	</div>
 
 	{#each data.comic.panels as panel, index (panel.id)}
 		{@const speech = panel.dialogue.map((line) => ({
@@ -39,6 +44,36 @@
 </Page>
 
 <style>
+	.cover {
+		position: relative;
+		inline-size: 100%;
+		margin-block-end: var(--space-2);
+	}
+
+	.cover :global(img) {
+		inline-size: 100%;
+		block-size: auto;
+	}
+
+	/* Inverted box: the caption style with text and background swapped. */
+	h1 {
+		inline-size: fit-content;
+		max-inline-size: 100%;
+		margin: 0;
+		padding: var(--space-2);
+		border: var(--border-width-thick) solid var(--color-border);
+		background: var(--color-text);
+		color: var(--color-background);
+		font-size: var(--font-size-h2);
+		overflow-wrap: anywhere;
+	}
+
+	h1.overlay {
+		position: absolute;
+		inset-block-start: var(--space-2);
+		inset-inline-start: var(--space-2);
+	}
+
 	/* Full width, almost full height; the gap below shows the next panel. The picture
 	   is the positioning box for the overlaid boxes. */
 	.picture {

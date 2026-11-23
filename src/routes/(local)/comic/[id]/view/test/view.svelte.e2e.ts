@@ -138,7 +138,7 @@ test.describe('viewer content', () => {
 			await expect(view.title).toHaveCount(1);
 			await expect(view.title).toHaveText(comic.title);
 			// The cover is the image outside the panel sections (it shares its alt text with panel 1 in the mock).
-			const cover = page.locator('main > img');
+			const cover = page.locator('main > .cover img');
 			await expect(cover).toHaveCount(1);
 			await expect(cover).toHaveAttribute('alt', String(comic.cover?.alt));
 
@@ -220,6 +220,55 @@ test.describe('viewer boxes', () => {
 				// Visually hidden text collapses to at most a pixel.
 				expect(box === null || (box.width <= 1 && box.height <= 1)).toBe(true);
 			}
+		},
+	);
+
+	test(
+		'the cover is full width with the title as an inverted caption on it',
+		{ tag: '@REQ-283-5' },
+		async ({ page }) => {
+			const comic = await createViewableComic(page);
+			const view = await new ViewPage(page, comic.id).goto();
+
+			const main = await boxOf(page.getByRole('main'));
+			const cover = await boxOf(page.locator('main > .cover img'));
+			expect(cover.width).toBeGreaterThanOrEqual(main.width * 0.9);
+			const title = await boxOf(view.title);
+			expectInside(title, cover);
+			expect(title.y + title.height).toBeLessThanOrEqual(cover.y + cover.height / 2 + 1);
+			expect(title.x + title.width).toBeLessThanOrEqual(cover.x + cover.width / 2 + 1);
+
+			const first = await boxOf(view.panelImage(1));
+			expect(first.y).toBeGreaterThan(cover.y + cover.height);
+
+			// Inverted: the title's text colour is a caption box's background, and vice versa.
+			const colours = (locator: Locator) =>
+				locator.evaluate((element) => {
+					const { color, backgroundColor } = getComputedStyle(element);
+					return { color, backgroundColor };
+				});
+			const caption = await colours(page.getByText(comic.panels[0].captions[0], { exact: true }));
+			const heading = await colours(view.title);
+			expect(heading.color).toBe(caption.backgroundColor);
+			expect(heading.backgroundColor).toBe(caption.color);
+		},
+	);
+
+	test(
+		'a comic without a cover shows the title as the same box',
+		{ tag: '@REQ-283-5' },
+		async ({ page }) => {
+			const id = await createComic(page);
+			// A comic whose cover was never made: drop it from the stored comic.
+			await page.evaluate((comicId) => {
+				const db = JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}');
+				delete db.comics.find((c: { id: string }) => c.id === comicId).cover;
+				localStorage.setItem('comics_db', JSON.stringify(db));
+			}, id);
+			const view = await new ViewPage(page, id).goto();
+
+			await expect(page.locator('main img')).toHaveCount(0);
+			await expect(view.title).toBeVisible();
 		},
 	);
 
