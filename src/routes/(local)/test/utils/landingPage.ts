@@ -3,22 +3,31 @@ import { expect, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 import { KEY_COPY } from '../../../../tests/e2e/keyCopy';
 import { activate, typeInto } from '../../../../tests/e2e/keyboard';
+import { LANDING_COPY } from '../../../../tests/e2e/landingCopy';
 
 export class LandingPage {
 	readonly page: Page;
-	readonly createComicButton: Locator;
-	readonly settingsLink: Locator;
+	readonly createTile: Locator;
 	readonly comicsHeading: Locator;
-	readonly comicLink: (title: string) => Locator;
+	readonly cards: Locator;
+	readonly card: (title: string) => Locator;
+	readonly readLink: (title: string) => Locator;
+	readonly editLink: (title: string) => Locator;
 	readonly deleteComicButton: (title: string) => Locator;
 
 	constructor(page: Page) {
 		this.page = page;
-		// The header repeats these links, so the page's own links are scoped to <main>.
-		this.createComicButton = page.getByRole('main').getByRole('link', { name: 'Create' });
-		this.settingsLink = page.getByRole('main').getByRole('link', { name: m.settings() });
-		this.comicsHeading = page.getByRole('heading', { name: m.comics() });
-		this.comicLink = (title: string) => page.getByRole('link', { name: title, exact: true });
+		// The header has a "Create New Comic" link too, so the tile is scoped to <main> (REQ-295-3).
+		this.createTile = page.getByRole('main').getByRole('link', { name: LANDING_COPY.createTile });
+		this.comicsHeading = page.getByRole('heading', { name: LANDING_COPY.yourComics });
+		// Every grid cell, the "Create new comic" tile included.
+		this.cards = page.locator('ul[aria-labelledby="comics"] > li');
+		this.readLink = (title: string) =>
+			page.getByRole('link', { name: LANDING_COPY.readComic(title), exact: true });
+		this.editLink = (title: string) =>
+			page.getByRole('link', { name: LANDING_COPY.editComic(title), exact: true });
+		// A comic's card is the cell that holds its "Read <title>" link.
+		this.card = (title: string) => this.cards.filter({ has: this.readLink(title) });
 		this.deleteComicButton = (title: string) =>
 			page.getByRole('button', {
 				name: m.deleteComic({ title }),
