@@ -10,7 +10,7 @@ import {
 	type WorkflowResult,
 } from '#lib/features/comics/client/workflows/asset-workflow.ts';
 import type { CreatePanelImageResult } from '#lib/features/panels/contracts/createPanelImage.ts';
-import type { PanelImageAsset } from '#lib/types/index.ts';
+import { ImageVariantEnum, type PanelImageAsset } from '#lib/types/index.ts';
 import { storedVariants } from '#lib/types/image-variants.ts';
 import { cropCharacterImages, type CharacterCropDeps } from './character-crops';
 
@@ -61,7 +61,7 @@ export function commitCreatedPanelImageVariant(
 			characters: created.asset.characters ?? [],
 		};
 		const cropImages =
-			created.variant === 'portrait'
+			created.variant === ImageVariantEnum.enum.portrait
 				? await cropCharacterImages(
 						deps,
 						stage,

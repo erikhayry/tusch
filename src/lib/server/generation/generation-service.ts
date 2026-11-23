@@ -29,6 +29,7 @@ import {
 	type Comic,
 	type Crop,
 	type ImageVariant,
+	ImageVariantEnum,
 	type ResponsiveImage,
 } from '#lib/types/index.ts';
 import { variantsFor } from '#lib/types/image-variants.ts';
@@ -246,7 +247,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 					// The landscape image is drawn from the portrait one, so the two match. A
 					// variant made alone (REQ-279-1) is drawn from the one the image already has.
 					const reference =
-						variant === 'landscape' && generated.portrait
+						variant === ImageVariantEnum.enum.landscape && generated.portrait
 							? `data:image/webp;base64,${generated.portrait.image.src}`
 							: existingImage;
 					const output = await generateImage(gateway, {
