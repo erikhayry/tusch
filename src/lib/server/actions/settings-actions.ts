@@ -5,18 +5,18 @@ import {
 	SelectedModelsSchema,
 	type SaveModelSettingsResult,
 	type SelectedModels,
-} from '$lib/features/settings/contracts/saveModelSettings';
+} from '#lib/features/settings/contracts/saveModelSettings.ts';
 import {
 	ByokValuesSchema,
 	decodeByokValues,
-} from '$lib/features/settings/contracts/validateApiKey';
-import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
+} from '#lib/features/settings/contracts/validateApiKey.ts';
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '#lib/types/index.ts';
 import {
 	getCookieArgs,
 	IMAGE_MODEL_COOKIE_NAME,
 	KEY_COOKIE_NAME,
 	TEXT_MODEL_COOKIE_NAME,
-} from '$lib/utils/cookies';
+} from '#lib/utils/cookies.ts';
 import type { Cookies, RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { PingResult } from '../ai/ai-gateway';

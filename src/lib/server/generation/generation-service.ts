@@ -2,52 +2,52 @@ import {
 	CreateComicResultSchema,
 	type CreateComicResult,
 	type CreateComicValues,
-} from '$lib/features/comics/contracts/createComic';
+} from '#lib/features/comics/contracts/createComic.ts';
 import {
 	CreateCoverImageResultSchema,
 	toCoverPrompt,
 	type CreateCoverImageResult,
 	type CreateCoverImageValues,
-} from '$lib/features/comics/contracts/createCoverImage';
+} from '#lib/features/comics/contracts/createCoverImage.ts';
 import {
 	CreatePanelResultSchema,
 	type CreatePanelResult,
 	type CreatePanelValues,
-} from '$lib/features/panels/contracts/createPanel';
+} from '#lib/features/panels/contracts/createPanel.ts';
 import {
 	CreatePanelImageResultSchema,
 	type CreatePanelImageResult,
 	type CreatePanelImageValues,
-} from '$lib/features/panels/contracts/createPanelImage';
+} from '#lib/features/panels/contracts/createPanelImage.ts';
 import {
 	FixCharacterCropResultSchema,
 	type FixCharacterCropResult,
 	type FixCharacterCropValues,
-} from '$lib/features/panels/contracts/fixCharacterCrop';
-import type { Comic, Crop, ResponsiveImage } from '$lib/types';
+} from '#lib/features/panels/contracts/fixCharacterCrop.ts';
+import type { Comic, Crop, ResponsiveImage } from '#lib/types/index.ts';
 import {
 	getCharacterBoxesFromOpenAiResponse,
 	getComicFromOpenAiResponse,
 	getImageFromOpenAiResponse,
 	getPanelFromOpenAiResponse,
 	hasImage,
-} from '$lib/utils/ai/ai';
+} from '#lib/utils/ai/ai.ts';
 import {
 	SchemaName,
 	type AiImageRequest,
 	type CreatedImage,
 	type OpenAiOutput,
-} from '$lib/utils/ai/aiTypes';
+} from '#lib/utils/ai/aiTypes.ts';
 import {
 	buildCoverImageMessages,
 	buildFixCharacterCropMessages,
 	buildInitialMessages,
 	buildPanelImageMessages,
 	buildPanelMessages,
-} from '$lib/utils/ai/utils/messages';
-import { IMAGE_SIZE } from '$lib/utils/ai/utils/settings';
-import { INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
-import { generateId } from '$lib/utils/id';
+} from '#lib/utils/ai/utils/messages.ts';
+import { IMAGE_SIZE } from '#lib/utils/ai/utils/settings.ts';
+import { INSTRUCTIONS_VALUE_KEY } from '#lib/utils/db/dbTypes.ts';
+import { generateId } from '#lib/utils/id.ts';
 import type { AiGateway, PingResult } from '../ai/ai-gateway';
 
 /**

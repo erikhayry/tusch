@@ -1,8 +1,11 @@
-import { CREATE_PANEL_ACTION } from '$lib/features/panels/contracts/createPanel';
-import { CREATE_PANEL_IMAGE_ACTION } from '$lib/features/panels/contracts/createPanelImage';
-import { CLIENT_ACTION_NAME } from '$lib/forms/action-names';
-import { createPanelAction, createPanelImageAction } from '$lib/server/actions/generation-actions';
-import { clientCommandAction } from '$lib/server/actions/settings-actions';
+import { CREATE_PANEL_ACTION } from '#lib/features/panels/contracts/createPanel.ts';
+import { CREATE_PANEL_IMAGE_ACTION } from '#lib/features/panels/contracts/createPanelImage.ts';
+import { CLIENT_ACTION_NAME } from '#lib/forms/action-names.ts';
+import {
+	createPanelAction,
+	createPanelImageAction,
+} from '#lib/server/actions/generation-actions.ts';
+import { clientCommandAction } from '#lib/server/actions/settings-actions.ts';
 import type { Actions } from './$types';
 
 export const actions = {

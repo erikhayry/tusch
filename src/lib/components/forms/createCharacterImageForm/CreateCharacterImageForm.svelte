@@ -4,16 +4,16 @@
 
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { createCharacterCrop } from '$lib/features/panels/client/workflows/create-character-crop';
+	import { workflowDeps } from '#lib/client/workflow-deps.ts';
+	import { createCharacterCrop } from '#lib/features/panels/client/workflows/create-character-crop.ts';
 	import {
 		CREATE_CHARACTER_IMAGE_ACTION,
 		getCreateCharacterImageValues,
 		type CreateCharacterImageValue,
-	} from '$lib/features/panels/contracts/createCharacterImage';
-	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
-	import { m } from '$lib/paraglide/messages';
-	import { encodeFormValue } from '$lib/forms/form-data';
+	} from '#lib/features/panels/contracts/createCharacterImage.ts';
+	import { enhanceClientCommand } from '#lib/forms/enhance-client-command.ts';
+	import { m } from '#lib/paraglide/messages.js';
+	import { encodeFormValue } from '#lib/forms/form-data.ts';
 
 	import { type CreateCharacterImageFormProps } from './createCharacterImageFormTypes';
 

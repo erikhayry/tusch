@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { expectCommitted } from '$lib/features/comics/client/comic-commands';
-	import { insertGeneratedPanel } from '$lib/features/panels/client/workflows/insert-generated-panel';
+	import { workflowDeps } from '#lib/client/workflow-deps.ts';
+	import { expectCommitted } from '#lib/features/comics/client/comic-commands.ts';
+	import { insertGeneratedPanel } from '#lib/features/panels/client/workflows/insert-generated-panel.ts';
 	import {
 		CREATE_PANEL_ACTION,
 		type CreatePanelResult,
-	} from '$lib/features/panels/contracts/createPanel';
-	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
-	import { enhanceAction } from '$lib/forms/enhance-action';
-	import { m } from '$lib/paraglide/messages';
-	import { encodeFormValue } from '$lib/forms/form-data';
+	} from '#lib/features/panels/contracts/createPanel.ts';
+	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
+	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { m } from '#lib/paraglide/messages.js';
+	import { encodeFormValue } from '#lib/forms/form-data.ts';
 	import { type CreatePanelFormProps } from './createPanelFormTypes';
 
 	const handleSubmit = withGlobalInstructions(

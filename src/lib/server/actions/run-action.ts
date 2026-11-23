@@ -1,4 +1,4 @@
-import type { FormFailure } from '$lib/forms/form-failure';
+import type { FormFailure } from '#lib/forms/form-failure.ts';
 import { error, fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import { AiGatewayError } from '../ai/ai-gateway';
@@ -39,10 +39,9 @@ export async function decodeForm<T extends z.ZodType>(
 /**
  * Expected provider outcomes become form failures the UI can show (and retry,
  * for rate limits). Invalid responses are form failures too, so the UI can show a
- * friendly message. Anything else becomes a 502 with an actionable message.
- *
- * `error()` throws an HttpError, which SvelteKit never passes to `handleError`,
- * so every failure that is reported to Sentry is reported here.
+ * friendly message; they are reported to Sentry here (REQ-185-3), since `fail()`
+ * never reaches `handleError`. Anything else becomes a thrown 502, which
+ * `handleError` reports, so it must not also be reported here.
  */
 export function toActionFailure(cause: unknown): ActionFailure<FormFailure> {
 	if (cause instanceof InvalidAiResponseError) {
@@ -62,8 +61,8 @@ export function toActionFailure(cause: unknown): ActionFailure<FormFailure> {
 		}
 	}
 
+	// Thrown, so SvelteKit passes it to `handleError`, which reports 5xx to Sentry once.
 	const message = cause instanceof Error ? cause.message : 'AI request failed';
-	reportProviderError(cause instanceof AiGatewayError ? cause.kind : 'unexpected', message);
 	error(502, message);
 }
 

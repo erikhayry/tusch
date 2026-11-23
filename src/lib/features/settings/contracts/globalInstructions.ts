@@ -1,6 +1,6 @@
-import { readString } from '$lib/forms/form-data';
+import { readString } from '#lib/forms/form-data.ts';
 import { z, type ZodSafeParseResult } from 'zod';
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 
 export const GLOBAL_INSTRUCTIONS_MAX_LENGTH = 1000;
 export const GLOBAL_INSTRUCTIONS_VALUE_KEY = 'globalInstructions';

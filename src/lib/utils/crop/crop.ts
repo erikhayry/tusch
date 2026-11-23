@@ -1,4 +1,4 @@
-import type { Crop } from '$lib/types';
+import type { Crop } from '#lib/types/index.ts';
 
 export async function cropImage(uri: string, crop: Crop): Promise<Blob> {
 	const image = new Image();

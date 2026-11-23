@@ -1,9 +1,9 @@
-import { CLIENT_ACTION_NAME } from '$lib/forms/action-names';
-import { readJsonField, readString } from '$lib/forms/form-data';
+import { CLIENT_ACTION_NAME } from '#lib/forms/action-names.ts';
+import { readJsonField, readString } from '#lib/forms/form-data.ts';
 import {
 	CreateCharacterImageValueSchema,
 	type CreateCharacterImageValue,
-} from '$lib/utils/db/dbTypes';
+} from '#lib/utils/db/dbTypes.ts';
 
 export type { CreateCharacterImageValue };
 import type { ZodSafeParseResult } from 'zod';

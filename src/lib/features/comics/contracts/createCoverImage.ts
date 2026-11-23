@@ -2,15 +2,15 @@ import {
 	GLOBAL_INSTRUCTIONS_VALUE_KEY,
 	GlobalInstructionsSchema,
 	decodeGlobalInstructions,
-} from '$lib/features/settings/contracts/globalInstructions';
-import { readCheckbox, readJsonField, readString } from '$lib/forms/form-data';
-import { ComicSchema, ResponsiveImageSchema, type Comic } from '$lib/types';
-import { OpenAiOutputSchema } from '$lib/utils/ai/aiTypes';
+} from '#lib/features/settings/contracts/globalInstructions.ts';
+import { readCheckbox, readJsonField, readString } from '#lib/forms/form-data.ts';
+import { ComicSchema, ResponsiveImageSchema, type Comic } from '#lib/types/index.ts';
+import { OpenAiOutputSchema } from '#lib/utils/ai/aiTypes.ts';
 import {
 	IMAGE_VALUE_KEY,
 	INCLUDE_IMAGE_VALUE_KEY,
 	INSTRUCTIONS_VALUE_KEY,
-} from '$lib/utils/db/dbTypes';
+} from '#lib/utils/db/dbTypes.ts';
 import z from 'zod';
 import {
 	CharacterPromptSchema,

@@ -2,11 +2,11 @@
 	import '../app.css';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import type { Pathname } from '$app/types';
-	import favicon from '$lib/assets/favicon.svg';
-	import Error from '$lib/components/error/Error.svelte';
-	import Loader from '$lib/components/loader/Loader.svelte';
-	import { locales, localizeHref } from '$lib/paraglide/runtime';
+	import type { Path } from '$app/types';
+	import favicon from '#lib/assets/favicon.svg';
+	import Error from '#lib/components/error/Error.svelte';
+	import Loader from '#lib/components/loader/Loader.svelte';
+	import { locales, localizeHref } from '#lib/paraglide/runtime.js';
 
 	let { children } = $props();
 
@@ -25,6 +25,6 @@
 
 <div style="display:none">
 	{#each locales as locale (locale)}
-		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
+		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Path)}>{locale}</a>
 	{/each}
 </div>

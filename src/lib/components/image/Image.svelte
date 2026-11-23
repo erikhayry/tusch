@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { opfsAssetStore } from '$lib/client/assets/opfs-asset-store';
-	import { ImageAssetSchema } from '$lib/types';
+	import { opfsAssetStore } from '#lib/client/assets/opfs-asset-store.ts';
+	import { ImageAssetSchema } from '#lib/types/index.ts';
 	import type { SvelteHTMLElements } from 'svelte/elements';
 	import { z } from 'zod';
 	import { getImageSrc } from '../panel/utils/image';

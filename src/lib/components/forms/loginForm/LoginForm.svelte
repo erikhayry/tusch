@@ -6,13 +6,13 @@
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 
-	import { m } from '$lib/paraglide/messages';
+	import { m } from '#lib/paraglide/messages.js';
 
 	import {
 		BYOK_ACTION,
 		type ValidateApiKeyResult,
-	} from '$lib/features/settings/contracts/validateApiKey';
-	import { enhanceAction } from '$lib/forms/enhance-action';
+	} from '#lib/features/settings/contracts/validateApiKey.ts';
+	import { enhanceAction } from '#lib/forms/enhance-action.ts';
 	import { tick } from 'svelte';
 
 	import { type LoginFormProps } from './loginFormTypes';
@@ -54,7 +54,7 @@
 <p role="status" tabindex="-1" bind:this={statusElement}>{statusMessage}</p>
 
 {#if success}
-	<a href={resolve('/comic/create')}>{m.createNewComic()}</a>
+	<a href={resolve('comic/create')}>{m.createNewComic()}</a>
 {:else}
 	<form
 		data-testId={loginFormTestId}

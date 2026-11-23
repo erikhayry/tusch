@@ -1,5 +1,5 @@
-import { m } from '$lib/paraglide/messages';
-import { TEXT_MODEL_KEY } from '$lib/types';
+import { m } from '#lib/paraglide/messages.js';
+import { TEXT_MODEL_KEY } from '#lib/types/index.ts';
 import type { Locator, Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 import { KEY_COPY } from '../../../../tests/e2e/keyCopy';

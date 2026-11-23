@@ -1,4 +1,4 @@
-import { ComicStyleEnum, type ComicStyleDescription } from '$lib/types';
+import { ComicStyleEnum, type ComicStyleDescription } from '#lib/types/index.ts';
 import type z from 'zod';
 
 export const ANIME_STYLE: ComicStyleDescription = {

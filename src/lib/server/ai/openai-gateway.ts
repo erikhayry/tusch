@@ -3,10 +3,10 @@ import {
 	type AiImageRequest,
 	type AiTextRequest,
 	type OpenAiOutput,
-} from '$lib/utils/ai/aiTypes';
-import { getSchemaAsTextFormat } from '$lib/utils/ai/utils/format';
-import { getChatMessages, getImageMessages } from '$lib/utils/ai/utils/messages';
-import { IMAGE_SIZE, TOOLS } from '$lib/utils/ai/utils/settings';
+} from '#lib/utils/ai/aiTypes.ts';
+import { getSchemaAsTextFormat } from '#lib/utils/ai/utils/format.ts';
+import { getChatMessages, getImageMessages } from '#lib/utils/ai/utils/messages.ts';
+import { IMAGE_SIZE, TOOLS } from '#lib/utils/ai/utils/settings.ts';
 import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
 import { AiGatewayError, type AiCredentials, type AiGateway } from './ai-gateway';

@@ -5,15 +5,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 
-	import Heading from '$lib/components/relativeHeading/Heading.svelte';
-	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import Heading from '#lib/components/relativeHeading/Heading.svelte';
+	import Section from '#lib/components/relativeHeading/Section.svelte';
 	import {
 		CONFIG_ACTION,
 		type SaveModelSettingsResult,
-	} from '$lib/features/settings/contracts/saveModelSettings';
-	import { enhanceAction } from '$lib/forms/enhance-action';
-	import { m } from '$lib/paraglide/messages';
-	import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
+	} from '#lib/features/settings/contracts/saveModelSettings.ts';
+	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { m } from '#lib/paraglide/messages.js';
+	import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '#lib/types/index.ts';
 
 	import { type ConfigFormProps } from './configFormTypes';
 

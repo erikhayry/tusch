@@ -1,8 +1,8 @@
-import type { CoverPrompt } from '$lib/features/comics/contracts/createCoverImage';
-import type { CharacterPrompt, PanelPrompt } from '$lib/features/comics/contracts/prompts';
-import type { CharacterBoxes } from '$lib/utils/ai/aiTypes';
-import type { ComicStyle, Panel } from '$lib/types';
-import { STYLES } from '$lib/utils/comicStyles';
+import type { CoverPrompt } from '#lib/features/comics/contracts/createCoverImage.ts';
+import type { CharacterPrompt, PanelPrompt } from '#lib/features/comics/contracts/prompts.ts';
+import type { CharacterBoxes } from '#lib/utils/ai/aiTypes.ts';
+import type { ComicStyle, Panel } from '#lib/types/index.ts';
+import { STYLES } from '#lib/utils/comicStyles.ts';
 import type { ResponseInputItem } from 'openai/resources/responses/responses.mjs';
 import { OPEN_AI_ROLE, OPEN_AI_TYPE } from './settings';
 

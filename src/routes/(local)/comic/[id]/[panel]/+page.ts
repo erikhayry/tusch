@@ -1,6 +1,6 @@
-import { getComic, getPanel } from '$lib/features/comics/client/comic-selectors';
-import { comicStore } from '$lib/features/comics/client/comic-store.svelte';
-import { PanelPageDataSchema, PanelRouteParamsSchema } from '$lib/types/routeData';
+import { getComic, getPanel } from '#lib/features/comics/client/comic-selectors.ts';
+import { comicStore } from '#lib/features/comics/client/comic-store.svelte.ts';
+import { PanelPageDataSchema, PanelRouteParamsSchema } from '#lib/types/routeData.ts';
 import { error } from '@sveltejs/kit';
 import { z } from 'zod';
 

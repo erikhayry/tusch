@@ -1,4 +1,4 @@
-import type { Model } from '$lib/types';
+import type { Model } from '#lib/types/index.ts';
 import { z } from 'zod';
 
 export const OPEN_AI_ROLE = {

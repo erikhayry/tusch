@@ -1,4 +1,4 @@
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test } from '@playwright/test';
 import { holdRequest } from '../../../../../../tests/e2e/holdRequest';
 import { activate } from '../../../../../../tests/e2e/keyboard';

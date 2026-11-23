@@ -1,4 +1,4 @@
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
 import { CreatePage as SettingsPage } from '../../../../../settings/test/utils/createPage';
 import {

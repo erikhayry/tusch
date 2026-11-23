@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { applyItemEdit } from '$lib/features/comics/client/item-commands';
-	import { EDIT_TEXT_ACTION, getEditValues } from '$lib/features/panels/contracts/editText';
-	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
-	import { m } from '$lib/paraglide/messages';
+	import { applyItemEdit } from '#lib/features/comics/client/item-commands.ts';
+	import { EDIT_TEXT_ACTION, getEditValues } from '#lib/features/panels/contracts/editText.ts';
+	import { enhanceClientCommand } from '#lib/forms/enhance-client-command.ts';
+	import { m } from '#lib/paraglide/messages.js';
 	import { type EditTextFieldFormProps } from './editTextFieldFormTypes';
 
 	//TODO a11y

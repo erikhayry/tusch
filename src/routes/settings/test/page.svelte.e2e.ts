@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
-import { m } from '$lib/paraglide/messages';
-import { KEY_COOKIE_NAME, TEXT_MODEL_COOKIE_NAME } from '$lib/utils/cookies';
+import { m } from '#lib/paraglide/messages.js';
+import { KEY_COOKIE_NAME, TEXT_MODEL_COOKIE_NAME } from '#lib/utils/cookies.ts';
 import { LandingPage } from '../../(local)/test/utils/landingPage';
 import { KEY_COPY } from '../../../tests/e2e/keyCopy';
 import { gotoHydrated } from '../../../tests/e2e/gotoHydrated';

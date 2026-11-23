@@ -2,10 +2,10 @@ import {
 	GLOBAL_INSTRUCTIONS_VALUE_KEY,
 	GlobalInstructionsSchema,
 	decodeGlobalInstructions,
-} from '$lib/features/settings/contracts/globalInstructions';
-import { readInteger, readJsonField, readString } from '$lib/forms/form-data';
-import { PanelSchema, type Panel } from '$lib/types';
-import { OpenAiOutputSchema } from '$lib/utils/ai/aiTypes';
+} from '#lib/features/settings/contracts/globalInstructions.ts';
+import { readInteger, readJsonField, readString } from '#lib/forms/form-data.ts';
+import { PanelSchema, type Panel } from '#lib/types/index.ts';
+import { OpenAiOutputSchema } from '#lib/utils/ai/aiTypes.ts';
 import z from 'zod';
 import { PanelPromptSchema, toPanelPrompt } from '../../comics/contracts/prompts';
 

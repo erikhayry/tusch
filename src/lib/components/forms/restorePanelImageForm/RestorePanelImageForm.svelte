@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
-	import { restorePanelImage } from '$lib/features/panels/client/workflows/restore-panel-image';
+	import { workflowDeps } from '#lib/client/workflow-deps.ts';
+	import { expectWorkflow } from '#lib/features/comics/client/workflows/asset-workflow.ts';
+	import { restorePanelImage } from '#lib/features/panels/client/workflows/restore-panel-image.ts';
 	import {
 		getRestorePanelImageValues,
 		RESTORE_PANEL_IMAGE_ACTION,
-	} from '$lib/features/panels/contracts/restorePanelImage';
-	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
-	import { m } from '$lib/paraglide/messages';
+	} from '#lib/features/panels/contracts/restorePanelImage.ts';
+	import { enhanceClientCommand } from '#lib/forms/enhance-client-command.ts';
+	import { m } from '#lib/paraglide/messages.js';
 	import type { RestorePanelImageFormProps } from './restorePanelImageFormTypes';
 
 	let { comicId, panelId, onSuccess }: RestorePanelImageFormProps = $props();

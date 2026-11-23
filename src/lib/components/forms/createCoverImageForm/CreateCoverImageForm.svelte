@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { expectWorkflow } from '$lib/features/comics/client/workflows/asset-workflow';
-	import { commitGeneratedCover } from '$lib/features/comics/client/workflows/commit-generated-cover';
+	import { workflowDeps } from '#lib/client/workflow-deps.ts';
+	import { expectWorkflow } from '#lib/features/comics/client/workflows/asset-workflow.ts';
+	import { commitGeneratedCover } from '#lib/features/comics/client/workflows/commit-generated-cover.ts';
 	import {
 		CREATE_COVER_IMAGE_ACTION,
 		type CreateCoverImageResult,
-	} from '$lib/features/comics/contracts/createCoverImage';
-	import { withGlobalInstructions } from '$lib/features/settings/client/global-instructions';
-	import { enhanceAction } from '$lib/forms/enhance-action';
-	import { encodeFormValue } from '$lib/forms/form-data';
-	import { m } from '$lib/paraglide/messages';
-	import { INSTRUCTIONS_VALUE_KEY } from '$lib/utils/db/dbTypes';
+	} from '#lib/features/comics/contracts/createCoverImage.ts';
+	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
+	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { encodeFormValue } from '#lib/forms/form-data.ts';
+	import { m } from '#lib/paraglide/messages.js';
+	import { INSTRUCTIONS_VALUE_KEY } from '#lib/utils/db/dbTypes.ts';
 	import type { CreateCoverImageFormProps } from './createCoverImageFormTypes';
 
 	const handleSubmit = withGlobalInstructions(

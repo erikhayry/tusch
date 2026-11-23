@@ -3,9 +3,9 @@
 </script>
 
 <script lang="ts">
-	import { m } from '$lib/paraglide/messages';
+	import { m } from '#lib/paraglide/messages.js';
 
-	import { globalError } from '$lib/utils/states/error.svelte';
+	import { globalError } from '#lib/utils/states/error.svelte.ts';
 </script>
 
 <div data-testId={errorTestId} aria-live="polite" role="status">

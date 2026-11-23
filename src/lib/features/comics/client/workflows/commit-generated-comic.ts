@@ -1,4 +1,4 @@
-import type { Comic } from '$lib/types';
+import type { Comic } from '#lib/types/index.ts';
 import type { ComicCommands } from '../comic-commands';
 import {
 	base64ImageToBlob,

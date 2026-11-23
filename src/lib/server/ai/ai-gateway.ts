@@ -1,5 +1,5 @@
-import type { AiImageRequest, AiTextRequest, OpenAiOutput } from '$lib/utils/ai/aiTypes';
-import { type ValidateApiKeyResult } from '$lib/features/settings/contracts/validateApiKey';
+import type { AiImageRequest, AiTextRequest, OpenAiOutput } from '#lib/utils/ai/aiTypes.ts';
+import { type ValidateApiKeyResult } from '#lib/features/settings/contracts/validateApiKey.ts';
 import { z } from 'zod';
 
 export const AiGatewayErrorKindSchema = z.enum([

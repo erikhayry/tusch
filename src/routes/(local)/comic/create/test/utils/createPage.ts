@@ -1,4 +1,4 @@
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import { activate, tabTo, typeInto } from '../../../../../../tests/e2e/keyboard';

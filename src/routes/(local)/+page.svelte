@@ -4,14 +4,14 @@
 
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import DeleteItemForm from '$lib/components/forms/deleteItemForm/DeleteItemForm.svelte';
-	import LoginForm from '$lib/components/forms/loginForm/LoginForm.svelte';
-	import Page from '$lib/components/page/Page.svelte';
-	import Heading from '$lib/components/relativeHeading/Heading.svelte';
-	import Section from '$lib/components/relativeHeading/Section.svelte';
-	import { m } from '$lib/paraglide/messages';
-	import Image from '$lib/components/image/Image.svelte';
-	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
+	import DeleteItemForm from '#lib/components/forms/deleteItemForm/DeleteItemForm.svelte';
+	import LoginForm from '#lib/components/forms/loginForm/LoginForm.svelte';
+	import Page from '#lib/components/page/Page.svelte';
+	import Heading from '#lib/components/relativeHeading/Heading.svelte';
+	import Section from '#lib/components/relativeHeading/Section.svelte';
+	import { m } from '#lib/paraglide/messages.js';
+	import Image from '#lib/components/image/Image.svelte';
+	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
 	import type { Props } from './+page.ts';
 
 	// Covers in the first row (three per row from the 48em breakpoint) load eagerly; the rest lazily,
@@ -36,7 +36,8 @@
 			{#each data.comics as comic, index (comic.id)}
 				<li class="comic">
 					<!-- The cover is decorative: the link's name stays the title. The delete button sits outside the link. -->
-					<a class="comic-link" href={resolve(`/comic/${comic.id}`)}>
+
+					<a class="comic-link" href={resolve(`comic/${comic.id}`)}>
 						{#if comic.cover}
 							<Image
 								image={comic.cover.portrait}
@@ -62,8 +63,8 @@
 		</ul>
 	</Section>
 
-	<p><a href={resolve('/comic/create')}>{m.createNewComic()}</a></p>
-	<p><a href={resolve('/settings')}>{m.settings()}</a></p>
+	<p><a href={resolve('comic/create')}>{m.createNewComic()}</a></p>
+	<p><a href={resolve('settings')}>{m.settings()}</a></p>
 </Page>
 
 <style>

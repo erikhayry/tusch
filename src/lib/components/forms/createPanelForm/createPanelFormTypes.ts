@@ -1,5 +1,5 @@
-import { CreatePanelValuesSchema } from '$lib/features/panels/contracts/createPanel';
-import { GLOBAL_INSTRUCTIONS_VALUE_KEY } from '$lib/features/settings/contracts/globalInstructions';
+import { CreatePanelValuesSchema } from '#lib/features/panels/contracts/createPanel.ts';
+import { GLOBAL_INSTRUCTIONS_VALUE_KEY } from '#lib/features/settings/contracts/globalInstructions.ts';
 import { z } from 'zod';
 
 export const CreatePanelFormPropsSchema = z.object({
