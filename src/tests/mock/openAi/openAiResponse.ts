@@ -235,48 +235,31 @@ const COMIC_DATA: { data: InitialComic } = {
 	},
 };
 
-/** The create-comic response with another generated title (e.g. an empty one). */
-export function createComicResponse(title: string): OpenAiOutput {
+export const CANNED_COMIC_TITLE = COMIC_DATA.data.title;
+
+/**
+ * The create-comic response with the given title and panel count. The canned panels
+ * repeat when more are asked for (ids are replaced by the server anyway).
+ */
+export function createComicResponse(
+	title: string,
+	panelCount = COMIC_DATA.data.panels.length,
+): OpenAiOutput {
+	const { panels } = COMIC_DATA.data;
+	const data = {
+		...COMIC_DATA.data,
+		title,
+		panels: Array.from({ length: panelCount }, (_, index) => panels[index % panels.length]),
+	};
 	return {
 		output: [
 			{
 				type: 'message',
-				content: [
-					{
-						type: 'output_text',
-						text: JSON.stringify({ data: { ...COMIC_DATA.data, title } }),
-					},
-				],
+				content: [{ type: 'output_text', text: JSON.stringify({ data }) }],
 			},
 		],
 	};
 }
-
-export const CREATE_COMIC_RESPONSE: OpenAiOutput = {
-	output: [
-		{
-			type: 'reasoning',
-			content: [],
-		},
-		{
-			type: 'reasoning',
-			content: [],
-		},
-		{
-			type: 'reasoning',
-			content: [],
-		},
-		{
-			type: 'message',
-			content: [
-				{
-					type: 'output_text',
-					text: JSON.stringify(COMIC_DATA),
-				},
-			],
-		},
-	],
-};
 
 const IMAGE_RESPONSE_DATA = {
 	data: {

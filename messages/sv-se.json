@@ -72,5 +72,8 @@
 	"createPortraitCover": "Skapa stående omslag",
 	"createLandscapeCover": "Skapa liggande omslag",
 	"removePortraitCover": "Ta bort stående omslag",
-	"removeLandscapeCover": "Ta bort liggande omslag"
+	"removeLandscapeCover": "Ta bort liggande omslag",
+	"createComicPanelCount": "Antal rutor",
+	"createComicPanelCountHint": "1–30.",
+	"createComicPanelCountError": "Antal rutor måste vara ett heltal från 1 till 30."
 }

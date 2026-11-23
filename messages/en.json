@@ -118,5 +118,8 @@
 	"createPortraitCover": "Create portrait cover",
 	"createLandscapeCover": "Create landscape cover",
 	"removePortraitCover": "Remove portrait cover",
-	"removeLandscapeCover": "Remove landscape cover"
+	"removeLandscapeCover": "Remove landscape cover",
+	"createComicPanelCount": "Number of panels",
+	"createComicPanelCountHint": "1–30.",
+	"createComicPanelCountError": "Number of panels must be a whole number from 1 to 30."
 }

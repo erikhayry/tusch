@@ -1,6 +1,7 @@
 import {
 	CreateComicValuesSchema,
 	decodeCreateComicValues,
+	explainCreateComicError,
 	type CreateComicResult,
 } from '#lib/features/comics/contracts/createComic.ts';
 import {
@@ -35,7 +36,11 @@ export function createComicAction(
 ): ActionResult<CreateComicResult> {
 	return runGeneration(
 		event,
-		{ decode: decodeCreateComicValues, schema: CreateComicValuesSchema },
+		{
+			decode: decodeCreateComicValues,
+			schema: CreateComicValuesSchema,
+			failureMessage: explainCreateComicError,
+		},
 		(generation, values) => generation.createComic(values),
 		service,
 	);

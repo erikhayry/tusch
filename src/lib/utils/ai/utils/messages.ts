@@ -26,12 +26,11 @@ const GLOBAL_HOWS = {
 
 export const INIT = {
 	WHAT: 'Create a structured comic script based on the attached URL and context.',
-	HOWS: [
-		...GLOBAL_HOWS.PANEL,
-		...GLOBAL_HOWS.COMIC,
-		'PANEL COUNT: Generate between 5 and 10 sequential panels that form a cohesive narrative arc.',
-	],
+	HOWS: [...GLOBAL_HOWS.PANEL, ...GLOBAL_HOWS.COMIC],
 };
+
+/** Start of the panel count line; the E2E mock reads the count from it. */
+export const PANEL_COUNT_PREFIX = 'PANEL COUNT: Generate exactly ';
 
 export const COVER_IMAGE = {
 	WHAT: 'Generate a cover image for the comic based on the attached comic characters, panels, and style.',
@@ -75,7 +74,7 @@ function buildStyleInstruction(styleKey: ComicStyle): string[] {
 }
 
 export function buildInitialMessages(
-	{ url, story }: { url?: string; story?: string },
+	{ url, story, panelCount }: { url?: string; story?: string; panelCount: number },
 	style: ComicStyle,
 	globalInstructions = '',
 ): string[] {
@@ -84,6 +83,7 @@ export function buildInitialMessages(
 		...(url ? [`Source URL: ${url}`] : []),
 		...(story ? [`USER STORY: ${story}`] : []),
 		...INIT.HOWS,
+		`${PANEL_COUNT_PREFIX}${panelCount} sequential panels that form a cohesive narrative arc.`,
 		...buildStyleInstruction(style),
 		...buildGlobalInstructions(globalInstructions),
 	];

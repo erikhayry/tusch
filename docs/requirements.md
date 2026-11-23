@@ -67,7 +67,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-005 A comic can be created from a source URL or a story
 
 - Status: active
-- Statement: on `/comic/create`, submitting a style and a valid URL, a story, or both generates a comic (title, characters, panels) and opens its page. When both are given, the story is extra context on top of the URL.
+- Statement: on `/comic/create`, submitting a style, a panel count and a valid URL, a story, or both generates a comic (title, characters, panels) and opens its page. When both are given, the story is extra context on top of the URL.
 - Why: the core feature.
 - Proven by: tagged tests
 
@@ -82,6 +82,20 @@ The ledger of how Tusch must behave. Owned by the tech lead
 
 - Status: active
 - Statement: submitting with neither a URL nor a story, an invalid URL, or a story shorter than 20 or longer than 10,000 characters shows an error and creates nothing; the error clears on the next valid submission.
+- Why: users must know why nothing happened.
+- Proven by: tagged tests
+
+### REQ-289-1 A new comic has the number of panels the user chose
+
+- Status: active
+- Statement: the create form has a required "Number of panels" field after the style select, prefilled with 5 and hinted "1–30"; the create-comic prompt asks the AI for exactly that many panels, so the created comic lists that many panels.
+- Why: users want to choose how long a new comic is instead of getting 5–10 panels the AI picks.
+- Proven by: tagged tests
+
+### REQ-289-2 An invalid panel count is rejected with a visible message
+
+- Status: active
+- Statement: a panel count that isn't a whole number from 1 to 30 (0, 31, 2.5, empty) is rejected by the server with a message in the error region and no comic is created; the error clears on the next valid submission (as REQ-007).
 - Why: users must know why nothing happened.
 - Proven by: tagged tests
 

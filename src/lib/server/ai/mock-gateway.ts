@@ -5,10 +5,14 @@ import {
 	type CharacterBoxes,
 	type OpenAiOutput,
 } from '#lib/utils/ai/aiTypes.ts';
-import { COVER_IMAGE, CURRENT_BOXES_PREFIX } from '#lib/utils/ai/utils/messages.ts';
+import {
+	COVER_IMAGE,
+	CURRENT_BOXES_PREFIX,
+	PANEL_COUNT_PREFIX,
+} from '#lib/utils/ai/utils/messages.ts';
 import { IMAGE_SIZE } from '#lib/utils/ai/utils/settings.ts';
 import {
-	CREATE_COMIC_RESPONSE,
+	CANNED_COMIC_TITLE,
 	createComicResponse,
 	CREATE_COVER_IMAGE_RESPONSE,
 	CREATE_PANEL_IMAGE_RESPONSE,
@@ -96,6 +100,16 @@ function charactersInPrompt(messages: string[]): string[] | undefined {
 	}
 }
 
+/**
+ * The panel count the create-comic request asks for (`buildInitialMessages`). Without that
+ * line the canned six panels are returned, as before.
+ */
+function requestedPanelCount(messages: string[]): number | undefined {
+	const line = messages.find((message) => message.startsWith(PANEL_COUNT_PREFIX));
+	const count = Number.parseInt(line?.slice(PANEL_COUNT_PREFIX.length) ?? '', 10);
+	return Number.isNaN(count) ? undefined : count;
+}
+
 /** The boxes the request says are current (the hint from `buildFixCharacterCropMessages`). */
 function currentBoxes(messages: string[]): CharacterBoxes | undefined {
 	const line = messages.find((message) => message.startsWith(CURRENT_BOXES_PREFIX));
@@ -150,9 +164,8 @@ const mockAiGateway: AiGateway = {
 			return INVALID_TEXT_RESPONSE;
 		}
 		if (schemaName === SchemaName.enum.initComic) {
-			return messages.join('\n').includes(EMPTY_TITLE)
-				? createComicResponse('')
-				: CREATE_COMIC_RESPONSE;
+			const title = messages.join('\n').includes(EMPTY_TITLE) ? '' : CANNED_COMIC_TITLE;
+			return createComicResponse(title, requestedPanelCount(messages));
 		}
 		return createPanelResponse();
 	},

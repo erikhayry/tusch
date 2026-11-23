@@ -13,6 +13,9 @@
 	import { commitGeneratedComic } from '#lib/features/comics/client/workflows/commit-generated-comic.ts';
 	import {
 		CREATE_COMIC_ACTION,
+		PANEL_COUNT_DEFAULT,
+		PANEL_COUNT_MAX,
+		PANEL_COUNT_MIN,
 		type CreateComicResult,
 	} from '#lib/features/comics/contracts/createComic.ts';
 	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
@@ -57,6 +60,20 @@
 				{/each}
 			</select>
 		</label>
+		<label>
+			{m.createComicPanelCount()}
+			<input
+				type="number"
+				name="panelCount"
+				min={PANEL_COUNT_MIN}
+				max={PANEL_COUNT_MAX}
+				step="1"
+				required
+				value={PANEL_COUNT_DEFAULT}
+				aria-describedby="create-comic-panel-count-hint"
+			/>
+		</label>
+		<p id="create-comic-panel-count-hint">{m.createComicPanelCountHint()}</p>
 		<button type="submit">{m.submit()}</button>
 	</form>
 </Section>

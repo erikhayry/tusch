@@ -1,4 +1,7 @@
-import { CreateComicResultSchema } from '#lib/features/comics/contracts/createComic.ts';
+import {
+	CreateComicResultSchema,
+	PANEL_COUNT_DEFAULT,
+} from '#lib/features/comics/contracts/createComic.ts';
 import {
 	CreateCoverImageResultSchema,
 	toCoverPrompt,
@@ -32,7 +35,11 @@ const post = (
 
 /** A comic made the way a script would: through the API, not a bundled example. */
 async function generateComic(request: APIRequestContext): Promise<Comic> {
-	const response = await post(request, 'comic', { story: STORY, style: 'anime' });
+	const response = await post(request, 'comic', {
+		story: STORY,
+		style: 'anime',
+		panelCount: PANEL_COUNT_DEFAULT,
+	});
 	expect(response.status()).toBe(200);
 	return CreateComicResultSchema.parse(await response.json()).comic;
 }
@@ -40,7 +47,7 @@ async function generateComic(request: APIRequestContext): Promise<Comic> {
 /** A valid body for each endpoint, built from `comic`. */
 function bodiesFor(comic: Comic): Record<Endpoint, unknown> {
 	return {
-		comic: { story: STORY, style: comic.style },
+		comic: { story: STORY, style: comic.style, panelCount: PANEL_COUNT_DEFAULT },
 		'cover-image': { comic: toCoverPrompt(comic), instructions: '' },
 		panel: toCreatePanelValues(comic.id, comic.panels, 1),
 		'panel-image': {
@@ -127,7 +134,11 @@ test.describe('generation API', () => {
 	test.describe('provider failures', () => {
 		// Creating a comic only sends the story to the text model, so `no-image` must reach an
 		// image request: the cover endpoint, with the marker in the instructions.
-		const storyBody = (marker: string) => ({ story: `${STORY} ${marker}`, style: 'anime' });
+		const storyBody = (marker: string) => ({
+			story: `${STORY} ${marker}`,
+			style: 'anime',
+			panelCount: PANEL_COUNT_DEFAULT,
+		});
 		const PROVIDER_FAILURES: {
 			marker: string;
 			status: number;
@@ -186,7 +197,11 @@ test.describe('generation API', () => {
 
 	test.describe('invalid input', () => {
 		const INVALID_BODIES = [
-			{ name: 'neither url nor story', data: '{"style":"anime"}', fieldErrors: true },
+			{
+				name: 'neither url nor story',
+				data: `{"style":"anime","panelCount":${PANEL_COUNT_DEFAULT}}`,
+				fieldErrors: true,
+			},
 			{
 				name: 'a story under 20 characters',
 				data: '{"story":"too short","style":"anime"}',
