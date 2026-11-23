@@ -1,4 +1,4 @@
-import { ComicSchema } from '$lib/types';
+import { ComicSchema } from '#lib/types/index.ts';
 import { z } from 'zod';
 
 export const ComicPropsSchema = z.object({

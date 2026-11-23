@@ -1,4 +1,4 @@
-import { bootstrapComics } from '$lib/features/comics/client/bootstrap';
+import { bootstrapComics } from '#lib/features/comics/client/bootstrap.ts';
 
 /**
  * Browser-only boundary for every route that reads local comic state

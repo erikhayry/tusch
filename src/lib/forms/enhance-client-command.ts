@@ -1,6 +1,6 @@
-import { globalError } from '$lib/utils/states/error.svelte';
-import { globalLoading } from '$lib/utils/states/loading.svelte';
-import type { SubmitFunction } from '@sveltejs/kit';
+import type { SubmitFunction } from '$app/forms';
+import { globalError } from '#lib/utils/states/error.svelte.ts';
+import { globalLoading } from '#lib/utils/states/loading.svelte.ts';
 import type { ZodSafeParseResult } from 'zod';
 import type { UpdateForm } from './enhance-action';
 import { toFormFailure } from './form-failure';

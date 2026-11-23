@@ -4,7 +4,7 @@ description: Reviewer role for the agent pipeline. Reviews an issue labelled sta
 argument-hint: <issue-number>
 disable-model-invocation: true
 model: sonnet
-allowed-tools: Read Grep Glob Write Agent Bash(gh issue view *) Bash(gh issue edit *) Bash(gh issue comment *) Bash(gh issue list *) Bash(gh issue create *) Bash(gh pr create *) Bash(gh pr checks *) Bash(gh pr edit *) Bash(gh pr comment *) Bash(gh pr list *) Bash(gh pr view *) Bash(gh pr review *) Bash(gh api *) Bash(git *) Bash(pnpm *)
+allowed-tools: Read Grep Glob Write Agent Bash
 ---
 
 # Reviewer
@@ -14,7 +14,7 @@ you don't fix. Follow `docs/rules/agents.md`, especially "Running commands".
 
 ## Issue
 
-!`gh issue view $0 --json number,title,labels,body,comments`
+!`gh issue view $0 --json number,title,labels,body,comments --jq '{number,title,labels:[.labels[].name],body,comments:(.comments|map(select(.body|startswith("<!-- cost-so-far")|not))|.[-4:]|map({author:.author.login,body}))}'`
 
 ## 1. Check entry
 
@@ -58,6 +58,10 @@ So:
   reviewers caught before). A hit is blocking unless the lesson says otherwise.
 - **Screenshots:** baselines changed only for the views the ticket lists, and
   the images look intended.
+- **Changelog:** a user-facing change has `changelog/$0.<type>.md` with one
+  sentence a user would understand, and the type matches the issue's `type:*`
+  label (`changelog/README.md`). A missing or wrong entry is blocking.
+  `CHANGELOG.md` itself is never edited.
 - **Accessibility:** if the diff touches `.svelte` files, CSS or `messages/`,
   apply the `a11y-reviewer` checklist to the diff. Its
   **critical** and **serious** findings are blocking; post the rest as notes.
@@ -88,8 +92,8 @@ So:
 
 ## 3. Decide
 
-- **Blocking issues:** don't open a PR. Comment with the protocol format,
-  listing each blocking item with file and line, and move the issue back to
+- **Blocking issues:** don't open a PR. Comment with the protocol format (short: `docs/rules/agents.md`,
+  "Comments"), one line per blocking item with file and line, and move the issue back to
   `status:needs-dev`, or to `status:needs-tests` if the tests are what's wrong.
 - **Otherwise:** write the PR body with the Write tool to `.agent-tmp/pr-$0.md`,
   then open the PR:
@@ -99,9 +103,9 @@ So:
   ```
 
   The body contains: a summary, `Closes #$0`, the requirements added, changed or
-  removed, the tests, the screenshots changed, a **Release note** (one
-  user-facing sentence, or "No user-facing change"), and anything the human
-  should look at closely.
+  removed, the tests, the screenshots changed, a **Release note** (the sentence
+  from the changelog entry, or "No user-facing change" when there is none), and
+  anything the human should look at closely.
 
   Post your notes as inline review comments. First get the commit with
   `git rev-parse HEAD`, then, for each note:

@@ -3,8 +3,8 @@
 </script>
 
 <script lang="ts">
-	import { m } from '$lib/paraglide/messages';
-	import { globalLoading } from '$lib/utils/states/loading.svelte';
+	import { m } from '#lib/paraglide/messages.js';
+	import { globalLoading } from '#lib/utils/states/loading.svelte.ts';
 
 	const labelId = $props.id();
 </script>

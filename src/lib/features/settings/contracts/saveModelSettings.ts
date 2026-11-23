@@ -1,6 +1,6 @@
-import { readString } from '$lib/forms/form-data';
-import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
-import { ConfigStateSchema, ConfigValuesSchema } from '$lib/utils/db/dbTypes';
+import { readString } from '#lib/forms/form-data.ts';
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '#lib/types/index.ts';
+import { ConfigStateSchema, ConfigValuesSchema } from '#lib/utils/db/dbTypes.ts';
 import { z } from 'zod';
 
 export const CONFIG_ACTION = 'config' as const;

@@ -6,11 +6,18 @@ import {
 	ModelSchema,
 	PanelSchema,
 	TEXT_MODEL_KEY,
-} from '$lib/types';
+} from '#lib/types/index.ts';
 import { z } from 'zod';
 
-export const ComicsPageDataSchema = z.object({
+/** Server load data for `/`: whether a key is stored, never the key itself (REQ-029). */
+export const ComicsServerDataSchema = z.object({
+	hasKey: z.boolean(),
+});
+
+export const ComicsPageDataSchema = ComicsServerDataSchema.extend({
 	comics: z.array(ComicSchema),
+	/** No key and only bundled examples: the start page greets the visitor (REQ-234-1). */
+	showWelcome: z.boolean(),
 });
 
 export const ComicPageDataSchema = z.object({

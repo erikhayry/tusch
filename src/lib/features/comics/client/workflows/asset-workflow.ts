@@ -3,8 +3,8 @@ import {
 	stageAssets,
 	type AssetStore,
 	type CleanupResult,
-} from '$lib/client/assets/asset-store';
-import { base64ToBlob } from '$lib/utils/storage/utils/base64ToBlob';
+} from '#lib/client/assets/asset-store.ts';
+import { base64ToBlob } from '#lib/utils/storage/utils/base64ToBlob.ts';
 import type { CommandFailure, CommandFailureCode, CommandResult } from '../comic-commands';
 import type { ComicStoreState } from '../comic-store.svelte';
 

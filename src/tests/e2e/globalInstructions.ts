@@ -1,4 +1,4 @@
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import { expect, type Page } from '@playwright/test';
 import { CreatePage as SettingsPage } from '../../routes/settings/test/utils/createPage';
 import { gotoHydrated } from './gotoHydrated';

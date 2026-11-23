@@ -27,6 +27,27 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: users manage their own local library.
 - Proven by: tagged tests
 
+### REQ-235-1 A comic with a cover shows it in its library entry
+
+- Status: active
+- Statement: on `/`, each comic with a cover shows its portrait cover above its title, and one link wraps both and leads to the comic page; the cover is decorative (`alt=""`), so the link's accessible name is the comic title. The "Delete comic" button stays outside the link. A cover whose file is gone shows the "missing image" placeholder (REQ-036).
+- Why: a cover makes a comic recognisable at a glance, and a single link keeps one tab stop and one name per comic.
+- Proven by: tagged tests
+
+### REQ-235-2 A comic without a cover shows only its title in the library
+
+- Status: active
+- Statement: on `/`, a comic without a cover shows its title inside the link with no image and no placeholder; an empty spacer the height of a portrait cover keeps its title level with the others in its row.
+- Why: a missing cover is not a missing file, so there is nothing to replace; the spacer stops titles from drifting out of line across a row.
+- Proven by: tagged tests
+
+### REQ-235-3 The library lays out covers in a grid and loads them lazily
+
+- Status: active
+- Statement: on `/`, the entries sit one per row at 320 px and three per row from the `48em` breakpoint; the first three covers load eagerly and every later cover has `loading="lazy"`.
+- Why: a narrow screen needs one column (REQ-040), and covers below the first row must not slow the first paint (REQ-039).
+- Proven by: tagged tests
+
 ### REQ-003 An empty library leads to creating a comic
 
 - Status: active
@@ -134,6 +155,34 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: a comic whose title is empty shows "Untitled comic" (translated) as the `<h1>` of its page and "Untitled comic · Tusch" as the document title, so the page never has an empty heading.
 - Why: `ComicSchema.title` allows an empty string, and an empty `<h1>` fails axe `empty-heading`.
+- Proven by: tagged tests
+
+### REQ-87-1 The comic page links to a viewer and the viewer links back
+
+- Status: active
+- Statement: `/comic/<id>` has a "View comic" link (not a button) after the `<h1>` and before the "Settings" heading, to `/comic/<id>/view`. The viewer has a "Back" link to `/comic/<id>`. The link adds no heading.
+- Why: readers need a way to see the comic without the editor.
+- Proven by: tagged tests
+
+### REQ-87-2 The viewer shows the comic as a reader sees it
+
+- Status: active
+- Statement: `/comic/<id>/view` shows the comic's title (or "Untitled comic") as its only `<h1>`, then the cover if there is one, then every panel in stored order as an `<h2>` "Panel <n>" section with its image, captions as text and dialogue lines as "<character name>: <text>" (text alone if the character is unknown).
+- Why: the editor mixes content with controls and notes; a reader wants the story.
+- Proven by: tagged tests
+
+### REQ-87-3 The viewer shows no editing data or controls
+
+- Status: active
+- Statement: the viewer has no form, no button and none of the editing data: visual descriptions, time of day, season, year, style, source/story, character list, setting or dialogue head crops.
+- Why: the viewer is read-only and shows the comic, not how it was made.
+- Proven by: tagged tests
+
+### REQ-87-4 The viewer handles panels without an image and comics without panels
+
+- Status: active
+- Statement: a viewer panel without an image still shows its heading, captions and dialogue and renders no image. A comic without panels shows only its title and cover (if any), with no panel headings.
+- Why: users edit comics in any order; a half-finished comic must still be readable.
 - Proven by: tagged tests
 
 ### REQ-011 A cover can be generated or replaced
@@ -327,6 +376,20 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: a link with no text is unusable for screen-reader users; generated panels can have empty titles.
 - Proven by: tagged tests
 
+### REQ-238-1 Each panel in the panel list is a card with an image and a title
+
+- Status: active
+- Statement: in the panel list on the panel page, each panel is a card whose single link shows the panel's stored image (an `<img>` with empty alt) or, without one, a same-size CSS placeholder hidden from assistive technology (no text, no `<img>`), and the panel's title; the link is named by the title.
+- Why: users recognise a panel by its picture faster than by a text link; the title already names the link, so the image adds no screen-reader noise.
+- Proven by: tagged tests
+
+### REQ-238-2 The panel list is one horizontal row that scrolls inside its own box
+
+- Status: active
+- Statement: the panel list on the panel page is one horizontal row of cards that scrolls inside its own box at every viewport width (the document never gets wider than the viewport); on load the current panel's card is scrolled into view and is the only link marked `aria-current="page"`; a card focused by keyboard is scrolled into view.
+- Why: a long story would otherwise push the panel itself far down the page, and the user must see which panel they are on.
+- Proven by: tagged tests
+
 ## Persistence and navigation
 
 ### REQ-022 Changes persist locally across reloads
@@ -383,7 +446,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-028 Users bring their own validated OpenAI key
 
 - Status: active
-- Statement: on `/settings`, the user enters an OpenAI API key; it is stored (HTTP-only cookie) only after the provider accepts it. A rejected key shows an error and keeps any previous key.
+- Statement: on `/settings` or in the start page's welcome section (REQ-234-1), the user enters an OpenAI API key; it is stored (HTTP-only cookie) only after the provider accepts it. A rejected key shows an error and keeps any previous key.
 - Why: no shared key; an invalid key must never become active.
 - Proven by: tagged tests
 
@@ -406,6 +469,41 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: `/settings` renders (with empty model lists) when no key is stored, so the user can enter one.
 - Why: otherwise a new user can't get started.
+- Proven by: tagged tests
+
+### REQ-234-1 A new visitor is welcomed with the key form on the start page
+
+- Status: active
+- Statement: when no API key is stored and every comic in the library is a bundled example, `/` shows a welcome section above the comic list with one sentence on why a key is needed and the API key form; the comic list stays below it.
+- Why: a new visitor otherwise doesn't know that nothing works until a key is added in Settings (#234).
+- Proven by: tagged tests
+
+### REQ-234-2 The welcome section hides once it has served its purpose
+
+- Status: active
+- Statement: when an API key is stored, or the library holds at least one comic the user created, `/` shows no welcome section.
+- Why: the section is for users who can't create a comic yet; others don't need it (#234).
+- Proven by: tagged tests
+
+### REQ-234-3 A key can be saved from the welcome section
+
+- Status: active
+- Statement: saving an accepted key in the welcome section replaces the form with "Key saved. You can now create a comic." and a "Create new comic" link; a rejected key shows the invalid-key message and keeps the form.
+- Why: the user can go straight from the first visit to creating a comic (#234).
+- Proven by: tagged tests
+
+### REQ-234-4 Settings shows whether a key is saved
+
+- Status: active
+- Statement: when a key is stored, `/settings` shows "A key is saved. Enter a new one to replace it." above the key field; without a key it doesn't. The key itself is never shown.
+- Why: users can't otherwise tell whether a key is already stored (#234).
+- Proven by: tagged tests
+
+### REQ-234-5 Settings uses plain labels
+
+- Status: active
+- Statement: on `/settings` the key field is labelled "OpenAI API key" with a hint on where the key is stored and where to get one, the key button is "Save key", the model section is "AI models" with a "Save models" button, and when no key is stored the empty model lists show "Add your API key to choose models."
+- Why: "BYOK", "Add" and "Config" don't say what they mean (#234).
 - Proven by: tagged tests
 
 ### REQ-034 Settings is reachable from the start page
@@ -471,7 +569,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-033 Routes accept only the actions their forms use
 
 - Status: active
-- Statement: each page accepts POSTs only to the form actions its own forms use; any other action name returns 404.
+- Statement: each page accepts POSTs only to the form actions its own forms use (the start page: delete and the key form); any other action name returns 404.
 - Why: limits what a crafted request can trigger (e.g. no AI generation from the settings page).
 - Proven by: tagged tests
 
@@ -503,7 +601,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-035 Every view passes an axe scan
 
 - Status: active
-- Statement: every view (landing, create, comic, panel, raw, not found, settings) has no axe violations, in both the light and the dark colour scheme: each has a page title, a main landmark, labelled form controls and sufficient colour contrast.
+- Statement: every view (landing, create, comic, view, panel, raw, not found, settings) has no axe violations, in both the light and the dark colour scheme: each has a page title, a main landmark, labelled form controls and sufficient colour contrast.
 - Why: screen-reader and keyboard users must be able to use every view; tests select by role and name, so missing labels break both.
 - Proven by: tagged tests
 
@@ -524,7 +622,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-040 No view scrolls horizontally at 320 px
 
 - Status: active
-- Statement: at a viewport 320 CSS px wide, no view (landing, create, comic, panel, raw, not found, settings) scrolls horizontally: the document is no wider than the viewport, and long content such as the raw JSON wraps or scrolls inside its own box.
+- Statement: at a viewport 320 CSS px wide, no view (landing, create, comic, view, panel, raw, not found, settings) scrolls horizontally: the document is no wider than the viewport, and long content such as the raw JSON wraps or scrolls inside its own box.
 - Why: WCAG 1.4.10 (Reflow); users on narrow screens or at high zoom must not have to scroll in two directions.
 - Proven by: tagged tests
 

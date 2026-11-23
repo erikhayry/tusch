@@ -1,4 +1,4 @@
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import {
 	createComic,
@@ -9,7 +9,7 @@ import {
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../../../tests/e2e/keyboard';
 import { storedFiles } from '../../../../../tests/e2e/storage';
-import { KEY_COOKIE_NAME } from '$lib/utils/cookies';
+import { KEY_COOKIE_NAME } from '#lib/utils/cookies.ts';
 import { PanelPage } from '../[panel]/test/utils/panelPage';
 
 type Asset = { src: string; width: number; height: number };

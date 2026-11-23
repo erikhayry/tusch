@@ -1,9 +1,9 @@
-import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '$lib/types';
+import { IMAGE_MODEL_KEY, TEXT_MODEL_KEY } from '#lib/types/index.ts';
 import {
 	SettingsRouteDataSchema,
 	type SettingsRouteData,
-} from '$lib/features/settings/contracts/settingsPage';
-import { AiModelsResponseSchema } from '$lib/types/routeData';
+} from '#lib/features/settings/contracts/settingsPage.ts';
+import { AiModelsResponseSchema } from '#lib/types/routeData.ts';
 
 export type Props = SettingsRouteData;
 
@@ -18,5 +18,6 @@ export async function load({ fetch, data }): Promise<Props> {
 		[TEXT_MODEL_KEY]: modelIds.filter((id) => !id.includes('image')),
 		[IMAGE_MODEL_KEY]: modelIds.filter((id) => id.includes('image')),
 		config: data.config,
+		hasKey: data.hasKey,
 	});
 }

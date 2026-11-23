@@ -1,6 +1,6 @@
-import { browser } from '$app/environment';
-import { ComicSchema, type Comic } from '$lib/types';
-import { ComicEntriesSchema, STORAGE } from '$lib/utils/db/dbTypes';
+import { browser } from '$app/env';
+import { ComicSchema, type Comic } from '#lib/types/index.ts';
+import { ComicEntriesSchema, STORAGE } from '#lib/utils/db/dbTypes.ts';
 import z from 'zod';
 
 export const COMIC_SNAPSHOT_VERSION = 1;

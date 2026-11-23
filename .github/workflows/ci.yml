@@ -1,9 +1,12 @@
+# The one required check (`test`). docs/rules/workflow.md, "CI".
 name: CI
 
 on:
   pull_request:
   push:
     branches: [main]
+  # Dispatched by scripts/start-ci.sh when the PR's own run can't be approved, and by
+  # `pnpm screenshots:update`.
   workflow_dispatch:
     inputs:
       update_screenshots:
@@ -11,25 +14,40 @@ on:
         type: boolean
         default: false
 
+# A newer run for the same branch replaces the older one. On main every commit keeps
+# its own run: merges in quick succession used to cancel each other, which left main
+# without a result.
 concurrency:
-  group: ci-${{ github.ref }}
+  group: >-
+    ci-${{ github.ref == 'refs/heads/main' && github.sha || github.event.pull_request.head.ref || github.ref_name }}-${{ inputs.update_screenshots && 'screenshots' || 'test' }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # Same image everywhere, so screenshot baselines render identically.
-    # Keep the tag in sync with @playwright/test in package.json.
+    # scripts/check-container-tags.sh keeps the tag equal to @playwright/test.
     container: mcr.microsoft.com/playwright:v1.63.0-noble
     env:
       PLAYWRIGHT_SCREENSHOTS: '1'
+      PLAYWRIGHT_JSON_OUTPUT_FILE: playwright-results.json
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The scope step compares with the base branch.
+          fetch-depth: 0
 
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           version: 12.6.0
 
@@ -43,6 +61,31 @@ jobs:
       # Generated, gitignored i18n modules that svelte-check and the tests import.
       - run: pnpm exec paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide
 
+      # `light` (only docs, changelog entries or agent instructions changed) skips the
+      # E2E suite; the static checks below always run.
+      - name: Scope
+        id: scope
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          case "$EVENT" in
+            pull_request) range="origin/$BASE_REF...HEAD" ;;
+            push) range="$BEFORE..HEAD" ;;
+            *) range="origin/main...HEAD" ;;
+          esac
+          scope=$(scripts/ci-scope.sh "$range")
+          echo "Scope: $scope ($range)"
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "range=$range" >> "$GITHUB_OUTPUT"
+
+      # Agents have a shell; this is what keeps them out of their own instructions.
+      - name: Agent commits leave workflows and skills alone
+        env:
+          RANGE: ${{ steps.scope.outputs.range }}
+        run: scripts/check-agent-commits.sh "$RANGE"
+
       - name: Typecheck
         run: pnpm run check
 
@@ -52,22 +95,25 @@ jobs:
       - name: Requirements ledger
         run: pnpm run check:requirements
 
+      - name: Changelog entries
+        run: pnpm run check:changelog
+
       - name: Unused code and dependencies
         run: pnpm run knip
 
-      - name: Agent digest and actions fixtures
+      - name: Pipeline script fixtures
         run: pnpm run check:agent-fixtures
 
       - name: E2E tests
-        if: ${{ !inputs.update_screenshots }}
+        if: ${{ steps.scope.outputs.scope == 'full' && !inputs.update_screenshots }}
         # Missing baselines are written (not failed) so they can be collected below.
-        run: pnpm exec svelte-kit sync && pnpm exec playwright test --update-snapshots=missing
+        run: pnpm exec svelte-kit sync && pnpm exec playwright test --update-snapshots=missing --reporter=list,json
 
       - name: Fail on new, uncommitted screenshot baselines
-        if: ${{ !inputs.update_screenshots }}
+        if: ${{ steps.scope.outputs.scope == 'full' && !inputs.update_screenshots }}
         run: |
           new=$(git status --porcelain --untracked-files=all -- '*/__screenshots__/*')
-          if [ -n "$new" ]; then
+          if [[ -n "$new" ]]; then
             echo "::error::New screenshot baselines were generated. Download the 'screenshots' artifact (or run pnpm screenshots:update) and commit them:"
             echo "$new"
             exit 1
@@ -76,6 +122,21 @@ jobs:
       - name: Regenerate all screenshot baselines
         if: ${{ inputs.update_screenshots }}
         run: pnpm exec svelte-kit sync && pnpm exec playwright test screenshots --update-snapshots=all
+
+      # Read by scripts/checks-bounce.sh when it sends a failed PR back to /develop.
+      - name: List failed tests
+        if: ${{ failure() }}
+        run: |
+          node scripts/ci-failures.mjs "$PLAYWRIGHT_JSON_OUTPUT_FILE" > ci-failures.md || true
+          cat ci-failures.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload failed tests
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ci-failures
+          path: ci-failures.md
+          if-no-files-found: ignore
 
       - name: Upload screenshot baselines
         if: ${{ always() }}

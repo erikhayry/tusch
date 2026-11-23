@@ -2,7 +2,7 @@ import {
 	comicCommands,
 	expectCommitted,
 	type ComicCommands,
-} from '$lib/features/comics/client/comic-commands';
+} from '#lib/features/comics/client/comic-commands.ts';
 import type { AddCaptionValues } from '../contracts/addCaption';
 
 /** Client command for the add-caption form. */

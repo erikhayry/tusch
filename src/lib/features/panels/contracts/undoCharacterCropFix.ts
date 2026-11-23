@@ -1,8 +1,8 @@
-import { readString } from '$lib/forms/form-data';
+import { readString } from '#lib/forms/form-data.ts';
 import z, { type ZodSafeParseResult } from 'zod';
 
 /** Client-only: the previous crops are restored in the browser after the no-op action succeeds. */
-export { CLIENT_ACTION_NAME as UNDO_CHARACTER_CROP_FIX_ACTION } from '$lib/forms/action-names';
+export { CLIENT_ACTION_NAME as UNDO_CHARACTER_CROP_FIX_ACTION } from '#lib/forms/action-names.ts';
 
 export const UndoCharacterCropFixValuesSchema = z.object({
 	comicId: z.string().min(1),

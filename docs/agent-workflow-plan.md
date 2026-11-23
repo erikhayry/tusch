@@ -151,16 +151,21 @@ derived from the current code:
 - `concurrency: agent-issue-<n>`: one agent per issue at a time.
 - Per role: `--max-turns` and `timeout-minutes`; on failure a step sets
   `status:blocked`.
-- Bounces without AI, for a pipeline PR whose issue waits in `status:needs-human`:
-  - `sonar` job, `scripts/sonar-bounce.sh` (#80): a failed SonarCloud check
-    sends the issue to `/develop` with the findings.
-  - `conflict` job, `scripts/conflict-bounce.sh` (#168): a PR that GitHub reports
-    as `CONFLICTING` sends the issue to `/develop`, which merges `main`. It runs
-    when a pipeline PR merges and every 30 minutes, and scans every open PR, not
-    only the merged one. `UNKNOWN` is checked on the next run.
-  - Both share `scripts/bounce-lib.sh`, block after 2 rounds, and hand off by
+- `.github/workflows/pipeline.yml`: upkeep without AI, for a pipeline PR whose
+  issue waits in `status:needs-human` (`docs/rules/workflow.md`, "Pipeline upkeep"):
+  - `scripts/sync-branches.sh`: merges `main` into the branch when `main` moves,
+    resolving what needs no judgement (`scripts/merge-main.sh`), and starts CI (`scripts/start-ci.sh`).
+  - `scripts/conflict-bounce.sh` (#168): a PR that GitHub still reports as
+    `CONFLICTING` sends the issue to `/develop`, which merges `main`. `UNKNOWN`
+    is checked on the next run.
+  - `scripts/checks-bounce.sh`: a failed `test` check sends the issue to
+    `/develop` with the failed tests; a failed SonarCloud check does the same
+    through `scripts/sonar-bounce.sh` (#80).
+  - They share `scripts/bounce-lib.sh`, block after 2 rounds, and hand off by
     dispatching `agents.yml`, since label changes made with `GITHUB_TOKEN` start
     no runs.
+  - `scripts/main-health.sh`: a red `main` is re-run once, then filed as a
+    `main-broken` issue that starts the planner (#169).
 - Implemented in AW8 (#33); see `docs/rules/workflow.md` ("Running the pipeline on GitHub").
 - The existing `@claude` workflow stays for ad-hoc requests; the automatic
   `claude-code-review.yml` is removed (the reviewer role replaces it).
@@ -179,7 +184,7 @@ derived from the current code:
 | AW7  | Skills: `/plan`, `/test`, `/develop`, `/reviewer`, `/triage`, `/tech-lead`            | AW2, AW3   |
 | AW8  | `agents.yml` orchestration                                                            | AW1, AW7   |
 | AW10 | Accessibility: axe scan on every view, fail on serious/critical (#37)                 | AW6        |
-| AW11 | Release notes in every PR, collected in `CHANGELOG.md` (#39)                          | AW7        |
+| AW11 | Release notes in every PR, kept as one file per issue in `changelog/` (#39)           | AW7        |
 | AW12 | ~~Vercel preview links in the reviewer's PR summary (#40)~~ removed: previews are off | AW7        |
 | AW13 | Weekly tech-lead audit: stale REQs, flaky tests, stuck issues (#38)                   | AW8        |
 | AW9  | Pilot one small feature end to end; fix what breaks; document                         | all        |

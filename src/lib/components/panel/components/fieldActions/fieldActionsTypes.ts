@@ -1,4 +1,4 @@
-import { EditValuesSchema } from '$lib/utils/db/dbTypes';
+import { EditValuesSchema } from '#lib/utils/db/dbTypes.ts';
 import { z } from 'zod';
 
 const LabelSchema = z.function({

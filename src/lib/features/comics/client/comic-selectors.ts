@@ -4,8 +4,9 @@ import {
 	type Comic,
 	type ImageAsset,
 	type Panel,
-} from '$lib/types';
+} from '#lib/types/index.ts';
 import { z } from 'zod';
+import { EXAMPLES } from '../../../../examples/examples';
 
 export const CharacterReferenceGroupSchema = z.object({
 	characterId: z.string(),
@@ -68,6 +69,16 @@ export function getCharacterReferenceGroups(
 
 export function getComics(comics: readonly Comic[]): Comic[] {
 	return [...comics];
+}
+
+const EXAMPLE_IDS = new Set(EXAMPLES.map(({ id }) => id));
+
+/**
+ * True when the library holds no comic the user made. Example ids are fixed, and a
+ * user-created comic always gets a fresh id, so the check doesn't depend on titles.
+ */
+export function hasOnlyExampleComics(comics: readonly Comic[]): boolean {
+	return comics.every(({ id }) => EXAMPLE_IDS.has(id));
 }
 
 export function getComic(comics: readonly Comic[], comicId: string): Comic | undefined {

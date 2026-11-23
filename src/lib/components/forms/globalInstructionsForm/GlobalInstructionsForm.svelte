@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { tick } from 'svelte';
-	import Heading from '$lib/components/relativeHeading/Heading.svelte';
-	import Section from '$lib/components/relativeHeading/Section.svelte';
+	import Heading from '#lib/components/relativeHeading/Heading.svelte';
+	import Section from '#lib/components/relativeHeading/Section.svelte';
 	import {
 		readGlobalInstructions,
 		saveGlobalInstructions,
-	} from '$lib/features/settings/client/global-instructions';
+	} from '#lib/features/settings/client/global-instructions.ts';
 	import {
 		GLOBAL_INSTRUCTIONS_VALUE_KEY,
 		getSaveGlobalInstructionsValues,
-	} from '$lib/features/settings/contracts/globalInstructions';
-	import { enhanceLocalCommand } from '$lib/forms/enhance-local-command';
-	import { m } from '$lib/paraglide/messages';
+	} from '#lib/features/settings/contracts/globalInstructions.ts';
+	import { enhanceLocalCommand } from '#lib/forms/enhance-local-command.ts';
+	import { m } from '#lib/paraglide/messages.js';
 
 	// The page is server-rendered, so the stored text is only known after hydration.
 	// No `maxlength`: an over-long value must reach the contract and show its error.

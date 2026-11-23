@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { workflowDeps } from '$lib/client/workflow-deps';
-	import { deleteItemWithAssets } from '$lib/features/comics/client/workflows/delete-item';
-	import { DELETE_ITEM_ACTION, getDeleteValues } from '$lib/features/comics/contracts/deleteItem';
-	import { enhanceClientCommand } from '$lib/forms/enhance-client-command';
-	import { m } from '$lib/paraglide/messages';
+	import { workflowDeps } from '#lib/client/workflow-deps.ts';
+	import { deleteItemWithAssets } from '#lib/features/comics/client/workflows/delete-item.ts';
+	import {
+		DELETE_ITEM_ACTION,
+		getDeleteValues,
+	} from '#lib/features/comics/contracts/deleteItem.ts';
+	import { enhanceClientCommand } from '#lib/forms/enhance-client-command.ts';
+	import { m } from '#lib/paraglide/messages.js';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
 
 	let { label, values, onSuccess }: DeleteItemFormProps = $props();

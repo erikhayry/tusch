@@ -1,5 +1,5 @@
-import { m } from '$lib/paraglide/messages';
-import { ComicSchema, type Comic } from '$lib/types';
+import { m } from '#lib/paraglide/messages.js';
+import { ComicSchema, type Comic } from '#lib/types/index.ts';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from './gotoHydrated';
 import { activate, typeInto } from './keyboard';
@@ -7,9 +7,12 @@ import { activate, typeInto } from './keyboard';
 export type CharacterImage = Comic['characters'][number]['images'][number];
 
 /** Create a comic through the UI (mock AI), as a user does, and return its id. */
-export async function createComic(page: Page): Promise<string> {
+export async function createComic(
+	page: Page,
+	url = 'https://example.com/article',
+): Promise<string> {
 	await gotoHydrated(page, '/comic/create');
-	await typeInto(page, page.getByRole('textbox', { name: /url/i }), 'https://example.com/article');
+	await typeInto(page, page.getByRole('textbox', { name: /url/i }), url);
 	await activate(page, page.getByRole('button', { name: /submit/i }));
 	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 	const id = page.url().split('/').at(-1);

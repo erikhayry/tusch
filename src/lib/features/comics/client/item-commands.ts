@@ -1,4 +1,4 @@
-import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from '$lib/utils/db/dbTypes';
+import { DB_ITEM_TYPE, type DeleteValues, type EditValues } from '#lib/utils/db/dbTypes.ts';
 import { comicCommands, expectCommitted, type ComicCommands } from './comic-commands';
 
 export function applyItemDelete(

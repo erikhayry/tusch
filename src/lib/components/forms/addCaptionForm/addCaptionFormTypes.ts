@@ -1,4 +1,4 @@
-import { AddCaptionValuesSchema } from '$lib/features/panels/contracts/addCaption';
+import { AddCaptionValuesSchema } from '#lib/features/panels/contracts/addCaption.ts';
 import { z } from 'zod';
 
 export const AddCaptionFormPropsSchema = AddCaptionValuesSchema.pick({

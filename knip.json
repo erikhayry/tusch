@@ -1,7 +1,7 @@
 {
 	"$schema": "https://unpkg.com/knip@5/schema.json",
-	"entry": ["scripts/*.mjs"],
+	"entry": ["scripts/*.mjs", "src/env.ts"],
 	"ignoreExportsUsedInFile": true,
 	"ignoreDependencies": ["@lhci/cli"],
-	"ignoreBinaries": ["diff"]
+	"ignore": ["tsconfig.json"]
 }

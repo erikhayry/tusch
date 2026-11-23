@@ -1,5 +1,5 @@
-import { m } from '$lib/paraglide/messages';
-import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
+import { m } from '#lib/paraglide/messages.js';
+import { getImageFromOpenAiResponse } from '#lib/utils/ai/ai.ts';
 import { expect, test, type Page } from '@playwright/test';
 import {
 	errorRegion,

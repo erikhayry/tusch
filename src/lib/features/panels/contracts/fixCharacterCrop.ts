@@ -1,5 +1,5 @@
-import { readInteger, readJsonField, readString } from '$lib/forms/form-data';
-import { CharacterBoxesSchema } from '$lib/utils/ai/aiTypes';
+import { readInteger, readJsonField, readString } from '#lib/forms/form-data.ts';
+import { CharacterBoxesSchema } from '#lib/utils/ai/aiTypes.ts';
 import z from 'zod';
 import { CharacterPromptSchema } from '../../comics/contracts/prompts';
 

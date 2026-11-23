@@ -1,5 +1,5 @@
-import type { FormFailure } from '$lib/forms/form-failure';
-import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
+import type { FormFailure } from '#lib/forms/form-failure.ts';
+import { error, fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import { AiGatewayError } from '../ai/ai-gateway';
 import { credentialsFromCookies, getAiGateway } from '../ai/gateway';
@@ -12,10 +12,10 @@ import { reportProviderError } from '../report-error';
 
 export type ActionResult<T> = Promise<T | ActionFailure<FormFailure>>;
 
-/** Unexpected provider failure. One code for forms and the JSON API. */
+/** Unexpected provider failure, as the JSON API reports it. */
 export const PROVIDER_ERROR_CODE = 'provider_error' as const;
 
-/** A failure as an HTTP status and a body, shared by forms and the JSON API. */
+/** A failure as an HTTP status and a body. */
 export type Failure = { status: number; body: FormFailure };
 
 /** The operation's result, or the failure to report. */
@@ -56,14 +56,11 @@ export async function decodeForm<T extends z.ZodType>(
 
 /**
  * Expected provider outcomes become failures the UI can show (and retry, for
- * rate limits). Invalid responses get their own code so the UI can show a
- * friendly message. Anything else is a 502 with an actionable message.
- *
- * Failures are returned, not thrown: SvelteKit's `error()` would send the API
- * an HTML error page, and it never reaches `handleError`, so every failure
- * reported to Sentry is reported here.
+ * rate limits). Invalid responses are failures too, so the UI can show a friendly
+ * message; they are reported to Sentry here (REQ-185-3), since a returned failure
+ * never reaches `handleError`. Returns `null` for anything unexpected.
  */
-export function toFailure(cause: unknown): Failure {
+function knownFailure(cause: unknown): Failure | null {
 	if (cause instanceof InvalidAiResponseError) {
 		reportProviderError(cause.code, cause.message);
 		return { status: 502, body: { code: cause.code, message: cause.message } };
@@ -81,22 +78,40 @@ export function toFailure(cause: unknown): Failure {
 		}
 	}
 
-	const message = cause instanceof Error ? cause.message : 'AI request failed';
-	reportProviderError(cause instanceof AiGatewayError ? cause.kind : 'unexpected', message);
-	return { status: 502, body: { code: PROVIDER_ERROR_CODE, message } };
+	return null;
 }
 
+function unexpectedMessage(cause: unknown): string {
+	return cause instanceof Error ? cause.message : 'AI request failed';
+}
+
+/** Forms: an unexpected failure is thrown as a 502, so `handleError` reports it once. */
 export function toActionFailure(cause: unknown): ActionFailure<FormFailure> {
-	const { status, body } = toFailure(cause);
-	return fail(status, body);
+	const known = knownFailure(cause);
+	if (known) {
+		return fail(known.status, known.body);
+	}
+
+	error(502, unexpectedMessage(cause));
 }
 
-/** Runs one generation operation. Provider failures come back as an `Outcome`, never thrown. */
+/**
+ * Runs one generation operation for the JSON API. Failures come back as an `Outcome`,
+ * never thrown: SvelteKit's `error()` would answer the API with an HTML page, and it
+ * is reported here, since `handleError` only sees thrown errors.
+ */
 export async function runOperation<R>(run: () => Promise<R>): Promise<Outcome<R>> {
 	try {
 		return { ok: true, result: await run() };
 	} catch (cause) {
-		return { ok: false, ...toFailure(cause) };
+		const known = knownFailure(cause);
+		if (known) {
+			return { ok: false, ...known };
+		}
+
+		const message = unexpectedMessage(cause);
+		reportProviderError('unexpected', message);
+		return { ok: false, status: 502, body: { code: PROVIDER_ERROR_CODE, message } };
 	}
 }
 
@@ -114,6 +129,9 @@ export async function runGeneration<T extends z.ZodType, R>(
 		return decoded.failure;
 	}
 
-	const outcome = await runOperation(() => run(service, decoded.values));
-	return outcome.ok ? outcome.result : fail(outcome.status, outcome.body);
+	try {
+		return await run(service, decoded.values);
+	} catch (cause) {
+		return toActionFailure(cause);
+	}
 }

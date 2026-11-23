@@ -1,5 +1,5 @@
-import { CLIENT_ACTION_NAME } from '$lib/forms/action-names';
-import { readString } from '$lib/forms/form-data';
+import { CLIENT_ACTION_NAME } from '#lib/forms/action-names.ts';
+import { readString } from '#lib/forms/form-data.ts';
 import { z, type ZodSafeParseResult } from 'zod';
 
 /** Client-only: the caption is committed in the browser after the no-op action succeeds. */

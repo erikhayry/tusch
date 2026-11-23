@@ -1,4 +1,4 @@
-import { m } from '$lib/paraglide/messages';
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test } from '@playwright/test';
 import { EXAMPLE_COMPLETE } from '../../../../../../tests/e2e/examples';
 import {

@@ -1,5 +1,5 @@
-import { m } from '$lib/paraglide/messages';
-import { getImageFromOpenAiResponse } from '$lib/utils/ai/ai';
+import { m } from '#lib/paraglide/messages.js';
+import { getImageFromOpenAiResponse } from '#lib/utils/ai/ai.ts';
 import type { Locator, Page } from '@playwright/test';
 import { EXAMPLE_COMPLETE } from '../../../../../../../tests/e2e/examples';
 import { CREATE_PANEL_IMAGE_RESPONSE } from '../../../../../../../tests/mock/openAi/openAiResponse';

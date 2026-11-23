@@ -1,4 +1,4 @@
-import { RestorePanelImageValuesSchema } from '$lib/features/panels/contracts/restorePanelImage';
+import { RestorePanelImageValuesSchema } from '#lib/features/panels/contracts/restorePanelImage.ts';
 import { z } from 'zod';
 
 export const RestorePanelImageFormPropsSchema = RestorePanelImageValuesSchema.extend({

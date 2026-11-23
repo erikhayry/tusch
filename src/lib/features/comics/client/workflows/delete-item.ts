@@ -1,5 +1,5 @@
-import { deleteUnreferencedAssets, type CleanupResult } from '$lib/client/assets/asset-store';
-import type { DeleteValues } from '$lib/utils/db/dbTypes';
+import { deleteUnreferencedAssets, type CleanupResult } from '#lib/client/assets/asset-store.ts';
+import type { DeleteValues } from '#lib/utils/db/dbTypes.ts';
 import type { ComicCommands } from '../comic-commands';
 import { applyItemDelete } from '../item-commands';
 import type { AssetWorkflowDeps } from './asset-workflow';

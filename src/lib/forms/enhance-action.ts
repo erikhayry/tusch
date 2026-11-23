@@ -1,6 +1,6 @@
-import { globalError } from '$lib/utils/states/error.svelte';
-import { globalLoading } from '$lib/utils/states/loading.svelte';
-import type { SubmitFunction } from '@sveltejs/kit';
+import type { SubmitFunction } from '$app/forms';
+import { globalError } from '#lib/utils/states/error.svelte.ts';
+import { globalLoading } from '#lib/utils/states/loading.svelte.ts';
 import { toFormFailure, toUserMessage, type FormFailure } from './form-failure';
 
 export type UpdateForm = () => Promise<void>;

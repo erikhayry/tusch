@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { toCoverPrompt } from '$lib/features/comics/contracts/createCoverImage';
-	import { m } from '$lib/paraglide/messages';
-	import { DB_ITEM_TYPE } from '$lib/utils/db/dbTypes';
+	import { toCoverPrompt } from '#lib/features/comics/contracts/createCoverImage.ts';
+	import { m } from '#lib/paraglide/messages.js';
+	import { DB_ITEM_TYPE } from '#lib/utils/db/dbTypes.ts';
 	import Character from '../charachter/Character.svelte';
 	import CreateCoverImageForm from '../forms/createCoverImageForm/CreateCoverImageForm.svelte';
 	import DeleteItemForm from '../forms/deleteItemForm/DeleteItemForm.svelte';
@@ -52,9 +52,8 @@
 		<ul aria-labelledby="panels">
 			{#each comic.panels as panel, index (panel)}
 				<li>
-					<a href={resolve(`/comic/${comic.id}/${panel.id}`)}>
-						<PanelThumbnail {panel} />
-					</a>
+					<a href={resolve(`comic/${comic.id}/${panel.id}`)}><PanelThumbnail {panel} /></a>
+
 					<DeleteItemForm
 						label={m.deletePanel({ number: index + 1 })}
 						values={{
@@ -72,9 +71,7 @@
 			<ul aria-labelledby="characters">
 				<!-- Keyed by id: the store copies the character on every update, and an object key would remount the gallery and close its open crops. -->
 				{#each comic.characters as character (character.id)}
-					<li>
-						<Character {character} comicId={comic.id} />
-					</li>
+					<li><Character {character} comicId={comic.id} /></li>
 				{/each}
 			</ul>
 		{/if}

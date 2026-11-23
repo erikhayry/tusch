@@ -6,7 +6,7 @@ import type {
 	Panel,
 	ResponsiveImage,
 	ResponsivePanelImage,
-} from '$lib/types';
+} from '#lib/types/index.ts';
 import {
 	localComicStorage,
 	serializeComicSnapshot,

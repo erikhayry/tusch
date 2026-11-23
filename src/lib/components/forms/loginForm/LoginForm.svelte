@@ -6,30 +6,56 @@
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 
-	import { m } from '$lib/paraglide/messages';
+	import { m } from '#lib/paraglide/messages.js';
 
 	import {
 		BYOK_ACTION,
 		type ValidateApiKeyResult,
-	} from '$lib/features/settings/contracts/validateApiKey';
-	import { enhanceAction } from '$lib/forms/enhance-action';
+	} from '#lib/features/settings/contracts/validateApiKey.ts';
+	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { tick } from 'svelte';
+
+	import { type LoginFormProps } from './loginFormTypes';
+
+	let { hasKey, onSaved }: LoginFormProps = $props();
 
 	let success = $state<boolean | null>(null);
+	let statusElement = $state<HTMLElement>();
 
 	// Failures (invalid input, rate limits, provider errors) surface in the global
 	// error region via the shared enhancer.
-	const handleSubmit = enhanceAction<ValidateApiKeyResult>(m.loadingValidateKey(), ({ data }) => {
-		success = data.success;
-	});
+	const handleSubmit = enhanceAction<ValidateApiKeyResult>(
+		m.loadingValidateKey(),
+		async ({ data }) => {
+			success = data.success;
+			if (!data.success) {
+				return;
+			}
+
+			await onSaved?.();
+			// The submit button is removed on success, so focus would fall back to the
+			// body. Move it to the status line, which the screen reader announces too.
+			await tick();
+			statusElement?.focus();
+		},
+	);
+
+	// One status element, always rendered: a live region only announces text that
+	// changes while it is in the DOM.
+	const statusMessage = $derived(
+		success === true ? m.keyAdded() : success === false ? m.invalidKey() : '',
+	);
 </script>
 
+{#if hasKey && !success}
+	<p>{m.keyStatus()}</p>
+{/if}
+
+<p role="status" tabindex="-1" bind:this={statusElement}>{statusMessage}</p>
+
 {#if success}
-	<p>{m.keyAdded()}</p>
-	<a href={resolve('/comic/create')}>{m.createNewComic()}</a>
+	<a href={resolve('comic/create')}>{m.createNewComic()}</a>
 {:else}
-	{#if success === false}
-		<p>{m.invalidKey()}</p>
-	{/if}
 	<form
 		data-testId={loginFormTestId}
 		method="POST"
@@ -38,8 +64,9 @@
 	>
 		<label>
 			<span>{m.byok()}</span>
-			<input type="text" name="key" autocomplete="off" />
+			<input type="text" name="key" autocomplete="off" aria-describedby="key-hint" />
 		</label>
+		<p id="key-hint">{m.keyHint()}</p>
 
 		<button type="submit">{m.add()}</button>
 	</form>

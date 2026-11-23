@@ -31,22 +31,51 @@ and on GitHub.
 - Never stack branches, force-push, or rewrite pushed history.
 - Commit messages: imperative subject, a body explaining why, and
   `Refs #<n>` (the PR body carries `Closes #<n>`).
+- While an issue waits in `status:needs-human`, the pipeline may add commits to
+  its branch: a merge of `main`, and regenerated screenshot baselines
+  (`docs/rules/workflow.md`, "Pipeline upkeep"). So always `git pull` before you
+  work on a branch, and never force-push.
+- A user-facing change carries its changelog entry on the branch:
+  `changelog/<issue>.<type>.md`, written by the developer and checked by the
+  reviewer (`changelog/README.md`). Nobody edits `CHANGELOG.md`.
 
 ## Comments
 
-Every role ends with **one** issue comment, in this shape:
+Every role ends with **one** issue comment. The reader is a human who has to act
+on it and the next agent, who has little context. Write for both:
 
 ```md
-### <Role>: <one-line outcome>
+### <Role>: <outcome in one line>
 
-- What I did (files, tests, decisions)
-- What the next role needs to know
-- Anything left out on purpose
+Do next: <the one thing the reader must do, or "nothing">
+
+- <what changed or was found, one line each, at most 5>
 
 Next: `status:<next>`
 ```
 
-Keep it short. Link files and commits rather than pasting code.
+Rules (adapted from [i-have-adhd](https://github.com/ayghri/i-have-adhd)):
+
+1. **Lead with the action.** The line after the heading says what the human or
+   next role does. A decision a human must make goes there, as one question with
+   your recommendation.
+2. **Hard limit: 10 lines and 1,200 characters.** Detail goes in the diff, the
+   tests or the PR body, never the thread. Link files (`path:line`) and commits.
+3. **No recap.** Don't restate the ticket, earlier comments, your branch or your
+   steps. The next role reads the diff.
+4. **Checks: one line.** `check, lint, knip, e2e: pass`. For a failure, paste only
+   the failing test name and its first error line.
+5. **Number what a human must do**, one bounded action per step, with a time
+   estimate in minutes when it is not instant.
+6. **Cap lists at 5 items**, most important first. If more matter, say how many
+   more and where they are.
+7. **Errors are matter-of-fact**: cause, then fix. No apologies, no "unfortunately".
+8. **No preamble or closers**: no "I've now…", "Let me know…", "Hope this helps".
+9. **Tangents become follow-up issues** (see "Follow-ups"), not paragraphs.
+10. **Tickets** follow `ticket-template.md`: a short problem, one line per
+    criterion, and no copy of what a test or the code already says.
+
+When a role blocks, the first line is the decision a human must make.
 
 **Trust marker (planner only).** When `/plan` writes the ticket after the human
 answered its questions, its comment carries one hidden line
@@ -66,19 +95,36 @@ reviewer, then called `/review`, silently ran the built-in code review instead
 
 ## Running commands
 
-Skills pre-approve narrow command patterns (e.g. `Bash(gh pr create *)`), and on
-GitHub nobody is there to approve anything else. So:
+On GitHub nobody is there to approve a command, so each role's tools are fixed
+(`allowed-tools` in the skill, `--allowedTools` in `agents.yml`; keep them equal):
 
-- **One plain command per Bash call.** No `&&`, `;`, pipes, `$(…)`, heredocs,
-  `sleep` or loops; they don't match the patterns and get denied.
+- **`/test`, `/develop` and `/reviewer` have a plain shell** (`Bash`). They run
+  the project's tooling, and narrow patterns denied every compound command
+  (`a && b | tail`), which was the most common reason a run stopped without
+  handing off. Pipes, `&&` and `$(…)` are fine for these roles.
+- **`/plan`, `/triage`, `/tech-lead` and `/automate` keep narrow patterns**
+  (e.g. `Bash(gh issue comment *)`): they only read and comment. For them it is
+  **one plain command per Bash call**, with no `&&`, `;`, pipes, `$(…)`, heredocs,
+  `sleep` or loops; those don't match the patterns and get denied. They also
+  inspect files with Read, Glob and Grep, not `ls`, `cat` or `find`.
+
+A shell doesn't change what a role may do. For every role:
+
 - **Multi-line text goes into a file.** Write comment and PR bodies to
   `.agent-tmp/<name>.md` (gitignored), then pass the file:
   `gh issue comment <n> --body-file .agent-tmp/comment.md`.
-- Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`.
-- Screenshot baselines: `pnpm screenshots:update` renders them in CI and copies
-  them into `src/`; don't download or copy them by hand.
-- **Inspect files with Read, Glob and Grep**, not `ls`, `cat`, `du`, `file`,
-  `find` or `wc`; those aren't on any role's allow list.
+- Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`. The reviewer has
+  no Edit on purpose and doesn't change code through the shell either.
+- Never change `.github/` or `.claude/` (see "Workflow and agent files"), never
+  force-push or rewrite history, and never read or print tokens or other secrets
+  from the environment.
+- Screenshot baselines: run `pnpm screenshots:update`. Inside the CI container
+  (agent runs on GitHub: `GITHUB_ACTIONS=true` and `PLAYWRIGHT_SCREENSHOTS=1`) it
+  renders the baselines in place, with no dispatch and no download. That is the
+  same image as `ci.yml`, so the baselines match CI; `pnpm run check:agent-fixtures`
+  fails if the two container tags drift apart. Elsewhere it pushes the branch,
+  renders the baselines in CI, then copies them into `src/`. Either way, don't
+  download or copy them by hand.
 - **A denial doesn't end your run.** Split the command into allowed single
   commands (or use Read/Glob/Grep) and carry on. Every run ends with your
   protocol comment and a label move; a run that just stops is blocked
@@ -113,9 +159,10 @@ script or workflow step, not an agent turn; `pipeline-expert` looks for these.
 
 ## Workflow and agent files
 
-Agents never change `.github/workflows/` or `.claude/` (skills, subagents,
-settings). The agents' GitHub App has no `workflows` permission, and the
-agents' Write tool was refused for `.claude/` files (#84). Keep it that way, so
+Agents never change `.github/` or `.claude/` (skills, subagents, settings). The
+agents' GitHub App has no `workflows` permission, and CI fails a PR in which a
+commit by `claude[bot]` touches either directory
+(`scripts/check-agent-commits.sh`). Keep it that way, so
 agents can't change their own permissions, models, turn caps, instructions or
 CI gates. For a new or changed skill or subagent, post the full file content in
 the comment the same way.

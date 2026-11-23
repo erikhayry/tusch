@@ -1,4 +1,4 @@
-import { DeleteValuesSchema } from '$lib/utils/db/dbTypes';
+import { DeleteValuesSchema } from '#lib/utils/db/dbTypes.ts';
 import { z } from 'zod';
 
 export const DeleteItemFormPropsSchema = z.object({

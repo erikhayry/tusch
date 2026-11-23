@@ -1,4 +1,4 @@
-import { UndoCharacterCropFixValuesSchema } from '$lib/features/panels/contracts/undoCharacterCropFix';
+import { UndoCharacterCropFixValuesSchema } from '#lib/features/panels/contracts/undoCharacterCropFix.ts';
 import { z } from 'zod';
 
 export const UndoCharacterCropFixFormPropsSchema = z.object({

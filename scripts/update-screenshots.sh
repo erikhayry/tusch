@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
 # Regenerate screenshot baselines on Linux (CI container) for the current branch
 # and download them into the working tree. The branch must be pushed first.
+#
+# Inside the CI container (agent runs on GitHub) the baselines are rendered in
+# place instead: the agent token can't dispatch workflows, and the container is
+# the same image as ci.yml's (scripts/check-container-tags.sh keeps them equal).
+# Both variables are required: GITHUB_ACTIONS alone is set by CI jobs that don't
+# run in that container.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+if [ "${GITHUB_ACTIONS:-}" = true ] && [ "${PLAYWRIGHT_SCREENSHOTS:-}" = 1 ]; then
+	pnpm exec svelte-kit sync
+	if ! pnpm exec playwright test screenshots --update-snapshots=all; then
+		echo "The screenshot run failed; the Playwright output above says which views differ." >&2
+		exit 1
+	fi
+	git status --short -- 'src/**/__screenshots__/*'
+	echo "Review the images, then commit them."
+	exit 0
+fi
 
 branch=$(git branch --show-current)
 if [ -n "$(git log "origin/$branch..HEAD" 2>/dev/null)" ] || ! git rev-parse --verify -q "origin/$branch" >/dev/null; then
