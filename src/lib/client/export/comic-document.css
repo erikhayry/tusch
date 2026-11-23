@@ -1,0 +1,112 @@
+/*
+ * The downloaded file's own rules, placed after app.css. They mirror the viewer's
+ * styles (view/+page.svelte and PanelBoxes.svelte): change both together. Tokens only.
+ */
+
+.cover {
+	position: relative;
+	inline-size: 100%;
+	margin-block-end: var(--space-2);
+}
+
+.cover picture {
+	display: block;
+}
+
+.cover img {
+	inline-size: 100%;
+	block-size: auto;
+}
+
+h1 {
+	inline-size: fit-content;
+	max-inline-size: 100%;
+	margin: 0;
+	padding: var(--space-2);
+	border: var(--border-width-thick) solid var(--color-border);
+	background: var(--color-text);
+	color: var(--color-background);
+	font-size: var(--font-size-h2);
+	overflow-wrap: anywhere;
+}
+
+h1.overlay {
+	position: absolute;
+	inset-block-start: var(--space-2);
+	inset-inline-start: var(--space-2);
+}
+
+.picture {
+	position: relative;
+	inline-size: 100%;
+	block-size: var(--viewer-panel-height);
+	margin-block-end: var(--space-2);
+	overflow: hidden;
+}
+
+.picture picture {
+	display: block;
+	block-size: 100%;
+}
+
+.picture img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+}
+
+.boxes {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--space-2);
+	margin-block-start: var(--space-2);
+}
+
+.boxes.overlay {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+	margin: 0;
+}
+
+.boxes ul {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--space-2);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	max-inline-size: 100%;
+}
+
+.boxes.overlay .captions {
+	grid-area: 1 / 1;
+	align-self: start;
+	justify-self: start;
+	margin: var(--space-2);
+}
+
+.speech .box {
+	font-style: italic;
+}
+
+.boxes.overlay .speech {
+	grid-area: 2 / 1 / 3 / -1;
+	align-self: end;
+	justify-self: start;
+	margin: var(--space-2);
+}
+
+.box {
+	max-inline-size: 100%;
+	padding: var(--space-2);
+	border: var(--border-width-thick) solid var(--color-border);
+	background: var(--color-background);
+	color: var(--color-text);
+	font-size: var(--font-size-small);
+	overflow-wrap: anywhere;
+}

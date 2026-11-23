@@ -206,6 +206,34 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: users edit comics in any order; a half-finished comic must still be readable.
 - Proven by: tagged tests
 
+### REQ-88-1 The viewer has a "Download comic" link that saves one .html file
+
+- Status: active
+- Statement: the viewer has a "Download comic" link (an `<a download>`, not a button) next to "Back". Activating it saves the comic as one `.html` file named after the comic title (or "Untitled comic") plus `.html`, with characters that aren't allowed in file names replaced. The viewer still has no form and no button (REQ-87-3).
+- Why: browser "Save as" on the viewer saves broken images, because they are OPFS `blob:` URLs (#88).
+- Proven by: tagged tests
+
+### REQ-88-2 The downloaded file is self-contained
+
+- Status: active
+- Statement: the downloaded file, opened with no network, shows the title, cover and every panel with its heading, captions and dialogue as the viewer does (REQ-87-2, REQ-283-1). Every image is embedded as a `data:` URL (bundled example images too) and the CSS is inlined. The file has no script, form, button, link back into Tusch or editing data (REQ-87-3).
+- Why: the file must keep working outside Tusch and stay a read-only copy of the story (#88).
+- Proven by: tagged tests
+
+### REQ-88-3 The downloaded file switches between image variants
+
+- Status: active
+- Statement: in the downloaded file, a cover or panel with both variants is a `<picture>` that shows the landscape image when the viewport is landscape and the portrait image otherwise (REQ-103-5); one with a single variant shows that one at every size.
+- Why: the file behaves like the viewer on any screen (#88).
+- Proven by: tagged tests
+
+### REQ-88-4 A missing image file is exported without an image
+
+- Status: active
+- Statement: a cover or panel whose image file is no longer stored (REQ-036) is exported without an image, like a panel without one (REQ-87-4), and the download still succeeds.
+- Why: a cleared OPFS must not block saving the rest of the comic (#88).
+- Proven by: tagged tests
+
 ### REQ-283-1 Viewer captions and dialogue are boxes over the panel image
 
 - Status: active

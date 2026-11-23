@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { comicFileName } from '#lib/client/export/comic-html.ts';
+	import { downloadComicHtml } from '#lib/client/export/download-comic.ts';
 	import PanelPicture from '#lib/components/image/PanelPicture.svelte';
 	import PanelBoxes from '#lib/components/panelBoxes/PanelBoxes.svelte';
 	import Page from '#lib/components/page/Page.svelte';
@@ -10,6 +12,14 @@
 
 	let { data }: { data: Data } = $props();
 	const title = $derived(data.comic.title.trim() || m.untitledComic());
+	const fileName = $derived(comicFileName(data.comic.title));
+
+	// The file is built (its images are read first) on click, so the link stays a link
+	// with `download` and no form or button (REQ-87-3).
+	function downloadComic(event: MouseEvent) {
+		event.preventDefault();
+		void downloadComicHtml(data.comic);
+	}
 </script>
 
 <Page {title} showTitle={false}>
@@ -39,7 +49,12 @@
 		</Section>
 	{/each}
 
-	<a href={resolve(`comic/${data.comic.id}`)}>{m.back()}</a>
+	<div class="actions">
+		<a href={resolve(`comic/${data.comic.id}`)}>{m.back()}</a>
+		<a href={resolve(`comic/${data.comic.id}/view`)} download={fileName} onclick={downloadComic}>
+			{m.downloadComic()}
+		</a>
+	</div>
 </Page>
 
 <style>
@@ -47,6 +62,12 @@
 		position: relative;
 		inline-size: 100%;
 		margin-block-end: var(--space-2);
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
 	}
 
 	.cover :global(picture) {

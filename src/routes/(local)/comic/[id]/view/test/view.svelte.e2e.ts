@@ -1,16 +1,12 @@
 import { m } from '#lib/paraglide/messages.js';
 import type { Comic } from '#lib/types/index.ts';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import {
-	createComic,
-	deletePanel,
-	generatePanelImage,
-	storedComic,
-} from '../../../../../../tests/e2e/createdComic';
+import { createComic, deletePanel, storedComic } from '../../../../../../tests/e2e/createdComic';
 import { exampleNoImages } from '../../../../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../../../../tests/e2e/keyboard';
 import { ViewPage } from './utils/viewPage';
+import { createViewableComic, removeStoredFile } from './utils/viewableComic';
 
 const MISSING_ID = '00000000-0000-4000-8000-000000000000';
 const EMPTY_TITLE_URL = 'https://example.com/article/mock-error:empty-title';
@@ -61,29 +57,6 @@ function expectInside(inner: Box, outer: Box) {
 	expect(inner.y).toBeGreaterThanOrEqual(outer.y - 1);
 	expect(inner.x + inner.width).toBeLessThanOrEqual(outer.x + outer.width + 1);
 	expect(inner.y + inner.height).toBeLessThanOrEqual(outer.y + outer.height + 1);
-}
-
-/**
- * A comic made through the UI with a cover and a generated image on panel 1:
- * what a real user has, not a bundled example.
- */
-async function createViewableComic(page: Page): Promise<Comic> {
-	const id = await createComic(page);
-	if (!(await storedComic(page, id)).cover) {
-		await activate(page, page.getByRole('button', { name: m.addCover() }));
-		await expect.poll(async () => (await storedComic(page, id)).cover).toBeDefined();
-	}
-	const comic = await storedComic(page, id);
-	await generatePanelImage(page, id, comic.panels[0].id);
-	return storedComic(page, id);
-}
-
-/** Remove a stored image file, as if the browser had cleared OPFS. */
-async function removeStoredFile(page: Page, name: string) {
-	await page.evaluate(async (fileName) => {
-		const root = await navigator.storage.getDirectory();
-		await root.removeEntry(fileName);
-	}, name);
 }
 
 test.describe('comic page link', () => {
