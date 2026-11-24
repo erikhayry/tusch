@@ -16,12 +16,12 @@ test('shows the panel count field with 5 and a hint', { tag: '@REQ-289-1' }, asy
 	await expect(createPage.panelCountInput).toHaveAccessibleDescription(
 		m.createComicPanelCountHint(),
 	);
-	// It sits after the story and before the style select.
+	// It sits after the story and before the comic style choice.
 	const fields = page.locator(
-		'form[action$="create-comic"] :is(input[name="url"], textarea, select, input[type="number"])',
+		'form[action$="create-comic"] :is(input[name="url"], textarea, input[type="number"], input[type="radio"])',
 	);
-	await expect(fields).toHaveCount(4);
-	for (const [index, name] of ['url', 'story', 'panelCount', 'style'].entries()) {
+	await expect(fields).toHaveCount(6);
+	for (const [index, name] of ['url', 'story', 'panelCount', 'style', 'style', 'style'].entries()) {
 		await expect(fields.nth(index)).toHaveAttribute('name', name);
 	}
 });

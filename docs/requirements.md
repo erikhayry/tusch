@@ -109,7 +109,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-289-1 A new comic has the number of panels the user chose
 
 - Status: active
-- Statement: the create form has a required "Number of panels" field after the story and before the style select, prefilled with 5 and hinted "1–30"; the create-comic prompt asks the AI for exactly that many panels, so the created comic lists that many panels.
+- Statement: the create form has a required "Number of panels" field after the story and before the comic style choice, prefilled with 5 and hinted "1–30"; the create-comic prompt asks the AI for exactly that many panels, so the created comic lists that many panels.
 - Why: users want to choose how long a new comic is instead of getting 5–10 panels the AI picks.
 - Proven by: tagged tests
 
@@ -971,4 +971,17 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: with `prefers-reduced-motion: reduce` the dialog's spinner turns once per 2.4 s and the progress bar has no animation.
 - Why: motion-sensitive users get a calmer indicator that still shows work is running (#301).
+
+### REQ-306-1 The comic style is a radio group of cards
+
+- Status: active
+- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of three cards, Anime, Classic Marvel and Franco-Belgian in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
+- Why: the styles are compared side by side, with native radio semantics and keyboard behaviour (#306).
+- Proven by: tagged tests
+
+### REQ-306-2 The style cards form a full-width grid
+
+- Status: active
+- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; further styles wrap to a new row; the checked style is sent as `style` and the created comic has that style.
+- Why: more styles are coming, so the cards wrap instead of changing layout (#306).
 - Proven by: tagged tests

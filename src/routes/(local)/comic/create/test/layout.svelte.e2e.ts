@@ -58,25 +58,29 @@ test.describe('form footer', { tag: '@REQ-296-2' }, () => {
 		await expect(page).toHaveURL(/\/settings$/);
 	});
 
-	test('Tab order is URL, story, panels, style, then the footer', async ({ page }) => {
-		const createPage = await new CreatePage(page).goto();
-		const form = page.locator('form');
-		const order = [
-			createPage.urlInput,
-			createPage.storyInput,
-			createPage.panelCountInput,
-			form.getByRole('combobox', { name: m.comicStyles() }),
-			form.getByRole('link', { name: m.settings() }),
-			form.getByRole('link', { name: m.cancel() }),
-			createPage.submitButton,
-		];
+	test(
+		'Tab order is URL, story, panels, style, then the footer',
+		{ tag: ['@REQ-296-2', '@REQ-306-1'] },
+		async ({ page }) => {
+			const createPage = await new CreatePage(page).goto();
+			const form = page.locator('form');
+			const order = [
+				createPage.urlInput,
+				createPage.storyInput,
+				createPage.panelCountInput,
+				createPage.styleRadio(m.styleAnime()),
+				form.getByRole('link', { name: m.settings() }),
+				form.getByRole('link', { name: m.cancel() }),
+				createPage.submitButton,
+			];
 
-		await tabTo(page, order[0]);
-		for (const control of order.slice(1)) {
-			await page.keyboard.press('Tab');
-			await expect(control).toBeFocused();
-		}
-	});
+			await tabTo(page, order[0]);
+			for (const control of order.slice(1)) {
+				await page.keyboard.press('Tab');
+				await expect(control).toBeFocused();
+			}
+		},
+	);
 
 	test('"Create comic" is visible at 390px without scrolling', async ({ page }) => {
 		await page.setViewportSize(NARROW);

@@ -247,9 +247,10 @@ test.describe('image variants in the downloaded file', () => {
 				{ viewport: PORTRAIT_VIEWPORT, expected: 'portrait' },
 			] as const) {
 				await offline.setViewportSize(viewport);
-				await loadedImageCount(offline);
+				// Poll per image: the images loaded for the previous viewport are still
+				// loaded, so waiting for them to load would read the old source too early.
 				for (const image of await offline.locator('picture img').all()) {
-					expect(await orientationOf(image)).toBe(expected);
+					await expect.poll(() => orientationOf(image)).toBe(expected);
 				}
 			}
 		},
