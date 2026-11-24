@@ -149,7 +149,7 @@ test(
 	async ({ page }) => {
 		const createPage = await new CreatePage(page).goto();
 
-		await expect(page.getByRole('textbox', { name: KEY_COPY.keyLabel })).toBeVisible();
+		await expect(page.getByRole('textbox', { name: KEY_COPY.keyLabel, exact: true })).toBeVisible();
 		await expect(createPage.keyHint).toBeVisible();
 		await expect(createPage.saveKeyButton).toBeVisible();
 		await expect(createPage.modelsHeading).toBeVisible();

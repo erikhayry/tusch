@@ -712,7 +712,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-234-5 Settings uses plain labels
 
 - Status: active
-- Statement: on `/settings` the key card is headed "OpenAI API key" and its field is labelled "API key" (placeholder "sk-…") with a hint on where the key is stored and where to get one, the key button is "Save key", the "AI models" card has "Text model" and "Image model" selects, each with a helper, and a "Save models" button, when no key is stored the card shows "Add your API key above to choose models.", and the instructions card's button is "Save instructions". The copy is in both locales.
+- Statement: on `/settings` the key card is headed "OpenAI API key" and its field is labelled "OpenAI API key", as on the start page (placeholder "sk-…") with a hint on where the key is stored and where to get one, the key button is "Save key", the "AI models" card has "Text model" and "Image model" selects, each with a helper, and a "Save models" button, when no key is stored the card shows "Add your API key above to choose models.", and the instructions card's button is "Save instructions". The copy is in both locales.
 - Why: "BYOK", "Add" and "Config" don't say what they mean (#234).
 - Proven by: tagged tests
 

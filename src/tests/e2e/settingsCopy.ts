@@ -7,7 +7,7 @@
 export const SETTINGS_COPY = {
 	en: {
 		keyCardTitle: 'OpenAI API key',
-		byok: 'API key',
+		byok: 'OpenAI API key',
 		keyBadgeSaved: 'Key saved',
 		keyBadgeMissing: 'No key yet',
 		noKeyModelsHint: 'Add your API key above to choose models.',
@@ -23,7 +23,7 @@ export const SETTINGS_COPY = {
 	},
 	'sv-se': {
 		keyCardTitle: 'OpenAI API-nyckel',
-		byok: 'API-nyckel',
+		byok: 'OpenAI API-nyckel',
 		keyBadgeSaved: 'Nyckel sparad',
 		keyBadgeMissing: 'Ingen nyckel än',
 		noKeyModelsHint: 'Lägg till din API-nyckel ovan för att välja modeller.',
