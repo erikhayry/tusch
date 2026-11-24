@@ -999,3 +999,10 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; further styles wrap to a new row; the checked style is sent as `style` and the created comic has that style.
 - Why: more styles are coming, so the cards wrap instead of changing layout (#306).
 - Proven by: tagged tests
+
+### REQ-307-1 The story field shows a live character counter
+
+- Status: active
+- Statement: the story field on `/comic/create` shows a counter "<n> of 10,000" (sv-se "<n> av 10 000", numbers grouped by locale) to the right of its label, starting at 0. It follows what is typed or pasted, is linked to the field with `aria-describedby` after the helper text, and is not a live region (neither it nor an ancestor has `role="status"` or `aria-live`; the label's accessible name doesn't include the count). Above 10,000 it uses the danger colour, and submitting is still rejected (REQ-007).
+- Why: users see the story limit before they submit (#307).
+- Proven by: tagged tests
