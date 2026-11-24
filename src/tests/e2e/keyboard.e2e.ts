@@ -6,10 +6,16 @@ import { gotoHydrated } from './gotoHydrated';
 import { activate, chooseOption, focusableControls, tabTo, typeInto } from './keyboard';
 import { VIEWS } from './views';
 
-/** The visible links, buttons and form controls of the current view, in document order. */
+/**
+ * The visible links, buttons and form controls of the current view, in document order.
+ * A radio group is one Tab stop (its checked radio); the others are reached with the arrow keys.
+ */
 async function visibleControls(page: Page): Promise<Locator[]> {
 	await page.waitForLoadState('networkidle');
-	return focusableControls(page).locator('visible=true').all();
+	return focusableControls(page)
+		.and(page.locator(':not(input[type="radio"]:not(:checked))'))
+		.locator('visible=true')
+		.all();
 }
 
 /** What a focus indicator would change: outline and box-shadow. */
