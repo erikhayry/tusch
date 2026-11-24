@@ -44,7 +44,7 @@
 	"aiInvalidResponse": "AI:n returnerade något vi inte kunde använda. Försök igen.",
 	"showDetails": "Visa detaljer",
 	"add": "Spara nyckel",
-	"byok": "API-nyckel",
+	"byok": "OpenAI API-nyckel",
 	"keyHint": "Sparas bara i den här webbläsaren som en säker cookie och används bara mot OpenAI. Skapa en på platform.openai.com/api-keys.",
 	"keyStatus": "En nyckel är sparad. Ange en ny för att byta ut den.",
 	"keyAdded": "Nyckeln är sparad. Nu kan du skapa en serie.",

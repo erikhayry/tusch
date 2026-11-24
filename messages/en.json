@@ -9,7 +9,7 @@
 	"keyAdded": "Key saved. You can now create a comic.",
 	"keyFailed": "Adding key failed",
 	"backToComic": "Back to Comic",
-	"byok": "API key",
+	"byok": "OpenAI API key",
 	"keyHint": "Stored only in this browser as a secure cookie and used only to talk to OpenAI. Create one at platform.openai.com/api-keys.",
 	"keyStatus": "A key is saved. Enter a new one to replace it.",
 	"welcomeHeading": "Welcome to Tusch",
