@@ -6,6 +6,7 @@ import {
 	generatePanelImage,
 	storedComic,
 } from '../../../../../../tests/e2e/createdComic';
+import { luminance } from '../../../../../../tests/e2e/contrast';
 import { EXAMPLE_COMPLETE } from '../../../../../../tests/e2e/examples';
 import {
 	createComicWithFormat,
@@ -20,6 +21,7 @@ import {
 	openOffline,
 	PORTRAIT_VIEWPORT,
 } from './utils/downloadedComic';
+import { pageColours } from './utils/pageColours';
 import { ViewPage } from './utils/viewPage';
 import { createViewableComic, removeStoredFile } from './utils/viewableComic';
 
@@ -46,22 +48,53 @@ function panelSection(page: Page, number: number) {
 }
 
 test(
-	'the viewer has a Download comic link next to Back and still no button or form',
+	'the viewer has a Download comic link in its header and its ending block and still no button or form',
 	{ tag: ['@REQ-88-1', '@REQ-87-3'] },
+	async ({ page }) => {
+		const comic = await createViewableComic(page);
+		await new ViewPage(page, comic.id).goto();
+
+		for (const place of ['header', 'ending'] as const) {
+			const link = downloadLink(page, place);
+			await expect(link).toHaveCount(1);
+			await expect(link).toBeVisible();
+			await expect(link).toHaveAttribute('download');
+		}
+		await expect(page.getByRole('button')).toHaveCount(0);
+		await expect(page.locator('form')).toHaveCount(0);
+	},
+);
+
+test(
+	'the ending block saves the same file as the header link',
+	{ tag: ['@REQ-88-1', '@REQ-299-2'] },
 	async ({ page }) => {
 		const comic = await createViewableComic(page);
 		const view = await new ViewPage(page, comic.id).goto();
 
-		const link = downloadLink(page);
-		await expect(link).toBeVisible();
-		await expect(link).toHaveAttribute('download');
-		await expect(page.getByRole('button')).toHaveCount(0);
-		await expect(page.locator('form')).toHaveCount(0);
+		const fromHeader = await downloadComic(view, 'header');
+		const fromEnding = await downloadComic(view, 'ending');
 
-		// "Next to": the same parent holds both links.
-		await expect(
-			view.backLink.locator('xpath=..').getByRole('link', { name: m.downloadComic() }),
-		).toHaveCount(1);
+		expect(fromEnding.fileName).toBe(fromHeader.fileName);
+		expect(fromEnding.html).toBe(fromHeader.html);
+	},
+);
+
+test(
+	'the downloaded file renders dark when opened in the light scheme',
+	{ tag: ['@REQ-044', '@REQ-88-2'] },
+	async ({ page, browser }) => {
+		const comic = await createViewableComic(page);
+		const { html } = await downloadComic(await new ViewPage(page, comic.id).goto());
+
+		for (const scheme of ['light', 'dark'] as const) {
+			const offline = await openOffline(browser, html, LANDSCAPE_VIEWPORT, scheme);
+			const { background, text, colorScheme } = await pageColours(offline);
+			expect(colorScheme).toContain('dark');
+			expect(luminance(background)).toBeLessThan(0.1);
+			expect(luminance(text)).toBeGreaterThan(0.5);
+			await offline.context().close();
+		}
 	},
 );
 

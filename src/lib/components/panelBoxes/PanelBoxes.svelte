@@ -66,8 +66,23 @@
 		margin: var(--space-2);
 	}
 
+	/* Captions are cream boxes; speech is a white bubble with the speaker's name small and capitalised. */
+	.captions .box {
+		background: var(--color-caption);
+		color: var(--color-caption-text);
+	}
+
 	.speech .box {
 		font-style: italic;
+		background: var(--color-bubble);
+		color: var(--color-bubble-text);
+		border-radius: var(--radius-bubble);
+	}
+
+	.speech strong {
+		font-size: var(--font-size-small);
+		font-style: normal;
+		text-transform: uppercase;
 	}
 
 	.overlay .speech {
@@ -80,9 +95,7 @@
 	.box {
 		max-inline-size: 100%;
 		padding: var(--space-2);
-		border: var(--border-width-thick) solid var(--color-border);
-		background: var(--color-background);
-		color: var(--color-text);
+		border: var(--border-width-thick) solid var(--color-reader-border);
 		font-size: var(--font-size-small);
 		overflow-wrap: anywhere;
 	}

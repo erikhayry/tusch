@@ -121,5 +121,8 @@
 	"backToComics": "Tillbaka till serierna",
 	"createComicSubmit": "Skapa serie",
 	"cancel": "Avbryt",
-	"settings": "Inställningar"
+	"settings": "Inställningar",
+	"backToEditing": "Tillbaka till redigeringen",
+	"allComics": "Alla serier",
+	"theEnd": "Slut"
 }

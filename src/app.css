@@ -107,6 +107,24 @@
 	--panel-card-width: 8rem;
 	/* Viewer panel: nearly a full screen, so the next panel peeks in below. */
 	--viewer-panel-height: 90dvh;
+	/* The reader (viewer and downloaded file) is a dark stage in both schemes (REQ-044).
+	   Its own colours, applied by the `:root:has(.reader)` block below. */
+	--color-reader-background: #1c1c1f;
+	--color-reader-border: #2e2e33;
+	--color-reader-text: #f4f4f5;
+	--color-reader-link: #93b4ff;
+	--color-reader-focus: #6b9bff;
+	/* Captions are cream boxes, speech bubbles white; both keep dark text. */
+	--color-caption: #fff8dc;
+	--color-caption-text: #1c1c1f;
+	--color-bubble: #ffffff;
+	--color-bubble-text: #1c1c1f;
+	--radius-bubble: 1.125rem;
+	/* Placeholder frames where a comic has no image yet: the cover, then panels cycled by index. */
+	--color-cover-placeholder: #2f4858;
+	--color-panel-placeholder-1: #33658a;
+	--color-panel-placeholder-2: #4f7f9a;
+	--color-panel-placeholder-3: #5e7a44;
 	--progress-duration: 1s;
 	--visually-hidden-size: 1px;
 	--visually-hidden-clip: inset(50%);
@@ -130,6 +148,20 @@
 		--color-speaker: #c4b5fd;
 		--color-focus: #6b9bff;
 	}
+}
+
+/* The reader is always dark, whatever the OS asks for (REQ-044): the viewer and the
+   downloaded file both carry a `.reader` element. Higher specificity than the scheme
+   block above, so it wins in both schemes. The reader's own tokens are used by its
+   components directly: a token can't be overridden here (tusch/custom-property-in-root). */
+:root:has(.reader) {
+	color-scheme: dark;
+	background: var(--color-reader-background);
+	color: var(--color-reader-text);
+}
+
+:root:has(.reader) :focus-visible {
+	outline-color: var(--color-reader-focus);
 }
 
 /* Semantic baseline (narrow first) */

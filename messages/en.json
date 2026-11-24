@@ -164,5 +164,8 @@
 	"createComicOr": "and / or",
 	"createComicNeedsKey": "Needs an OpenAI key",
 	"backToComics": "Back to comics",
-	"createComicSubmit": "Create comic"
+	"createComicSubmit": "Create comic",
+	"backToEditing": "Back to editing",
+	"allComics": "All comics",
+	"theEnd": "The end"
 }

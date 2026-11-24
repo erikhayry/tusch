@@ -113,7 +113,7 @@ export function renderComicHtml(comic: ExportedComic): string {
 <style>${appCss}
 ${documentCss}</style>
 </head>
-<body>
+<body class="reader">
 <main>
 <div class="cover">${cover}<h1${coverTitleClass}>${title}</h1></div>
 ${panels}

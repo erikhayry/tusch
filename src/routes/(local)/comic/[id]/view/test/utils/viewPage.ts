@@ -9,7 +9,13 @@ export class ViewPage {
 	readonly title: Locator;
 	readonly panelHeadings: Locator;
 	readonly images: Locator;
-	readonly backLink: Locator;
+	/** The viewer's own sticky header (REQ-299-1); the shared header is not rendered here. */
+	readonly header: Locator;
+	/** Everything in `<main>`; the ending block's links live here (REQ-299-2). */
+	readonly main: Locator;
+	readonly headerBackLink: Locator;
+	readonly endingBackLink: Locator;
+	readonly allComicsLink: Locator;
 
 	constructor(page: Page, comicId: string) {
 		this.page = page;
@@ -17,7 +23,12 @@ export class ViewPage {
 		this.title = page.getByRole('heading', { level: 1 });
 		this.panelHeadings = page.getByRole('heading', { level: 2 });
 		this.images = page.getByRole('main').getByRole('img');
-		this.backLink = page.getByRole('link', { name: m.back(), exact: true });
+		this.header = page.getByRole('banner');
+		this.main = page.getByRole('main');
+		const backToEditing = { name: m.backToEditing(), exact: true };
+		this.headerBackLink = this.header.getByRole('link', backToEditing);
+		this.endingBackLink = this.main.getByRole('link', backToEditing);
+		this.allComicsLink = this.main.getByRole('link', { name: m.allComics(), exact: true });
 	}
 
 	async goto() {

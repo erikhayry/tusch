@@ -26,6 +26,14 @@ The global baseline lives in `src/app.css`, imported once in
   button borders, 3:1 or better) and `--color-focus`. Link, danger and speaker
   text must pass 4.5:1 on the surfaces they sit on. Don't reuse one token for another role:
   a token is changed for its role, not for its look.
+- The reader (the viewer and the downloaded file) is the one dark exception
+  (#299, REQ-044). It is always dark, in both schemes: `:root:has(.reader)` in
+  `app.css` sets `color-scheme: dark` and the `--color-reader-*` tokens, and the
+  reader's components use those tokens directly (a custom property can't be
+  overridden outside the `:root` token block). Its caption (cream) and speech
+  bubble (white) boxes and the placeholder frames (the cover `#2F4858`, panels
+  `#33658A`, `#4F7F9A`, `#5E7A44`, cycled by panel index) are tokens too, since
+  the design uses them for the reader only.
 - `--color-focus` is used **only** for the focus indicator (`:focus-visible`
   `outline`). Never for text, links, buttons or state. It keeps 3:1 or better
   against the background in both schemes; the dark value is lighter than the
