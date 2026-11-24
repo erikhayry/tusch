@@ -196,10 +196,12 @@
 		overflow-wrap: anywhere;
 	}
 
+	/* Inset by the same space on both sides, so a long title keeps equal margins. */
 	h1.overlay {
 		position: absolute;
 		inset-block-start: var(--space-2);
 		inset-inline-start: var(--space-2);
+		max-inline-size: calc(100% - 2 * var(--space-2));
 	}
 
 	/* Full width, almost full height; the gap below shows the next panel. The picture
