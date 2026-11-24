@@ -6,6 +6,7 @@
 		DELETE_ITEM_ACTION,
 		getDeleteValues,
 	} from '#lib/features/comics/contracts/deleteItem.ts';
+	import DangerButton from '#lib/components/dangerButton/DangerButton.svelte';
 	import { enhanceClientCommand } from '#lib/forms/enhance-client-command.ts';
 	import { m } from '#lib/paraglide/messages.js';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
@@ -53,17 +54,15 @@
 			</svg>
 		</button>
 	{:else}
-		<button type="submit" class:danger>{label}</button>
+		{#if danger}
+			<DangerButton>{label}</DangerButton>
+		{:else}
+			<button type="submit">{label}</button>
+		{/if}
 	{/if}
 </form>
 
 <style>
-	/* Buttons default to a dark fill, where danger text fails contrast; use the page background. */
-	.danger {
-		color: var(--color-danger);
-		background: var(--color-background);
-	}
-
 	.icon-only {
 		display: inline-flex;
 		align-items: center;

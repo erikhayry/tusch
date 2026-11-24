@@ -92,15 +92,20 @@
 				{characters}
 			/>
 			<div class="pager">
+				<!-- The arrows are decoration; aria-hidden keeps them out of the link name. -->
 				{#if previous}
-					<a href={resolve(`comic/${comicId}/${previous.id}`)}>{m.previousPanel()}</a>
+					<a href={resolve(`comic/${comicId}/${previous.id}`)}
+						><span aria-hidden="true">←</span> {m.previousPanel()}</a
+					>
 				{:else}
-					<span aria-disabled="true">{m.previousPanel()}</span>
+					<span aria-disabled="true"><span aria-hidden="true">←</span> {m.previousPanel()}</span>
 				{/if}
 				{#if next}
-					<a href={resolve(`comic/${comicId}/${next.id}`)}>{m.nextPanel()}</a>
+					<a href={resolve(`comic/${comicId}/${next.id}`)}
+						>{m.nextPanel()} <span aria-hidden="true">→</span></a
+					>
 				{:else}
-					<span aria-disabled="true">{m.nextPanel()}</span>
+					<span aria-disabled="true">{m.nextPanel()} <span aria-hidden="true">→</span></span>
 				{/if}
 				<a href={resolve(`comic/${comicId}/view`)}>{m.readThisComic()}</a>
 			</div>

@@ -589,7 +589,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-298-2 The panel page links to the previous and next panel
 
 - Status: active
-- Statement: the panel page has a "← Prev" link to the previous panel and a "Next →" link to the next one; on the first (last) panel, Prev (Next) is shown but is not a link and is marked `aria-disabled="true"`.
+- Statement: the panel page has a "Prev" link to the previous panel and a "Next" link to the next one (arrows are decorative and hidden from assistive tech); on the first (last) panel, Prev (Next) is shown but is not a link and is marked `aria-disabled="true"`.
 - Why: stepping through panels should not need the panel list (#298).
 - Proven by: tagged tests
 

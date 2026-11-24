@@ -48,6 +48,9 @@ The global baseline lives in `src/app.css`, imported once in
 - Global baseline in `src/app.css`.
 - A component gets a scoped `<style>` block only for its own layout, and that
   block still uses tokens only.
+- Declarations used by more than one component live in one place: a shared
+  component (`components/dangerButton/DangerButton.svelte`), not copied into
+  each component's `<style>` block.
 - Set the outline only under `:focus-visible`; a resting outline breaks the
   REQ-038 test.
 

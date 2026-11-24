@@ -142,7 +142,8 @@ for (const { edge, index, shown, other } of [
 			await openCreatedComic(page, index);
 
 			await expect(page.getByRole('link', { name: shown, exact: true })).toHaveCount(0);
-			const disabled = page.getByText(shown, { exact: true });
+			// The arrow is decorative, so the disabled control's text is the word plus the arrow.
+			const disabled = page.locator('[aria-disabled="true"]').filter({ hasText: shown });
 			await expect(disabled).toBeVisible();
 			await expect(disabled).toHaveAttribute('aria-disabled', 'true');
 			await expect(page.getByRole('link', { name: other, exact: true })).toBeVisible();
