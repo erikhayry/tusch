@@ -177,5 +177,8 @@
 	"imageModelHelp": "Draws covers and panel images",
 	"globalInstructionsLabel": "Added to every AI prompt",
 	"globalInstructionsPlaceholder": "e.g. Keep dialogue short. Write in Swedish. No modern objects.",
-	"globalInstructionsCount": "{count} of {max}"
+	"globalInstructionsCount": "{count} of {max}",
+	"styleAnimeDescription": "Clean lines, cel shading, bright colours",
+	"styleClassicMarvelDescription": "Bold ink, halftone dots, 1960s print",
+	"styleFrancoBelgianDescription": "Clear line, flat colours, no shadows"
 }

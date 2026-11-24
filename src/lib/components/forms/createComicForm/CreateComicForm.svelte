@@ -23,7 +23,24 @@
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
 	import { variantFailedMessage } from '#lib/forms/variant-failure.ts';
 	import { m } from '#lib/paraglide/messages.js';
+	import { ComicStyleEnum, type ComicStyle } from '#lib/types/index.ts';
 	import { STYLES } from '#lib/utils/comicStyles.ts';
+
+	/** Card copy by style id: a new style fails to compile until it has copy. */
+	const STYLE_COPY: Record<ComicStyle, { name: () => string; description: () => string }> = {
+		[ComicStyleEnum.enum.anime]: {
+			name: () => m.styleAnime(),
+			description: () => m.styleAnimeDescription(),
+		},
+		[ComicStyleEnum.enum['classic-marvel']]: {
+			name: () => m.styleClassicMarvel(),
+			description: () => m.styleClassicMarvelDescription(),
+		},
+		[ComicStyleEnum.enum['franco-belgian']]: {
+			name: () => m.styleFrancoBelgian(),
+			description: () => m.styleFrancoBelgianDescription(),
+		},
+	};
 
 	const handleSubmit = withGlobalInstructions(
 		enhanceAction<CreateComicResult>(m.loadingCreateComic(), async ({ data, showError }) => {
@@ -75,14 +92,32 @@
 			/>
 		</label>
 		<p class="hint" id="create-comic-panel-count-hint">{m.createComicPanelCountHint()}</p>
-		<label>
-			{m.comicStyles()}
-			<select name="style" required>
+		<fieldset class="style-choice">
+			<legend>{m.comicStyles()}</legend>
+			<div class="style-cards">
 				{#each Object.values(STYLES) as style (style.id)}
-					<option value={style.id}>{style.id}</option>
+					<label class="style-card">
+						<input
+							type="radio"
+							name="style"
+							value={style.id}
+							required
+							checked={style.id === ComicStyleEnum.enum.anime}
+							aria-labelledby={`style-name-${style.id}`}
+							aria-describedby={`style-description-${style.id}`}
+						/>
+						<span class="style-text">
+							<span class="style-name" id={`style-name-${style.id}`}>
+								{STYLE_COPY[style.id].name()}
+							</span>
+							<span class="style-description" id={`style-description-${style.id}`}>
+								{STYLE_COPY[style.id].description()}
+							</span>
+						</span>
+					</label>
 				{/each}
-			</select>
-		</label>
+			</div>
+		</fieldset>
 		<p class="needs-key">
 			<span>{m.createComicNeedsKey()}</span> ·
 			<a href={resolve(localizedHref('/settings'))}>{m.settings()}</a>
@@ -157,7 +192,65 @@
 		color: var(--color-link);
 	}
 
-	form :is(input, select, textarea) {
+	/* The fieldset's border and legend come from app.css; the cards are the only choice inside it. */
+	.style-choice {
+		margin-block: var(--space-3) 0;
+	}
+
+	/* Three per row at every width; further styles wrap onto new rows of the same grid. */
+	.style-cards {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-2);
+	}
+
+	/* A card is a label, so the whole card selects the style; the radio keeps native keys and semantics. */
+	/* Three cards share a narrow row, so the radio sits above the text to give the names room. */
+	.style-card {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-1);
+		margin-block: 0;
+		padding: var(--space-2);
+		overflow-wrap: anywhere;
+		border: var(--border-width) solid var(--color-control-border);
+		border-radius: var(--card-radius);
+		background: var(--color-background);
+		cursor: pointer;
+	}
+
+	/* The checked card gets a thicker dark border, so the choice reads without colour. */
+	.style-card:has(:checked) {
+		border: var(--border-width-thick) solid var(--color-text);
+	}
+
+	.style-card:has(:focus-visible) {
+		outline: var(--focus-width) solid var(--color-focus);
+		outline-offset: var(--focus-offset);
+	}
+
+	.style-card input {
+		flex-shrink: 0;
+		margin-block: 0;
+	}
+
+	.style-text {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.style-name {
+		font-weight: bold;
+	}
+
+	.style-description {
+		font-size: var(--font-size-small);
+		color: var(--color-muted);
+	}
+
+	form :is(input, textarea) {
 		scroll-margin-block-end: var(--form-actions-clearance);
 	}
 
@@ -172,6 +265,16 @@
 
 		.card {
 			padding: var(--space-4);
+		}
+
+		/* Wide cards have room for the radio beside its text, as in the single-row design. */
+		.style-card {
+			flex-direction: row;
+			padding: var(--space-2) var(--space-3);
+		}
+
+		.style-card input {
+			margin-block: var(--space-1) 0;
 		}
 	}
 </style>

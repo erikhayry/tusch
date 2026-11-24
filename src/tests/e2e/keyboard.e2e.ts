@@ -8,10 +8,16 @@ import { gotoHydrated } from './gotoHydrated';
 import { activate, chooseOption, focusableControls, tabTo, typeInto } from './keyboard';
 import { VIEWS } from './views';
 
-/** The visible links, buttons and form controls of the current view, in document order. */
+/**
+ * The visible links, buttons and form controls of the current view, in document order.
+ * A radio group is one Tab stop (its checked radio); the others are reached with the arrow keys.
+ */
 async function visibleControls(page: Page): Promise<Locator[]> {
 	await page.waitForLoadState('networkidle');
-	return focusableControls(page).locator('visible=true').all();
+	return focusableControls(page)
+		.and(page.locator(':not(input[type="radio"]:not(:checked))'))
+		.locator('visible=true')
+		.all();
 }
 
 /** What a focus indicator would change: outline and box-shadow. */
@@ -76,20 +82,6 @@ test.describe('keyboard: buttons activate with Enter and Space', { tag: '@REQ-03
 });
 
 test('keyboard: a select changes value by typing', { tag: '@REQ-037' }, async ({ page }) => {
-	// The comic style select is the only one with several options (the mock
-	// gateway lists a single model per kind).
-	await gotoHydrated(page, VIEWS.create);
-	const select = page.getByRole('combobox', { name: m.comicStyles() });
-	await tabTo(page, select);
-	const options = await select.getByRole('option').allTextContents();
-	expect(options.length).toBeGreaterThan(2);
-	await expect(select).toHaveValue(options[0]);
-
-	// Type-ahead only: ArrowDown on a closed select opens the menu on macOS but
-	// moves to the next option on Linux, so arrow keys can't be asserted portably.
-	await chooseOption(page, select, options[2]);
-	await expect(select).toHaveValue(options[2]);
-
 	// Settings: the model select is reachable and operable too.
 	// Without a key the model selects are disabled (REQ-300-1), so store one first.
 	await page
