@@ -16,10 +16,14 @@ test('shows the panel count field with 5 and a hint', { tag: '@REQ-289-1' }, asy
 	await expect(createPage.panelCountInput).toHaveAccessibleDescription(
 		m.createComicPanelCountHint(),
 	);
-	// It sits after the style select.
-	const fields = page.locator('form[action$="create-comic"] :is(select, input[type="number"])');
-	await expect(fields.first()).toHaveAttribute('name', 'style');
-	await expect(fields.last()).toHaveAttribute('name', 'panelCount');
+	// It sits after the story and before the style select.
+	const fields = page.locator(
+		'form[action$="create-comic"] :is(input[name="url"], textarea, select, input[type="number"])',
+	);
+	await expect(fields).toHaveCount(4);
+	for (const [index, name] of ['url', 'story', 'panelCount', 'style'].entries()) {
+		await expect(fields.nth(index)).toHaveAttribute('name', name);
+	}
 });
 
 test.describe('a created comic has the chosen number of panels', { tag: '@REQ-289-1' }, () => {

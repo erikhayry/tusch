@@ -45,7 +45,7 @@ test.describe('keyboard: buttons activate with Enter and Space', { tag: '@REQ-03
 		await gotoHydrated(page, VIEWS.create);
 
 		await typeInto(page, page.getByRole('textbox', { name: m.url() }), 'https://example.com/a');
-		await activate(page, page.getByRole('button', { name: m.submit() }), 'Enter');
+		await activate(page, page.getByRole('button', { name: m.createComicSubmit() }), 'Enter');
 
 		await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 	});

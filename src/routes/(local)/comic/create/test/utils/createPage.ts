@@ -18,7 +18,7 @@ export class CreatePage {
 		this.urlInput = page.getByRole('textbox', { name: m.urlToSource() });
 		this.storyInput = page.getByRole('textbox', { name: m.yourStory() });
 		this.panelCountInput = page.getByRole('spinbutton', { name: m.createComicPanelCount() });
-		this.submitButton = page.getByRole('button', { name: m.submit() });
+		this.submitButton = page.getByRole('button', { name: m.createComicSubmit() });
 		this.error = page.getByTestId('error-test-id');
 	}
 

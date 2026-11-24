@@ -13,7 +13,7 @@ export async function createComic(
 ): Promise<string> {
 	await gotoHydrated(page, '/comic/create');
 	await typeInto(page, page.getByRole('textbox', { name: /url/i }), url);
-	await activate(page, page.getByRole('button', { name: /submit/i }));
+	await activate(page, page.getByRole('button', { name: m.createComicSubmit() }));
 	await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 	const id = page.url().split('/').at(-1);
 	if (!id) {
