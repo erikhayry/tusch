@@ -214,7 +214,7 @@ test.describe('a story-only comic', { tag: '@REQ-105-1' }, () => {
 
 		await page.reload();
 
-		await expect(page.getByRole('heading', { name: m.source() })).toBeVisible();
+		await expect(page.locator('dt', { hasText: m.source() })).toBeVisible();
 		await expect(page.getByText(STORY_FIRST_LINE)).toBeVisible();
 		await expect(page.getByRole('link', { name: /^https?:\/\// })).toHaveCount(0);
 	});

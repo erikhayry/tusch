@@ -48,6 +48,8 @@ Drive failures from the UI with markers in submitted text:
 - `mock-error:auth`, `mock-error:rate-limit`, `mock-error:upstream`: the gateway
   throws that error (any request whose messages, or API key, contain the marker)
 - an API key containing `invalid`: key validation returns `success: false`
+- `mock-error:no-characters`: a create-comic request gets the usual response with no
+  characters, so a comic without characters can be made through the UI
 - `mock-error:no-image`: an image request gets a response without an image
   (every attempt, so the one retry fails too)
 - `mock-error:no-image-once`: only the first image request of a request gets no

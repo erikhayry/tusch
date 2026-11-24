@@ -138,5 +138,17 @@
 	"styleAnime": "Anime",
 	"styleClassicMarvel": "Classic Marvel",
 	"styleFrancoBelgian": "Franco-Belgian",
-	"createComicTileHint": "From a URL or your own story"
+	"createComicTileHint": "From a URL or your own story",
+	"comicSettings": "Comic settings",
+	"cover": "Cover",
+	"characterCountOne": "1 character",
+	"characterCount": "{count} characters",
+	"captionCountOne": "1 caption",
+	"captionCount": "{count} captions",
+	"lineCountOne": "1 line",
+	"lineCount": "{count} lines",
+	"appearsInOne": "Appears in 1 panel",
+	"appearsIn": "Appears in {count} panels",
+	"panelStripHint": "Select a panel to edit · scroll sideways for more",
+	"panelStripHintNarrow": "Swipe for more"
 }

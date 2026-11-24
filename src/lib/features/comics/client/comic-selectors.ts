@@ -105,6 +105,35 @@ export function comicMetaLine(comic: Comic): string {
 		.join(' · ');
 }
 
+const plural = (count: number, one: () => string, many: (params: { count: number }) => string) =>
+	count === 1 ? one() : many({ count });
+
+/** Joins the parts that have a value, so a zero count is left out. */
+const joinParts = (parts: (string | null)[]) => parts.filter((part) => part !== null).join(' · ');
+
+/** "8 panels · 2 characters", or "1 panel" when the comic has no characters (REQ-297-1). */
+export function comicCountsLine(comic: Comic): string {
+	return joinParts([
+		plural(comic.panels.length, m.panelCountOne, m.panelCount),
+		comic.characters.length
+			? plural(comic.characters.length, m.characterCountOne, m.characterCount)
+			: null,
+	]);
+}
+
+/** "1 caption · 2 lines"; empty when the panel has neither (REQ-297-2). */
+export function panelCountsLine({ captions, dialogue }: Pick<Panel, 'captions' | 'dialogue'>) {
+	return joinParts([
+		captions.length ? plural(captions.length, m.captionCountOne, m.captionCount) : null,
+		dialogue.length ? plural(dialogue.length, m.lineCountOne, m.lineCount) : null,
+	]);
+}
+
+/** "Appears in 1 panel" or "Appears in N panels" (REQ-297-3). */
+export function appearsInLabel(count: number): string {
+	return plural(count, m.appearsInOne, m.appearsIn);
+}
+
 export function getComic(comics: readonly Comic[], comicId: string): Comic | undefined {
 	return comics.find((comic) => comic.id === comicId);
 }

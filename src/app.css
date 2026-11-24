@@ -83,6 +83,10 @@
 	--card-min-width: 13.75rem;
 	--card-radius: 0.75rem;
 	--card-cover-aspect-ratio: 3 / 4;
+	/* Comic page: the panel strip's cards (narrow / wide) and the side column of the wide layout. */
+	--strip-card-width-narrow: 9.375rem;
+	--strip-card-width-wide: 11.25rem;
+	--overview-side-column: 22rem;
 	--tile-min-height: 10rem;
 	--transition-duration: 150ms;
 

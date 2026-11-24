@@ -1,5 +1,6 @@
 <script lang="ts">
 	import {
+		appearsInLabel,
 		getCharacterGalleryImages,
 		getComic,
 		getPanelsWithCharachter,
@@ -36,6 +37,7 @@
 
 <Section>
 	<Heading>{character.name}</Heading>
+	<p class="appears">{appearsInLabel(panels?.length ?? 0)}</p>
 	{#if gallery.length}
 		<ul class="gallery">
 			{#each gallery as entry (entry.id)}
@@ -105,6 +107,12 @@
 </Section>
 
 <style>
+	.appears {
+		margin-block: 0 var(--space-2);
+		color: var(--color-muted);
+		font-size: var(--font-size-small);
+	}
+
 	.gallery {
 		display: flex;
 		flex-wrap: wrap;

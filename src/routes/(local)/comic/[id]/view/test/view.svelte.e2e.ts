@@ -76,8 +76,8 @@ test.describe('comic page link', () => {
 	);
 
 	test(
-		'View comic is a link between the h1 and the Settings heading and adds no heading',
-		{ tag: ['@REQ-87-1', '@REQ-236-1', '@REQ-236-2'] },
+		'View comic is a link and adds no heading',
+		{ tag: ['@REQ-87-1', '@REQ-236-1'] },
 		async ({ page }) => {
 			const comic = await createViewableComic(page);
 			await gotoHydrated(page, `/comic/${comic.id}`);
@@ -85,17 +85,8 @@ test.describe('comic page link', () => {
 			await expect(page.getByRole('button', { name: m.viewComic() })).toHaveCount(0);
 			const link = page.getByRole('link', { name: m.viewComic(), exact: true });
 			await expect(link).toHaveAttribute('href', `/comic/${comic.id}/view`);
-
-			const h1 = page.getByRole('heading', { level: 1 });
-			const settings = page.getByRole('heading', { name: m.settings(), level: 2, exact: true });
-			await expect(h1).toHaveCount(1);
-			const y = async (locator: typeof link) => (await locator.boundingBox())?.y ?? Number.NaN;
-			expect(await y(h1)).toBeLessThan(await y(link));
-			expect(await y(link)).toBeLessThan(await y(settings));
-
-			// Same outline as before: h1, then "Settings" at level 2, nothing skipped.
+			await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
 			await expect(page.getByRole('heading', { name: m.viewComic() })).toHaveCount(0);
-			await expect(page.getByRole('heading', { level: 2 }).first()).toHaveText(m.settings());
 		},
 	);
 });
