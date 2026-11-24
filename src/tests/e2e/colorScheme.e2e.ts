@@ -36,7 +36,8 @@ test.describe('dark colour scheme', { tag: '@REQ-044' }, () => {
 test.describe('light colour scheme', { tag: '@REQ-044' }, () => {
 	test.use({ colorScheme: 'light' });
 
-	for (const [name, url] of Object.entries(VIEWS)) {
+	// The viewer is always dark (view.svelte.e2e.ts).
+	for (const [name, url] of Object.entries(VIEWS).filter(([name]) => name !== 'view')) {
 		test(`${name} has dark text on a light background`, async ({ page }) => {
 			await gotoHydrated(page, url);
 			const { background, text } = await rootColors(page);

@@ -6,15 +6,21 @@ import type { ViewPage } from './viewPage';
 export const LANDSCAPE_VIEWPORT = { width: 1280, height: 720 };
 export const PORTRAIT_VIEWPORT = { width: 390, height: 844 };
 
-/** The "Download comic" link on the viewer (REQ-88-1). */
-export const downloadLink = (page: Page) =>
-	page.getByRole('link', { name: m.downloadComic(), exact: true });
+export type DownloadPlace = 'header' | 'ending';
+
+/** A "Download comic" link on the viewer: one in the header, one in the ending block (REQ-88-1). */
+export const downloadLink = (page: Page, place: DownloadPlace = 'header') =>
+	(place === 'header' ? page.getByRole('banner') : page.getByRole('main')).getByRole('link', {
+		name: m.downloadComic(),
+		exact: true,
+	});
 
 /** Activate "Download comic" with the keyboard and return the saved file's name and text. */
 export async function downloadComic(
 	view: ViewPage,
+	place: DownloadPlace = 'header',
 ): Promise<{ download: Download; fileName: string; html: string }> {
-	const link = downloadLink(view.page);
+	const link = downloadLink(view.page, place);
 	await expect(link).toBeVisible();
 	const [download] = await Promise.all([
 		view.page.waitForEvent('download'),
@@ -40,8 +46,9 @@ export async function openOffline(
 	browser: Browser,
 	html: string,
 	viewport = LANDSCAPE_VIEWPORT,
+	colorScheme: 'light' | 'dark' = 'light',
 ): Promise<Page> {
-	const context = await browser.newContext({ offline: true, viewport });
+	const context = await browser.newContext({ offline: true, viewport, colorScheme });
 	const page = await context.newPage();
 	await page.setContent(html);
 	return page;

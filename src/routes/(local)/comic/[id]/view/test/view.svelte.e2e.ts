@@ -5,6 +5,7 @@ import { createComic, deletePanel, storedComic } from '../../../../../../tests/e
 import { exampleNoImages } from '../../../../../../tests/e2e/examples';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../../../../tests/e2e/keyboard';
+import { placeholderFrames } from './utils/placeholderFrames';
 import { ViewPage } from './utils/viewPage';
 import { createViewableComic, removeStoredFile } from './utils/viewableComic';
 
@@ -59,9 +60,29 @@ function expectInside(inner: Box, outer: Box) {
 	expect(inner.y + inner.height).toBeLessThanOrEqual(outer.y + outer.height + 1);
 }
 
+/**
+ * Panel `number` has no image: a decorative frame sized like a panel image
+ * (REQ-283-4) lies under its boxes, hidden from assistive technology, without an `<img>`.
+ */
+async function expectPlaceholderFrame(page: Page, view: ViewPage, number: number, caption: string) {
+	const main = await boxOf(view.main);
+	const section = view.panelSection(number);
+	const frames = await placeholderFrames(section, main.width * 0.9);
+	expect(frames).toHaveLength(1);
+	const [frame] = frames;
+	expect(frame.hasImage).toBe(false);
+	const height = page.viewportSize()?.height ?? 0;
+	expect(frame.height).toBeGreaterThan(height * 0.8);
+	expect(frame.height).toBeLessThan(height);
+	expectInside(await boxOf(section.getByText(caption, { exact: true })), frame);
+	// The design's panel placeholders, cycled by panel index: #33658A, #4F7F9A, #5E7A44.
+	const colours = ['rgb(51, 101, 138)', 'rgb(79, 127, 154)', 'rgb(94, 122, 68)'];
+	expect(frame.background).toBe(colours[(number - 1) % colours.length]);
+}
+
 test.describe('comic page link', () => {
 	test(
-		'View comic opens the viewer and Back returns to the comic page',
+		'View comic opens the viewer and Back to editing returns to the comic page',
 		{ tag: '@REQ-87-1' },
 		async ({ page }) => {
 			const comic = await createViewableComic(page);
@@ -70,7 +91,7 @@ test.describe('comic page link', () => {
 			await activate(page, page.getByRole('link', { name: m.viewComic(), exact: true }));
 			await expect(page).toHaveURL(`/comic/${comic.id}/view`);
 
-			await activate(page, new ViewPage(page, comic.id).backLink);
+			await activate(page, new ViewPage(page, comic.id).headerBackLink);
 			await expect(page).toHaveURL(`/comic/${comic.id}`);
 		},
 	);
@@ -219,7 +240,7 @@ test.describe('viewer boxes', () => {
 	);
 
 	test(
-		'a comic without a cover shows the title as the same box',
+		'a comic without a cover shows the title box over a cover-coloured placeholder frame',
 		{ tag: '@REQ-283-5' },
 		async ({ page }) => {
 			const id = await createComic(page);
@@ -232,7 +253,20 @@ test.describe('viewer boxes', () => {
 			const view = await new ViewPage(page, id).goto();
 
 			await expect(page.locator('main img')).toHaveCount(0);
-			await expect(view.title).toBeVisible();
+			const title = await boxOf(view.title);
+			const main = await boxOf(view.main);
+			const frames = await placeholderFrames(view.main, main.width * 0.9);
+			const frame = frames.find(
+				(candidate) => candidate.y <= title.y + 1 && candidate.y + candidate.height >= title.y,
+			);
+			expect(frame).toBeDefined();
+			expectInside(title, frame ?? title);
+			expect(frame?.hasImage).toBe(false);
+			// The design's cover placeholder, #2F4858.
+			expect(frame?.background).toBe('rgb(47, 72, 88)');
+			// It sits in the top half of the page's first screen, before the first panel.
+			const first = await boxOf(view.panelSection(1));
+			expect((frame?.y ?? 0) + (frame?.height ?? 0)).toBeLessThanOrEqual(first.y + 1);
 		},
 	);
 
@@ -317,7 +351,7 @@ test.describe('viewer boxes', () => {
 	);
 
 	test(
-		'a panel without an image lists captions before dialogue and renders no image',
+		'a panel without an image lists captions before dialogue over a frame and renders no image',
 		{ tag: ['@REQ-283-2', '@REQ-87-4'] },
 		async ({ page }) => {
 			const comic = await createViewableComic(page);
@@ -327,6 +361,7 @@ test.describe('viewer boxes', () => {
 
 			const section = view.panelSection(2);
 			await expect(section.getByRole('img')).toHaveCount(0);
+			await expectPlaceholderFrame(page, view, 2, comic.panels[1].captions[0]);
 			const lastCaption = await boxOf(
 				section.getByText(panel.captions[panel.captions.length - 1], { exact: true }),
 			);
@@ -394,6 +429,7 @@ test.describe('viewer without images or panels', () => {
 			// Cover plus panel 1 only.
 			expect(first.image).toBeDefined();
 			await expect(view.images).toHaveCount(2);
+			await expectPlaceholderFrame(page, view, 2, second.captions[0]);
 		},
 	);
 
@@ -406,6 +442,9 @@ test.describe('viewer without images or panels', () => {
 
 			await expect(view.panelHeadings).toHaveCount(example.panels.length);
 			await expect(view.images).toHaveCount(0);
+			for (const number of [1, 2]) {
+				await expectPlaceholderFrame(page, view, number, example.panels[number - 1].captions[0]);
+			}
 			for (const caption of example.panels[0].captions) {
 				await expect(page.getByText(caption, { exact: true })).toBeVisible();
 			}
@@ -454,6 +493,9 @@ test.describe('viewer edge cases', () => {
 			for (const image of await view.images.all()) {
 				await expect(image).toHaveAttribute('src', '/missing-image.svg');
 			}
+			// A missing file is not a missing image: no coloured frame replaces the placeholder.
+			const main = await boxOf(view.main);
+			expect(await placeholderFrames(view.panelSection(1), main.width * 0.9)).toEqual([]);
 		},
 	);
 

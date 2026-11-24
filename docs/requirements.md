@@ -223,7 +223,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-87-1 The comic page links to a viewer and the viewer links back
 
 - Status: active
-- Statement: `/comic/<id>` has a top row with a "Back" link to `/` before the `<h1>` and a "View comic" link (not a button) after it, to `/comic/<id>/view`; both come before the first `<h2>`. The viewer has a "Back" link to `/comic/<id>`. The link adds no heading.
+- Statement: `/comic/<id>` has a top row with a "Back" link to `/` before the `<h1>` and a "View comic" link (not a button) after it, to `/comic/<id>/view`; both come before the first `<h2>`. The viewer has a "Back to editing" link to `/comic/<id>` in its header and another in its ending block (REQ-299-1, REQ-299-2). The links add no heading.
 - Why: readers need a way to see the comic without the editor.
 - Proven by: tagged tests
 
@@ -244,14 +244,14 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-87-4 The viewer handles panels without an image and comics without panels
 
 - Status: active
-- Statement: a viewer panel without an image still shows its heading, captions and dialogue and renders no image. A comic without panels shows only its title and cover (if any), with no panel headings.
+- Statement: a viewer panel without an image still shows its heading, captions and dialogue over a decorative placeholder frame (no `<img>`, hidden from assistive technology) sized like a panel image (REQ-283-4), and renders no image. A comic without panels shows only its title and cover (if any), with no panel headings.
 - Why: users edit comics in any order; a half-finished comic must still be readable.
 - Proven by: tagged tests
 
 ### REQ-88-1 The viewer has a "Download comic" link that saves one .html file
 
 - Status: active
-- Statement: the viewer has a "Download comic" link (an `<a download>`, not a button) next to "Back". Activating it saves the comic as one `.html` file named after the comic title (or "Untitled comic") plus `.html`, with characters that aren't allowed in file names replaced. The viewer still has no form and no button (REQ-87-3).
+- Statement: the viewer has a "Download comic" link (an `<a download>`, not a button) in its header and another in its ending block (REQ-299-1, REQ-299-2). Activating either saves the comic as one `.html` file named after the comic title (or "Untitled comic") plus `.html`, with characters that aren't allowed in file names replaced. The viewer still has no form and no button (REQ-87-3).
 - Why: browser "Save as" on the viewer saves broken images, because they are OPFS `blob:` URLs (#88).
 - Proven by: tagged tests
 
@@ -286,7 +286,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-283-2 Viewer panels without an image show boxes below the heading
 
 - Status: active
-- Statement: on the viewer, a panel without an image shows its captions and then its dialogue as boxes below the (hidden) heading, in reading order, and renders no image.
+- Statement: on the viewer, a panel without an image shows its captions and then its dialogue as boxes over a decorative placeholder frame, below the (hidden) heading, in reading order, and renders no image.
 - Why: a half-finished comic must stay readable in the same style (#283).
 - Proven by: tagged tests
 
@@ -307,7 +307,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-283-5 Viewer cover is full width with the title as an inverted caption on it
 
 - Status: active
-- Statement: on the viewer, the cover is as wide as the content area, with space below it before the first panel. The comic's title is the page's `<h1>`, shown as a box over the top-left of the cover with the caption box's colours swapped (light text on a dark box in the light scheme). A comic without a cover shows the same box on its own.
+- Statement: on the viewer, the cover is as wide as the content area, with space below it before the first panel. The comic's title is the page's `<h1>`, shown as a box over the top-left of the cover with the caption box's colours swapped (light text on a dark box in the light scheme). A comic without a cover shows a cover-coloured placeholder frame, sized like a cover image, with the same box over it.
 - Why: the cover works as the opening panel of the comic (#283).
 - Proven by: tagged tests
 
@@ -838,17 +838,17 @@ The ledger of how Tusch must behave. Owned by the tech lead
 
 ## Appearance
 
-### REQ-044 Every view follows the OS/browser colour scheme
+### REQ-044 Every view except the viewer follows the OS/browser colour scheme
 
 - Status: active
-- Statement: every view follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it shows dark text on a light background. There is no toggle and nothing is stored.
-- Why: users with a dark system setting otherwise get a bright white page.
+- Statement: every view except the viewer (REQ-299-1) follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it shows dark text on a light background. There is no toggle and nothing is stored. The viewer and the downloaded file are always dark (`color-scheme: dark`) in both schemes.
+- Why: users with a dark system setting otherwise get a bright white page; the reader is a dark stage by design (#299).
 - Proven by: tagged tests
 
 ### REQ-294-1 Every view has a header with the Tusch wordmark
 
 - Status: active
-- Statement: every view has a header (`<header>` banner landmark, outside `<main>`) holding a "Tusch" link that leads to `/`.
+- Statement: every view except the viewer has a header (`<header>` banner landmark, outside `<main>`) holding a "Tusch" link that leads to `/`. The viewer has its own header instead (REQ-299-1); REQ-294-2 to REQ-294-4 don't apply to it.
 - Why: users can always get back to the start, and the header is the shared frame of the design (#294).
 - Proven by: tagged tests
 
@@ -915,4 +915,18 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: the URL and story fields each have their own helper text as their accessible description, and both labels say "(optional)".
 - Why: each field explains itself, and users see that neither is required on its own.
+- Proven by: tagged tests
+
+### REQ-299-1 The viewer has its own sticky header
+
+- Status: active
+- Statement: the viewer has one sticky header (`<header>` banner landmark) with a "Back to editing" link to `/comic/<id>`, the comic title (or "Untitled comic") as plain text, not a heading, on one line with an ellipsis, and a "Download comic" link (`<a download>`). It has no "Tusch" wordmark and no main navigation, and stays visible at the top while scrolling. Below 48em both links are 44 px icon links named by `aria-label`, with the icons hidden from assistive technology.
+- Why: the reader is a stage of its own; the way out and the download stay in reach on a long comic (#299).
+- Proven by: tagged tests
+
+### REQ-299-2 The viewer ends with an ending block
+
+- Status: active
+- Statement: after the last panel the viewer shows an ending block with "The end", the panel count ("1 panel" / "N panels"), and the links "Download comic" (the same file as the header link), "Back to editing" (`/comic/<id>`) and "All comics" (`/`). A decorative "·" and arrow are hidden from assistive technology.
+- Why: readers reach an end and know where to go next (#299).
 - Proven by: tagged tests

@@ -20,7 +20,8 @@ async function expectCurrent(link: Locator, current: boolean) {
 }
 
 test.describe('every view has a header with the wordmark', { tag: '@REQ-294-1' }, () => {
-	for (const [name, url] of Object.entries(VIEWS)) {
+	// The viewer has its own header instead (REQ-299-1).
+	for (const [name, url] of Object.entries(VIEWS).filter(([name]) => name !== 'view')) {
 		test(name, async ({ page }) => {
 			const header = new HeaderPage(page);
 			await gotoHydrated(page, url);
