@@ -1,3 +1,5 @@
+import { KEY_COOKIE_NAME } from '#lib/utils/cookies.ts';
+import { SETTINGS_COPY } from './settingsCopy';
 import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { contrastRatio } from './contrast';
@@ -81,8 +83,12 @@ test.describe('keyboard: buttons activate with Enter and Space', { tag: '@REQ-03
 
 test('keyboard: a select changes value by typing', { tag: '@REQ-037' }, async ({ page }) => {
 	// Settings: the model select is reachable and operable too.
+	// Without a key the model selects are disabled (REQ-300-1), so store one first.
+	await page
+		.context()
+		.addCookies([{ name: KEY_COOKIE_NAME, value: 'sk-valid-key', url: 'http://localhost:4173' }]);
 	await gotoHydrated(page, VIEWS.settings);
-	const model = page.getByRole('combobox', { name: m.selectTextModel() });
+	const model = page.getByRole('combobox', { name: SETTINGS_COPY.en.selectTextModel });
 	await chooseOption(page, model, 'gpt-6-luna');
 	await expect(model).toHaveValue('gpt-6-luna');
 });

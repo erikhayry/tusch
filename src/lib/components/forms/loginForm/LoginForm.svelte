@@ -47,7 +47,8 @@
 	);
 </script>
 
-{#if hasKey && !success}
+<!-- Shown after a save on Settings too: the page data reloads and reports the stored key. -->
+{#if hasKey}
 	<p>{m.keyStatus()}</p>
 {/if}
 
@@ -64,7 +65,13 @@
 	>
 		<label>
 			<span>{m.byok()}</span>
-			<input type="text" name="key" autocomplete="off" aria-describedby="key-hint" />
+			<input
+				type="text"
+				name="key"
+				autocomplete="off"
+				placeholder={m.keyPlaceholder()}
+				aria-describedby="key-hint"
+			/>
 		</label>
 		<p id="key-hint">{m.keyHint()}</p>
 

@@ -3,6 +3,7 @@ import { TEXT_MODEL_KEY } from '#lib/types/index.ts';
 import type { Locator, Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 import { KEY_COPY } from '../../../../tests/e2e/keyCopy';
+import { SETTINGS_COPY } from '../../../../tests/e2e/settingsCopy';
 import { activate, typeInto } from '../../../../tests/e2e/keyboard';
 
 export class CreatePage {
@@ -19,6 +20,10 @@ export class CreatePage {
 	readonly saveKeyButton: Locator;
 	readonly saveModelsButton: Locator;
 	readonly modelsSelect: Locator;
+	readonly imageModelSelect: Locator;
+	readonly keyCardHeading: Locator;
+	readonly keyBadge: Locator;
+	readonly globalInstructionsCount: Locator;
 	readonly currentModel: Locator;
 	readonly saveSettingsButton: Locator;
 	readonly globalInstructionsInput: Locator;
@@ -27,14 +32,16 @@ export class CreatePage {
 
 	constructor(page: Page) {
 		this.page = page;
-		this.globalInstructionsInput = page.getByRole('textbox', { name: m.globalInstructions() });
+		this.globalInstructionsInput = page.getByRole('textbox', {
+			name: SETTINGS_COPY.en.globalInstructionsLabel,
+		});
 		this.saveGlobalInstructionsButton = page.getByRole('button', {
-			name: m.saveGlobalInstructions(),
+			name: SETTINGS_COPY.en.saveGlobalInstructions,
 		});
 		this.error = page.getByTestId('error-test-id');
 		this.heading = page.getByRole('heading', { name: m.settings(), level: 1 });
 		this.backLink = page.getByRole('link', { name: m.back() });
-		this.keyInput = page.getByRole('textbox', { name: m.byok() });
+		this.keyInput = page.getByRole('textbox', { name: SETTINGS_COPY.en.byok, exact: true });
 		this.successMessage = page.getByText(m.keyAdded());
 		this.invalidKeyMessage = page.getByText(m.invalidKey());
 		this.keyStatus = page.getByText(KEY_COPY.keyStatus);
@@ -43,7 +50,13 @@ export class CreatePage {
 		this.modelsHeading = page.getByRole('heading', { name: KEY_COPY.modelsHeading });
 		this.saveKeyButton = page.getByRole('button', { name: KEY_COPY.saveKey });
 		this.saveModelsButton = page.getByRole('button', { name: KEY_COPY.saveModels });
-		this.modelsSelect = page.getByRole('combobox', { name: m.selectTextModel() });
+		this.modelsSelect = page.getByRole('combobox', { name: SETTINGS_COPY.en.selectTextModel });
+		this.imageModelSelect = page.getByRole('combobox', { name: SETTINGS_COPY.en.selectImageModel });
+		this.keyCardHeading = page.getByRole('heading', { name: SETTINGS_COPY.en.keyCardTitle });
+		this.keyBadge = page.getByText(
+			new RegExp(`^(${SETTINGS_COPY.en.keyBadgeSaved}|${SETTINGS_COPY.en.keyBadgeMissing})$`),
+		);
+		this.globalInstructionsCount = page.getByText(/^\d+ of 1000$/);
 		this.currentModel = page.getByRole('listitem', { name: TEXT_MODEL_KEY });
 		this.saveSettingsButton = page.getByRole('button', { name: m.saveConfig() });
 	}
