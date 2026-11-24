@@ -99,6 +99,8 @@
 	/* Portrait covers are generated at 1024×1536. A placeholder of the same shape keeps rows aligned. */
 	--cover-aspect-ratio: 2 / 3;
 	--control-min-size: 2.75rem;
+	/* Room left below a focused field so the sticky form actions don't cover it (below 48em). */
+	--form-actions-clearance: 6rem;
 	--panel-card-width: 8rem;
 	/* Viewer panel: nearly a full screen, so the next panel peeks in below. */
 	--viewer-panel-height: 90dvh;

@@ -74,6 +74,11 @@ test.describe('screenshots', () => {
 			await snapshot(page, VIEWS.landing, 'landing-narrow');
 		});
 
+		// The create form's narrow layout keeps "Create comic" in reach (REQ-296-2).
+		test('create-narrow', async ({ page }) => {
+			await snapshot(page, VIEWS.create, 'create-narrow');
+		});
+
 		// The comic overview stacks its cards in one column below 48em (REQ-040, REQ-297).
 		test('comic-narrow', async ({ page }) => {
 			await snapshot(page, VIEWS.comic, 'comic-narrow');

@@ -96,8 +96,8 @@ test(
 
 		await expect(createPage.urlInput).toHaveAccessibleDescription(m.createComicUrlHint());
 		await expect(createPage.storyInput).toHaveAccessibleDescription(m.createComicStoryHint());
-		await expect(createPage.urlInput).toHaveAccessibleName(new RegExp(`${m.optional()}$`));
-		await expect(createPage.storyInput).toHaveAccessibleName(new RegExp(`${m.optional()}$`));
+		await expect(createPage.urlInput).toHaveAccessibleName(`${m.urlToSource()} ${m.optional()}`);
+		await expect(createPage.storyInput).toHaveAccessibleName(`${m.yourStory()} ${m.optional()}`);
 	},
 );
 
