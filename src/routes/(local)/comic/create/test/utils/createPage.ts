@@ -22,6 +22,11 @@ export class CreatePage {
 		this.error = page.getByTestId('error-test-id');
 	}
 
+	/** The style card's radio, found by its name. */
+	styleRadio(name: string) {
+		return this.page.getByRole('radio', { name });
+	}
+
 	async fillUrl(url: string) {
 		await typeInto(this.page, this.urlInput, url);
 

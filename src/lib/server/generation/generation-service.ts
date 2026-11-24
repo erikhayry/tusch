@@ -231,6 +231,8 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 					source: url,
 					story,
 					...initial,
+					// The style the user chose wins over whatever the model echoes back.
+					style,
 					panels: initial.panels.map((panel) => ({ ...panel, id: createId() })),
 				};
 			});
