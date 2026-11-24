@@ -154,5 +154,6 @@
 	"panelOfTotal": "Panel {number} of {total}",
 	"previousPanel": "← Prev",
 	"nextPanel": "Next →",
-	"readThisComic": "Read comic"
+	"readThisComic": "Read comic",
+	"characterHead": "{name}"
 }

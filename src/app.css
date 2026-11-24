@@ -52,6 +52,7 @@
 	--color-control-border: #8c867d;
 	--color-link: #1d4ed8;
 	--color-danger: #b42318;
+	--color-speaker: #5b21b6;
 	/* Kept apart from the link colour so focus can be tuned for the dark scheme alone. */
 	--color-focus: #1d4ed8;
 
@@ -122,6 +123,7 @@
 		--color-control-border: #8f8f99;
 		--color-link: #93b4ff;
 		--color-danger: #fda29b;
+		--color-speaker: #c4b5fd;
 		--color-focus: #6b9bff;
 	}
 }

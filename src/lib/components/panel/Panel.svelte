@@ -66,7 +66,8 @@
 </script>
 
 <Section data-testId={PanelTestId}>
-	<Heading>{number}/{totalNumberOfPanels}: {panel.editorialTitle}</Heading>
+	<p class="position">{m.panelOfTotal({ number, total: totalNumberOfPanels })}</p>
+	<Heading>{panel.editorialTitle || m.panel({ number })}</Heading>
 	<p>{panel.visualDescription}</p>
 	{#if panel.image === undefined}
 		<CreatePanelImageForm
@@ -169,9 +170,13 @@
 							panel.id,
 							dialogue.characterId,
 						)}
-						alt="charachter"
+						alt={m.characterHead({
+							name: getCharacterName(comicStore.comics, comicId, dialogue.characterId) ?? '',
+						})}
 					/>
-					<p>{getCharacterName(comicStore.comics, comicId, dialogue.characterId)}</p>
+					<p class="speaker">
+						{getCharacterName(comicStore.comics, comicId, dialogue.characterId)}
+					</p>
 					<FieldActions
 						values={{
 							type: DB_ITEM_TYPE.enum.dialogue,
@@ -190,3 +195,13 @@
 		</ul>
 	</Section>
 </Section>
+
+<style>
+	.position {
+		color: var(--color-muted);
+	}
+
+	.speaker {
+		color: var(--color-speaker);
+	}
+</style>

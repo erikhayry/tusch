@@ -108,5 +108,6 @@
 	"panelOfTotal": "Panel {number} av {total}",
 	"previousPanel": "← Föregående",
 	"nextPanel": "Nästa →",
-	"readThisComic": "Läs serien"
+	"readThisComic": "Läs serien",
+	"characterHead": "{name}"
 }

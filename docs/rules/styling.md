@@ -20,10 +20,11 @@ The global baseline lives in `src/app.css`, imported once in
 - Warm greys for backgrounds, surfaces, text and borders (#294). Light and dark,
   from the same tokens: the dark scheme (`prefers-color-scheme`, no toggle) only
   overrides colour tokens in one block in `app.css`.
-- Four semantic colours, each its own token: `--color-link` (links),
-  `--color-danger` (error text), `--color-control-border` (field and button
-  borders, 3:1 or better) and `--color-focus`. Link and danger text must pass
-  4.5:1 on the surfaces they sit on. Don't reuse one token for another role:
+- Five semantic colours, each its own token: `--color-link` (links),
+  `--color-danger` (error text and destructive actions such as Remove and ×),
+  `--color-speaker` (dialogue speaker names), `--color-control-border` (field and
+  button borders, 3:1 or better) and `--color-focus`. Link, danger and speaker
+  text must pass 4.5:1 on the surfaces they sit on. Don't reuse one token for another role:
   a token is changed for its role, not for its look.
 - `--color-focus` is used **only** for the focus indicator (`:focus-visible`
   `outline`). Never for text, links, buttons or state. It keeps 3:1 or better
