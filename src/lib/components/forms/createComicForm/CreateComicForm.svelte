@@ -197,18 +197,23 @@
 		margin-block: var(--space-3) 0;
 	}
 
+	/* Three per row at every width; further styles wrap onto new rows of the same grid. */
 	.style-cards {
 		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: var(--space-2);
 	}
 
 	/* A card is a label, so the whole card selects the style; the radio keeps native keys and semantics. */
+	/* Three cards share a narrow row, so the radio sits above the text to give the names room. */
 	.style-card {
 		display: flex;
+		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--space-2);
+		gap: var(--space-1);
 		margin-block: 0;
-		padding: var(--space-2) var(--space-3);
+		padding: var(--space-2);
+		overflow-wrap: anywhere;
 		border: var(--border-width) solid var(--color-control-border);
 		border-radius: var(--card-radius);
 		background: var(--color-background);
@@ -227,7 +232,7 @@
 
 	.style-card input {
 		flex-shrink: 0;
-		margin-block: var(--space-1) 0;
+		margin-block: 0;
 	}
 
 	.style-text {
@@ -262,8 +267,14 @@
 			padding: var(--space-4);
 		}
 
-		.style-cards {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
+		/* Wide cards have room for the radio beside its text, as in the single-row design. */
+		.style-card {
+			flex-direction: row;
+			padding: var(--space-2) var(--space-3);
+		}
+
+		.style-card input {
+			margin-block: var(--space-1) 0;
 		}
 	}
 </style>
