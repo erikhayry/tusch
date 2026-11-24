@@ -17,12 +17,14 @@
 		PANEL_COUNT_DEFAULT,
 		PANEL_COUNT_MAX,
 		PANEL_COUNT_MIN,
+		STORY_MAX_LENGTH,
 		type CreateComicResult,
 	} from '#lib/features/comics/contracts/createComic.ts';
 	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
 	import { variantFailedMessage } from '#lib/forms/variant-failure.ts';
 	import { m } from '#lib/paraglide/messages.js';
+	import { getLocale } from '#lib/paraglide/runtime.js';
 	import { ComicStyleEnum, type ComicStyle } from '#lib/types/index.ts';
 	import { STYLES } from '#lib/utils/comicStyles.ts';
 
@@ -41,6 +43,12 @@
 			description: () => m.styleFrancoBelgianDescription(),
 		},
 	};
+
+	// Counts UTF-16 code units, as the contract's `max` does, so the counter and the
+	// rejection agree. Grouped by locale ("10 000" in sv-se, "10,000" in en).
+	let story = $state('');
+	const numbers = new Intl.NumberFormat(getLocale());
+	const storyOver = $derived(story.length > STORY_MAX_LENGTH);
 
 	const handleSubmit = withGlobalInstructions(
 		enhanceAction<CreateComicResult>(m.loadingCreateComic(), async ({ data, showError }) => {
@@ -72,11 +80,25 @@
 		</label>
 		<p class="hint" id="create-comic-url-hint">{m.createComicUrlHint()}</p>
 		<p class="or">{m.createComicOr()}</p>
-		<label>
-			{m.yourStory()}
-			<span class="optional">{m.optional()}</span>
-			<textarea name="story" rows="6" aria-describedby="create-comic-story-hint"></textarea>
-		</label>
+		<div class="story-label">
+			<label for="create-comic-story">
+				{m.yourStory()}
+				<span class="optional">{m.optional()}</span>
+			</label>
+			<!-- Not a live region: it follows typing, and the field's label is what gets announced. -->
+			<p id="create-comic-story-count" class="count" class:over={storyOver}>
+				{m.createComicStoryCount({
+					count: numbers.format(story.length),
+					max: numbers.format(STORY_MAX_LENGTH),
+				})}
+			</p>
+		</div>
+		<textarea
+			id="create-comic-story"
+			name="story"
+			rows="6"
+			bind:value={story}
+			aria-describedby="create-comic-story-hint create-comic-story-count"></textarea>
 		<p class="hint" id="create-comic-story-hint">{m.createComicStoryHint()}</p>
 		<label>
 			{m.createComicPanelCount()}
@@ -151,10 +173,29 @@
 		color: var(--color-muted);
 	}
 
+	/* The counter sits on the label's row, at the right edge of the field. */
+	.story-label {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-2);
+	}
+
 	.hint {
 		margin-block: 0;
 		font-size: var(--font-size-small);
 		color: var(--color-muted);
+	}
+
+	.count {
+		margin-block: 0;
+		font-size: var(--font-size-small);
+		color: var(--color-muted);
+	}
+
+	.count.over {
+		color: var(--color-danger);
 	}
 
 	.or {

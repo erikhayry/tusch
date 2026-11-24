@@ -99,7 +99,9 @@ test(
 		const createPage = await new CreatePage(page).goto();
 
 		await expect(createPage.urlInput).toHaveAccessibleDescription(m.createComicUrlHint());
-		await expect(createPage.storyInput).toHaveAccessibleDescription(m.createComicStoryHint());
+		await expect(createPage.storyInput).toHaveAccessibleDescription(
+			new RegExp(`^${m.createComicStoryHint()} [\\d,]+ of 10,000$`),
+		);
 		await expect(createPage.urlInput).toHaveAccessibleName(`${m.urlToSource()} ${m.optional()}`);
 		await expect(createPage.storyInput).toHaveAccessibleName(`${m.yourStory()} ${m.optional()}`);
 	},
