@@ -188,7 +188,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-236-2 The comic page's headings have no skipped level
 
 - Status: active
-- Statement: on `/comic/<id>` the sections below the title are four cards with an `<h2>` each, in this order: "Panels", "Characters", "Cover", "Comic settings". Each character's name is an `<h3>` in "Characters" and "Setting" is an `<h3>` in "Comic settings". "Style" and "Source" are a description list (`<dt>`/`<dd>`), not headings.
+- Statement: on `/comic/<id>` the sections below the title are four cards with an `<h2>` each, in this order: "Panels", "Characters", "Cover", "Comic settings"; a comic without characters has no "Characters" card, so three. Each character's name is an `<h3>` in "Characters" and "Setting" is an `<h3>` in "Comic settings". "Style" and "Source" are a description list (`<dt>`/`<dd>`), not headings.
 - Why: skipped levels break heading navigation; one `<h2>` per card gives screen-reader users the page's four areas (#297).
 - Proven by: tagged tests
 
