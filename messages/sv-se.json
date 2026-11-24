@@ -79,5 +79,18 @@
 	"mainNavigation": "Huvudmeny",
 	"languageNavigation": "Språk",
 	"languageEnglish": "Engelska",
-	"languageSwedish": "Svenska"
+	"languageSwedish": "Svenska",
+	"yourComics": "Dina serier",
+	"read": "Läs",
+	"readComic": "Läs {title}",
+	"edit": "Redigera",
+	"editComic": "Redigera {title}",
+	"noCoverYet": "Inget omslag än",
+	"exampleComic": "Exempel",
+	"panelCountOne": "1 ruta",
+	"panelCount": "{count} rutor",
+	"styleAnime": "Anime",
+	"styleClassicMarvel": "Klassisk Marvel",
+	"styleFrancoBelgian": "Fransk-belgisk",
+	"createComicTileHint": "Från en URL eller din egen berättelse"
 }

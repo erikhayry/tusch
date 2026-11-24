@@ -97,7 +97,7 @@ test(
 
 		const { title } = await storedComic(page, comicId);
 		const landing = await new LandingPage(page).goto();
-		const image = landing.comicLink(title).locator('img');
+		const image = landing.card(title).locator('img');
 		await expect(image).toBeVisible();
 		// Waits for the lazy-loaded image; a bare natural-size read of an unloaded one says portrait.
 		expect(await orientationsOf(image)).toEqual(['landscape']);

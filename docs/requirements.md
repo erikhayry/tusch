@@ -27,25 +27,46 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: users manage their own local library.
 - Proven by: tagged tests
 
-### REQ-235-1 A comic with a cover shows it in its library entry
+### REQ-235-1 A comic with a cover shows it in its library card
 
 - Status: active
-- Statement: on `/`, each comic with a cover shows its portrait cover above its title, and one link wraps both and leads to the comic page; the cover is decorative (`alt=""`), so the link's accessible name is the comic title. The "Delete comic" button stays outside the link. A cover whose file is gone shows the "missing image" placeholder (REQ-036).
-- Why: a cover makes a comic recognisable at a glance, and a single link keeps one tab stop and one name per comic.
+- Statement: on `/`, each comic is a card showing its portrait cover (decorative, `alt=""`), its title and a meta line, none of them a link. Below them a "Read" link to `/comic/<id>/view` and an "Edit" link to `/comic/<id>`, named "Read <title>" and "Edit <title>", and an icon-only delete button named "Delete Comic <title>" (REQ-002). A cover whose file is gone shows the "missing image" placeholder (REQ-036).
+- Why: a cover makes a comic recognisable at a glance, and a per-comic link name keeps every link unique and exact for screen-reader users (#295).
 - Proven by: tagged tests
 
-### REQ-235-2 A comic without a cover shows only its title in the library
+### REQ-235-2 A comic without a cover shows a "No cover yet" box in the library
 
 - Status: active
-- Statement: on `/`, a comic without a cover shows its title inside the link with no image and no placeholder; an empty spacer the height of a portrait cover keeps its title level with the others in its row.
-- Why: a missing cover is not a missing file, so there is nothing to replace; the spacer stops titles from drifting out of line across a row.
+- Statement: on `/`, a comic without a cover shows a 3:4 box with the text "No cover yet" in place of the cover; no image and no placeholder.
+- Why: a missing cover is not a missing file, so there is nothing to replace; the box keeps the cards level and says why there is no picture (#295).
 - Proven by: tagged tests
 
-### REQ-235-3 The library lays out covers in a grid and loads them lazily
+### REQ-235-3 The library lays out cards in an auto-fill grid and loads covers lazily
 
 - Status: active
-- Statement: on `/`, the entries sit one per row at 320 px and three per row from the `48em` breakpoint; the first three covers load eagerly and every later cover has `loading="lazy"`.
+- Statement: on `/`, the cards sit in an `auto-fill` grid with a 220 px (token) minimum column: one per row at 320 px, several per row at 1280 px. The first four covers load eagerly and every later cover has `loading="lazy"`.
 - Why: a narrow screen needs one column (REQ-040), and covers below the first row must not slow the first paint (REQ-039).
+- Proven by: tagged tests
+
+### REQ-295-1 A library card shows its style and panel count
+
+- Status: active
+- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (Anime, Classic Marvel or Franco-Belgian) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
+- Why: the card says what a comic is without opening it (#295).
+- Proven by: tagged tests
+
+### REQ-295-2 The library heading shows the number of comics
+
+- Status: active
+- Statement: the comics heading on `/` reads "Your comics" and shows the number of comics in the library next to it; deleting a comic lowers the number by one.
+- Why: users see the size of their library at a glance (#295).
+- Proven by: tagged tests
+
+### REQ-295-3 The last grid cell creates a new comic
+
+- Status: active
+- Statement: the last cell of the library grid is a "Create new comic" tile linking to `/comic/create`. The page body has no other "Create New Comic" link and no "Settings" link; the header has them (REQ-294-2, REQ-294-4).
+- Why: the next step sits where the comics end, and the header already holds the global links (#295).
 - Proven by: tagged tests
 
 ### REQ-003 An empty library leads to creating a comic

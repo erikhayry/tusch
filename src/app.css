@@ -66,6 +66,7 @@
 	--font-size-h3: 1.125rem;
 	--line-height-base: 1.5;
 	--line-height-heading: 1.25;
+	--font-weight-semibold: 600;
 
 	--space-1: 0.25rem;
 	--space-2: 0.5rem;
@@ -79,6 +80,10 @@
 	--focus-offset: 2px;
 	--radius: 0.5rem;
 	--icon-size: 1.25rem;
+	--card-min-width: 13.75rem;
+	--card-radius: 0.75rem;
+	--card-cover-aspect-ratio: 3 / 4;
+	--tile-min-height: 10rem;
 	--transition-duration: 150ms;
 
 	/* Content widths per view. Only the default is applied here; each view sets its own. */

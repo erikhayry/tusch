@@ -95,7 +95,9 @@ test(
 
 		await gotoHydrated(page, '/');
 
-		await expect(page.getByRole('link', { name: EXAMPLE.title })).toBeVisible();
+		await expect(
+			page.getByRole('link', { name: m.readComic({ title: EXAMPLE.title }), exact: true }),
+		).toBeVisible();
 		expect(await page.evaluate(() => localStorage.getItem('comics_db_invalid'))).toBe('{not json');
 	},
 );

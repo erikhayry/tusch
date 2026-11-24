@@ -1,7 +1,9 @@
+import { m } from '#lib/paraglide/messages.js';
 import {
 	ImageAssetSchema,
 	type Character,
 	type Comic,
+	type ComicStyle,
 	type ImageAsset,
 	type ImageFormat,
 	type Panel,
@@ -81,6 +83,26 @@ const EXAMPLE_IDS = new Set(EXAMPLES.map(({ id }) => id));
  */
 export function hasOnlyExampleComics(comics: readonly Comic[]): boolean {
 	return comics.every(({ id }) => EXAMPLE_IDS.has(id));
+}
+
+/** A bundled example, not a comic the user made (REQ-295-1 shows "Example" on it). */
+export function isExampleComic({ id }: Pick<Comic, 'id'>): boolean {
+	return EXAMPLE_IDS.has(id);
+}
+
+const STYLE_NAMES: Record<ComicStyle, () => string> = {
+	anime: m.styleAnime,
+	'classic-marvel': m.styleClassicMarvel,
+	'franco-belgian': m.styleFrancoBelgian,
+};
+
+/** "Example · Anime · 3 panels" on a bundled example, "Anime · 1 panel" on the user's own. */
+export function comicMetaLine(comic: Comic): string {
+	const panels =
+		comic.panels.length === 1 ? m.panelCountOne() : m.panelCount({ count: comic.panels.length });
+	return [isExampleComic(comic) ? m.exampleComic() : null, STYLE_NAMES[comic.style](), panels]
+		.filter((part) => part !== null)
+		.join(' · ');
 }
 
 export function getComic(comics: readonly Comic[], comicId: string): Comic | undefined {

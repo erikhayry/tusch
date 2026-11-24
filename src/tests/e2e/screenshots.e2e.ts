@@ -66,6 +66,15 @@ test.describe('screenshots', () => {
 		}
 	});
 
+	// The library's narrow layout: one card per row (REQ-235-3, REQ-040).
+	test.describe('narrow', () => {
+		test.use({ viewport: { width: 390, height: 844 } });
+
+		test('landing-narrow', async ({ page }) => {
+			await snapshot(page, VIEWS.landing, 'landing-narrow');
+		});
+	});
+
 	test('settings after adding a key', async ({ page }) => {
 		await gotoHydrated(page, '/settings');
 		await typeInto(page, page.getByRole('textbox', { name: m.byok() }), 'mock key');

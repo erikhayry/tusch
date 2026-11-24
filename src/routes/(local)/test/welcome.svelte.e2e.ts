@@ -27,7 +27,7 @@ test.describe('welcome section', () => {
 			await expect(landingPage.saveKeyButton).toBeVisible();
 
 			for (const title of exampleTitles()) {
-				await expect(landingPage.comicLink(title)).toBeVisible();
+				await expect(landingPage.card(title)).toBeVisible();
 			}
 
 			const welcomeBox = await landingPage.welcomeHeading.boundingBox();
@@ -91,7 +91,7 @@ test.describe('welcome section', () => {
 		const landingPage = await new LandingPage(page).goto();
 
 		await expect(landingPage.comicsHeading).toBeVisible();
-		await expect(landingPage.comicLink(EXAMPLE.title)).toBeVisible();
+		await expect(landingPage.card(EXAMPLE.title)).toBeVisible();
 		await expect(landingPage.welcomeHeading).toHaveCount(0);
 		await expect(landingPage.keyInput).toHaveCount(0);
 	});
@@ -120,10 +120,10 @@ test.describe('welcome section', () => {
 			const landingPage = await new LandingPage(page).goto();
 
 			await activate(page, landingPage.deleteComicButton(EXAMPLE.title));
-			await expect(landingPage.comicLink(EXAMPLE.title)).toBeHidden();
+			await expect(landingPage.card(EXAMPLE.title)).toBeHidden();
 			await page.reload();
 
-			await expect(landingPage.comicLink(EXAMPLE.title)).toBeHidden();
+			await expect(landingPage.card(EXAMPLE.title)).toBeHidden();
 			await expect(landingPage.welcomeHeading).toBeVisible();
 			await expect(landingPage.keyInput).toBeVisible();
 		},

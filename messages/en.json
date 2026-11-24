@@ -125,5 +125,18 @@
 	"mainNavigation": "Main",
 	"languageNavigation": "Language",
 	"languageEnglish": "English",
-	"languageSwedish": "Swedish"
+	"languageSwedish": "Swedish",
+	"yourComics": "Your comics",
+	"read": "Read",
+	"readComic": "Read {title}",
+	"edit": "Edit",
+	"editComic": "Edit {title}",
+	"noCoverYet": "No cover yet",
+	"exampleComic": "Example",
+	"panelCountOne": "1 panel",
+	"panelCount": "{count} panels",
+	"styleAnime": "Anime",
+	"styleClassicMarvel": "Classic Marvel",
+	"styleFrancoBelgian": "Franco-Belgian",
+	"createComicTileHint": "From a URL or your own story"
 }
