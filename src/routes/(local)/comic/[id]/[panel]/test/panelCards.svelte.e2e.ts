@@ -1,3 +1,4 @@
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type Page } from '@playwright/test';
 import {
 	createComic,
@@ -30,7 +31,7 @@ async function openOverflowingComic(page: Page, panelIndex = 0) {
 }
 
 test(
-	'a card with a stored image links to the panel with an empty-alt image and the title as its name',
+	'a card with a stored image links to the panel with an empty-alt image and "Panel N <title>" as its name',
 	{ tag: '@REQ-238-1' },
 	async ({ page }) => {
 		const cards = await openCreatedComic(page);
@@ -40,7 +41,7 @@ test(
 
 		const [title] = await cards.cardTitles();
 		const link = cards.link(0);
-		await expect(link).toHaveAccessibleName(title);
+		await expect(link).toHaveAccessibleName(`${m.panel({ number: 1 })} ${title}`);
 		await expect(link.locator('img')).toHaveCount(1);
 		await expect(link.locator('img')).toHaveAttribute('alt', '');
 		await expect(link.locator('img')).toBeVisible();
@@ -56,7 +57,7 @@ test(
 );
 
 test(
-	'a card without an image shows a hidden same-ratio placeholder and is named by the title',
+	'a card without an image shows a hidden same-ratio placeholder and is named "Panel N <title>"',
 	{ tag: '@REQ-238-1' },
 	async ({ page }) => {
 		const cards = await openCreatedComic(page);
@@ -66,7 +67,11 @@ test(
 
 		for (const [index, title] of titles.entries()) {
 			const link = cards.link(index);
-			await expect(link).toHaveAccessibleName(title);
+			await expect(link).toHaveAccessibleName(
+				title === m.panel({ number: index + 1 })
+					? title
+					: `${m.panel({ number: index + 1 })} ${title}`,
+			);
 			await expect(link.locator('img')).toHaveCount(0);
 
 			const placeholder = link.locator('span[aria-hidden="true"]');

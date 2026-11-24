@@ -50,9 +50,8 @@ export class PanelPage {
 		this.saveDialogueButton = page.getByRole('button', { name: m.saveDialogue({ number: 1 }) });
 		this.deleteDialogueButton = page.getByRole('button', { name: m.deleteDialogue({ number: 1 }) });
 
-		this.dialogueCharacterImage = page
-			.getByRole('list', { name: m.dialogues() })
-			.getByRole('img', { name: 'charachter' });
+		// Each head's alt is the character's name (REQ-298 copy: characterHead).
+		this.dialogueCharacterImage = page.getByRole('list', { name: m.dialogues() }).getByRole('img');
 	}
 
 	/** Object URLs hide which OPFS file an <img> shows; record the file name behind each one. */
