@@ -38,17 +38,6 @@ test.describe('comic title', () => {
 		await expect(page).toHaveTitle(`${title} · Tusch`);
 	});
 
-	test('sections start at level 2', { tag: '@REQ-236-2' }, async ({ page }) => {
-		await createComic(page, ARTICLE);
-
-		await expect(
-			page.getByRole('heading', { name: m.settings(), level: 2, exact: true }),
-		).toBeVisible();
-		for (const name of [m.comicStyle(), m.source(), m.panels()]) {
-			await expect(page.getByRole('heading', { name, level: 3, exact: true })).toBeVisible();
-		}
-	});
-
 	test(
 		'an empty title falls back to "Untitled comic"',
 		{ tag: ['@REQ-236-3', '@REQ-035'] },

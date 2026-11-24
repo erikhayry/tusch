@@ -174,7 +174,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-103-1 A comic has an image format setting
 
 - Status: active
-- Statement: the comic page's "Settings" section has an "Image format" setting (Portrait and landscape / Portrait only / Landscape only), saved with the comic and changeable at any time; it is "Portrait and landscape" for every comic that has none saved (existing and example comics).
+- Statement: the comic page's "Comic settings" card has an "Image format" setting (Portrait and landscape / Portrait only / Landscape only), saved with the comic and changeable at any time; it is "Portrait and landscape" for every comic that has none saved (existing and example comics).
 - Why: wide screens should get a wide image and narrow screens a tall one, and some comics only need one (#103).
 - Proven by: tagged tests
 
@@ -188,8 +188,8 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-236-2 The comic page's headings have no skipped level
 
 - Status: active
-- Statement: on `/comic/<id>` the sections below the title start at level 2: "Settings" is an `<h2>` and the headings inside it ("Style", "Source", "Panels") are `<h3>`.
-- Why: the outline went from h1 straight to h3 once the duplicate title heading goes; skipped levels break heading navigation.
+- Statement: on `/comic/<id>` the sections below the title are four cards with an `<h2>` each, in this order: "Panels", "Characters", "Cover", "Comic settings". Each character's name is an `<h3>` in "Characters" and "Setting" is an `<h3>` in "Comic settings". "Style" and "Source" are a description list (`<dt>`/`<dd>`), not headings.
+- Why: skipped levels break heading navigation; one `<h2>` per card gives screen-reader users the page's four areas (#297).
 - Proven by: tagged tests
 
 ### REQ-236-3 A comic with an empty title shows "Untitled comic"
@@ -199,10 +199,31 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: `ComicSchema.title` allows an empty string, and an empty `<h1>` fails axe `empty-heading`.
 - Proven by: tagged tests
 
+### REQ-297-1 The comic page shows the panel and character counts
+
+- Status: active
+- Statement: under the title of `/comic/<id>` a meta line shows the panel count and, if the comic has any characters, the character count, joined by " · ": "8 panels · 2 characters", "1 panel · 1 character", "1 panel" when there are no characters. It has no "Example" part.
+- Why: the size of the comic is visible without counting cards (#297).
+- Proven by: tagged tests
+
+### REQ-297-2 A panel card shows its caption and line counts
+
+- Status: active
+- Statement: each panel card on `/comic/<id>` shows its number, its editorial title (the panel link's name) and a meta line of its caption and dialogue-line counts joined by " · ": "1 caption · 2 lines". A count of zero is left out; a panel with neither has no meta line.
+- Why: the strip shows how much text each panel holds (#297).
+- Proven by: tagged tests
+
+### REQ-297-3 A character shows how many panels it appears in
+
+- Status: active
+- Statement: each character on `/comic/<id>` shows "Appears in 1 panel" or "Appears in N panels", N being the number of panels listed for it (REQ-014).
+- Why: the character cards say how central a character is (#297).
+- Proven by: tagged tests
+
 ### REQ-87-1 The comic page links to a viewer and the viewer links back
 
 - Status: active
-- Statement: `/comic/<id>` has a "View comic" link (not a button) after the `<h1>` and before the "Settings" heading, to `/comic/<id>/view`. The viewer has a "Back" link to `/comic/<id>`. The link adds no heading.
+- Statement: `/comic/<id>` has a top row with a "Back" link to `/` before the `<h1>` and a "View comic" link (not a button) after it, to `/comic/<id>/view`; both come before the first `<h2>`. The viewer has a "Back" link to `/comic/<id>`. The link adds no heading.
 - Why: readers need a way to see the comic without the editor.
 - Proven by: tagged tests
 
@@ -790,7 +811,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-040 No view scrolls horizontally at 320 px
 
 - Status: active
-- Statement: at a viewport 320 CSS px wide, no view (landing, create, comic, view, panel, raw, not found, settings) scrolls horizontally: the document is no wider than the viewport, and long content such as the raw JSON wraps or scrolls inside its own box.
+- Statement: at a viewport 320 CSS px wide, no view (landing, create, comic, view, panel, raw, not found, settings) scrolls horizontally: the document is no wider than the viewport, and long content such as the raw JSON wraps or scrolls inside its own box. On the comic page only the panel strip scrolls sideways, inside its card.
 - Why: WCAG 1.4.10 (Reflow); users on narrow screens or at high zoom must not have to scroll in two directions.
 - Proven by: tagged tests
 

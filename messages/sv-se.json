@@ -92,5 +92,17 @@
 	"styleAnime": "Anime",
 	"styleClassicMarvel": "Klassisk Marvel",
 	"styleFrancoBelgian": "Fransk-belgisk",
-	"createComicTileHint": "Från en URL eller din egen berättelse"
+	"createComicTileHint": "Från en URL eller din egen berättelse",
+	"comicSettings": "Seriens inställningar",
+	"cover": "Omslag",
+	"characterCountOne": "1 figur",
+	"characterCount": "{count} figurer",
+	"captionCountOne": "1 bildtext",
+	"captionCount": "{count} bildtexter",
+	"lineCountOne": "1 replik",
+	"lineCount": "{count} repliker",
+	"appearsInOne": "Finns i 1 ruta",
+	"appearsIn": "Finns i {count} rutor",
+	"panelStripHint": "Välj en ruta för att redigera · skrolla i sidled för fler",
+	"panelStripHintNarrow": "Svep för fler"
 }
