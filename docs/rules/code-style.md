@@ -105,6 +105,9 @@ parametrise tests that differ in one step. Never fix duplication with
   used as `m.key()`. No hard-coded text in components.
 - This includes strings already in a component you touch but didn't write:
   translate them in the same PR.
+- Message strings hold plain words only: no arrows, ×, icons or other decorative
+  symbols. Screen readers read them aloud. Draw a symbol in the component inside
+  `<span aria-hidden="true">` so it stays out of the accessible name.
 
 ## Comments
 

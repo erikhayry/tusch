@@ -6,11 +6,18 @@
 		DELETE_ITEM_ACTION,
 		getDeleteValues,
 	} from '#lib/features/comics/contracts/deleteItem.ts';
+	import DangerButton from '#lib/components/dangerButton/DangerButton.svelte';
 	import { enhanceClientCommand } from '#lib/forms/enhance-client-command.ts';
 	import { m } from '#lib/paraglide/messages.js';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
 
-	let { label, values, onSuccess, iconOnly = false }: DeleteItemFormProps = $props();
+	let {
+		label,
+		values,
+		onSuccess,
+		iconOnly = false,
+		danger = false,
+	}: DeleteItemFormProps = $props();
 
 	const handleSubmit = enhanceClientCommand(
 		m.loadingDelete(),
@@ -47,7 +54,11 @@
 			</svg>
 		</button>
 	{:else}
-		<button type="submit">{label}</button>
+		{#if danger}
+			<DangerButton>{label}</DangerButton>
+		{:else}
+			<button type="submit">{label}</button>
+		{/if}
 	{/if}
 </form>
 

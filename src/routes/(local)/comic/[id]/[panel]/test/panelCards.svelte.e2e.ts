@@ -1,3 +1,4 @@
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type Page } from '@playwright/test';
 import {
 	createComic,
@@ -9,10 +10,8 @@ import { PanelCardsPage } from './utils/panelCardsPage';
 
 /** Wide enough to overflow the list at every tested viewport (cards are narrower than 100 px each). */
 const OVERFLOWING_PANELS = 16;
-const VIEWPORTS = [
-	{ name: '320 px', width: 320, height: 640 },
-	{ name: 'a wide viewport', width: 1280, height: 720 },
-];
+/** Below 48em the list is a horizontal row; from 48em it is a column (panelEditor.svelte.e2e.ts). */
+const NARROW_VIEWPORT = { width: 320, height: 640 };
 
 /** A comic made through the UI, opened on one of its panels. */
 async function openCreatedComic(page: Page, panelIndex = 0) {
@@ -24,6 +23,7 @@ async function openCreatedComic(page: Page, panelIndex = 0) {
 /** A user-made comic with enough panels to overflow the list, opened on the panel at `panelIndex`. */
 async function openOverflowingComic(page: Page, panelIndex = 0) {
 	test.slow();
+	await page.setViewportSize(NARROW_VIEWPORT);
 	const cards = await openCreatedComic(page);
 	await cards.addPanelsUntil(OVERFLOWING_PANELS);
 	await cards.open(panelIndex);
@@ -31,7 +31,7 @@ async function openOverflowingComic(page: Page, panelIndex = 0) {
 }
 
 test(
-	'a card with a stored image links to the panel with an empty-alt image and the title as its name',
+	'a card with a stored image links to the panel with an empty-alt image and "Panel N <title>" as its name',
 	{ tag: '@REQ-238-1' },
 	async ({ page }) => {
 		const cards = await openCreatedComic(page);
@@ -41,7 +41,7 @@ test(
 
 		const [title] = await cards.cardTitles();
 		const link = cards.link(0);
-		await expect(link).toHaveAccessibleName(title);
+		await expect(link).toHaveAccessibleName(`${m.panel({ number: 1 })} ${title}`);
 		await expect(link.locator('img')).toHaveCount(1);
 		await expect(link.locator('img')).toHaveAttribute('alt', '');
 		await expect(link.locator('img')).toBeVisible();
@@ -57,7 +57,7 @@ test(
 );
 
 test(
-	'a card without an image shows a hidden same-ratio placeholder and is named by the title',
+	'a card without an image shows a hidden same-ratio placeholder and is named "Panel N <title>"',
 	{ tag: '@REQ-238-1' },
 	async ({ page }) => {
 		const cards = await openCreatedComic(page);
@@ -67,7 +67,11 @@ test(
 
 		for (const [index, title] of titles.entries()) {
 			const link = cards.link(index);
-			await expect(link).toHaveAccessibleName(title);
+			await expect(link).toHaveAccessibleName(
+				title === m.panel({ number: index + 1 })
+					? title
+					: `${m.panel({ number: index + 1 })} ${title}`,
+			);
 			await expect(link.locator('img')).toHaveCount(0);
 
 			const placeholder = link.locator('span[aria-hidden="true"]');
@@ -81,30 +85,27 @@ test(
 	},
 );
 
-for (const { name, width, height } of VIEWPORTS) {
-	test(
-		`the panel list is one row that scrolls inside its own box at ${name}`,
-		{ tag: ['@REQ-238-2', '@REQ-040'] },
-		async ({ page }) => {
-			const cards = await openOverflowingComic(page);
-			await page.setViewportSize({ width, height });
+test(
+	'the panel list is one row that scrolls inside its own box at 320 px',
+	{ tag: ['@REQ-238-2', '@REQ-040'] },
+	async ({ page }) => {
+		const cards = await openOverflowingComic(page);
 
-			await expect(cards.items).toHaveCount(OVERFLOWING_PANELS);
-			expect(await cards.rowSpread()).toBeLessThanOrEqual(1);
-			const { scrollWidth, clientWidth } = await cards.scrollSize();
-			expect(scrollWidth).toBeGreaterThan(clientWidth);
+		await expect(cards.items).toHaveCount(OVERFLOWING_PANELS);
+		expect(await cards.rowSpread()).toBeLessThanOrEqual(1);
+		const { scrollWidth, clientWidth } = await cards.scrollSize();
+		expect(scrollWidth).toBeGreaterThan(clientWidth);
 
-			const page_ = await page.evaluate(() => ({
-				scrollWidth: document.documentElement.scrollWidth,
-				clientWidth: document.documentElement.clientWidth,
-			}));
-			expect(page_.scrollWidth).toBeLessThanOrEqual(page_.clientWidth);
-		},
-	);
-}
+		const page_ = await page.evaluate(() => ({
+			scrollWidth: document.documentElement.scrollWidth,
+			clientWidth: document.documentElement.clientWidth,
+		}));
+		expect(page_.scrollWidth).toBeLessThanOrEqual(page_.clientWidth);
+	},
+);
 
 test(
-	'the current panel card is scrolled into view and is the only one marked as current',
+	'the current panel card is scrolled into view and is the only one marked as current at 320 px',
 	{ tag: '@REQ-238-2' },
 	async ({ page }) => {
 		const cards = await openOverflowingComic(page, -1);

@@ -14,6 +14,9 @@
 
 	let cardList: HTMLOListElement | undefined = $state();
 
+	const previous = $derived(current.index > 0 ? panels[current.index - 1] : undefined);
+	const next = $derived(current.index < panels.length - 1 ? panels[current.index + 1] : undefined);
+
 	// Browsers don't scroll a focused element that is already partly visible, so a card
 	// cut off at an edge would stay cut off when reached with Tab.
 	function revealFocused(event: FocusEvent) {
@@ -31,63 +34,126 @@
 </script>
 
 <Section>
-	<aside>
-		<Heading id="panels-heading">{m.panels()}</Heading>
-		<ol
-			aria-labelledby="panels-heading"
-			class="cards"
-			bind:this={cardList}
-			onfocusin={revealFocused}
-		>
-			{#each panels as panel, index (panel.id)}
-				<li class="card">
-					<a
-						class="card-link"
-						href={resolve(`comic/${comicId}/${panel.id}`)}
-						aria-current={index === current.index ? 'page' : undefined}
-					>
-						<span class="thumb">
-							{#if panel.image}
-								<!-- The title names the link, so the image is decorative. -->
-								<Image
-									image={primaryVariant(panel.image)?.asset}
-									alt=""
-									loading="lazy"
-									decoding="async"
-								/>
-							{:else}
-								<span class="placeholder" aria-hidden="true"></span>
-							{/if}
-						</span>
-						{panel.editorialTitle || m.panel({ number: index + 1 })}
-					</a>
-					<!-- "After panel N" is the insertion index N (0-based array index of the new panel). -->
-					{#if index === 0}
+	<div class="layout">
+		<aside>
+			<Heading id="panels-heading">{m.panels()}</Heading>
+			<ol
+				aria-labelledby="panels-heading"
+				class="cards"
+				bind:this={cardList}
+				onfocusin={revealFocused}
+			>
+				{#each panels as panel, index (panel.id)}
+					<li class="card">
+						<a
+							class="card-link"
+							href={resolve(`comic/${comicId}/${panel.id}`)}
+							aria-current={index === current.index ? 'page' : undefined}
+						>
+							<span class="thumb">
+								{#if panel.image}
+									<!-- The title names the link, so the image is decorative. -->
+									<Image
+										image={primaryVariant(panel.image)?.asset}
+										alt=""
+										loading="lazy"
+										decoding="async"
+									/>
+								{:else}
+									<span class="placeholder" aria-hidden="true"></span>
+								{/if}
+							</span>
+							{m.panel({ number: index + 1 })}{panel.editorialTitle
+								? ` ${panel.editorialTitle}`
+								: ''}
+						</a>
+						<!-- "After panel N" is the insertion index N (0-based array index of the new panel). -->
+						{#if index === 0}
+							<CreatePanelForm
+								values={toCreatePanelValues(comicId, panels, 0)}
+								label={m.addPanelBefore({ number: 1 })}
+							/>
+						{/if}
 						<CreatePanelForm
-							values={toCreatePanelValues(comicId, panels, 0)}
-							label={m.addPanelBefore({ number: 1 })}
+							values={toCreatePanelValues(comicId, panels, index + 1)}
+							label={m.addPanelAfter({ number: index + 1 })}
 						/>
-					{/if}
-					<CreatePanelForm
-						values={toCreatePanelValues(comicId, panels, index + 1)}
-						label={m.addPanelAfter({ number: index + 1 })}
-					/>
-				</li>
-			{/each}
-		</ol>
-	</aside>
-	<Panel
-		panel={current.panel}
-		{comicId}
-		totalNumberOfPanels={panels.length}
-		number={current.index + 1}
-		{style}
-		{characters}
-	/>
-	<a href={resolve(`comic/${comicId}`)}>{m.backToComic()}</a>
+					</li>
+				{/each}
+			</ol>
+		</aside>
+		<div class="main">
+			<Panel
+				panel={current.panel}
+				{comicId}
+				totalNumberOfPanels={panels.length}
+				number={current.index + 1}
+				{style}
+				{characters}
+			/>
+			<div class="pager">
+				<!-- The arrows are decoration; aria-hidden keeps them out of the link name. -->
+				{#if previous}
+					<a href={resolve(`comic/${comicId}/${previous.id}`)}
+						><span aria-hidden="true">←</span> {m.previousPanel()}</a
+					>
+				{:else}
+					<span aria-disabled="true"><span aria-hidden="true">←</span> {m.previousPanel()}</span>
+				{/if}
+				{#if next}
+					<a href={resolve(`comic/${comicId}/${next.id}`)}
+						>{m.nextPanel()} <span aria-hidden="true">→</span></a
+					>
+				{:else}
+					<span aria-disabled="true">{m.nextPanel()} <span aria-hidden="true">→</span></span>
+				{/if}
+				<a href={resolve(`comic/${comicId}/view`)}>{m.readThisComic()}</a>
+			</div>
+			<a href={resolve(`comic/${comicId}`)}>{m.backToComic()}</a>
+		</div>
+	</div>
 </Section>
 
 <style>
+	.main {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		min-inline-size: 0;
+	}
+
+	.pager {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+	}
+
+	.pager span[aria-disabled='true'] {
+		color: var(--color-muted);
+	}
+
+	/* From 48em the list is a column in a sidebar beside the panel. Below it, the
+	   base rules give one row above the panel. */
+	@media (min-width: 48em) {
+		.layout {
+			display: grid;
+			grid-template-columns: var(--panel-card-width) minmax(0, 1fr);
+			gap: var(--space-4);
+			align-items: start;
+		}
+
+		.cards {
+			flex-direction: column;
+			align-items: flex-start;
+			overflow: visible;
+		}
+
+		.card {
+			flex: none;
+			inline-size: var(--panel-card-width);
+		}
+	}
+
 	/* One row that scrolls inside its own box. The padding keeps the focus outline
 	   (3px + 2px offset) from being clipped by the scroll box. scroll-padding makes
 	   the browser scroll a card that is only partly visible at an edge, so a focused

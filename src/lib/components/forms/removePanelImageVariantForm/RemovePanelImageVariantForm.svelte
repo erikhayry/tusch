@@ -8,6 +8,7 @@
 	} from '#lib/features/panels/contracts/removePanelImageVariant.ts';
 	import { removePanelImageVariant } from '#lib/features/panels/client/workflows/remove-panel-image-variant.ts';
 	import { enhanceClientCommand } from '#lib/forms/enhance-client-command.ts';
+	import DangerButton from '#lib/components/dangerButton/DangerButton.svelte';
 	import { m } from '#lib/paraglide/messages.js';
 	import type { RemovePanelImageVariantFormProps } from './removePanelImageVariantFormTypes';
 
@@ -28,5 +29,5 @@
 	<input type="hidden" name="comicId" value={comicId} />
 	<input type="hidden" name="panelId" value={panelId} />
 	<input type="hidden" name="variant" value={variant} />
-	<button type="submit">{label}</button>
+	<DangerButton>{label}</DangerButton>
 </form>

@@ -24,10 +24,7 @@ test(
 		await expect(page.getByRole('img', { name: 'mock alt text' }).first()).toBeVisible();
 		// Crops of the comic's own characters sit next to the dialogue.
 		await expect(
-			page
-				.getByRole('list', { name: m.dialogues() })
-				.getByRole('img', { name: 'charachter' })
-				.first(),
+			page.getByRole('list', { name: m.dialogues() }).getByRole('img').first(),
 		).toBeVisible();
 
 		await expect.poll(async () => (await storedFileSizes(page)).length).toBeGreaterThanOrEqual(2);

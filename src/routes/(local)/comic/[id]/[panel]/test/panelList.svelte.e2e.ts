@@ -4,7 +4,7 @@ import { createComic, deletePanel, storedComic } from '../../../../../../tests/e
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import { activate } from '../../../../../../tests/e2e/keyboard';
 
-/** The mock's "add panel" response has an empty editorialTitle, so its link reads "Panel <n>". */
+/** Link text is "Panel <n> <title>"; the mock's "add panel" response has an empty editorialTitle, so its link reads "Panel <n>". */
 
 function panelLinks(page: Page) {
 	return page.getByRole('list', { name: m.panels() }).getByRole('listitem').getByRole('link');
@@ -13,6 +13,13 @@ function panelLinks(page: Page) {
 function button(page: Page, kind: 'before' | 'after', number: number) {
 	const name = kind === 'before' ? m.addPanelBefore({ number }) : m.addPanelAfter({ number });
 	return page.getByRole('button', { name, exact: true });
+}
+
+/** The link names for these titles, numbered from 1; an empty title leaves "Panel <n>". */
+function linkNames(titles: string[]) {
+	return titles.map((title, index) =>
+		title ? `${m.panel({ number: index + 1 })} ${title}` : m.panel({ number: index + 1 }),
+	);
 }
 
 /** A user-made comic, opened on its first panel; returns the ids and the list's link names. */
@@ -27,8 +34,8 @@ async function openCreatedComic(page: Page, keepPanels?: number) {
 	const [first] = (await storedComic(page, comicId)).panels;
 	const url = `/comic/${comicId}/${first.id}`;
 	await gotoHydrated(page, url);
-	const titles = await panelLinks(page).allTextContents();
-	return { comicId, url, titles: titles.map((title) => title.trim()) };
+	const { panels } = await storedComic(page, comicId);
+	return { comicId, url, titles: panels.map((panel) => panel.editorialTitle) };
 }
 
 async function insert(page: Page, kind: 'before' | 'after', number: number) {
@@ -74,7 +81,7 @@ test(
 
 		await insert(page, 'before', 1);
 
-		await expect(panelLinks(page)).toHaveText([m.panel({ number: 1 }), ...titles]);
+		await expect(panelLinks(page)).toHaveText(linkNames(['', ...titles]));
 	},
 );
 
@@ -84,7 +91,7 @@ test(
 	async ({ page }) => {
 		const { titles } = await openCreatedComic(page);
 		expect(titles.length).toBeGreaterThanOrEqual(2);
-		const expected = [titles[0], m.panel({ number: 2 }), ...titles.slice(1)];
+		const expected = linkNames([titles[0], '', ...titles.slice(1)]);
 
 		await insert(page, 'after', 1);
 		await expect(panelLinks(page)).toHaveText(expected);
@@ -99,7 +106,7 @@ test('add panel after the last panel appends it', { tag: '@REQ-237-1' }, async (
 
 	await insert(page, 'after', titles.length);
 
-	await expect(panelLinks(page)).toHaveText([...titles, m.panel({ number: titles.length + 1 })]);
+	await expect(panelLinks(page)).toHaveText(linkNames([...titles, '']));
 });
 
 test(
