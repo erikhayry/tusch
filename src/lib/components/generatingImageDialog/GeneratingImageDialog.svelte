@@ -163,7 +163,7 @@
 
 	.timer {
 		font-size: var(--font-size-timer);
-		font-weight: 700;
+		font-weight: var(--font-weight-bold);
 		font-variant-numeric: tabular-nums;
 		line-height: var(--line-height-heading);
 	}
@@ -207,11 +207,18 @@
 		inline-size: 100%;
 		min-block-size: var(--control-min-size);
 		font-size: var(--font-size-small);
-		font-weight: 500;
+		font-weight: var(--font-weight-medium);
 		color: var(--color-danger);
 		background: var(--color-background);
 		border: var(--border-width) solid var(--color-danger);
 		border-radius: var(--radius);
+	}
+
+	/* The border stays at --color-danger: the lighter design hover border fails the 3:1
+	   control-border rule (styling.md), so hover changes the fill and the text only. */
+	.cancel:hover {
+		color: var(--color-danger-hover-text);
+		background: var(--color-danger-hover-bg);
 	}
 
 	@keyframes spin {
@@ -238,7 +245,7 @@
 		.segment {
 			animation: none;
 			inline-size: 100%;
-			opacity: 0.35;
+			opacity: var(--opacity-static-bar);
 		}
 	}
 </style>

@@ -52,6 +52,8 @@
 	--color-control-border: #8c867d;
 	--color-link: #1d4ed8;
 	--color-danger: #b42318;
+	--color-danger-hover-bg: #fef3f2;
+	--color-danger-hover-text: #912018;
 	--color-speaker: #5b21b6;
 	/* Kept apart from the link colour so focus can be tuned for the dark scheme alone. */
 	--color-focus: #1d4ed8;
@@ -67,7 +69,9 @@
 	--font-size-h3: 1.125rem;
 	--line-height-base: 1.5;
 	--line-height-heading: 1.25;
+	--font-weight-medium: 500;
 	--font-weight-semibold: 600;
+	--font-weight-bold: 700;
 
 	--space-1: 0.25rem;
 	--space-2: 0.5rem;
@@ -145,6 +149,7 @@
 	--bar-segment: 40%;
 	--bar-sweep-from: -100%;
 	--bar-sweep-to: 250%;
+	--opacity-static-bar: 0.35;
 
 	color-scheme: light dark;
 }
@@ -162,6 +167,8 @@
 		--color-control-border: #8f8f99;
 		--color-link: #93b4ff;
 		--color-danger: #fda29b;
+		--color-danger-hover-bg: #3a1f1d;
+		--color-danger-hover-text: #fecdca;
 		--color-speaker: #c4b5fd;
 		--color-focus: #6b9bff;
 		--color-warning-bg: #3d2c10;
