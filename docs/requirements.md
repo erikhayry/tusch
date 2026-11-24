@@ -943,6 +943,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: the global instructions field on `/settings` shows a counter "<n> of 1000" that follows what is typed, is linked to the field with `aria-describedby` and is not a live region; above 1000 it uses the danger colour (saving is still rejected, REQ-052).
 - Why: users see how much of the limit they have used before saving (#300).
+
 ### REQ-306-1 The comic style is a radio group of cards
 
 - Status: active

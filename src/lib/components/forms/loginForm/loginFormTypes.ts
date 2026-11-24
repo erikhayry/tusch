@@ -1,15 +1,8 @@
 import { z } from 'zod';
 
-/**
- * The welcome section (start page) and the key card on Settings use the same form with
- * different copy: the welcome label is "OpenAI API key", the Settings field is "API key".
- */
-export const LoginFormVariantSchema = z.enum(['welcome', 'settings']);
-
 export const LoginFormPropsSchema = z.object({
 	/** Whether a key is already stored; only the flag reaches the browser (REQ-029). */
 	hasKey: z.boolean(),
-	variant: LoginFormVariantSchema,
 });
 
 /**

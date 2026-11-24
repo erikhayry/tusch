@@ -23,7 +23,7 @@
 					<span class="badge">{hasKey ? m.keyBadgeSaved() : m.keyBadgeMissing()}</span>
 				</div>
 				<!-- A saved key changes the model lists and the hints, which come from the page load. -->
-				<LoginForm {hasKey} variant="settings" onSaved={refreshAll} />
+				<LoginForm {hasKey} onSaved={refreshAll} />
 			</Section>
 		</div>
 		<div class="card">

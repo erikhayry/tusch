@@ -38,7 +38,7 @@
 			<Section>
 				<Heading>{m.welcomeHeading()}</Heading>
 				<p>{m.welcomeSentence()}</p>
-				<LoginForm hasKey={data.hasKey} variant="welcome" />
+				<LoginForm hasKey={data.hasKey} />
 			</Section>
 		</div>
 	{/if}

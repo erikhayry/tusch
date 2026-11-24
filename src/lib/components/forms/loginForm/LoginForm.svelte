@@ -17,9 +17,7 @@
 
 	import { type LoginFormProps } from './loginFormTypes';
 
-	let { hasKey, variant, onSaved }: LoginFormProps = $props();
-
-	const fieldLabel = $derived(variant === 'welcome' ? m.welcomeKeyLabel() : m.byok());
+	let { hasKey, onSaved }: LoginFormProps = $props();
 
 	let success = $state<boolean | null>(null);
 	let statusElement = $state<HTMLElement>();
@@ -66,7 +64,7 @@
 		use:enhance={handleSubmit}
 	>
 		<label>
-			<span>{fieldLabel}</span>
+			<span>{m.byok()}</span>
 			<input
 				type="text"
 				name="key"
