@@ -150,5 +150,14 @@
 	"appearsInOne": "Appears in 1 panel",
 	"appearsIn": "Appears in {count} panels",
 	"panelStripHint": "Select a panel to edit · scroll sideways for more",
-	"panelStripHintNarrow": "Swipe for more"
+	"panelStripHintNarrow": "Swipe for more",
+	"optional": "(optional)",
+	"createComicIntro": "Start from a web page, your own story, or both.",
+	"createComicIntroMore": "Tusch splits it into panels and characters you can edit afterwards.",
+	"createComicUrlHint": "An article, story or wiki page to adapt.",
+	"createComicStoryHint": "20–10,000 characters.",
+	"createComicOr": "and / or",
+	"createComicNeedsKey": "Needs an OpenAI key",
+	"backToComics": "Back to comics",
+	"createComicSubmit": "Create comic"
 }

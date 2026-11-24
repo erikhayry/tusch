@@ -12,7 +12,7 @@ test(
 	async ({ page }) => {
 		await gotoHydrated(page, '/comic/create');
 		await typeInto(page, page.getByRole('textbox', { name: m.url() }), 'https://example.com/a');
-		await activate(page, page.getByRole('button', { name: m.submit() }));
+		await activate(page, page.getByRole('button', { name: m.createComicSubmit() }));
 		await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
 		// The generated cover is stored with both variants, so each one has its own remove button.
 		await expect(

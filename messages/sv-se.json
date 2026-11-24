@@ -104,5 +104,16 @@
 	"appearsInOne": "Finns i 1 ruta",
 	"appearsIn": "Finns i {count} rutor",
 	"panelStripHint": "Välj en ruta för att redigera · skrolla i sidled för fler",
-	"panelStripHintNarrow": "Svep för fler"
+	"panelStripHintNarrow": "Svep för fler",
+	"optional": "(valfritt)",
+	"createComicIntro": "Utgå från en webbsida, din egen berättelse eller båda.",
+	"createComicIntroMore": "Tusch delar upp den i rutor och figurer som du kan redigera efteråt.",
+	"createComicUrlHint": "En artikel, berättelse eller wikisida att göra serie av.",
+	"createComicStoryHint": "20–10 000 tecken.",
+	"createComicOr": "och / eller",
+	"createComicNeedsKey": "Kräver en OpenAI-nyckel",
+	"backToComics": "Tillbaka till serierna",
+	"createComicSubmit": "Skapa serie",
+	"cancel": "Avbryt",
+	"settings": "Inställningar"
 }
