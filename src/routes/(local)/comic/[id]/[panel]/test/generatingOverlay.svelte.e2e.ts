@@ -21,7 +21,7 @@ import {
 	generatingDialog,
 	holdImageRequestsForever,
 	storedPanelImage,
-} from './utils/generatingOverlay';
+} from '../../../../../../tests/e2e/generatingOverlay';
 
 const generateButton = (page: Page) =>
 	page.getByRole('button', { name: m.generateNewImage(), exact: true });

@@ -1,6 +1,6 @@
 import { m } from '#lib/paraglide/messages.js';
 import { expect, type Locator, type Page } from '@playwright/test';
-import { storedComic } from '../../../../../../../tests/e2e/createdComic';
+import { storedComic } from './createdComic';
 
 /** The form action every panel image button posts to. */
 export const CREATE_IMAGE_REQUEST = /\?\/create-panel-image/;

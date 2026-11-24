@@ -15,14 +15,23 @@ export type ActionSuccessHandler<T> = (parameters: {
 	showError: (message: string) => void;
 }) => Promise<void> | void;
 
+/**
+ * A form's own progress UI, used instead of the global loader (REQ-301-1). `start` gets
+ * the function that aborts the request; `end` runs once, however the request finishes.
+ */
+export type SubmissionProgress = {
+	start: (abort: () => void) => void;
+	end: () => void;
+};
+
 export function enhanceAction<T extends Record<string, unknown>>(
 	label: string,
 	onSuccess: ActionSuccessHandler<T>,
-	options: { onFailure?: (failure: FormFailure) => void } = {},
+	options: { onFailure?: (failure: FormFailure) => void; progress?: SubmissionProgress } = {},
 ): SubmitFunction<T> {
 	let inFlight = false;
 
-	return ({ cancel }) => {
+	return ({ cancel, controller }) => {
 		if (inFlight) {
 			cancel();
 			return;
@@ -30,10 +39,46 @@ export function enhanceAction<T extends Record<string, unknown>>(
 
 		inFlight = true;
 		globalError.reset();
-		const loadingId = globalLoading.start(label);
+		const loadingId = options.progress ? undefined : globalLoading.start(label);
+		options.progress?.start(() => controller.abort());
 		let succeeded = false;
+		let finished = false;
+		let aborted = false;
+		let resultReceived = false;
+
+		// An aborted request never reaches the result callback below, so it finishes here.
+		// It shows no error: the user cancelled, or left the page.
+		const finish = () => {
+			if (finished) {
+				return;
+			}
+			finished = true;
+			inFlight = false;
+			if (loadingId !== undefined) {
+				globalLoading.stop(loadingId, succeeded);
+			}
+			options.progress?.end();
+		};
+		// Once the result has arrived the response is complete: an abort then (say, the form is
+		// removed while `update()` runs) must not finish early, or focus would be restored before
+		// SvelteKit's own focus reset after a success. The result path finishes the submission.
+		controller.signal.addEventListener(
+			'abort',
+			() => {
+				if (resultReceived) {
+					return;
+				}
+				aborted = true;
+				finish();
+			},
+			{ once: true },
+		);
 
 		return async ({ result, update }) => {
+			resultReceived = true;
+			if (aborted) {
+				return;
+			}
 			try {
 				if (result.type === 'success' && result.data !== undefined) {
 					await onSuccess({
@@ -56,8 +101,7 @@ export function enhanceAction<T extends Record<string, unknown>>(
 			} catch (error) {
 				globalError.set(error instanceof Error ? error.message : 'Submission failed');
 			} finally {
-				inFlight = false;
-				globalLoading.stop(loadingId, succeeded);
+				finish();
 			}
 		};
 	};

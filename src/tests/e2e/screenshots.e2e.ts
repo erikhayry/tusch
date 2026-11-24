@@ -1,8 +1,9 @@
 import { m } from '#lib/paraglide/messages.js';
 import { expect, test, type Page } from '@playwright/test';
+import { generatingDialog } from './generatingOverlay';
 import { gotoHydrated } from './gotoHydrated';
 import { typeInto } from './keyboard';
-import { VIEWS } from './views';
+import { NARROW_VIEWS, VIEW_ACTIONS, VIEWS, type ViewName } from './views';
 
 /**
  * Visual baselines for every view (docs/rules/testing.md, "Screenshots").
@@ -41,16 +42,25 @@ async function settle(page: Page) {
 	);
 }
 
-async function snapshot(page: Page, url: string, name: string) {
-	await gotoHydrated(page, url);
+async function snapshot(page: Page, name: ViewName, file: string = name) {
+	await gotoHydrated(page, VIEWS[name]);
 	await settle(page);
-	await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
+	// After settling: a view's action can hold a request open, which keeps the network busy.
+	await VIEW_ACTIONS[name]?.(page);
+	// The elapsed timer of the generating dialog changes every second.
+	await expect(page).toHaveScreenshot(`${file}.png`, {
+		fullPage: true,
+		mask: [generatingDialog(page).getByRole('timer')],
+	});
 }
 
 test.describe('screenshots', () => {
-	for (const [name, url] of Object.entries(VIEWS)) {
+	for (const name of Object.keys(VIEWS) as ViewName[]) {
+		if (NARROW_VIEWS.includes(name)) {
+			continue;
+		}
 		test(name, async ({ page }) => {
-			await snapshot(page, url, name);
+			await snapshot(page, name);
 		});
 	}
 
@@ -71,22 +81,27 @@ test.describe('screenshots', () => {
 		test.use({ viewport: { width: 390, height: 844 } });
 
 		test('landing-narrow', async ({ page }) => {
-			await snapshot(page, VIEWS.landing, 'landing-narrow');
+			await snapshot(page, 'landing', 'landing-narrow');
 		});
 
 		// The create form's narrow layout keeps "Create comic" in reach (REQ-296-2).
 		test('create-narrow', async ({ page }) => {
-			await snapshot(page, VIEWS.create, 'create-narrow');
+			await snapshot(page, 'create', 'create-narrow');
 		});
 
 		// The comic overview stacks its cards in one column below 48em (REQ-040, REQ-297).
 		test('comic-narrow', async ({ page }) => {
-			await snapshot(page, VIEWS.comic, 'comic-narrow');
+			await snapshot(page, 'comic', 'comic-narrow');
 		});
 
 		// The viewer's header is icon links below 48em (REQ-299-1, REQ-040).
 		test('view-narrow', async ({ page }) => {
-			await snapshot(page, VIEWS.view, 'view-narrow');
+			await snapshot(page, 'view', 'view-narrow');
+		});
+
+		// The overlay's card is narrower below 48em (REQ-301-1, REQ-040).
+		test('mobile-panel-generating', async ({ page }) => {
+			await snapshot(page, 'mobile-panel-generating');
 		});
 	});
 

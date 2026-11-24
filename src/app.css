@@ -129,6 +129,23 @@
 	--visually-hidden-size: 1px;
 	--visually-hidden-clip: inset(50%);
 
+	/* The generating-image dialog (REQ-301-1): scrim, card, spinner, bar and note. */
+	--color-scrim: rgb(20 20 22 / 55%);
+	--color-warning-bg: #fef3c7;
+	--color-warning-text: #92400e;
+	--shadow-dialog: 0 1.25rem 3.75rem rgb(0 0 0 / 25%);
+	--blur-scrim: 0.125rem;
+	--width-dialog: 26.25rem;
+	--radius-dialog: 1rem;
+	--spinner-size: 2.75rem;
+	--font-size-timer: 2.75rem;
+	--duration-spinner: 0.9s;
+	--duration-spinner-reduced: 2.4s;
+	--duration-bar: 1.4s;
+	--bar-segment: 40%;
+	--bar-sweep-from: -100%;
+	--bar-sweep-to: 250%;
+
 	color-scheme: light dark;
 }
 
@@ -147,6 +164,8 @@
 		--color-danger: #fda29b;
 		--color-speaker: #c4b5fd;
 		--color-focus: #6b9bff;
+		--color-warning-bg: #3d2c10;
+		--color-warning-text: #fde68a;
 	}
 }
 
