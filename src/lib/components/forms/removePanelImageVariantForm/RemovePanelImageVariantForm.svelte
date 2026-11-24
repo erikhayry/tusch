@@ -28,5 +28,13 @@
 	<input type="hidden" name="comicId" value={comicId} />
 	<input type="hidden" name="panelId" value={panelId} />
 	<input type="hidden" name="variant" value={variant} />
-	<button type="submit">{label}</button>
+	<button type="submit" class="danger">{label}</button>
 </form>
+
+<style>
+	/* Buttons default to a dark fill, where danger text fails contrast; use the page background. */
+	.danger {
+		color: var(--color-danger);
+		background: var(--color-background);
+	}
+</style>

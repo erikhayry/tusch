@@ -5,6 +5,8 @@ export const DeleteItemFormPropsSchema = z.object({
 	label: z.string(),
 	/** Icon only: `label` becomes the accessible name (aria-label), no text is shown. */
 	iconOnly: z.boolean().optional(),
+	/** Text button in the danger colour (`--color-danger`), for removing content. */
+	danger: z.boolean().optional(),
 	values: DeleteValuesSchema,
 	onSuccess: z.function({ input: [], output: z.void() }).optional(),
 });

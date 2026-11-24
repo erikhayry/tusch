@@ -22,6 +22,7 @@
 />
 
 <DeleteItemForm
+	iconOnly
 	label={removeActionLabel({ number })}
 	values={{
 		comicId: values.comicId,

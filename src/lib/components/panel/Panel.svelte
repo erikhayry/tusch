@@ -116,6 +116,7 @@
 			{/each}
 		{:else}
 			<DeleteItemForm
+				danger
 				label={m.removeImage()}
 				values={{ type: DB_ITEM_TYPE.enum.panelImage, comicId, panelId: panel.id }}
 				onSuccess={() => focusAfterUpdate(() => addImageButton)}
@@ -130,9 +131,11 @@
 		{/if}
 	{/if}
 
-	<p>{m.timeOfDay()}: {panel.timeOfDay}</p>
-	<p>{m.season()}: {panel.season}</p>
-	<p>{m.year()}: {panel.year}</p>
+	<p class="facts">
+		<span class="pill">{m.timeOfDay()}: {panel.timeOfDay}</span>
+		<span class="pill">{m.season()}: {panel.season}</span>
+		<span class="pill">{m.year()}: {panel.year}</span>
+	</p>
 
 	<Section>
 		<Heading id="panel-caption">{m.captions()}</Heading>
@@ -203,5 +206,20 @@
 
 	.speaker {
 		color: var(--color-speaker);
+	}
+
+	.facts {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		margin: 0;
+	}
+
+	.pill {
+		padding: var(--space-1) var(--space-3);
+		color: var(--color-text);
+		background: var(--color-surface);
+		border: var(--border-width) solid var(--color-border);
+		border-radius: var(--radius-pill);
 	}
 </style>

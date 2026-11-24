@@ -80,6 +80,8 @@
 	--focus-width: 3px;
 	--focus-offset: 2px;
 	--radius: 0.5rem;
+	/* Fully rounded ends for pills; a length larger than any pill is half its height. */
+	--radius-pill: 62.5rem;
 	--icon-size: 1.25rem;
 	--card-min-width: 13.75rem;
 	--card-radius: 0.75rem;

@@ -10,7 +10,13 @@
 	import { m } from '#lib/paraglide/messages.js';
 	import type { DeleteItemFormProps } from './deleteItemFormTypes';
 
-	let { label, values, onSuccess, iconOnly = false }: DeleteItemFormProps = $props();
+	let {
+		label,
+		values,
+		onSuccess,
+		iconOnly = false,
+		danger = false,
+	}: DeleteItemFormProps = $props();
 
 	const handleSubmit = enhanceClientCommand(
 		m.loadingDelete(),
@@ -47,11 +53,17 @@
 			</svg>
 		</button>
 	{:else}
-		<button type="submit">{label}</button>
+		<button type="submit" class:danger>{label}</button>
 	{/if}
 </form>
 
 <style>
+	/* Buttons default to a dark fill, where danger text fails contrast; use the page background. */
+	.danger {
+		color: var(--color-danger);
+		background: var(--color-background);
+	}
+
 	.icon-only {
 		display: inline-flex;
 		align-items: center;
