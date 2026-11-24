@@ -17,7 +17,9 @@
 
 	import { type LoginFormProps } from './loginFormTypes';
 
-	let { hasKey, onSaved }: LoginFormProps = $props();
+	let { hasKey, variant, onSaved }: LoginFormProps = $props();
+
+	const fieldLabel = $derived(variant === 'welcome' ? m.welcomeKeyLabel() : m.byok());
 
 	let success = $state<boolean | null>(null);
 	let statusElement = $state<HTMLElement>();
@@ -47,7 +49,8 @@
 	);
 </script>
 
-{#if hasKey && !success}
+<!-- Shown after a save on Settings too: the page data reloads and reports the stored key. -->
+{#if hasKey}
 	<p>{m.keyStatus()}</p>
 {/if}
 
@@ -63,8 +66,14 @@
 		use:enhance={handleSubmit}
 	>
 		<label>
-			<span>{m.byok()}</span>
-			<input type="text" name="key" autocomplete="off" aria-describedby="key-hint" />
+			<span>{fieldLabel}</span>
+			<input
+				type="text"
+				name="key"
+				autocomplete="off"
+				placeholder={m.keyPlaceholder()}
+				aria-describedby="key-hint"
+			/>
 		</label>
 		<p id="key-hint">{m.keyHint()}</p>
 

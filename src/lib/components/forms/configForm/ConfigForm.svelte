@@ -37,6 +37,8 @@
 		{/each}
 	</ul>
 
+	<!-- Without a key there are no models to choose from, so the controls are disabled and the
+		hint is their only description (REQ-300-1). Disabled controls are skipped by Tab. -->
 	{#if !hasKey}
 		<p id="models-hint">{m.noKeyModelsHint()}</p>
 	{/if}
@@ -46,22 +48,35 @@
 		<select
 			id="select-text-model"
 			name={TEXT_MODEL_KEY}
-			aria-describedby={hasKey ? undefined : 'models-hint'}
+			disabled={!hasKey}
+			aria-describedby={hasKey ? 'text-model-help' : 'models-hint'}
 		>
 			{#each models[TEXT_MODEL_KEY] as model, index (index)}
 				<option value={model} selected={model === config[TEXT_MODEL_KEY]}>{model}</option>
 			{/each}
 		</select>
-		<label for="select-textmodels">{m.selectImageModel()}</label>
+		<p id="text-model-help" class="help">{m.textModelHelp()}</p>
+
+		<label for="select-image-model">{m.selectImageModel()}</label>
 		<select
-			id="select-textmodels"
+			id="select-image-model"
 			name={IMAGE_MODEL_KEY}
-			aria-describedby={hasKey ? undefined : 'models-hint'}
+			disabled={!hasKey}
+			aria-describedby={hasKey ? 'image-model-help' : 'models-hint'}
 		>
 			{#each models[IMAGE_MODEL_KEY] as model, index (index)}
 				<option value={model} selected={model === config[IMAGE_MODEL_KEY]}>{model}</option>
 			{/each}
 		</select>
-		<button type="submit">{m.saveConfig()}</button>
+		<p id="image-model-help" class="help">{m.imageModelHelp()}</p>
+
+		<button type="submit" disabled={!hasKey}>{m.saveConfig()}</button>
 	</form>
 </Section>
+
+<style>
+	.help {
+		font-size: var(--font-size-small);
+		color: var(--color-muted);
+	}
+</style>
