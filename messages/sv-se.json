@@ -104,5 +104,9 @@
 	"appearsInOne": "Finns i 1 ruta",
 	"appearsIn": "Finns i {count} rutor",
 	"panelStripHint": "Välj en ruta för att redigera · skrolla i sidled för fler",
-	"panelStripHintNarrow": "Svep för fler"
+	"panelStripHintNarrow": "Svep för fler",
+	"panelOfTotal": "Panel {number} av {total}",
+	"previousPanel": "← Föregående",
+	"nextPanel": "Nästa →",
+	"readThisComic": "Läs serien"
 }

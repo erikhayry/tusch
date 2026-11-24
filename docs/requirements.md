@@ -568,15 +568,36 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-238-1 Each panel in the panel list is a card with an image and a title
 
 - Status: active
-- Statement: in the panel list on the panel page, each panel is a card whose single link shows the panel's stored image (an `<img>` with empty alt) or, without one, a same-size CSS placeholder hidden from assistive technology (no text, no `<img>`), and the panel's title; the link is named by the title.
-- Why: users recognise a panel by its picture faster than by a text link; the title already names the link, so the image adds no screen-reader noise.
+- Statement: in the panel list on the panel page, each panel is a card whose single link shows the panel's stored image (an `<img>` with empty alt) or, without one, a same-size CSS placeholder hidden from assistive technology (no text, no `<img>`), and the panel's number and title; the link is named "Panel <number> <title>" ("Panel <number>" alone when the title is empty, REQ-190-1).
+- Why: users recognise a panel by its picture faster than by a text link; the number and title already name the link, so the image adds no screen-reader noise.
 - Proven by: tagged tests
 
-### REQ-238-2 The panel list is one horizontal row that scrolls inside its own box
+### REQ-238-2 The panel list is a vertical sidebar from 48em and a horizontal row below
 
 - Status: active
-- Statement: the panel list on the panel page is one horizontal row of cards that scrolls inside its own box at every viewport width (the document never gets wider than the viewport); on load the current panel's card is scrolled into view and is the only link marked `aria-current="page"`; a card focused by keyboard is scrolled into view.
+- Statement: on the panel page, from 48em the panel list is one vertical column in a sidebar beside the panel; below 48em it is one horizontal row above the panel that scrolls inside its own box (the document never gets wider than the viewport). At every width the current panel's card is scrolled into view on load and is the only link marked `aria-current="page"`, and a card focused by keyboard is scrolled into view.
 - Why: a long story would otherwise push the panel itself far down the page, and the user must see which panel they are on.
+- Proven by: tagged tests
+
+### REQ-298-1 The panel page shows the panel's position above its heading
+
+- Status: active
+- Statement: the panel page shows "Panel <number> of <total>" above a heading that is the panel's title ("Panel <number>" when the title is empty).
+- Why: the user sees where they are in the story and what the panel is called (#298).
+- Proven by: tagged tests
+
+### REQ-298-2 The panel page links to the previous and next panel
+
+- Status: active
+- Statement: the panel page has a "← Prev" link to the previous panel and a "Next →" link to the next one; on the first (last) panel, Prev (Next) is shown but is not a link and is marked `aria-disabled="true"`.
+- Why: stepping through panels should not need the panel list (#298).
+- Proven by: tagged tests
+
+### REQ-298-3 The panel page links to the reader
+
+- Status: active
+- Statement: the panel page has a "Read comic" link to `/comic/<id>/view`.
+- Why: the user can go from editing a panel to reading the comic in one step (#298).
 - Proven by: tagged tests
 
 ## Persistence and navigation

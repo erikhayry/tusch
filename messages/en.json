@@ -150,5 +150,9 @@
 	"appearsInOne": "Appears in 1 panel",
 	"appearsIn": "Appears in {count} panels",
 	"panelStripHint": "Select a panel to edit · scroll sideways for more",
-	"panelStripHintNarrow": "Swipe for more"
+	"panelStripHintNarrow": "Swipe for more",
+	"panelOfTotal": "Panel {number} of {total}",
+	"previousPanel": "← Prev",
+	"nextPanel": "Next →",
+	"readThisComic": "Read comic"
 }
