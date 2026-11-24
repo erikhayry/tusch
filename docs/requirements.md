@@ -984,6 +984,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: with `prefers-reduced-motion: reduce` the dialog's spinner turns once per 2.4 s and the progress bar has no animation.
 - Why: motion-sensitive users get a calmer indicator that still shows work is running (#301).
+- Proven by: tagged tests
 
 ### REQ-306-1 The comic style is a radio group of cards
 
