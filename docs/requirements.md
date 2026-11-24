@@ -938,9 +938,9 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: the styles are compared side by side, with native radio semantics and keyboard behaviour (#306).
 - Proven by: tagged tests
 
-### REQ-306-2 The style cards are side by side from 48em and stack below it
+### REQ-306-2 The style cards form a full-width grid
 
 - Status: active
-- Statement: the style cards sit side by side in one row from 48em and stack as full-width rows below it, each row showing its radio dot; the checked style is sent as `style` and the created comic has that style.
-- Why: three cards need the width, and on a phone full-width rows are easy to hit (#306).
+- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; further styles wrap to a new row; the checked style is sent as `style` and the created comic has that style.
+- Why: more styles are coming, so the cards wrap instead of changing layout (#306).
 - Proven by: tagged tests

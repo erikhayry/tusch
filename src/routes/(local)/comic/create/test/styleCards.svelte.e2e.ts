@@ -54,39 +54,63 @@ test(
 	},
 );
 
-test.describe('the style cards by viewport', { tag: '@REQ-306-2' }, () => {
-	const cases = [
-		{ width: 1280, height: 800, sameRow: true },
-		{ width: 390, height: 844, sameRow: false },
-	];
-	for (const { width, height, sameRow } of cases) {
-		test(`${sameRow ? 'sit side by side' : 'stack as full-width rows'} at ${width}px`, async ({
+test.describe('the style cards form a full-width grid', { tag: '@REQ-306-2' }, () => {
+	for (const [width, height] of [
+		[1280, 800],
+		[390, 844],
+		[320, 640],
+	]) {
+		test(`three cards share a row, fill the width and have a gap at ${width}px`, async ({
 			page,
 		}) => {
 			await page.setViewportSize({ width, height });
 			await new CreatePage(page).goto();
-			const group = page.getByRole('group', { name: m.comicStyles() });
-			const cards = group.locator('label');
+			const cards = page.getByRole('group', { name: m.comicStyles() }).locator('label');
 			await expect(cards).toHaveCount(3);
 
-			const boxes = await cards.evaluateAll((els) =>
-				els.map((el) => {
-					const { x, y, width } = el.getBoundingClientRect();
-					return { x, y, width };
-				}),
-			);
-			const form = await page.locator('form[action$="create-comic"]').boundingBox();
-			if (sameRow) {
-				expect(new Set(boxes.map((b) => Math.round(b.y))).size).toBe(1);
-				expect(new Set(boxes.map((b) => Math.round(b.x))).size).toBe(3);
-			} else {
-				expect(new Set(boxes.map((b) => Math.round(b.y))).size).toBe(3);
-				for (const box of boxes) {
-					expect(Math.abs(box.width - (form?.width ?? 0))).toBeLessThan(2);
+			const { boxes, container } = await cards.evaluateAll((els) => {
+				const rect = (el: Element) => el.getBoundingClientRect();
+				return {
+					boxes: els.map((el) => ({ x: rect(el).x, right: rect(el).right, y: rect(el).y })),
+					container: el0(els),
+				};
+				function el0(list: Element[]) {
+					const parent = list[0].parentElement;
+					const { x, right } = parent ? rect(parent) : { x: 0, right: 0 };
+					return { x, right };
 				}
+			});
+			expect(new Set(boxes.map((b) => Math.round(b.y))).size).toBe(1);
+			expect(Math.abs(boxes[0].x - container.x)).toBeLessThan(1.5);
+			expect(Math.abs(boxes[2].right - container.right)).toBeLessThan(1.5);
+			for (const [left, right] of [
+				[boxes[0], boxes[1]],
+				[boxes[1], boxes[2]],
+			]) {
+				expect(right.x - left.right).toBeGreaterThan(0);
 			}
 		});
 	}
+
+	test('a fourth card wraps to a new row of the same grid at 390px', async ({ page }) => {
+		await page.setViewportSize({ width: 390, height: 844 });
+		await new CreatePage(page).goto();
+		const cards = page.getByRole('group', { name: m.comicStyles() }).locator('label');
+		// More styles are coming; add one to the grid to see where it lands.
+		await cards.first().evaluate((el) => el.parentElement?.append(el.cloneNode(true)));
+		await expect(cards).toHaveCount(4);
+
+		const boxes = await cards.evaluateAll((els) =>
+			els.map((el) => {
+				const { x, y, width } = el.getBoundingClientRect();
+				return { x, y, width };
+			}),
+		);
+		expect(Math.round(boxes[2].y)).toBe(Math.round(boxes[0].y));
+		expect(boxes[3].y).toBeGreaterThan(boxes[0].y);
+		expect(Math.abs(boxes[3].x - boxes[0].x)).toBeLessThan(1.5);
+		expect(Math.abs(boxes[3].width - boxes[0].width)).toBeLessThan(1.5);
+	});
 });
 
 test(
