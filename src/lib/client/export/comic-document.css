@@ -23,9 +23,9 @@ h1 {
 	max-inline-size: 100%;
 	margin: 0;
 	padding: var(--space-2);
-	border: var(--border-width-thick) solid var(--color-border);
-	background: var(--color-text);
-	color: var(--color-background);
+	border: var(--border-width-thick) solid var(--color-reader-border);
+	background: var(--color-caption-text);
+	color: var(--color-caption);
 	font-size: var(--font-size-h2);
 	overflow-wrap: anywhere;
 }
@@ -90,8 +90,22 @@ h1.overlay {
 	margin: var(--space-2);
 }
 
+.captions .box {
+	background: var(--color-caption);
+	color: var(--color-caption-text);
+}
+
 .speech .box {
 	font-style: italic;
+	background: var(--color-bubble);
+	color: var(--color-bubble-text);
+	border-radius: var(--radius-bubble);
+}
+
+.speech strong {
+	font-size: var(--font-size-small);
+	font-style: normal;
+	text-transform: uppercase;
 }
 
 .boxes.overlay .speech {
@@ -104,9 +118,9 @@ h1.overlay {
 .box {
 	max-inline-size: 100%;
 	padding: var(--space-2);
-	border: var(--border-width-thick) solid var(--color-border);
-	background: var(--color-background);
-	color: var(--color-text);
+	border: var(--border-width-thick) solid var(--color-reader-border);
+	background: var(--color-reader-background);
+	color: var(--color-reader-text);
 	font-size: var(--font-size-small);
 	overflow-wrap: anywhere;
 }

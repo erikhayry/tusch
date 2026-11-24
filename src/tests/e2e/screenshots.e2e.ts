@@ -83,6 +83,11 @@ test.describe('screenshots', () => {
 		test('comic-narrow', async ({ page }) => {
 			await snapshot(page, VIEWS.comic, 'comic-narrow');
 		});
+
+		// The viewer's header is icon links below 48em (REQ-299-1, REQ-040).
+		test('view-narrow', async ({ page }) => {
+			await snapshot(page, VIEWS.view, 'view-narrow');
+		});
 	});
 
 	test('settings after adding a key', async ({ page }) => {
