@@ -20,3 +20,4 @@ a merge (see `.claude/skills/tech-lead/SKILL.md`).
 - E2E tests use a page object for locators and setup (`test/utils/`), so the test body reads as behaviour only (#195).
 - A form control that needs explaining gets a short helper line, tied to it with `aria-describedby`, in the same PR; don't treat a UX hint as optional, and a "not blocking" reviewer note for a missing one is a fix (#212, #281).
 - Grep new code for string literals that belong to a fixed set (variant, format, status); each use imports the shared enum or constant (#281).
+- Text laid over an image gets a long-text check in the screenshot: with a long title the left and right spacing must match, not run edge to edge (#313).
