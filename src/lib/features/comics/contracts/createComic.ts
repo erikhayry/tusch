@@ -11,7 +11,7 @@ import z from 'zod';
 export const CREATE_COMIC_ACTION = 'create-comic' as const;
 
 const STORY_MIN_LENGTH = 20;
-const STORY_MAX_LENGTH = 10_000;
+export const STORY_MAX_LENGTH = 10_000;
 
 export const PANEL_COUNT_MIN = 1;
 export const PANEL_COUNT_MAX = 30;
