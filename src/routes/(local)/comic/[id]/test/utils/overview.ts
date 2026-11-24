@@ -74,13 +74,3 @@ export async function precedes(first: Locator, second: Locator): Promise<boolean
 
 /** The panel strip: the list of panel cards. */
 export const panelStrip = (page: Page) => page.getByRole('list', { name: m.panels(), exact: true });
-
-/** Make a created comic's characters disappear, as a story with none would have (REQ-297-1). */
-export async function removeStoredCharacters(page: Page, comicId: string) {
-	await page.evaluate((id) => {
-		const db = JSON.parse(localStorage.getItem('comics_db') ?? '{"comics":[]}');
-		const comic = db.comics.find((candidate: { id: string }) => candidate.id === id);
-		comic.characters = [];
-		localStorage.setItem('comics_db', JSON.stringify(db));
-	}, comicId);
-}

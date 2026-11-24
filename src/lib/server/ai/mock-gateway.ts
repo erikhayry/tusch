@@ -51,6 +51,8 @@ const NO_IMAGE_ONCE = 'mock-error:no-image-once';
 const INVALID_TEXT = 'mock-error:invalid-text';
 /** A create-comic request answered with an empty title (REQ-236-3). */
 const EMPTY_TITLE = 'mock-error:empty-title';
+/** A create-comic request answered with no characters (REQ-236-2, REQ-297-1). */
+const NO_CHARACTERS = 'mock-error:no-characters';
 /** A crop fix answered with boxes outside the image (REQ-219-4). Read from the API key too. */
 const INVALID_CROP = 'mock-error:invalid-crop';
 /**
@@ -165,7 +167,8 @@ const mockAiGateway: AiGateway = {
 		}
 		if (schemaName === SchemaName.enum.initComic) {
 			const title = messages.join('\n').includes(EMPTY_TITLE) ? '' : CANNED_COMIC_TITLE;
-			return createComicResponse(title, requestedPanelCount(messages));
+			const withCharacters = !messages.join('\n').includes(NO_CHARACTERS);
+			return createComicResponse(title, requestedPanelCount(messages), withCharacters);
 		}
 		return createPanelResponse();
 	},

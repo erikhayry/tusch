@@ -244,11 +244,13 @@ export const CANNED_COMIC_TITLE = COMIC_DATA.data.title;
 export function createComicResponse(
 	title: string,
 	panelCount = COMIC_DATA.data.panels.length,
+	withCharacters = true,
 ): OpenAiOutput {
 	const { panels } = COMIC_DATA.data;
 	const data = {
 		...COMIC_DATA.data,
 		title,
+		characters: withCharacters ? COMIC_DATA.data.characters : [],
 		panels: Array.from({ length: panelCount }, (_, index) => panels[index % panels.length]),
 	};
 	return {

@@ -28,9 +28,9 @@ import {
 	panelsListedFor,
 	precedes,
 	panelStrip,
-	removeStoredCharacters,
 } from './utils/overview';
 
+const NO_CHARACTERS_URL = 'https://example.com/article/mock-error:no-characters';
 const NARROW = { width: 320, height: 640 };
 
 const characterItem = (page: Page, name: string) =>
@@ -79,6 +79,21 @@ test.describe('comic overview headings', () => {
 		await expect(page.locator('dt', { hasText: m.comicStyle() })).toHaveCount(1);
 		await expect(page.locator('dt', { hasText: m.source() })).toHaveCount(1);
 	});
+
+	test(
+		'a comic without characters has no Characters card',
+		{ tag: '@REQ-236-2' },
+		async ({ page }) => {
+			const comicId = await createComic(page, NO_CHARACTERS_URL);
+			expect((await storedComic(page, comicId)).characters).toHaveLength(0);
+			await gotoHydrated(page, `/comic/${comicId}`);
+
+			await expect(page.getByRole('heading', { level: 2 })).toHaveText(
+				CARD_HEADINGS().filter((heading) => heading !== m.characters()),
+			);
+			await expect(page.getByRole('heading', { name: m.characters(), level: 2 })).toHaveCount(0);
+		},
+	);
 
 	test(
 		'Back comes before the h1, View comic after it, both before the first h2',
@@ -170,8 +185,7 @@ test.describe('comic overview meta', () => {
 		'a comic without characters shows only the panel count',
 		{ tag: '@REQ-297-1' },
 		async ({ page }) => {
-			const comicId = await createComic(page);
-			await removeStoredCharacters(page, comicId);
+			const comicId = await createComic(page, NO_CHARACTERS_URL);
 			await gotoHydrated(page, `/comic/${comicId}`);
 
 			const comic = await storedComic(page, comicId);
