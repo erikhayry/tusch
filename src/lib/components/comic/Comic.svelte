@@ -46,9 +46,9 @@
 </script>
 
 <!--
-	Four cards, each a Section so its <h2> is one level under the page's <h1>. On wide
-	screens the left column holds Panels and Characters, the right one Cover and Comic
-	settings; below the breakpoint the columns stack in this same DOM order.
+	Four cards (three without characters), each a Section so its <h2> is one level under the
+	page's <h1>. On wide screens the left column holds Panels and Characters, the right one
+	Cover and Comic settings; below the breakpoint the columns stack in this same DOM order.
 -->
 <div class="overview">
 	<div class="column">
@@ -90,17 +90,20 @@
 			</Section>
 		</div>
 
-		<div class="card">
-			<Section>
-				<Heading id="characters">{m.characters()}</Heading>
-				<ul aria-labelledby="characters">
-					<!-- Keyed by id: the store copies the character on every update, and an object key would remount the gallery and close its open crops. -->
-					{#each comic.characters as character (character.id)}
-						<li><Character {character} comicId={comic.id} /></li>
-					{/each}
-				</ul>
-			</Section>
-		</div>
+		<!-- Omitted without characters: an empty card would only say there is nothing to show. -->
+		{#if comic.characters.length > 0}
+			<div class="card">
+				<Section>
+					<Heading id="characters">{m.characters()}</Heading>
+					<ul aria-labelledby="characters">
+						<!-- Keyed by id: the store copies the character on every update, and an object key would remount the gallery and close its open crops. -->
+						{#each comic.characters as character (character.id)}
+							<li><Character {character} comicId={comic.id} /></li>
+						{/each}
+					</ul>
+				</Section>
+			</div>
+		{/if}
 	</div>
 
 	<div class="column">
