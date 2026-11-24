@@ -705,14 +705,14 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-234-4 Settings shows whether a key is saved
 
 - Status: active
-- Statement: when a key is stored, `/settings` shows "A key is saved. Enter a new one to replace it." above the key field; without a key it doesn't. The key itself is never shown.
+- Statement: the "OpenAI API key" card heading on `/settings` has a text badge, "Key saved" when a key is stored and "No key yet" otherwise (same text at every width). When a key is stored, `/settings` also shows "A key is saved. Enter a new one to replace it." above the key field as helper text; without a key it doesn't. The key itself is never shown.
 - Why: users can't otherwise tell whether a key is already stored (#234).
 - Proven by: tagged tests
 
 ### REQ-234-5 Settings uses plain labels
 
 - Status: active
-- Statement: on `/settings` the key field is labelled "OpenAI API key" with a hint on where the key is stored and where to get one, the key button is "Save key", the model section is "AI models" with a "Save models" button, and when no key is stored the empty model lists show "Add your API key to choose models."
+- Statement: on `/settings` the key card is headed "OpenAI API key" and its field is labelled "API key" (placeholder "sk-…") with a hint on where the key is stored and where to get one, the key button is "Save key", the "AI models" card has "Text model" and "Image model" selects, each with a helper, and a "Save models" button, when no key is stored the card shows "Add your API key above to choose models.", and the instructions card's button is "Save instructions". The copy is in both locales.
 - Why: "BYOK", "Add" and "Config" don't say what they mean (#234).
 - Proven by: tagged tests
 
@@ -929,4 +929,18 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: after the last panel the viewer shows an ending block with "The end", the panel count ("1 panel" / "N panels"), and the links "Download comic" (the same file as the header link), "Back to editing" (`/comic/<id>`) and "All comics" (`/`). A decorative "·" and arrow are hidden from assistive technology.
 - Why: readers reach an end and know where to go next (#299).
+- Proven by: tagged tests
+
+### REQ-300-1 Model controls are disabled without a key
+
+- Status: active
+- Statement: when no key is stored, the text and image model selects and "Save models" on `/settings` are disabled, and each select is described (`aria-describedby`) by the no-key hint; with a key stored they are enabled.
+- Why: a user without a key can't choose a model, so the controls say so instead of offering an empty list (#300).
+- Proven by: tagged tests
+
+### REQ-300-2 Global instructions show a live character counter
+
+- Status: active
+- Statement: the global instructions field on `/settings` shows a counter "<n> of 1000" that follows what is typed, is linked to the field with `aria-describedby` and is not a live region; above 1000 it uses the danger colour (saving is still rejected, REQ-052).
+- Why: users see how much of the limit they have used before saving (#300).
 - Proven by: tagged tests

@@ -17,6 +17,6 @@ export const KEY_COPY = {
 	keyStatus: 'A key is saved. Enter a new one to replace it.',
 	modelsHeading: 'AI models',
 	saveModels: 'Save models',
-	noKeyModelsHint: 'Add your API key to choose models.',
+	noKeyModelsHint: 'Add your API key above to choose models.',
 	createComic: 'Create new comic',
 } as const;

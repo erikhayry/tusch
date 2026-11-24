@@ -85,6 +85,11 @@ test.describe('screenshots', () => {
 		});
 
 		// The viewer's header is icon links below 48em (REQ-299-1, REQ-040).
+		// The settings cards stack in one column at 390 px (#300).
+		test('settings-narrow', async ({ page }) => {
+			await snapshot(page, VIEWS.settings, 'settings-narrow');
+		});
+
 		test('view-narrow', async ({ page }) => {
 			await snapshot(page, VIEWS.view, 'view-narrow');
 		});
