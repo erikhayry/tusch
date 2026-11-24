@@ -13,7 +13,7 @@
 </script>
 
 <Section>
-	<Heading data-testid={TestId}>Setting</Heading>
+	<Heading data-testid={TestId}>{m.setting()}</Heading>
 
 	<Section>
 		<Heading id="years">{m.years()}</Heading>

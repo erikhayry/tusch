@@ -73,6 +73,11 @@ test.describe('screenshots', () => {
 		test('landing-narrow', async ({ page }) => {
 			await snapshot(page, VIEWS.landing, 'landing-narrow');
 		});
+
+		// The comic overview stacks its cards in one column below 48em (REQ-040, REQ-297).
+		test('comic-narrow', async ({ page }) => {
+			await snapshot(page, VIEWS.comic, 'comic-narrow');
+		});
 	});
 
 	test('settings after adding a key', async ({ page }) => {
