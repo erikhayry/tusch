@@ -109,7 +109,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-289-1 A new comic has the number of panels the user chose
 
 - Status: active
-- Statement: the create form has a required "Number of panels" field after the style select, prefilled with 5 and hinted "1–30"; the create-comic prompt asks the AI for exactly that many panels, so the created comic lists that many panels.
+- Statement: the create form has a required "Number of panels" field after the story and before the style select, prefilled with 5 and hinted "1–30"; the create-comic prompt asks the AI for exactly that many panels, so the created comic lists that many panels.
 - Why: users want to choose how long a new comic is instead of getting 5–10 panels the AI picks.
 - Proven by: tagged tests
 
@@ -894,4 +894,25 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: the landing, comic and panel views, audited by Lighthouse (desktop preset) on the production build, meet LCP ≤ 2.5 s, CLS ≤ 0.1 and TBT ≤ 200 ms (median of 3 runs). A view that exceeds a budget fails the check, and the failure names the view and the metric.
 - Why: nothing else stops a change from making the app slow or visually unstable. TBT is the lab proxy for INP, which Lighthouse navigation audits can't measure.
+- Proven by: tagged tests
+
+### REQ-296-1 The create page links back to the comics
+
+- Status: active
+- Statement: the create page has a "Back to comics" link to `/` between the header and the `<h1>`, at every width.
+- Why: users who opened the form by mistake need a way out that is visible on the page.
+- Proven by: tagged tests
+
+### REQ-296-2 The create form ends with a key note, Settings and Cancel links and a submit button
+
+- Status: active
+- Statement: the create form ends with a "Needs an OpenAI key" note with a "Settings" link to `/settings`, a "Cancel" link to `/` (creating no comic) and a "Create comic" submit button; below 48em the Cancel/Create row is sticky at the bottom of the viewport, so the button is visible without scrolling at 390 px.
+- Why: the form's exits and the key requirement are visible where users finish the form, and on a phone the submit stays in reach.
+- Proven by: tagged tests
+
+### REQ-296-3 The URL and story fields have their own helper text
+
+- Status: active
+- Statement: the URL and story fields each have their own helper text as their accessible description, and both labels say "(optional)".
+- Why: each field explains itself, and users see that neither is required on its own.
 - Proven by: tagged tests

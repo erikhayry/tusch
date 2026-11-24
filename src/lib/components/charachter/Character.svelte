@@ -127,4 +127,13 @@
 		height: auto;
 		max-height: calc(var(--control-min-size) * 4);
 	}
+
+	/*
+	 * A closed crop's content is removed from layout outright. Under load, Chromium's
+	 * <details> open animation can leave the full-body image with a 0 px box after it
+	 * opens (#309), so the browser's own closed-content box is not relied on.
+	 */
+	.gallery details:not([open]) > :global(*:not(summary)) {
+		display: none;
+	}
 </style>
