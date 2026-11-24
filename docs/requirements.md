@@ -109,7 +109,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-289-1 A new comic has the number of panels the user chose
 
 - Status: active
-- Statement: the create form has a required "Number of panels" field after the story and before the style select, prefilled with 5 and hinted "1–30"; the create-comic prompt asks the AI for exactly that many panels, so the created comic lists that many panels.
+- Statement: the create form has a required "Number of panels" field after the story and before the comic style choice, prefilled with 5 and hinted "1–30"; the create-comic prompt asks the AI for exactly that many panels, so the created comic lists that many panels.
 - Why: users want to choose how long a new comic is instead of getting 5–10 panels the AI picks.
 - Proven by: tagged tests
 
@@ -929,4 +929,18 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: after the last panel the viewer shows an ending block with "The end", the panel count ("1 panel" / "N panels"), and the links "Download comic" (the same file as the header link), "Back to editing" (`/comic/<id>`) and "All comics" (`/`). A decorative "·" and arrow are hidden from assistive technology.
 - Why: readers reach an end and know where to go next (#299).
+- Proven by: tagged tests
+
+### REQ-306-1 The comic style is a radio group of cards
+
+- Status: active
+- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of three cards, Anime, Classic Marvel and Franco-Belgian in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
+- Why: the styles are compared side by side, with native radio semantics and keyboard behaviour (#306).
+- Proven by: tagged tests
+
+### REQ-306-2 The style cards are side by side from 48em and stack below it
+
+- Status: active
+- Statement: the style cards sit side by side in one row from 48em and stack as full-width rows below it, each row showing its radio dot; the checked style is sent as `style` and the created comic has that style.
+- Why: three cards need the width, and on a phone full-width rows are easy to hit (#306).
 - Proven by: tagged tests

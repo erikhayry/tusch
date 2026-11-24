@@ -74,20 +74,6 @@ test.describe('keyboard: buttons activate with Enter and Space', { tag: '@REQ-03
 });
 
 test('keyboard: a select changes value by typing', { tag: '@REQ-037' }, async ({ page }) => {
-	// The comic style select is the only one with several options (the mock
-	// gateway lists a single model per kind).
-	await gotoHydrated(page, VIEWS.create);
-	const select = page.getByRole('combobox', { name: m.comicStyles() });
-	await tabTo(page, select);
-	const options = await select.getByRole('option').allTextContents();
-	expect(options.length).toBeGreaterThan(2);
-	await expect(select).toHaveValue(options[0]);
-
-	// Type-ahead only: ArrowDown on a closed select opens the menu on macOS but
-	// moves to the next option on Linux, so arrow keys can't be asserted portably.
-	await chooseOption(page, select, options[2]);
-	await expect(select).toHaveValue(options[2]);
-
 	// Settings: the model select is reachable and operable too.
 	await gotoHydrated(page, VIEWS.settings);
 	const model = page.getByRole('combobox', { name: m.selectTextModel() });
