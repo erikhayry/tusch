@@ -18,6 +18,9 @@ export const CreatePanelImageFormPropsSchema = z.object({
 		[REFERENCE_IMAGES_KEY]: true,
 		[EXISTING_IMAGE_VALUE_KEY]: true,
 	}),
+	/** The panel's number and title, named in the progress dialog (REQ-301-1). */
+	panelNumber: z.number().int().positive(),
+	panelTitle: z.string().optional(),
 	imageName: z.string().optional(),
 	/** The variant `imageName` is; sets the preview's orientation (REQ-172-1). */
 	imageVariant: ImageVariantEnum.optional(),

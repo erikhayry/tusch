@@ -67,10 +67,12 @@
 
 <Section data-testId={PanelTestId}>
 	<p class="position">{m.panelOfTotal({ number, total: totalNumberOfPanels })}</p>
-	<Heading>{panel.editorialTitle || m.panel({ number })}</Heading>
+	<Heading tabindex={-1}>{panel.editorialTitle || m.panel({ number })}</Heading>
 	<p>{panel.visualDescription}</p>
 	{#if panel.image === undefined}
 		<CreatePanelImageForm
+			panelNumber={number}
+			panelTitle={panel.editorialTitle}
 			label={m.addImage()}
 			{characterReferences}
 			values={toCreatePanelImageValues(comicId, panel, characters, style, imageFormat)}
@@ -87,6 +89,8 @@
 			<!-- While a variant is missing, only that variant is offered: the two forms
 			     would both have an instructions field, and regenerating replaces both. -->
 			<CreatePanelImageForm
+				panelNumber={number}
+				panelTitle={panel.editorialTitle}
 				label={CREATE_LABELS[missingVariant]()}
 				baseImage={primaryVariant(panel.image)?.asset.src}
 				{characterReferences}
@@ -96,6 +100,8 @@
 			/>
 		{:else}
 			<CreatePanelImageForm
+				panelNumber={number}
+				panelTitle={panel.editorialTitle}
 				label={m.generateNewImage()}
 				imageName={primaryVariant(panel.image)?.asset.src}
 				imageVariant={primaryVariant(panel.image)?.variant}

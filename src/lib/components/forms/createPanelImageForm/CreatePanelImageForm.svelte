@@ -12,19 +12,78 @@
 		type CreatePanelImageResult,
 	} from '#lib/features/panels/contracts/createPanelImage.ts';
 	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
-	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import { enhanceAction, type SubmissionProgress } from '#lib/forms/enhance-action.ts';
 	import { encodeFormValue } from '#lib/forms/form-data.ts';
 	import { variantFailedMessage } from '#lib/forms/variant-failure.ts';
 	import { m } from '#lib/paraglide/messages.js';
-	import { ImageVariantEnum } from '#lib/types/index.ts';
+	import { ImageFormatEnum, ImageVariantEnum, type ImageFormat } from '#lib/types/index.ts';
 	import {
+		IMAGE_FORMAT_VALUE_KEY,
 		IMAGE_VALUE_KEY,
 		INCLUDE_IMAGE_VALUE_KEY,
 		INSTRUCTIONS_VALUE_KEY,
 	} from '#lib/utils/db/dbTypes.ts';
+	import { onDestroy, tick } from 'svelte';
 
+	import GeneratingImageDialog from '../../generatingImageDialog/GeneratingImageDialog.svelte';
 	import Image from '../../image/Image.svelte';
 	import type { CreatePanelImageFormProps } from './createPanelImageFormTypes';
+
+	let {
+		label,
+		values,
+		panelNumber,
+		panelTitle,
+		imageName,
+		imageVariant = ImageVariantEnum.enum.portrait,
+		characterReferences,
+		baseImage,
+		onSuccess,
+		submitButton = $bindable(),
+	}: CreatePanelImageFormProps & { submitButton?: HTMLButtonElement } = $props();
+
+	/** Set while a request runs; the dialog shows it in place of the global loader (REQ-301-1). */
+	let generation = $state<{ startedAt: number } | undefined>();
+	let cancelRequest: (() => void) | undefined;
+	let starter: HTMLButtonElement | undefined;
+	let headingFallback: HTMLElement | undefined;
+
+	/** Focus goes back to the button that started the image, or the panel heading if that is gone (REQ-301-2). */
+	async function restoreFocus() {
+		// Wait until the dialog has closed: an inert page can't take focus.
+		await tick();
+		(starter?.isConnected ? starter : headingFallback)?.focus();
+	}
+
+	const progress: SubmissionProgress = {
+		start(abort) {
+			cancelRequest = abort;
+			starter = submitButton;
+			// The panel heading is the first heading in the panel's section, before the form.
+			headingFallback =
+				submitButton?.form
+					?.closest('section')
+					?.querySelector<HTMLHeadingElement>('h1, h2, h3, h4, h5, h6') ?? undefined;
+			generation = { startedAt: Date.now() };
+		},
+		end() {
+			cancelRequest = undefined;
+			generation = undefined;
+			void restoreFocus();
+		},
+	};
+
+	// Leaving the panel aborts its request in the browser, with no prompt (REQ-301-4).
+	onDestroy(() => cancelRequest?.());
+
+	const VARIANT_LABELS: Record<ImageFormat, () => string> = {
+		both: () => m.generatingImageBoth(),
+		portrait: () => m.generatingImagePortrait(),
+		landscape: () => m.generatingImageLandscape(),
+	};
+	const variantsLabel = $derived(
+		VARIANT_LABELS[values[IMAGE_FORMAT_VALUE_KEY] ?? ImageFormatEnum.enum.both](),
+	);
 
 	const handleSubmit = withGlobalInstructions(
 		enhanceAction<CreatePanelImageResult>(
@@ -42,19 +101,9 @@
 				await update();
 				onSuccess?.();
 			},
+			{ progress },
 		),
 	);
-
-	let {
-		label,
-		values,
-		imageName,
-		imageVariant = ImageVariantEnum.enum.portrait,
-		characterReferences,
-		baseImage,
-		onSuccess,
-		submitButton = $bindable(),
-	}: CreatePanelImageFormProps & { submitButton?: HTMLButtonElement } = $props();
 
 	// The preview keeps the orientation of the image it shows, at the same 2:3 or 3:2 box.
 	const previewSize = $derived(
@@ -153,3 +202,13 @@
 
 	<button type="submit" bind:this={submitButton}>{label}</button>
 </form>
+
+<!-- Outside the form: its Cancel button must not submit it. -->
+<GeneratingImageDialog
+	open={generation !== undefined}
+	startedAt={generation?.startedAt ?? 0}
+	{panelNumber}
+	{panelTitle}
+	variants={variantsLabel}
+	onCancel={() => cancelRequest?.()}
+/>
