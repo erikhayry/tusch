@@ -124,5 +124,14 @@
 	"settings": "Inställningar",
 	"backToEditing": "Tillbaka till redigeringen",
 	"allComics": "Alla serier",
-	"theEnd": "Slut"
+	"theEnd": "Slut",
+	"generatingImageTitle": "Skapar bild…",
+	"generatingImageBoth": "stående och liggande",
+	"generatingImagePortrait": "stående",
+	"generatingImageLandscape": "liggande",
+	"generatingImageElapsed": "Förfluten tid",
+	"generatingImageProgress": "Skapar bild",
+	"generatingImageNote": "Tar oftast 1–2 minuter. Stanna på sidan; lämnar du den avbryts bilden.",
+	"cancelGeneration": "Avbryt",
+	"generatingImageAnnouncement": "Skapar bild. Det kan ta ett par minuter."
 }

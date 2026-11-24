@@ -167,5 +167,14 @@
 	"createComicSubmit": "Create comic",
 	"backToEditing": "Back to editing",
 	"allComics": "All comics",
-	"theEnd": "The end"
+	"theEnd": "The end",
+	"generatingImageTitle": "Generating image…",
+	"generatingImageBoth": "portrait and landscape",
+	"generatingImagePortrait": "portrait",
+	"generatingImageLandscape": "landscape",
+	"generatingImageElapsed": "Elapsed",
+	"generatingImageProgress": "Generating image",
+	"generatingImageNote": "Usually takes 1–2 minutes. Stay on this page; leaving it cancels the image.",
+	"cancelGeneration": "Cancel generation",
+	"generatingImageAnnouncement": "Generating image. This can take a couple of minutes."
 }

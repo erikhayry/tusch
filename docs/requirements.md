@@ -756,21 +756,21 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-041 A running submission shows what is running
 
 - Status: active
-- Statement: while a form submission runs, the global loader shows an indeterminate progress bar (a `<progress>` with no value, named by the label) and a label naming the action, e.g. "Generating panel image...".
+- Statement: while a form submission runs (except panel image generation, which shows the overlay of REQ-301-1 instead), the global loader shows an indeterminate progress bar (a `<progress>` with no value, named by the label) and a label naming the action, e.g. "Generating panel image...".
 - Why: AI calls take seconds to half a minute; users can't tell what is running or whether it is stuck.
 - Proven by: tagged tests
 
 ### REQ-042 A running submission shows the seconds elapsed
 
 - Status: active
-- Statement: while a form submission runs, the global loader shows the whole seconds elapsed since submit ("0 s", "1 s", …), updated every second; the bar, label and timer disappear when the submission finishes, whether it succeeds or fails.
+- Statement: while a form submission runs (except panel image generation, REQ-301-1), the global loader shows the whole seconds elapsed since submit ("0 s", "1 s", …), updated every second; the bar, label and timer disappear when the submission finishes, whether it succeeds or fails.
 - Why: a ticking counter shows the action is alive and how long it has taken.
 - Proven by: tagged tests
 
 ### REQ-043 Screen readers hear the start and the end, not the ticks
 
 - Status: active
-- Statement: a screen reader hears the action's label when a submission starts and "Done" when it succeeds; the elapsed seconds are not inside a live region, and "Done" is not announced when the submission fails (the error is).
+- Statement: a screen reader hears the action's label when a submission starts (panel image generation: the overlay's announcement, REQ-301-5) and "Done" when it succeeds; the elapsed seconds are not inside a live region, and "Done" is not announced when the submission fails (the error is).
 - Why: a counter inside a live region would be read out every second.
 - Proven by: tagged tests
 
@@ -929,4 +929,46 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: after the last panel the viewer shows an ending block with "The end", the panel count ("1 panel" / "N panels"), and the links "Download comic" (the same file as the header link), "Back to editing" (`/comic/<id>`) and "All comics" (`/`). A decorative "·" and arrow are hidden from assistive technology.
 - Why: readers reach an end and know where to go next (#299).
+- Proven by: tagged tests
+
+### REQ-301-1 Generating a panel image opens a progress dialog
+
+- Status: active
+- Statement: starting a panel image generation ("Generate new image", "Create portrait image" or "Create landscape image") opens a modal dialog named "Generating image…" with the subtitle "Panel <n>", the panel title (omitted if empty) and the variants being made, an `mm:ss` timer counting up from 0:00 once a second, a progress bar named "Generating image", a note and a "Cancel generation" button. No global loader bar, label or seconds timer shows meanwhile. The dialog closes when the request succeeds or fails; a failure shows the error as before.
+- Why: a panel image takes 1-2 minutes; the user needs to see progress, what is being made and a way out (#301).
+- Proven by: tagged tests
+
+### REQ-301-2 The dialog holds focus and ignores Escape
+
+- Status: active
+- Statement: while the dialog is open the panel page behind it can't be focused or activated, Tab stays inside the dialog and Escape does nothing. When it closes, focus returns to the button that started it, or to the panel heading if that button is gone.
+- Why: a stray key must not throw away a paid image, and keyboard users keep their place (#301).
+- Proven by: tagged tests
+
+### REQ-301-3 Cancel generation aborts the request and keeps the panel as it was
+
+- Status: active
+- Statement: "Cancel generation" aborts the request in the browser and closes the dialog: the panel image, its variants and the restore point (REQ-048) are unchanged and no error is shown.
+- Why: the user can back out of a long wait without losing anything (#301). The server's call is not stopped (#315).
+- Proven by: tagged tests
+
+### REQ-301-4 Leaving the panel page aborts the generation
+
+- Status: active
+- Statement: leaving the panel page while the dialog is open (in-app navigation or browser Back) aborts the request with no prompt; back on the panel, nothing from that request was saved.
+- Why: the generation belongs to the page that started it; a prompt would add friction for no gain (#301).
+- Proven by: tagged tests
+
+### REQ-301-5 Screen readers hear one announcement, not the timer
+
+- Status: active
+- Statement: a screen reader hears "Generating image. This can take a couple of minutes." once when the dialog opens; the timer (`role="timer"`) is not inside a live region.
+- Why: a ticking counter in a live region would be read out every second (REQ-043).
+- Proven by: tagged tests
+
+### REQ-301-6 Reduced motion slows the spinner and stills the bar
+
+- Status: active
+- Statement: with `prefers-reduced-motion: reduce` the dialog's spinner turns once per 2.4 s and the progress bar has no animation.
+- Why: motion-sensitive users get a calmer indicator that still shows work is running (#301).
 - Proven by: tagged tests

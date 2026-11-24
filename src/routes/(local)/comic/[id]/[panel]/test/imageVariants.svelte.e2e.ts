@@ -8,12 +8,12 @@ import {
 import { imagesFromPanel, storedComic } from '../../../../../../tests/e2e/createdComic';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
 import {
+	comicWithImage,
 	createComicWithFormat,
 	orientationsOf,
 	panelImages,
 	setImageFormat,
 	variantCaption,
-	type ImageFormat,
 } from '../../../../../../tests/e2e/imageFormat';
 import { activate } from '../../../../../../tests/e2e/keyboard';
 import { storedFiles } from '../../../../../../tests/e2e/storage';
@@ -35,18 +35,6 @@ const removeVariantButton = (page: Page, variant: 'portrait' | 'landscape') =>
 async function press(page: Page, button: Locator) {
 	await expect(button).toBeVisible();
 	await activate(page, button);
-}
-
-/** A created comic whose first panel has an image made under `format` (what a user does). */
-async function comicWithImage(page: Page, format: ImageFormat) {
-	const { comicId, panelId } = await createComicWithFormat(page, format);
-	await gotoHydrated(page, `/comic/${comicId}/${panelId}`);
-	await activate(page, page.getByRole('button', { name: m.addImage() }));
-	await expect(panelImages(page).first()).toBeVisible();
-	await expect
-		.poll(async () => imagesFromPanel(await storedComic(page, comicId), panelId).length)
-		.toBeGreaterThan(0);
-	return { comicId, panelId };
 }
 
 async function storedImage(page: Page, comicId: string, panelId: string) {
