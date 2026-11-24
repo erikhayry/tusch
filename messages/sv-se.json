@@ -138,5 +138,14 @@
 	"globalInstructionsCount": "{count} av {max}",
 	"styleAnimeDescription": "Rena linjer, cellskuggning, klara färger",
 	"styleClassicMarvelDescription": "Kraftigt tusch, rasterpunkter, 60-talstryck",
-	"styleFrancoBelgianDescription": "Klar linje, platta färger, inga skuggor"
+	"styleFrancoBelgianDescription": "Klar linje, platta färger, inga skuggor",
+	"generatingImageTitle": "Skapar bild…",
+	"generatingImageBoth": "stående och liggande",
+	"generatingImagePortrait": "stående",
+	"generatingImageLandscape": "liggande",
+	"generatingImageElapsed": "Förfluten tid",
+	"generatingImageProgress": "Skapar bild",
+	"generatingImageNote": "Tar oftast 1–2 minuter. Stanna på sidan; lämnar du den avbryts bilden.",
+	"cancelGeneration": "Avbryt",
+	"generatingImageAnnouncement": "Skapar bild. Det kan ta ett par minuter."
 }

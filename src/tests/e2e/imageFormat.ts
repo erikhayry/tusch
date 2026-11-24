@@ -1,6 +1,6 @@
 import { m } from '#lib/paraglide/messages.js';
 import { expect, type Locator, type Page } from '@playwright/test';
-import { createComic, storedComic } from './createdComic';
+import { createComic, imagesFromPanel, storedComic } from './createdComic';
 import { gotoHydrated } from './gotoHydrated';
 import { activate, chooseOption } from './keyboard';
 
@@ -86,4 +86,16 @@ export async function orientationsOf(images: Locator): Promise<string[]> {
 		.toBe(true);
 	const orientations = await Promise.all((await images.all()).map(orientationOf));
 	return orientations.sort((a, b) => a.localeCompare(b));
+}
+
+/** A created comic whose first panel has an image made under `format` (what a user does). */
+export async function comicWithImage(page: Page, format: ImageFormat) {
+	const { comicId, panelId } = await createComicWithFormat(page, format);
+	await gotoHydrated(page, `/comic/${comicId}/${panelId}`);
+	await activate(page, page.getByRole('button', { name: m.addImage() }));
+	await expect(panelImages(page).first()).toBeVisible();
+	await expect
+		.poll(async () => imagesFromPanel(await storedComic(page, comicId), panelId).length)
+		.toBeGreaterThan(0);
+	return { comicId, panelId };
 }

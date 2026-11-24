@@ -179,5 +179,14 @@
 	"globalInstructionsCount": "{count} of {max}",
 	"styleAnimeDescription": "Clean lines, cel shading, bright colours",
 	"styleClassicMarvelDescription": "Bold ink, halftone dots, 1960s print",
-	"styleFrancoBelgianDescription": "Clear line, flat colours, no shadows"
+	"styleFrancoBelgianDescription": "Clear line, flat colours, no shadows",
+	"generatingImageTitle": "Generating image…",
+	"generatingImageBoth": "portrait and landscape",
+	"generatingImagePortrait": "portrait",
+	"generatingImageLandscape": "landscape",
+	"generatingImageElapsed": "Elapsed",
+	"generatingImageProgress": "Generating image",
+	"generatingImageNote": "Usually takes 1–2 minutes. Stay on this page; leaving it cancels the image.",
+	"cancelGeneration": "Cancel generation",
+	"generatingImageAnnouncement": "Generating image. This can take a couple of minutes."
 }
