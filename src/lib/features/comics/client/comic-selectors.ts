@@ -94,6 +94,13 @@ const STYLE_NAMES: Record<ComicStyle, () => string> = {
 	anime: m.styleAnime,
 	'classic-marvel': m.styleClassicMarvel,
 	'franco-belgian': m.styleFrancoBelgian,
+	manga: m.styleManga,
+	noir: m.styleNoir,
+	'newspaper-strip': m.styleNewspaperStrip,
+	watercolour: m.styleWatercolour,
+	webtoon: m.styleWebtoon,
+	'pop-art': m.stylePopArt,
+	'ukiyo-e': m.styleUkiyoE,
 };
 
 /** "Example · Anime · 3 panels" on a bundled example, "Anime · 1 panel" on the user's own. */
