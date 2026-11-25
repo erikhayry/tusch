@@ -1035,3 +1035,31 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: printed, a cover or panel with both variants shows the portrait one, in the viewer and the downloaded file, whatever the page orientation.
 - Why: the pages are portrait, so the portrait image fits them (#89).
 - Proven by: tagged tests
+
+### REQ-311-1 The nested comic views show a breadcrumb in the header
+
+- Status: active
+- Statement: the comic overview (`/comic/<id>`) and the panel page (`/comic/<id>/<panel>`) show a breadcrumb in the header as a second row under the wordmark row at every width: a `<nav aria-label="Breadcrumb">` holding an `<ol>`. The overview reads "Comics / <title>", the panel page "Comics / <title> / Panel <position>" (1-based, as in the panel list). "Comics" links to `/`, the title (when not current) links to `/comic/<id>`, and the last item is bold plain text, not a link, with `aria-current="page"`. The "/" separators are `aria-hidden`.
+- Why: users see where they are and can go up a level (#311).
+- Proven by: tagged tests
+
+### REQ-311-2 A breadcrumb title is one line, and an empty title is named
+
+- Status: active
+- Statement: a breadcrumb title is cut to one line with an ellipsis and the full title stays its accessible name; an empty title shows "Untitled comic".
+- Why: a long title must not push the header taller or off the 320 px screen (#311).
+- Proven by: tagged tests
+
+### REQ-311-3 Other views have no breadcrumb
+
+- Status: active
+- Statement: `/`, `/comic/create`, `/settings`, the viewer and the not-found page have no "Breadcrumb" navigation.
+- Why: they are top level, one level below home with their own back link, or have their own header (#311).
+- Proven by: tagged tests
+
+### REQ-311-4 The panel page has no "Back to Comic" link
+
+- Status: active
+- Statement: the panel page has no "Back to Comic" link; the breadcrumb's title link replaces it.
+- Why: one way up, not two (#311).
+- Proven by: tagged tests

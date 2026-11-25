@@ -29,6 +29,7 @@
 	"comicStyle": "Style",
 	"characters": "Characters",
 	"untitledComic": "Untitled comic",
+	"breadcrumb": "Breadcrumb",
 	"comics": "Comics",
 	"createNewComic": "Create New Comic",
 	"deleteCaption": "Remove Caption {number}",

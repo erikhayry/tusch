@@ -109,7 +109,6 @@
 				{/if}
 				<a href={resolve(`comic/${comicId}/view`)}>{m.readThisComic()}</a>
 			</div>
-			<a href={resolve(`comic/${comicId}`)}>{m.backToComic()}</a>
 		</div>
 	</div>
 </Section>
