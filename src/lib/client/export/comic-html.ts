@@ -57,9 +57,10 @@ export function escapeHtml(value: string): string {
 function renderImage(image: EmbeddedImage): string {
 	const { alt, portrait, landscape } = image;
 	if (portrait && landscape) {
-		// The browser picks the file by orientation (REQ-103-5). The <img> is sized from the
-		// portrait file, as in the viewer, so the box is reserved.
-		return `<picture><source media="(orientation: landscape)" srcset="${escapeHtml(landscape.src)}"><img src="${escapeHtml(portrait.src)}" width="${portrait.width}" height="${portrait.height}" alt="${escapeHtml(alt)}"></picture>`;
+		// The browser picks the file by orientation (REQ-103-5); `screen` keeps print on the
+		// portrait file (REQ-89-4). The <img> is sized from the portrait file, as in the viewer,
+		// so the box is reserved.
+		return `<picture><source media="screen and (orientation: landscape)" srcset="${escapeHtml(landscape.src)}"><img src="${escapeHtml(portrait.src)}" width="${portrait.width}" height="${portrait.height}" alt="${escapeHtml(alt)}"></picture>`;
 	}
 	const only = portrait ?? landscape;
 	if (!only) {
