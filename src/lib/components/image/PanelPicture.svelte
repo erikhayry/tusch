@@ -23,11 +23,12 @@
 
 {#if image.portrait && image.landscape}
 	<!--
-		The browser picks the file: landscape on a landscape viewport, portrait otherwise
-		(REQ-103-5). The <img> is sized from the portrait file so the box is reserved.
+		The browser picks the file: landscape on a landscape screen, portrait otherwise
+		(REQ-103-5). Printed pages are always portrait (REQ-89-4), so `screen` keeps print
+		on the portrait file. The <img> is sized from the portrait file so the box is reserved.
 	-->
 	<picture>
-		<source media="(orientation: landscape)" srcset={landscapeUrl} />
+		<source media="screen and (orientation: landscape)" srcset={landscapeUrl} />
 		<img
 			src={portraitUrl}
 			width={image.portrait.width}
