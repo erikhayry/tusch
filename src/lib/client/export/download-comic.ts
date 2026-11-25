@@ -11,8 +11,7 @@ import {
 	type ExportedComic,
 } from './comic-html.ts';
 
-// Revoking at once can cancel the save in some browsers, so the URL lives a while.
-const REVOKE_DELAY_MS = 10_000;
+import { saveFile } from './save-file.ts';
 
 type AssetReader = Pick<AssetStore, 'read'>;
 
@@ -77,14 +76,5 @@ export async function buildComicHtml(
 /** Saves the comic as one `.html` file (REQ-88-1). */
 export async function downloadComicHtml(comic: Comic): Promise<void> {
 	const { fileName, html } = await buildComicHtml(comic);
-	const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-
-	const link = document.createElement('a');
-	link.href = url;
-	link.download = fileName;
-	document.body.append(link);
-	link.click();
-	link.remove();
-
-	setTimeout(() => URL.revokeObjectURL(url), REVOKE_DELAY_MS);
+	saveFile(fileName, new Blob([html], { type: 'text/html' }));
 }
