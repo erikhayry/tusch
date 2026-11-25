@@ -10,17 +10,18 @@ const STYLES = () => [
 	{ name: m.styleAnime(), description: m.styleAnimeDescription() },
 	{ name: m.styleClassicMarvel(), description: m.styleClassicMarvelDescription() },
 	{ name: m.styleFrancoBelgian(), description: m.styleFrancoBelgianDescription() },
+	{ name: m.styleCustom(), description: m.styleCustomDescription() },
 ];
 
 test(
-	'the comic style is a radio group of three cards with Anime checked',
+	'the comic style is a radio group of four cards with Anime checked',
 	{ tag: '@REQ-306-1' },
 	async ({ page }) => {
 		const createPage = await new CreatePage(page).goto();
 		const group = page.getByRole('group', { name: m.comicStyles() });
 
 		await expect(group).toBeVisible();
-		await expect(group.getByRole('radio')).toHaveCount(3);
+		await expect(group.getByRole('radio')).toHaveCount(4);
 		for (const [index, { name, description }] of STYLES().entries()) {
 			await expect(group.getByRole('radio').nth(index)).toHaveAccessibleName(name);
 			await expect(group.getByText(description)).toBeVisible();
@@ -60,13 +61,13 @@ test.describe('the style cards form a full-width grid', { tag: '@REQ-306-2' }, (
 		[390, 844],
 		[320, 640],
 	]) {
-		test(`three cards share a row, fill the width and have a gap at ${width}px`, async ({
+		test(`three cards share a row, fill the width and have a gap, the fourth wraps, at ${width}px`, async ({
 			page,
 		}) => {
 			await page.setViewportSize({ width, height });
 			await new CreatePage(page).goto();
 			const cards = page.getByRole('group', { name: m.comicStyles() }).locator('label');
-			await expect(cards).toHaveCount(3);
+			await expect(cards).toHaveCount(4);
 
 			const { boxes, container } = await cards.evaluateAll((els) => {
 				const rect = (el: Element) => el.getBoundingClientRect();
@@ -80,7 +81,8 @@ test.describe('the style cards form a full-width grid', { tag: '@REQ-306-2' }, (
 					return { x, right };
 				}
 			});
-			expect(new Set(boxes.map((b) => Math.round(b.y))).size).toBe(1);
+			expect(new Set(boxes.slice(0, 3).map((b) => Math.round(b.y))).size).toBe(1);
+			expect(boxes[3].y).toBeGreaterThan(boxes[0].y);
 			expect(Math.abs(boxes[0].x - container.x)).toBeLessThan(1.5);
 			expect(Math.abs(boxes[2].right - container.right)).toBeLessThan(1.5);
 			for (const [left, right] of [
@@ -91,26 +93,6 @@ test.describe('the style cards form a full-width grid', { tag: '@REQ-306-2' }, (
 			}
 		});
 	}
-
-	test('a fourth card wraps to a new row of the same grid at 390px', async ({ page }) => {
-		await page.setViewportSize({ width: 390, height: 844 });
-		await new CreatePage(page).goto();
-		const cards = page.getByRole('group', { name: m.comicStyles() }).locator('label');
-		// More styles are coming; add one to the grid to see where it lands.
-		await cards.first().evaluate((el) => el.parentElement?.append(el.cloneNode(true)));
-		await expect(cards).toHaveCount(4);
-
-		const boxes = await cards.evaluateAll((els) =>
-			els.map((el) => {
-				const { x, y, width } = el.getBoundingClientRect();
-				return { x, y, width };
-			}),
-		);
-		expect(Math.round(boxes[2].y)).toBe(Math.round(boxes[0].y));
-		expect(boxes[3].y).toBeGreaterThan(boxes[0].y);
-		expect(Math.abs(boxes[3].x - boxes[0].x)).toBeLessThan(1.5);
-		expect(Math.abs(boxes[3].width - boxes[0].width)).toBeLessThan(1.5);
-	});
 });
 
 test(

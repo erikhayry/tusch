@@ -9,6 +9,8 @@ export class CreatePage {
 	readonly urlInput: Locator;
 	readonly storyInput: Locator;
 	readonly storyCount: Locator;
+	readonly customStyleInput: Locator;
+	readonly customStyleCount: Locator;
 	readonly panelCountInput: Locator;
 	readonly submitButton: Locator;
 	readonly error: Locator;
@@ -19,6 +21,8 @@ export class CreatePage {
 		this.urlInput = page.getByRole('textbox', { name: m.urlToSource() });
 		this.storyInput = page.getByRole('textbox', { name: m.yourStory() });
 		this.storyCount = page.getByText(/^[\d,]+ of 10,000$/);
+		this.customStyleInput = page.getByRole('textbox', { name: m.customStyleLabel() });
+		this.customStyleCount = page.getByText(/^[\d,]+ of 500$/);
 		this.panelCountInput = page.getByRole('spinbutton', { name: m.createComicPanelCount() });
 		this.submitButton = page.getByRole('button', { name: m.createComicSubmit() });
 		this.error = page.getByTestId('error-test-id');

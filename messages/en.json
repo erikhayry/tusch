@@ -190,5 +190,10 @@
 	"generatingImageProgress": "Generating image",
 	"generatingImageNote": "Usually takes 1–2 minutes. Stay on this page; leaving it cancels the image.",
 	"cancelGeneration": "Cancel generation",
-	"generatingImageAnnouncement": "Generating image. This can take a couple of minutes."
+	"generatingImageAnnouncement": "Generating image. This can take a couple of minutes.",
+	"styleCustom": "Custom",
+	"styleCustomDescription": "Describe it in your own words",
+	"customStyleLabel": "Describe your style",
+	"customStyleTooShort": "Describe your style in at least 10 characters",
+	"customStyleTooLong": "Keep the description to 500 characters or fewer"
 }

@@ -16,6 +16,7 @@ const STYLE_NAMES = {
 	anime: m.styleAnime(),
 	'classic-marvel': m.styleClassicMarvel(),
 	'franco-belgian': m.styleFrancoBelgian(),
+	custom: m.styleCustom(),
 } as const;
 
 /** The meta line of a card (REQ-295-1). */
