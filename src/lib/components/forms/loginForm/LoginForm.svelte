@@ -13,6 +13,8 @@
 		type ValidateApiKeyResult,
 	} from '#lib/features/settings/contracts/validateApiKey.ts';
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import type { FieldMessages } from '#lib/forms/form-failure.ts';
+	import FieldError from '#lib/components/fieldError/FieldError.svelte';
 	import { tick } from 'svelte';
 
 	import { type LoginFormProps } from './loginFormTypes';
@@ -21,6 +23,7 @@
 
 	let success = $state<boolean | null>(null);
 	let statusElement = $state<HTMLElement>();
+	let fieldErrors = $state<FieldMessages>({});
 
 	// Failures (invalid input, rate limits, provider errors) surface in the global
 	// error region via the shared enhancer.
@@ -37,6 +40,11 @@
 			// body. Move it to the status line, which the screen reader announces too.
 			await tick();
 			statusElement?.focus();
+		},
+		{
+			onFieldErrors: (messages) => {
+				fieldErrors = messages;
+			},
 		},
 	);
 
@@ -70,10 +78,12 @@
 				name="key"
 				autocomplete="off"
 				placeholder={m.keyPlaceholder()}
-				aria-describedby="key-hint"
+				aria-invalid={fieldErrors.key ? 'true' : undefined}
+				aria-describedby={fieldErrors.key ? 'key-hint key-error' : 'key-hint'}
 			/>
 		</label>
 		<p id="key-hint">{m.keyHint()}</p>
+		<FieldError id="key-error" message={fieldErrors.key} />
 
 		<button type="submit">{m.add()}</button>
 	</form>
