@@ -51,7 +51,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-295-1 A library card shows its style and panel count
 
 - Status: active
-- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (any of the ten style names in REQ-306-1) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
+- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (any of the eleven style names in REQ-306-1) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
 - Why: the card says what a comic is without opening it (#295).
 - Proven by: tagged tests
 
