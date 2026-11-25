@@ -1,5 +1,6 @@
 import { m } from '#lib/paraglide/messages.js';
 import { TEXT_MODEL_KEY } from '#lib/types/index.ts';
+import type { Locale } from '#lib/paraglide/runtime.js';
 import type { Locator, Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../tests/e2e/gotoHydrated';
 import { KEY_COPY } from '../../../../tests/e2e/keyCopy';
@@ -30,7 +31,7 @@ export class CreatePage {
 	readonly saveGlobalInstructionsButton: Locator;
 	readonly error: Locator;
 
-	constructor(page: Page) {
+	constructor(page: Page, locale: Locale = 'en') {
 		this.page = page;
 		this.globalInstructionsInput = page.getByRole('textbox', {
 			name: SETTINGS_COPY.en.globalInstructionsLabel,
@@ -41,7 +42,10 @@ export class CreatePage {
 		this.error = page.getByTestId('error-test-id');
 		this.heading = page.getByRole('heading', { name: m.settings(), level: 1 });
 		this.backLink = page.getByRole('link', { name: m.back() });
-		this.keyInput = page.getByRole('textbox', { name: SETTINGS_COPY.en.byok, exact: true });
+		this.keyInput = page.getByRole('textbox', {
+			name: SETTINGS_COPY[locale === 'en' ? 'en' : 'sv-se'].byok,
+			exact: true,
+		});
 		this.successMessage = page.getByText(m.keyAdded());
 		this.invalidKeyMessage = page.getByText(m.invalidKey());
 		this.keyStatus = page.getByText(KEY_COPY.keyStatus);

@@ -1091,3 +1091,24 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: a new service worker takes over on the next load without a prompt and deletes the caches of older versions, so only the current version's cache exists.
 - Why: a deploy must not leave stale files or unbounded storage behind (#93).
 - Proven by: tagged tests
+
+### REQ-201-1 An invalid field is marked and explained next to it
+
+- Status: active
+- Statement: when a server-backed form rejects a field (a story under 20 characters on create comic, an empty API key on Settings), the field gets `aria-invalid="true"` and its accessible description includes a translated message about that field, not the schema library's default English text.
+- Why: users, screen reader users in particular, must be told which field is wrong and why (WCAG 3.3.1, 3.3.3) (#201).
+- Proven by: tagged tests
+
+### REQ-201-2 The generic invalid-input message is translated
+
+- Status: active
+- Statement: the message shown in the error region when submitted values are invalid is in the user's language; in Swedish it is never the English "Submitted values are invalid".
+- Why: Swedish users saw English (#201).
+- Proven by: tagged tests
+
+### REQ-201-3 A corrected field is no longer marked invalid
+
+- Status: active
+- Statement: once the user submits valid input, the field no longer has `aria-invalid="true"` and the field message is gone.
+- Why: a stale error would tell the user something that is no longer true (#201).
+- Proven by: tagged tests
