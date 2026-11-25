@@ -5,6 +5,7 @@
 	"addPanelBefore": "Lägg till panel före panel {number}",
 	"addPanelAfter": "Lägg till panel efter panel {number}",
 	"untitledComic": "Namnlös serie",
+	"breadcrumb": "Brödsmulespår",
 	"newCaption": "Ny bildtext",
 	"loadingCreateComic": "Skapar serie...",
 	"loadingCreatePanelImage": "Skapar rutans bild...",
