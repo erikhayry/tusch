@@ -149,5 +149,19 @@
 	"generatingImageProgress": "Skapar bild",
 	"generatingImageNote": "Tar oftast 1–2 minuter. Stanna på sidan; lämnar du den avbryts bilden.",
 	"cancelGeneration": "Avbryt",
-	"generatingImageAnnouncement": "Skapar bild. Det kan ta ett par minuter."
+	"generatingImageAnnouncement": "Skapar bild. Det kan ta ett par minuter.",
+	"styleManga": "Manga",
+	"styleNoir": "Noir",
+	"styleNewspaperStrip": "Dagstidningsserie",
+	"styleWatercolour": "Akvarellsaga",
+	"styleWebtoon": "Webtoon",
+	"stylePopArt": "Popkonst",
+	"styleUkiyoE": "Ukiyo-e",
+	"styleMangaDescription": "Svartvitt, raster, fartlinjer",
+	"styleNoirDescription": "Svartvitt, djupa skuggor, hårt ljus",
+	"styleNewspaperStripDescription": "Enkla linjer, klara platta färger",
+	"styleWatercolourDescription": "Mjuka laveringar, blyertslinjer, ljusa färger",
+	"styleWebtoonDescription": "Ren digital färg, mjuk skuggning",
+	"stylePopArtDescription": "Stora punkter, tjocka konturer, skrikiga färger",
+	"styleUkiyoEDescription": "Träsnitt, platta färger, kraftiga konturer"
 }

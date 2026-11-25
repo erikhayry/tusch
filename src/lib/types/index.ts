@@ -4,7 +4,18 @@ export const SeasonEnum = z.enum(['spring', 'summer', 'autumn', 'winter']);
 
 export const TimeOfDayEnum = z.enum(['dawn', 'morning', 'noon', 'afternoon', 'dusk', 'night']);
 
-export const ComicStyleEnum = z.enum(['anime', 'classic-marvel', 'franco-belgian']);
+export const ComicStyleEnum = z.enum([
+	'anime',
+	'classic-marvel',
+	'franco-belgian',
+	'manga',
+	'noir',
+	'newspaper-strip',
+	'watercolour',
+	'webtoon',
+	'pop-art',
+	'ukiyo-e',
+]);
 export type ComicStyle = z.infer<typeof ComicStyleEnum>;
 export const ComicStyleDescriptionSchema = z.object({
 	id: ComicStyleEnum,
