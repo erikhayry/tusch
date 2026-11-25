@@ -160,9 +160,16 @@ async function main(argv) {
 	await mkdir(out, { recursive: true });
 
 	const failed = [];
+	// Requests run one after another: a real key has rate limits, and a failure
+	// then names the one style that failed.
 	for (const style of styles) {
-		const file = path.join(out, `${style}.webp`);
+		const file = path.resolve(out, `${style}.webp`);
 		try {
+			// The id is from the fixed list, so this holds today; the check keeps every
+			// write inside `out` if that list ever takes free text.
+			if (!file.startsWith(`${out}${path.sep}`)) {
+				throw new Error('the swatch would be written outside the output folder');
+			}
 			await writeFile(file, await makeSwatch(style, { baseUrl: values['base-url'], apiKey }));
 			console.log(`${style}: wrote ${file}`);
 		} catch (error) {
