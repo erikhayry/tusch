@@ -3,6 +3,6 @@ import { generationEndpoint } from '#lib/server/actions/generation-endpoints.ts'
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = ({ request }) =>
-	generationEndpoint(request, CreateCoverImageValuesSchema, (generation, values) =>
-		generation.createCoverImage(values),
+	generationEndpoint(request, CreateCoverImageValuesSchema, (generation, values, signal) =>
+		generation.createCoverImage(values, signal),
 	);

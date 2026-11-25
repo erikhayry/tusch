@@ -3,6 +3,6 @@ import { generationEndpoint } from '#lib/server/actions/generation-endpoints.ts'
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = ({ request }) =>
-	generationEndpoint(request, CreatePanelValuesSchema, (generation, values) =>
-		generation.createPanel(values),
+	generationEndpoint(request, CreatePanelValuesSchema, (generation, values, signal) =>
+		generation.createPanel(values, signal),
 	);

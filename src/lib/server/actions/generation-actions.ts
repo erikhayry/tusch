@@ -41,7 +41,7 @@ export function createComicAction(
 			schema: CreateComicValuesSchema,
 			failureMessage: explainCreateComicError,
 		},
-		(generation, values) => generation.createComic(values),
+		(generation, values, signal) => generation.createComic(values, signal),
 		service,
 	);
 }
@@ -53,7 +53,7 @@ export function createCoverImageAction(
 	return runGeneration(
 		event,
 		{ decode: decodeCreateCoverImageValues, schema: CreateCoverImageValuesSchema },
-		(generation, values) => generation.createCoverImage(values),
+		(generation, values, signal) => generation.createCoverImage(values, signal),
 		service,
 	);
 }
@@ -65,7 +65,7 @@ export function createPanelAction(
 	return runGeneration(
 		event,
 		{ decode: decodeCreatePanelValues, schema: CreatePanelValuesSchema },
-		(generation, values) => generation.createPanel(values),
+		(generation, values, signal) => generation.createPanel(values, signal),
 		service,
 	);
 }
@@ -77,7 +77,7 @@ export function createPanelImageAction(
 	return runGeneration(
 		event,
 		{ decode: decodeCreatePanelImageValues, schema: CreatePanelImageValuesSchema },
-		(generation, values) => generation.createPanelImage(values),
+		(generation, values, signal) => generation.createPanelImage(values, signal),
 		service,
 	);
 }
@@ -89,7 +89,7 @@ export function fixCharacterCropAction(
 	return runGeneration(
 		event,
 		{ decode: decodeFixCharacterCropValues, schema: FixCharacterCropValuesSchema },
-		(generation, values) => generation.fixCharacterCrop(values),
+		(generation, values, signal) => generation.fixCharacterCrop(values, signal),
 		service,
 	);
 }

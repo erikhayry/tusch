@@ -63,9 +63,16 @@ Drive failures from the UI with markers in submitted text:
 - `mock-error:no-portrait`, `mock-error:no-landscape`: the portrait (or landscape)
   request of a "Portrait and landscape" panel image gets no image, told apart by
   the requested `size`; the other variant is still made (REQ-103-3)
+- `mock-error:hold-<token>`: an image call counts itself under `<token>` and waits until the
+  browser aborts its request (60 s cap), then records the abort and stops there.
+  `mock-error:record-<token>` only counts the calls and answers at once. Each test makes its own
+  token (`src/tests/e2e/serverAiCalls.ts`) and reads the record from
+  `GET /api/test/ai-calls/<token>` (`{ calls, aborts }`; 404 unless the mock gateway is active)
+  (REQ-315-1)
 
 The response markers are read per request, never from shared state, since tests
-run in parallel against one server.
+run in parallel against one server. The call record is the one exception: it is
+keyed by token, so a test reads only its own.
 
 ## Build for real usage
 

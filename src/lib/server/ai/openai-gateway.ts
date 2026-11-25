@@ -9,7 +9,12 @@ import { getChatMessages, getImageMessages } from '#lib/utils/ai/utils/messages.
 import { IMAGE_SIZE, TOOLS } from '#lib/utils/ai/utils/settings.ts';
 import OpenAI from 'openai';
 import type { ResponseCreateParamsWithTools } from 'openai/lib/ResponsesParser.mjs';
-import { AiGatewayError, type AiCredentials, type AiGateway } from './ai-gateway';
+import {
+	AiGatewayError,
+	type AiCallOptions,
+	type AiCredentials,
+	type AiGateway,
+} from './ai-gateway';
 
 export function toAiGatewayError(error: unknown): AiGatewayError {
 	if (error instanceof AiGatewayError) {
@@ -53,34 +58,46 @@ export function createOpenAiGateway({ apiKey, textModel, imageModel }: AiCredent
 		return new OpenAI({ apiKey });
 	}
 
-	async function parse(request: ResponseCreateParamsWithTools): Promise<OpenAiOutput> {
+	async function parse(
+		request: ResponseCreateParamsWithTools,
+		{ signal }: AiCallOptions = {},
+	): Promise<OpenAiOutput> {
 		try {
-			return OpenAiOutputSchema.parse(await client().responses.parse(request));
+			return OpenAiOutputSchema.parse(await client().responses.parse(request, { signal }));
 		} catch (error) {
 			throw toAiGatewayError(error);
 		}
 	}
 
 	return {
-		text: ({ messages, schemaName, imageUrls = [] }: AiTextRequest) =>
-			parse({
-				model: textModel,
-				input: [...getChatMessages(messages), ...getImageMessages(imageUrls)],
-				text: { format: getSchemaAsTextFormat(schemaName) },
-			}),
+		text: ({ messages, schemaName, imageUrls = [] }: AiTextRequest, options) =>
+			parse(
+				{
+					model: textModel,
+					input: [...getChatMessages(messages), ...getImageMessages(imageUrls)],
+					text: { format: getSchemaAsTextFormat(schemaName) },
+				},
+				options,
+			),
 
 		// Forced: without it the model sometimes answers with text only and no image (#185).
 		// Covered by review only; E2E never calls OpenAI.
-		image: ({ messages, schemaName, imageUrls, size = IMAGE_SIZE.PORTRAIT }: AiImageRequest) =>
-			parse({
-				model: textModel,
-				input: [...getChatMessages(messages), ...getImageMessages(imageUrls)],
-				tools: [TOOLS.image(size, imageModel || '')],
-				tool_choice: { type: 'image_generation' },
-				store: true,
-				include: [],
-				text: { format: getSchemaAsTextFormat(schemaName) },
-			}),
+		image: (
+			{ messages, schemaName, imageUrls, size = IMAGE_SIZE.PORTRAIT }: AiImageRequest,
+			options,
+		) =>
+			parse(
+				{
+					model: textModel,
+					input: [...getChatMessages(messages), ...getImageMessages(imageUrls)],
+					tools: [TOOLS.image(size, imageModel || '')],
+					tool_choice: { type: 'image_generation' },
+					store: true,
+					include: [],
+					text: { format: getSchemaAsTextFormat(schemaName) },
+				},
+				options,
+			),
 
 		async ping() {
 			try {

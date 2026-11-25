@@ -18,7 +18,7 @@ function failureResponse({ status, body }: Failure): Response {
 export async function generationEndpoint<T extends z.ZodType, R>(
 	request: Request,
 	schema: T,
-	run: (service: GenerationService, values: z.output<T>) => Promise<R>,
+	run: (service: GenerationService, values: z.output<T>, signal: AbortSignal) => Promise<R>,
 ): Promise<Response> {
 	const credentials = credentialsFromAuthorizationHeader(request);
 	if (!credentials) {
@@ -44,6 +44,9 @@ export async function generationEndpoint<T extends z.ZodType, R>(
 	}
 
 	const service = createGenerationService(getAiGateway(credentials));
-	const outcome = await runOperation(() => run(service, parsed.result));
+	const outcome = await runOperation(
+		() => run(service, parsed.result, request.signal),
+		request.signal,
+	);
 	return outcome.ok ? json(outcome.result) : failureResponse(outcome);
 }

@@ -1,4 +1,5 @@
 import type { Crop } from '#lib/types/index.ts';
+import { z } from 'zod';
 import {
 	CharacterBoxesSchema,
 	SchemaName,
@@ -23,7 +24,12 @@ import {
 	INVALID_TEXT_RESPONSE,
 	MODELS_RESPONSE,
 } from '../../../tests/mock/openAi/openAiResponse';
-import { AiGatewayError, type AiCredentials, type AiGateway } from './ai-gateway';
+import {
+	AiGatewayError,
+	type AiCallOptions,
+	type AiCredentials,
+	type AiGateway,
+} from './ai-gateway';
 
 /** Keys containing this marker are rejected by the mock, to exercise the invalid-key flow. */
 export const MOCK_INVALID_KEY_MARKER = 'invalid';
@@ -63,6 +69,71 @@ const NO_VARIANT_IMAGE = [
 	{ marker: 'mock-error:no-portrait', size: IMAGE_SIZE.PORTRAIT },
 	{ marker: 'mock-error:no-landscape', size: IMAGE_SIZE.LANDSCAPE },
 ] as const;
+
+/**
+ * Image calls recorded per test token (REQ-315-1). The record is process-wide, not per
+ * gateway, because the test reads it through a separate request.
+ */
+export const AiCallRecordSchema = z.object({ calls: z.number().int(), aborts: z.number().int() });
+export type AiCallRecord = z.infer<typeof AiCallRecordSchema>;
+
+const callRecords = new Map<string, AiCallRecord>();
+
+/** `hold-<token>` waits for the abort; `record-<token>` only counts the call. */
+const CALL_MARKER = /mock-error:(hold|record)-([a-zA-Z0-9-]+)/;
+
+/** A held call answers anyway after this long, so a test whose abort never comes can't hang. */
+const HOLD_CAP_MS = 60_000;
+
+export function getAiCallRecord(token: string): AiCallRecord {
+	return callRecords.get(token) ?? { calls: 0, aborts: 0 };
+}
+
+/** Resolves `true` when the signal aborts, `false` when the cap passes first. */
+function untilAborted(signal: AbortSignal | undefined): Promise<boolean> {
+	return new Promise((resolve) => {
+		if (signal?.aborted) {
+			resolve(true);
+			return;
+		}
+		const timer = setTimeout(() => {
+			resolve(false);
+		}, HOLD_CAP_MS);
+		signal?.addEventListener(
+			'abort',
+			() => {
+				clearTimeout(timer);
+				resolve(true);
+			},
+			{ once: true },
+		);
+	});
+}
+
+/**
+ * Counts an image call under the token its messages carry. A `hold` call stops here once
+ * the browser aborts: it records the abort and throws the abort reason, as the SDK would.
+ */
+async function recordImageCall(messages: string[], signal: AbortSignal | undefined) {
+	const match = CALL_MARKER.exec(messages.join('\n'));
+	if (!match) {
+		return;
+	}
+	const [, kind, token] = match;
+	if (!token) {
+		return;
+	}
+
+	const before = getAiCallRecord(token);
+	callRecords.set(token, { ...before, calls: before.calls + 1 });
+	if (kind !== 'hold' || !(await untilAborted(signal))) {
+		return;
+	}
+
+	const after = getAiCallRecord(token);
+	callRecords.set(token, { ...after, aborts: after.aborts + 1 });
+	signal?.throwIfAborted();
+}
 
 /** Used when the request has no boxes to start from (a character the panel image doesn't place). */
 const DEFAULT_BOXES: CharacterBoxes = {
@@ -206,8 +277,9 @@ export function createMockAiGateway({ apiKey }: AiCredentials = {}): AiGateway {
 			}
 			return mockAiGateway.text(request);
 		},
-		image: async (request) => {
+		image: async (request, options: AiCallOptions = {}) => {
 			failIfRequested(request.messages);
+			await recordImageCall(request.messages, options.signal);
 			const text = request.messages.join('\n');
 			const isFirstCall = imageCalls === 0;
 			imageCalls += 1;

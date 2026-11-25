@@ -15,6 +15,15 @@ export type ActionResult<T> = Promise<T | ActionFailure<FormFailure>>;
 /** Unexpected provider failure, as the JSON API reports it. */
 export const PROVIDER_ERROR_CODE = 'provider_error' as const;
 
+/**
+ * The browser aborted the request (REQ-315-1). Nobody reads the answer and it isn't an
+ * error, so it is never reported to Sentry or logged as `provider_error`.
+ */
+const CANCELLED: Failure = {
+	status: 499,
+	body: { code: 'cancelled', message: 'Generation was cancelled' },
+};
+
 /** A failure as an HTTP status and a body. */
 export type Failure = { status: number; body: FormFailure };
 
@@ -108,10 +117,17 @@ export function toActionFailure(cause: unknown): ActionFailure<FormFailure> {
  * never thrown: SvelteKit's `error()` would answer the API with an HTML page, and it
  * is reported here, since `handleError` only sees thrown errors.
  */
-export async function runOperation<R>(run: () => Promise<R>): Promise<Outcome<R>> {
+export async function runOperation<R>(
+	run: () => Promise<R>,
+	signal: AbortSignal,
+): Promise<Outcome<R>> {
 	try {
 		return { ok: true, result: await run() };
 	} catch (cause) {
+		if (signal.aborted) {
+			return { ok: false, ...CANCELLED };
+		}
+
 		const known = knownFailure(cause);
 		if (known) {
 			return { ok: false, ...known };
@@ -123,11 +139,14 @@ export async function runOperation<R>(run: () => Promise<R>): Promise<Outcome<R>
 	}
 }
 
-/** Decode the form, then run one generation operation against the request's gateway. */
+/**
+ * Decode the form, then run one generation operation against the request's gateway.
+ * `run` gets the request's abort signal, which the provider call also honours (REQ-315-1).
+ */
 export async function runGeneration<T extends z.ZodType, R>(
 	event: RequestEvent,
 	contract: FormContract<T>,
-	run: (service: GenerationService, values: z.output<T>) => Promise<R>,
+	run: (service: GenerationService, values: z.output<T>, signal: AbortSignal) => Promise<R>,
 	service: GenerationService = createGenerationService(
 		getAiGateway(credentialsFromCookies(event.cookies)),
 	),
@@ -137,9 +156,13 @@ export async function runGeneration<T extends z.ZodType, R>(
 		return decoded.failure;
 	}
 
+	const { signal } = event.request;
 	try {
-		return await run(service, decoded.values);
+		return await run(service, decoded.values, signal);
 	} catch (cause) {
+		if (signal.aborted) {
+			return fail(CANCELLED.status, CANCELLED.body);
+		}
 		return toActionFailure(cause);
 	}
 }

@@ -9,7 +9,8 @@ import type { AiCredentials, AiGateway } from './ai-gateway';
 import { createMockAiGateway } from './mock-gateway';
 import { createOpenAiGateway } from './openai-gateway';
 
-function useMockGateway(): boolean {
+/** Playwright runs use the mock gateway; production never does. */
+export function usesMockGateway(): boolean {
 	return !building && process.env.PLAYWRIGHT_TEST === 'true';
 }
 
@@ -34,5 +35,5 @@ export function credentialsFromAuthorizationHeader(request: Request): AiCredenti
 
 /** The gateway for one request. Playwright runs get canned responses. */
 export function getAiGateway(credentials: AiCredentials): AiGateway {
-	return useMockGateway() ? createMockAiGateway(credentials) : createOpenAiGateway(credentials);
+	return usesMockGateway() ? createMockAiGateway(credentials) : createOpenAiGateway(credentials);
 }

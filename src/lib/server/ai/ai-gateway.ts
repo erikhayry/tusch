@@ -33,10 +33,16 @@ export type AiCredentials = z.infer<typeof AiCredentialsSchema>;
 
 export type PingResult = ValidateApiKeyResult;
 
+/**
+ * Per-call options. `signal` is the browser request's abort signal: when it aborts, the
+ * provider call stops too (REQ-315-1), so nothing is billed for a result nobody reads.
+ */
+export type AiCallOptions = { signal?: AbortSignal };
+
 /** Provider-neutral boundary for every AI call the server makes. */
 export interface AiGateway {
-	text(request: AiTextRequest): Promise<OpenAiOutput>;
-	image(request: AiImageRequest): Promise<OpenAiOutput>;
+	text(request: AiTextRequest, options?: AiCallOptions): Promise<OpenAiOutput>;
+	image(request: AiImageRequest, options?: AiCallOptions): Promise<OpenAiOutput>;
 	/** Checks the credentials. Expected rejections resolve with `success: false`. */
 	ping(): Promise<PingResult>;
 	models(): Promise<string[]>;

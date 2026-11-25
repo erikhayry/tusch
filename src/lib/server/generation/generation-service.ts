@@ -92,15 +92,21 @@ function interpret<T>(read: () => T): T {
 /**
  * The model sometimes answers without an image even when the tool is forced, and a
  * second request usually works, so an image request gets one retry (REQ-185-1).
- * Gateway errors aren't retried; they're handled by the caller.
+ * Gateway errors aren't retried; they're handled by the caller. A cancelled request
+ * gets no retry (REQ-315-1).
  */
-async function generateImage(gateway: AiGateway, request: AiImageRequest): Promise<OpenAiOutput> {
-	const first = await gateway.image(request);
+async function generateImage(
+	gateway: AiGateway,
+	request: AiImageRequest,
+	signal: AbortSignal | undefined,
+): Promise<OpenAiOutput> {
+	const first = await gateway.image(request, { signal });
 	if (hasImage(first)) {
 		return first;
 	}
 
-	const second = await gateway.image(request);
+	signal?.throwIfAborted();
+	const second = await gateway.image(request, { signal });
 	if (hasImage(second)) {
 		return second;
 	}
@@ -134,6 +140,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 		format: ImageFormat,
 		existingImage: string | undefined,
 		request: (variant: ImageVariant, reference: string | undefined) => AiImageRequest,
+		signal: AbortSignal | undefined,
 	) {
 		const generated: Partial<
 			Record<ImageVariant, { image: CreatedImage; output: OpenAiOutput['output'] }>
@@ -141,12 +148,14 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 		const failures: { variant: ImageVariant; cause: unknown }[] = [];
 
 		for (const variant of variantsFor(format)) {
+			// A cancelled request starts no second variant (REQ-315-1, REQ-103-3).
+			signal?.throwIfAborted();
 			try {
 				const reference =
 					variant === ImageVariantEnum.enum.landscape && generated.portrait
 						? `data:image/webp;base64,${generated.portrait.image.src}`
 						: existingImage;
-				const output = await generateImage(gateway, request(variant, reference));
+				const output = await generateImage(gateway, request(variant, reference), signal);
 				generated[variant] = {
 					image: interpret(() => getImageFromOpenAiResponse(output)),
 					output: output.output,
@@ -172,15 +181,18 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 		};
 	}
 
-	async function createCoverImage({
-		comic,
-		instructions,
-		globalInstructions,
-		imageUrl,
-		includeImage,
-		imageFormat = ImageFormatEnum.enum.both,
-		existingImage,
-	}: CreateCoverImageValues): Promise<CreateCoverImageResult> {
+	async function createCoverImage(
+		{
+			comic,
+			instructions,
+			globalInstructions,
+			imageUrl,
+			includeImage,
+			imageFormat = ImageFormatEnum.enum.both,
+			existingImage,
+		}: CreateCoverImageValues,
+		signal?: AbortSignal,
+	): Promise<CreateCoverImageResult> {
 		const messages = [
 			...buildCoverImageMessages({ comic, globalInstructions }),
 			`USER INSTRUCTION: ${instructions}`,
@@ -197,6 +209,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 					...(reference ? [reference] : []),
 				],
 			}),
+			signal,
 		);
 
 		return interpret(() =>
@@ -212,17 +225,17 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 	return {
 		createCoverImage,
 
-		async createComic({
-			url,
-			story,
-			style,
-			panelCount,
-			globalInstructions,
-		}: CreateComicValues): Promise<CreateComicResult> {
-			const output: OpenAiOutput = await gateway.text({
-				messages: buildInitialMessages({ url, story, panelCount }, style, globalInstructions),
-				schemaName: SchemaName.enum.initComic,
-			});
+		async createComic(
+			{ url, story, style, panelCount, globalInstructions }: CreateComicValues,
+			signal?: AbortSignal,
+		): Promise<CreateComicResult> {
+			const output: OpenAiOutput = await gateway.text(
+				{
+					messages: buildInitialMessages({ url, story, panelCount }, style, globalInstructions),
+					schemaName: SchemaName.enum.initComic,
+				},
+				{ signal },
+			);
 
 			const comic: Comic = interpret(() => {
 				const initial = getComicFromOpenAiResponse(output);
@@ -238,11 +251,14 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			});
 
 			// A comic gets the cover variants of the default format (REQ-006).
-			const { image: cover, failedVariant } = await createCoverImage({
-				comic: toCoverPrompt(comic),
-				[INSTRUCTIONS_VALUE_KEY]: '',
-				globalInstructions,
-			});
+			const { image: cover, failedVariant } = await createCoverImage(
+				{
+					comic: toCoverPrompt(comic),
+					[INSTRUCTIONS_VALUE_KEY]: '',
+					globalInstructions,
+				},
+				signal,
+			);
 
 			return interpret(() =>
 				CreateComicResultSchema.parse({
@@ -253,16 +269,17 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			);
 		},
 
-		async createPanel({
-			comicId,
-			panels,
-			index,
-			globalInstructions,
-		}: CreatePanelValues): Promise<CreatePanelResult> {
-			const output = await gateway.text({
-				messages: buildPanelMessages(index, panels, globalInstructions),
-				schemaName: SchemaName.enum.createPanel,
-			});
+		async createPanel(
+			{ comicId, panels, index, globalInstructions }: CreatePanelValues,
+			signal?: AbortSignal,
+		): Promise<CreatePanelResult> {
+			const output = await gateway.text(
+				{
+					messages: buildPanelMessages(index, panels, globalInstructions),
+					schemaName: SchemaName.enum.createPanel,
+				},
+				{ signal },
+			);
 
 			return interpret(() =>
 				CreatePanelResultSchema.parse({
@@ -274,19 +291,22 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			);
 		},
 
-		async createPanelImage({
-			comicId,
-			panel,
-			characters,
-			instructions,
-			globalInstructions,
-			style,
-			includeImage,
-			imageUrl,
-			referenceImages,
-			imageFormat = ImageFormatEnum.enum.both,
-			existingImage,
-		}: CreatePanelImageValues): Promise<CreatePanelImageResult> {
+		async createPanelImage(
+			{
+				comicId,
+				panel,
+				characters,
+				instructions,
+				globalInstructions,
+				style,
+				includeImage,
+				imageUrl,
+				referenceImages,
+				imageFormat = ImageFormatEnum.enum.both,
+				existingImage,
+			}: CreatePanelImageValues,
+			signal?: AbortSignal,
+		): Promise<CreatePanelImageResult> {
 			const prompt = buildPanelImageMessages({
 				panel,
 				characters,
@@ -307,6 +327,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 						...(reference ? [reference] : []),
 					],
 				}),
+				signal,
 			);
 
 			return interpret(() =>
@@ -321,22 +342,28 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 		},
 
 		/** Asks for new boxes only; the client crops the stored panel image (REQ-219-1). */
-		async fixCharacterCrop({
-			comicId,
-			panelId,
-			characterId,
-			characterImageId,
-			character,
-			image,
-			width,
-			height,
-			current,
-		}: FixCharacterCropValues): Promise<FixCharacterCropResult> {
-			const output = await gateway.text({
-				messages: buildFixCharacterCropMessages({ character, width, height, current }),
-				schemaName: SchemaName.enum.fixCharacterCrop,
-				imageUrls: [image],
-			});
+		async fixCharacterCrop(
+			{
+				comicId,
+				panelId,
+				characterId,
+				characterImageId,
+				character,
+				image,
+				width,
+				height,
+				current,
+			}: FixCharacterCropValues,
+			signal?: AbortSignal,
+		): Promise<FixCharacterCropResult> {
+			const output = await gateway.text(
+				{
+					messages: buildFixCharacterCropMessages({ character, width, height, current }),
+					schemaName: SchemaName.enum.fixCharacterCrop,
+					imageUrls: [image],
+				},
+				{ signal },
+			);
 
 			const boxes = interpret(() => getCharacterBoxesFromOpenAiResponse(output));
 			if (!isInsideImage(boxes.head, width, height) || !isInsideImage(boxes.full, width, height)) {
