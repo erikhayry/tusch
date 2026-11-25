@@ -3,11 +3,14 @@
 	import { m } from '#lib/paraglide/messages.js';
 	import { resolve } from '$app/paths';
 	import { currentPath, languageLinks, localizedHref } from './header-navigation';
+	import Breadcrumb from '#lib/components/breadcrumb/Breadcrumb.svelte';
+	import { breadcrumbProps } from '#lib/components/breadcrumb/breadcrumb-props.ts';
 
 	const path = $derived(currentPath(page.url));
 	const onHome = $derived(path === '/');
 	const onSettings = $derived(path === '/settings');
 	const languages = $derived(languageLinks(page.url));
+	const crumbs = $derived(breadcrumbProps(page.route.id, page.data));
 </script>
 
 <header class="header">
@@ -78,6 +81,12 @@
 				</svg>
 			</a>
 		</div>
+
+		{#if crumbs}
+			<div class="crumbs">
+				<Breadcrumb {...crumbs} />
+			</div>
+		{/if}
 	</div>
 </header>
 
@@ -103,6 +112,12 @@
 		font-weight: 700;
 		color: var(--color-text);
 		text-decoration: none;
+	}
+
+	/* A second row under the wordmark at every width; the header's flex row wraps after it. */
+	.crumbs {
+		flex: 1 1 100%;
+		min-inline-size: 0;
 	}
 
 	.nav-list {
