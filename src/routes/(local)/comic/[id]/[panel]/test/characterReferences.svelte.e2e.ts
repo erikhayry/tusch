@@ -15,35 +15,31 @@ import {
 	cropBytes,
 	createComicWithImageOnFirstPanel,
 	gotoPanel,
-	noneOption,
-	referenceGroup,
 	referenceOption,
+	referenceOptions,
 	speakers,
 	submitAndCaptureBody,
 } from './utils/characterReferences';
 
 const addImage = (page: Page) => page.getByRole('button', { name: m.addImage() });
 const replaceImage = (page: Page) => page.getByRole('button', { name: m.generateNewImage() });
-const anyReference = (page: Page) => page.getByRole('radio');
+const anyReference = (page: Page) => referenceOptions(page);
 
 test.describe('character references on the panel image form', () => {
 	test(
-		'offers the crop from the other panel, with None selected and the head crop as thumbnail',
+		'offers the crop from the other panel as a toggle that starts released, with the head crop as thumbnail',
 		{ tag: '@REQ-100-1' },
 		async ({ page }) => {
 			const { comicId, b, shared } = await createComicWithImageOnFirstPanel(page);
 
 			await gotoPanel(page, comicId, b.id);
 
-			const group = referenceGroup(page, shared.name);
-			await expect(group).toBeVisible();
-			await expect(noneOption(group)).toBeChecked();
-			await expect(group.getByRole('radio')).toHaveCount(2);
-			const option = referenceOption(group, 1);
-			await expect(option).not.toBeChecked();
-			const thumbnail = group.getByRole('img');
+			await expect(referenceOptions(page, shared.name)).toHaveCount(1);
+			const option = referenceOption(page, shared.name, 1);
+			await expect(option).toBeVisible();
+			await expect(option).toHaveAttribute('aria-pressed', 'false');
+			const thumbnail = option.locator('img');
 			await expect(thumbnail).toHaveCount(1);
-			await expect(thumbnail).toHaveAttribute('alt', /\S/);
 			await expect
 				.poll(() =>
 					thumbnail.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0),
@@ -78,9 +74,11 @@ test.describe('character references on the panel image form', () => {
 
 		await gotoPanel(page, comicId, b.id);
 
-		await expect(referenceGroup(page, shared.name)).toBeVisible();
-		await expect(referenceGroup(page, silentInB.name)).toHaveCount(0);
-		await expect(page.getByRole('group')).toHaveCount(speakers(comic, b.id).length);
+		await expect(referenceOptions(page, shared.name).first()).toBeVisible();
+		await expect(referenceOptions(page, silentInB.name)).toHaveCount(0);
+		for (const speaker of speakers(comic, b.id)) {
+			await expect(referenceOptions(page, speaker.name)).not.toHaveCount(0);
+		}
 	});
 
 	test(
@@ -95,10 +93,8 @@ test.describe('character references on the panel image form', () => {
 
 			await generatePanelImage(page, comicId, b.id);
 			await gotoPanel(page, comicId, a.id);
-			const group = referenceGroup(page, shared.name);
-			await expect(group).toBeVisible();
-			await expect(referenceOption(group, 2)).toBeVisible();
-			await expect(referenceOption(group, 1)).toHaveCount(0);
+			await expect(referenceOption(page, shared.name, 2)).toBeVisible();
+			await expect(referenceOption(page, shared.name, 1)).toHaveCount(0);
 		},
 	);
 
@@ -108,7 +104,7 @@ test.describe('character references on the panel image form', () => {
 		async ({ page }) => {
 			const { comicId, b, shared } = await createComicWithImageOnFirstPanel(page);
 			await gotoPanel(page, comicId, b.id);
-			await expect(referenceOption(referenceGroup(page, shared.name), 1)).toBeVisible();
+			await expect(referenceOption(page, shared.name, 1)).toBeVisible();
 
 			await deletePanel(page, comicId, 1);
 
@@ -133,7 +129,7 @@ test.describe('character references on the panel image form', () => {
 			const otherBytes = await cropBytes(page, otherCrop);
 
 			await gotoPanel(page, comicId, b.id);
-			await chooseReference(page, referenceGroup(page, shared.name), 1);
+			await chooseReference(page, shared.name, 1);
 			const body = await submitAndCaptureBody(page, addImage(page));
 
 			expect(body).toContain(bytes.full);
@@ -158,7 +154,7 @@ test.describe('character references on the panel image form', () => {
 			const { comicId, b, shared, imagesOfA } = await createComicWithImageOnFirstPanel(page);
 			await gotoPanel(page, comicId, b.id);
 			// The picker is there, so sending nothing is a choice the user made.
-			await expect(noneOption(referenceGroup(page, shared.name))).toBeChecked();
+			await expect(referenceOption(page, shared.name, 1)).toHaveAttribute('aria-pressed', 'false');
 
 			const body = await submitAndCaptureBody(page, addImage(page));
 
@@ -186,11 +182,10 @@ test.describe('character references on the panel image form', () => {
 			expect(before).toBeDefined();
 
 			await gotoPanel(page, comicId, b.id);
-			const group = referenceGroup(page, shared.name);
 			// Its own crops (from B) are not offered; A's is.
-			await expect(group.getByRole('radio')).toHaveCount(2);
+			await expect(referenceOptions(page, shared.name)).toHaveCount(1);
 			await activate(page, page.getByRole('checkbox', { name: m.includeImage() }), 'Space');
-			await chooseReference(page, group, 1);
+			await chooseReference(page, shared.name, 1);
 			const body = await submitAndCaptureBody(page, replaceImage(page));
 
 			expect(body).toContain(bytes.full);
@@ -214,7 +209,7 @@ test.describe('character references on the panel image form', () => {
 			const metadata = await storedComic(page, comicId);
 			const files = await storedFiles(page);
 
-			await chooseReference(page, referenceGroup(page, shared.name), 1);
+			await chooseReference(page, shared.name, 1);
 			await typeInto(
 				page,
 				page.getByRole('textbox', { name: m.instructions() }),
@@ -238,7 +233,7 @@ test.describe('character references on the panel image form', () => {
 				await page.emulateMedia({ colorScheme });
 				const { comicId, b, shared } = await createComicWithImageOnFirstPanel(page);
 				await gotoPanel(page, comicId, b.id);
-				await expect(referenceGroup(page, shared.name)).toBeVisible();
+				await expect(referenceOption(page, shared.name, 1)).toBeVisible();
 
 				const { violations } = await new AxeBuilder({ page }).analyze();
 
@@ -255,7 +250,7 @@ test.describe('character references on the panel image form', () => {
 		test('the picker does not scroll horizontally', async ({ page }) => {
 			const { comicId, b, shared } = await createComicWithImageOnFirstPanel(page);
 			await gotoPanel(page, comicId, b.id);
-			await expect(referenceGroup(page, shared.name)).toBeVisible();
+			await expect(referenceOption(page, shared.name, 1)).toBeVisible();
 
 			const { scrollWidth, clientWidth } = await page.evaluate(() => ({
 				scrollWidth: document.documentElement.scrollWidth,
