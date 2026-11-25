@@ -1,5 +1,5 @@
 import { m } from '#lib/paraglide/messages.js';
-import { ComicSchema } from '#lib/types/index.ts';
+import { ComicSchema, type Comic } from '#lib/types/index.ts';
 import { expect, test, type Page } from '@playwright/test';
 import { createComic, storedComic } from '../../../../../tests/e2e/createdComic';
 import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
@@ -19,6 +19,18 @@ async function setStoredTitle(page: Page, comicId: string, title: string) {
 		},
 		{ id: comicId, value: title },
 	);
+}
+
+/** Exports the comic and parses the envelope's `comic`, which must pass ComicSchema. */
+async function exportAndParse(page: Page): Promise<{ json: unknown; comic: Comic }> {
+	const { json } = await exportComicData(page);
+	return { json, comic: ComicSchema.parse((json as { comic: unknown }).comic) };
+}
+
+function expectEveryImageEmbedded(comic: Comic) {
+	for (const src of imageSources(comic)) {
+		expect(src).toMatch(/^data:image\//);
+	}
 }
 
 test(
@@ -49,10 +61,9 @@ test(
 		expect(comic.characters.some((character) => character.images.length > 0)).toBe(true);
 		await gotoHydrated(page, `/comic/${comic.id}`);
 
-		const { json } = await exportComicData(page);
+		const { json, comic: exported } = await exportAndParse(page);
 
 		expect(json).toMatchObject({ format: 'tusch-comic', version: 1 });
-		const exported = ComicSchema.parse((json as { comic: unknown }).comic);
 		expect(exported.id).toBe(comic.id);
 		expect(exported.title).toBe(comic.title);
 		expect(exported.characters.map(({ id, name }) => ({ id, name }))).toEqual(
@@ -64,9 +75,7 @@ test(
 		const sources = imageSources(exported);
 		expect(sources).toHaveLength(imageSources(comic).length);
 		expect(sources.length).toBeGreaterThanOrEqual(3);
-		for (const src of sources) {
-			expect(src).toMatch(/^data:image\//);
-		}
+		expectEveryImageEmbedded(exported);
 	},
 );
 
@@ -112,15 +121,12 @@ test(
 		}
 		await gotoHydrated(page, `/comic/${comic.id}`);
 
-		const { json } = await exportComicData(page);
+		const { comic: exported } = await exportAndParse(page);
 
-		const exported = ComicSchema.parse((json as { comic: unknown }).comic);
 		expect(exported.cover).toBeUndefined();
 		expect(exported.panels[0].image).toBeDefined();
 		expect(imageSources(exported).length).toBeGreaterThan(0);
-		for (const src of imageSources(exported)) {
-			expect(src).toMatch(/^data:image\//);
-		}
+		expectEveryImageEmbedded(exported);
 	},
 );
 
@@ -137,9 +143,8 @@ test(
 		await removeStoredFile(page, image.head.src);
 		await gotoHydrated(page, `/comic/${comic.id}`);
 
-		const { json } = await exportComicData(page);
+		const { comic: exported } = await exportAndParse(page);
 
-		const exported = ComicSchema.parse((json as { comic: unknown }).comic);
 		const exportedCharacter = exported.characters.find(({ id }) => id === character.id);
 		expect(exportedCharacter?.images.map(({ id }) => id)).not.toContain(image.id);
 		expect(exported.panels[0].image).toBeDefined();
