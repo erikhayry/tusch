@@ -105,6 +105,12 @@
 	/* Room left below a focused field so the sticky form actions don't cover it (below 48em). */
 	--form-actions-clearance: 6rem;
 	--panel-card-width: 8rem;
+	/* Panel editor (#323): dialogue avatars (narrow, then from 48em), the space the fixed
+	   Prev/Next bar needs below 48em, and the widest single image in the image column. */
+	--avatar-size: 1.5rem;
+	--avatar-size-wide: 1.75rem;
+	--pager-clearance: 4.5rem;
+	--width-panel-image: 20rem;
 	/* Viewer panel: nearly a full screen, so the next panel peeks in below. */
 	--viewer-panel-height: 90dvh;
 	/* The reader (viewer and downloaded file) is a dark stage in both schemes (REQ-044).

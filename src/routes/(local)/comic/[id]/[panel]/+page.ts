@@ -29,6 +29,7 @@ export async function load({ params, parent }) {
 
 	return PanelPageDataSchema.parse({
 		panels: comic.panels,
+		comicTitle: comic.title,
 		panel,
 		number: index + 1,
 		index,
