@@ -1091,3 +1091,24 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: a new service worker takes over on the next load without a prompt and deletes the caches of older versions, so only the current version's cache exists.
 - Why: a deploy must not leave stale files or unbounded storage behind (#93).
 - Proven by: tagged tests
+
+### REQ-90-1 The comic page exports the comic data as one .json file
+
+- Status: active
+- Statement: the comic page (`/comic/<id>`) has an "Export comic data" link (an `<a download>`, not a button, with no form or route action) in its header. Activating it saves one `.json` file named like the `.html` download (REQ-88-1) but ending in `.json`: the title (or "Untitled comic"), with characters that aren't allowed in file names replaced.
+- Why: the owner makes comics in the app and ships some as showcase comics; the `.html` file has no editing data and `/comic/<id>/raw` has no images (#90).
+- Proven by: tagged tests
+
+### REQ-90-2 The exported file is a versioned envelope with the images embedded
+
+- Status: active
+- Statement: the file is `{ format: "tusch-comic", version: 1, comic }`. `comic` is the comic as stored (it passes `ComicSchema`; ids, characters, captions and dialogue are unchanged) with every image `src` (cover, panels, character crops) replaced by a `data:` URL of that file.
+- Why: one file carries everything needed to turn it back into a comic (#90).
+- Proven by: tagged tests
+
+### REQ-90-3 A missing image file is left out of the export
+
+- Status: active
+- Statement: an image whose file is no longer stored (REQ-036) is left out of the exported comic: that variant, or the whole image if no variant is left. A character image with a missing head or full crop is dropped; a missing `previous` drops only `previous`. The file still passes `ComicSchema` and the export succeeds.
+- Why: a cleared OPFS must not block exporting the rest of the comic (#90).
+- Proven by: tagged tests

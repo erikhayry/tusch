@@ -102,6 +102,7 @@
 	"showDetails": "Show details",
 	"viewComic": "View comic",
 	"downloadComic": "Download comic",
+	"exportComicData": "Export comic data",
 	"imageFormat": "Image format",
 	"imageFormatBoth": "Portrait and landscape",
 	"imageFormatPortrait": "Portrait only",

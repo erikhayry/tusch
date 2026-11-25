@@ -57,6 +57,7 @@
 	"noKeyModelsHint": "Lägg till din API-nyckel ovan för att välja modeller.",
 	"viewComic": "Visa serien",
 	"downloadComic": "Ladda ner serien",
+	"exportComicData": "Exportera seriedata",
 	"imageFormat": "Bildformat",
 	"imageFormatBoth": "Stående och liggande",
 	"imageFormatPortrait": "Endast stående",
