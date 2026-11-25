@@ -4,7 +4,7 @@
 	import { m } from '#lib/paraglide/messages.js';
 	import { primaryVariant } from '#lib/types/image-variants.ts';
 	import { MediaQuery } from 'svelte/reactivity';
-	import { localizedHref } from '../header/header-navigation';
+	import Breadcrumb from '../breadcrumb/Breadcrumb.svelte';
 	import Heading from '../relativeHeading/Heading.svelte';
 	import Image from '../image/Image.svelte';
 	import CreatePanelForm from '../forms/createPanelForm/CreatePanelForm.svelte';
@@ -54,19 +54,9 @@
 			<a class="back" href={resolve(`comic/${comicId}`)} aria-label={m.backToComic()}>
 				<span aria-hidden="true">←</span>
 			</a>
-			<nav class="crumbs" aria-label={m.breadcrumb()}>
-				<ol>
-					<li><a href={resolve(localizedHref('/'))}>{m.comics()}</a></li>
-					<li>
-						<span class="separator" aria-hidden="true">/</span>
-						<a href={resolve(`comic/${comicId}`)}>{comicTitle || m.untitledComic()}</a>
-					</li>
-					<li>
-						<span class="separator" aria-hidden="true">/</span>
-						<span aria-current="page">{m.panel({ number: current.index + 1 })}</span>
-					</li>
-				</ol>
-			</nav>
+			<div class="crumbs">
+				<Breadcrumb {comicId} {comicTitle} panelNumber={current.index + 1} />
+			</div>
 			<a class="read" href={resolve(`comic/${comicId}/view`)} aria-label={m.readThisComic()}>
 				{m.read()}
 			</a>
@@ -188,9 +178,7 @@
 	}
 
 	.back,
-	.read,
-	.crumbs a,
-	.crumbs span {
+	.read {
 		display: inline-flex;
 		align-items: center;
 		min-block-size: var(--control-min-size);
@@ -210,18 +198,12 @@
 		min-inline-size: 0;
 	}
 
-	.crumbs ol {
-		display: flex;
-		flex-wrap: wrap;
+	/* Each crumb is a 44px target (REQ-323) without making the row taller than one line. */
+	.crumbs :global(.label) {
+		display: inline-flex;
 		align-items: center;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	.separator {
-		padding-inline: var(--space-2);
-		color: var(--color-muted);
+		min-block-size: var(--control-min-size);
+		margin-block: var(--crumb-tap-offset);
 	}
 
 	/* Prev and Next sit at the two ends of the list. */
