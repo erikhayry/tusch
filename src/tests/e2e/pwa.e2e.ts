@@ -1,6 +1,7 @@
 import { m } from '#lib/paraglide/messages.js';
 import { expect, test } from '@playwright/test';
 import { createViewableComic } from '../../routes/(local)/comic/[id]/view/test/utils/viewableComic';
+import { LandingPage } from '../../routes/(local)/test/utils/landingPage';
 import { exampleTitles } from './examples';
 import { errorRegion } from './aiFailures';
 import { storedComic } from './createdComic';
@@ -68,8 +69,10 @@ test.describe('the app opens offline', { tag: '@REQ-93-2' }, () => {
 		await page.reload();
 		await page.locator('html[data-hydrated]').waitFor({ state: 'attached' });
 
+		// A comic's title is not a heading on the list; the shared card locator finds it.
+		const landingPage = new LandingPage(page);
 		for (const title of exampleTitles()) {
-			await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+			await expect(landingPage.card(title)).toBeVisible();
 		}
 	});
 
