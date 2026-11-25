@@ -27,7 +27,6 @@ export const ComicPageDataSchema = z.object({
 export const PanelPageDataSchema = z.object({
 	panel: PanelSchema,
 	panels: z.array(PanelSchema),
-	comicTitle: z.string(),
 	totalNumberOfPanels: z.number().int().nonnegative(),
 	index: z.number().int().nonnegative(),
 	number: z.number().int().positive(),
