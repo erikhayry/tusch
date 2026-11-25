@@ -6,6 +6,8 @@ export type Frame = {
 	width: number;
 	height: number;
 	background: string;
+	borderWidth: string;
+	borderStyle: string;
 	/** Whether the frame or an ancestor is hidden from assistive technology. */
 	hidden: boolean;
 	/** The frame is or holds an `<img>`. */
@@ -22,12 +24,15 @@ export function placeholderFrames(scope: Locator, minWidth: number): Promise<Fra
 		return [...root.querySelectorAll<HTMLElement>('[aria-hidden="true"]')]
 			.map((element) => {
 				const { x, y, width, height } = element.getBoundingClientRect();
+				const style = getComputedStyle(element);
 				return {
 					x,
 					y,
 					width,
 					height,
-					background: getComputedStyle(element).backgroundColor,
+					background: style.backgroundColor,
+					borderWidth: style.borderTopWidth,
+					borderStyle: style.borderTopStyle,
 					hidden: true,
 					hasImage: element.matches('img') || element.querySelector('img') !== null,
 				};
