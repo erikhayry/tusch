@@ -4,5 +4,7 @@
 		"sourceMap": true,
 		"strict": true
 	},
-	"include": ["src", "vite.config.ts", "playwright.config.ts"]
+	"include": ["src", "vite.config.ts", "playwright.config.ts"],
+	// The worker has its own tsconfig (webworker lib), see src/service-worker/tsconfig.json.
+	"exclude": ["src/service-worker"]
 }
