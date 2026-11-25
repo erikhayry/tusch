@@ -191,7 +191,10 @@ test.describe('the Custom style reaches every generation', { tag: '@REQ-97-3' },
 				request.method() === 'POST' && request.url().includes(`?/${CREATE_COVER_IMAGE_ACTION}`),
 		);
 		await activate(page, page.getByRole('button', { name: m.addCover(), exact: true }));
-		expect((await coverRequest).postData() ?? '').toContain(DESCRIPTION);
+		// The cover form posts URL-encoded (spaces as '+'), so compare decoded values.
+		expect([...new URLSearchParams((await coverRequest).postData() ?? '').values()]).toContain(
+			DESCRIPTION,
+		);
 
 		// Later requests use the stored description in the prompt: put the marker in it.
 		await page.evaluate((marker) => {
