@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { comicFileName } from '#lib/client/export/comic-html.ts';
+	import { exportComicData } from '#lib/client/export/export-comic-data.ts';
 	import Comic from '#lib/components/comic/Comic.svelte';
 	import Page from '#lib/components/page/Page.svelte';
 	import { comicCountsLine } from '#lib/features/comics/client/comic-selectors.ts';
@@ -9,6 +11,14 @@
 	let { data }: { data: Data } = $props();
 
 	const title = $derived(data.comic.title.trim() || m.untitledComic());
+	const exportFileName = $derived(comicFileName(data.comic.title, 'json'));
+
+	// The file is built (its images are read first) on click, so the link stays a link
+	// with `download` and no form or button, like "Download comic" on the viewer.
+	function exportComic(event: MouseEvent) {
+		event.preventDefault();
+		void exportComicData(data.comic);
+	}
 </script>
 
 <!-- The top row places Back before the <h1> and View comic after it, so the page owns its <h1>. -->
@@ -20,7 +30,15 @@
 				<h1>{title}</h1>
 				<p class="meta">{comicCountsLine(data.comic)}</p>
 			</div>
-			<a class="action" href={resolve(`comic/${data.comic.id}/view`)}>{m.viewComic()}</a>
+			<div class="actions">
+				<a class="action" href={resolve(`comic/${data.comic.id}/view`)}>{m.viewComic()}</a>
+				<a
+					class="action"
+					href={resolve(`comic/${data.comic.id}`)}
+					download={exportFileName}
+					onclick={exportComic}>{m.exportComicData()}</a
+				>
+			</div>
 		</div>
 		<Comic comic={data.comic} />
 	{/if}
@@ -49,6 +67,12 @@
 		margin: 0;
 		color: var(--color-muted);
 		font-size: var(--font-size-small);
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
 	}
 
 	.action {
