@@ -1,0 +1,19 @@
+{
+	"name": "Tusch",
+	"short_name": "Tusch",
+	"start_url": "/",
+	"display": "standalone",
+	"theme_color": "#f1efeb",
+	"background_color": "#faf9f7",
+	"icons": [
+		{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+		{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+		{ "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+		{
+			"src": "/icon-maskable-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	]
+}
