@@ -77,7 +77,8 @@ test.describe('breadcrumb', () => {
 			'the breadcrumb sits under the wordmark row without horizontal scroll',
 			{ tag: ['@REQ-311-1', '@REQ-040'] },
 			async ({ page }) => {
-				await openSecondPanel(page);
+				// The panel page hides it below 48em (REQ-323-1), so use the overview.
+				await createComic(page);
 				const nav = breadcrumb(page);
 				await expect(nav).toBeVisible();
 

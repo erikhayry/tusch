@@ -104,6 +104,11 @@ test.describe('screenshots', () => {
 			await snapshot(page, 'view', 'view-narrow');
 		});
 
+		// The panel editor below 48em: the sticky bar and list, and Prev/Next at the bottom (REQ-323-1, REQ-238-2).
+		test('mobile-panel', async ({ page }) => {
+			await snapshot(page, 'mobile-panel');
+		});
+
 		// The overlay's card is narrower below 48em (REQ-301-1, REQ-040).
 		test('mobile-panel-generating', async ({ page }) => {
 			await snapshot(page, 'mobile-panel-generating');

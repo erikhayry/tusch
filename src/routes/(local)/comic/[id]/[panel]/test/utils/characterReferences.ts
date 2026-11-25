@@ -10,37 +10,48 @@ import {
 	type CharacterImage,
 } from '../../../../../../../tests/e2e/createdComic';
 import { gotoHydrated } from '../../../../../../../tests/e2e/gotoHydrated';
-import { activate, tabTo } from '../../../../../../../tests/e2e/keyboard';
+import { activate } from '../../../../../../../tests/e2e/keyboard';
 import { storedFileBase64 } from '../../../../../../../tests/e2e/storage';
 
-/** Radio that means "no reference"; its label is the "None" message. */
-const NONE = { name: m.referenceNone(), exact: true } as const;
+function escapeRegExp(text: string) {
+	return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
-/** The fieldset for one character's reference choice (its legend names the purpose and the character). */
-export function referenceGroup(page: Page, characterName: string): Locator {
-	return page.getByRole('group', {
-		name: m.characterReference({ character: characterName }),
+/**
+ * A character's reference toggles (REQ-323-4): buttons named "<character> from panel <n>" with
+ * `aria-pressed`. Without a character, every reference toggle on the page.
+ */
+export function referenceOptions(page: Page, characterName?: string): Locator {
+	const MARKER = '\u0001';
+	const [before, between] = m
+		.characterReferenceOption({ character: MARKER, number: 0 })
+		.split(MARKER);
+	const prefix =
+		characterName === undefined
+			? `${escapeRegExp(before)}.+`
+			: escapeRegExp(before + characterName);
+	const suffix = escapeRegExp(between.replace(/0$/, ''));
+	return page.getByRole('button', { name: new RegExp(`^${prefix}${suffix}\\d+$`) });
+}
+
+/** The toggle that picks the crop taken from panel `number` (1-based). */
+export function referenceOption(page: Page, characterName: string, number: number): Locator {
+	return page.getByRole('button', {
+		name: m.characterReferenceOption({ character: characterName, number }),
 		exact: true,
 	});
 }
 
-/** The radio that picks the crop taken from panel `number` (1-based). */
-export function referenceOption(group: Locator, number: number): Locator {
-	return group.getByRole('radio', { name: m.panel({ number }) });
-}
-
-export function noneOption(group: Locator): Locator {
-	return group.getByRole('radio', NONE);
-}
-
-/** Choose a panel's crop by keyboard: Tab to the checked radio, then arrow to the option. */
-export async function chooseReference(page: Page, group: Locator, number: number) {
-	const target = referenceOption(group, number);
-	await tabTo(page, noneOption(group));
-	for (let presses = 0; presses < 10 && !(await target.isChecked()); presses++) {
-		await page.keyboard.press('ArrowDown');
-	}
-	await expect(target).toBeChecked();
+/** Press a reference toggle by keyboard. */
+export async function chooseReference(
+	page: Page,
+	characterName: string,
+	number: number,
+	pressed = true,
+) {
+	const target = referenceOption(page, characterName, number);
+	await activate(page, target);
+	await expect(target).toHaveAttribute('aria-pressed', String(pressed));
 }
 
 /** Press `button` and return the body of the create-panel-image POST it sends. */
