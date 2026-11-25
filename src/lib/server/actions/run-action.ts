@@ -1,4 +1,5 @@
 import type { FormFailure } from '#lib/forms/form-failure.ts';
+import { m } from '#lib/paraglide/messages.js';
 import { error, fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import { AiGatewayError } from '../ai/ai-gateway';
@@ -28,8 +29,6 @@ interface FormContract<T extends z.ZodType> {
 	failureMessage?: (error: z.ZodError) => string | undefined;
 }
 
-const INVALID_VALUES_MESSAGE = 'Submitted values are invalid';
-
 /** Invalid input is a 400 with the field errors, whatever decoded the values. */
 export function parseValues<T extends z.ZodType>(
 	schema: T,
@@ -46,7 +45,8 @@ export function parseValues<T extends z.ZodType>(
 		status: 400,
 		body: {
 			code: 'invalid_input',
-			message: failureMessage?.(result.error) ?? INVALID_VALUES_MESSAGE,
+			// Called per request: the locale is set by the request's paraglide middleware.
+			message: failureMessage?.(result.error) ?? m.invalidInput(),
 			fieldErrors: z.flattenError(result.error).fieldErrors,
 		},
 	};

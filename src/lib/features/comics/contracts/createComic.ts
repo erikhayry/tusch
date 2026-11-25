@@ -6,6 +6,7 @@ import {
 } from '#lib/features/settings/contracts/globalInstructions.ts';
 import { ComicSchema, ComicStyleEnum, ImageVariantEnum } from '#lib/types/index.ts';
 import { m } from '#lib/paraglide/messages.js';
+import { getLocale } from '#lib/paraglide/runtime.js';
 import z from 'zod';
 
 export const CREATE_COMIC_ACTION = 'create-comic' as const;
@@ -17,12 +18,23 @@ export const PANEL_COUNT_MIN = 1;
 export const PANEL_COUNT_MAX = 30;
 export const PANEL_COUNT_DEFAULT = 5;
 
+// Messages are read when a value is checked, not when this module loads: the server
+// picks the locale per request, and a module-level `m.*()` would fix it to one language.
 const panelCountError = () => m.createComicPanelCountError();
+const urlError = () => m.createComicUrlInvalid();
+const storyTooShort = () => m.createComicStoryTooShort({ min: STORY_MIN_LENGTH });
+const storyTooLong = () =>
+	m.createComicStoryTooLong({ max: new Intl.NumberFormat(getLocale()).format(STORY_MAX_LENGTH) });
 
 export const CreateComicValuesSchema = z
 	.object({
-		url: z.optional(z.url()),
-		story: z.optional(z.string().min(STORY_MIN_LENGTH).max(STORY_MAX_LENGTH)),
+		url: z.optional(z.url({ error: urlError })),
+		story: z.optional(
+			z
+				.string()
+				.min(STORY_MIN_LENGTH, { error: storyTooShort })
+				.max(STORY_MAX_LENGTH, { error: storyTooLong }),
+		),
 		style: ComicStyleEnum,
 		panelCount: z
 			.int({ error: panelCountError })
@@ -31,7 +43,7 @@ export const CreateComicValuesSchema = z
 		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: GlobalInstructionsSchema,
 	})
 	.refine((values) => values.url !== undefined || values.story !== undefined, {
-		message: m.createComicSourceHint(),
+		error: () => m.createComicSourceHint(),
 		path: ['url'],
 	});
 export type CreateComicValues = z.output<typeof CreateComicValuesSchema>;
