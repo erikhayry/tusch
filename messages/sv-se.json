@@ -5,7 +5,7 @@
 	"addPanelBefore": "Lägg till panel före panel {number}",
 	"addPanelAfter": "Lägg till panel efter panel {number}",
 	"untitledComic": "Namnlös serie",
-	"breadcrumb": "Brödsmulespår",
+	"breadcrumb": "Brödsmulor",
 	"newCaption": "Ny bildtext",
 	"loadingCreateComic": "Skapar serie...",
 	"loadingCreatePanelImage": "Skapar rutans bild...",
@@ -168,5 +168,9 @@
 	"styleWatercolourDescription": "Mjuka laveringar, blyertslinjer, ljusa färger",
 	"styleWebtoonDescription": "Ren digital färg, mjuk skuggning",
 	"stylePopArtDescription": "Stora punkter, tjocka konturer, skrikiga färger",
-	"styleUkiyoEDescription": "Träsnitt, platta färger, kraftiga konturer"
+	"styleUkiyoEDescription": "Träsnitt, platta färger, kraftiga konturer",
+	"scene": "Scen",
+	"generateImage": "Skapa bild",
+	"referencesSelected": "{count} valda",
+	"characterReferenceOption": "{character} från panel {number}"
 }

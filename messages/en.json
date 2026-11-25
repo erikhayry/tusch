@@ -1,7 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"addPanelAfter": "Add Panel after panel {number}",
-	"addPanelBefore": "Add Panel before panel {number}",
+	"addPanelAfter": "Add panel after panel {number}",
+	"addPanelBefore": "Add panel before panel {number}",
 	"addImage": "Add Image",
 	"add": "Save key",
 	"source": "Source",
@@ -209,5 +209,9 @@
 	"styleWatercolourDescription": "Soft washes, pencil lines, pale colours",
 	"styleWebtoonDescription": "Clean digital colour, soft shading",
 	"stylePopArtDescription": "Big dots, thick outlines, loud colours",
-	"styleUkiyoEDescription": "Woodblock print, flat colour, bold outlines"
+	"styleUkiyoEDescription": "Woodblock print, flat colour, bold outlines",
+	"scene": "Scene",
+	"generateImage": "Generate image",
+	"referencesSelected": "{count} selected",
+	"characterReferenceOption": "{character} from panel {number}"
 }
