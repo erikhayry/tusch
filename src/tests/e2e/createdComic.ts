@@ -78,3 +78,22 @@ export async function generatePanelImage(page: Page, comicId: string, panelId: s
 		.poll(async () => imagesFromPanel(await storedComic(page, comicId), panelId))
 		.not.toEqual([]);
 }
+
+/** A comic made through the UI with no panel image yet (replaces the example without images). */
+export async function createComicWithoutImages(page: Page): Promise<Comic> {
+	return storedComic(page, await createComic(page));
+}
+
+/**
+ * A "complete" comic made through the UI (mock AI), as a user makes one: a cover, an
+ * image on every panel and so crops for the characters in them. Replaces the bundled
+ * complete example. Returns the stored comic, read after the last image is saved.
+ */
+export async function createCompleteComic(page: Page): Promise<Comic> {
+	const comicId = await createComic(page);
+	for (const panel of (await storedComic(page, comicId)).panels) {
+		await generatePanelImage(page, comicId, panel.id);
+	}
+	await gotoHydrated(page, `/comic/${comicId}`);
+	return storedComic(page, comicId);
+}
