@@ -15,6 +15,7 @@
 			comicId={data.comicId}
 			comicTitle={data.comicTitle}
 			style={data.style}
+			customStyle={data.customStyle}
 			characters={data.characters}
 		/>
 	</Page>

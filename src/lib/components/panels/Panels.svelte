@@ -12,7 +12,8 @@
 	import Section from '../relativeHeading/Section.svelte';
 	import { type PanelsProps } from './panelsTypes';
 
-	let { panels, comicId, comicTitle, current, style, characters }: PanelsProps = $props();
+	let { panels, comicId, comicTitle, current, style, customStyle, characters }: PanelsProps =
+		$props();
 
 	// Matches the project's one breakpoint (styling.md). Read in script because the
 	// Prev/Next text differs by width: the glyph alone from 48em, the word below it.
@@ -152,6 +153,7 @@
 		totalNumberOfPanels={panels.length}
 		number={current.index + 1}
 		{style}
+		{customStyle}
 		{characters}
 		{afterDeletePanelId}
 	/>

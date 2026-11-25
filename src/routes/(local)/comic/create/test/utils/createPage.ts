@@ -2,7 +2,7 @@ import { m } from '#lib/paraglide/messages.js';
 import type { Locale } from '#lib/paraglide/runtime.js';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { gotoHydrated } from '../../../../../../tests/e2e/gotoHydrated';
-import { COMIC_STYLES } from '../../../../../../tests/e2e/comicStyles';
+import { STYLE_CARDS } from '../../../../../../tests/e2e/comicStyles';
 import { activate, tabTo, typeInto } from '../../../../../../tests/e2e/keyboard';
 
 export class CreatePage {
@@ -11,6 +11,8 @@ export class CreatePage {
 	readonly urlInput: Locator;
 	readonly storyInput: Locator;
 	readonly storyCount: Locator;
+	readonly customStyleInput: Locator;
+	readonly customStyleCount: Locator;
 	readonly panelCountInput: Locator;
 	readonly submitButton: Locator;
 	readonly error: Locator;
@@ -21,6 +23,8 @@ export class CreatePage {
 		this.urlInput = page.getByRole('textbox', { name: m.urlToSource() });
 		this.storyInput = page.getByRole('textbox', { name: m.yourStory({}, { locale }) });
 		this.storyCount = page.getByText(/^[\d,]+ of 10,000$/);
+		this.customStyleInput = page.getByRole('textbox', { name: m.customStyleLabel({}, { locale }) });
+		this.customStyleCount = page.getByText(/^[\d,]+ of 500$/);
 		this.panelCountInput = page.getByRole('spinbutton', {
 			name: m.createComicPanelCount({}, { locale }),
 		});
@@ -35,7 +39,7 @@ export class CreatePage {
 
 	/** Arrow from the default (first) style card to the named one, as a keyboard user does. */
 	async chooseStyle(name: string) {
-		const names = COMIC_STYLES().map((style) => style.name);
+		const names = STYLE_CARDS().map((style) => style.name);
 		await tabTo(this.page, this.styleRadio(names[0]));
 		for (let step = 0; step < names.findIndex((candidate) => candidate === name); step++) {
 			await this.page.keyboard.press('ArrowRight');

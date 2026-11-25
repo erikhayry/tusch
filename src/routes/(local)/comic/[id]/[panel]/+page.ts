@@ -36,6 +36,7 @@ export async function load({ params, parent }) {
 		totalNumberOfPanels: comic.panels.length,
 		comicId,
 		style: comic.style,
+		customStyle: comic.customStyle,
 		characters: comic.characters,
 	});
 }

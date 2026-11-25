@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { enhance, type SubmitFunction } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
@@ -16,6 +16,7 @@
 	import { commitGeneratedComic } from '#lib/features/comics/client/workflows/commit-generated-comic.ts';
 	import {
 		CREATE_COMIC_ACTION,
+		explainCustomStyleError,
 		PANEL_COUNT_DEFAULT,
 		PANEL_COUNT_MAX,
 		PANEL_COUNT_MIN,
@@ -28,8 +29,7 @@
 	import { variantFailedMessage } from '#lib/forms/variant-failure.ts';
 	import { m } from '#lib/paraglide/messages.js';
 	import { getLocale } from '#lib/paraglide/runtime.js';
-	import { ComicStyleEnum, type ComicStyle } from '#lib/types/index.ts';
-	import { STYLES } from '#lib/utils/comicStyles.ts';
+	import { ComicStyleEnum, CUSTOM_STYLE_MAX_LENGTH, type ComicStyle } from '#lib/types/index.ts';
 
 	/** Card copy by style id: a new style fails to compile until it has copy. */
 	const STYLE_COPY: Record<ComicStyle, { name: () => string; description: () => string }> = {
@@ -73,6 +73,10 @@
 			name: () => m.styleUkiyoE(),
 			description: () => m.styleUkiyoEDescription(),
 		},
+		[ComicStyleEnum.enum.custom]: {
+			name: () => m.styleCustom(),
+			description: () => m.styleCustomDescription(),
+		},
 	};
 
 	// Counts UTF-16 code units, as the contract's `max` does, so the counter and the
@@ -81,10 +85,14 @@
 	const numbers = new Intl.NumberFormat(getLocale());
 	const storyOver = $derived(story.length > STORY_MAX_LENGTH);
 
+	let style = $state<ComicStyle>(ComicStyleEnum.enum.anime);
+	let customStyle = $state('');
+	const customStyleOver = $derived(customStyle.length > CUSTOM_STYLE_MAX_LENGTH);
+	let customStyleError = $state<string | undefined>();
 	// The messages of the fields the server rejected; each one is shown next to its field.
 	let fieldErrors = $state<FieldMessages>({});
 
-	const handleSubmit = withGlobalInstructions(
+	const submit = withGlobalInstructions(
 		enhanceAction<CreateComicResult>(
 			m.loadingCreateComic(),
 			async ({ data, showError }) => {
@@ -102,6 +110,17 @@
 			},
 		),
 	);
+
+	// The description is checked here, before the request, so an invalid one posts nothing (REQ-97-2).
+	const handleSubmit: SubmitFunction<CreateComicResult> = (input) => {
+		customStyleError = explainCustomStyleError(input.formData);
+		if (customStyleError) {
+			input.cancel();
+			return;
+		}
+
+		return submit(input);
+	};
 </script>
 
 <Section data-testId={createComicFormTestId}>
@@ -177,29 +196,56 @@
 		<fieldset class="style-choice">
 			<legend>{m.comicStyles()}</legend>
 			<div class="style-cards">
-				{#each Object.values(STYLES) as style (style.id)}
+				{#each ComicStyleEnum.options as id (id)}
 					<label class="style-card">
 						<input
 							type="radio"
 							name="style"
-							value={style.id}
+							value={id}
 							required
-							checked={style.id === ComicStyleEnum.enum.anime}
-							aria-labelledby={`style-name-${style.id}`}
-							aria-describedby={`style-description-${style.id}`}
+							bind:group={style}
+							aria-labelledby={`style-name-${id}`}
+							aria-describedby={`style-description-${id}`}
 						/>
 						<span class="style-text">
-							<span class="style-name" id={`style-name-${style.id}`}>
-								{STYLE_COPY[style.id].name()}
+							<span class="style-name" id={`style-name-${id}`}>
+								{STYLE_COPY[id].name()}
 							</span>
-							<span class="style-description" id={`style-description-${style.id}`}>
-								{STYLE_COPY[style.id].description()}
+							<span class="style-description" id={`style-description-${id}`}>
+								{STYLE_COPY[id].description()}
 							</span>
 						</span>
 					</label>
 				{/each}
 			</div>
 		</fieldset>
+		<!-- Only while Custom is checked, so a preset comic sends no description (REQ-97-1). -->
+		{#if style === ComicStyleEnum.enum.custom}
+			<div class="story-label">
+				<label for="create-comic-custom-style">{m.customStyleLabel()}</label>
+				<!-- Counts like the story's counter (REQ-307-1); the field's label is what gets announced. -->
+				<p id="create-comic-custom-style-count" class="count" class:over={customStyleOver}>
+					{m.createComicStoryCount({
+						count: numbers.format(customStyle.length),
+						max: numbers.format(CUSTOM_STYLE_MAX_LENGTH),
+					})}
+				</p>
+			</div>
+			<textarea
+				id="create-comic-custom-style"
+				name="customStyle"
+				rows="4"
+				required
+				bind:value={customStyle}
+				oninput={() => (customStyleError = undefined)}
+				aria-invalid={customStyleError ? 'true' : undefined}
+				aria-describedby={customStyleError
+					? 'create-comic-custom-style-count create-comic-custom-style-error'
+					: 'create-comic-custom-style-count'}></textarea>
+			{#if customStyleError}
+				<p id="create-comic-custom-style-error" class="error">{customStyleError}</p>
+			{/if}
+		{/if}
 		<p class="needs-key">
 			<span>{m.createComicNeedsKey()}</span> ·
 			<a href={resolve(localizedHref('/settings'))}>{m.settings()}</a>
@@ -255,6 +301,12 @@
 	}
 
 	.count.over {
+		color: var(--color-danger);
+	}
+
+	.error {
+		margin-block: 0;
+		font-size: var(--font-size-small);
 		color: var(--color-danger);
 	}
 

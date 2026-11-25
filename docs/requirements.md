@@ -990,14 +990,14 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-306-1 The comic style is a radio group of cards
 
 - Status: active
-- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of ten cards, Anime, Classic Marvel, Franco-Belgian, Manga, Noir, Newspaper strip, Watercolour storybook, Webtoon, Pop art and Ukiyo-e in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
+- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of eleven cards, Anime, Classic Marvel, Franco-Belgian, Manga, Noir, Newspaper strip, Watercolour storybook, Webtoon, Pop art, Ukiyo-e and Custom in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
 - Why: the styles are compared side by side, with native radio semantics and keyboard behaviour (#306).
 - Proven by: tagged tests
 
 ### REQ-306-2 The style cards form a full-width grid
 
 - Status: active
-- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; the ten cards make rows of 3, 3, 3 and 1, the tenth alone in the first column at the same width as the others; the checked style is sent as `style` and the created comic has that style.
+- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; the eleven cards make rows of 3, 3, 3 and 2, each row filling the form's width from its first column; the checked style is sent as `style` and the created comic has that style.
 - Why: more styles are coming, so the cards wrap instead of changing layout (#306).
 - Proven by: tagged tests
 
@@ -1132,6 +1132,34 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: a new service worker takes over on the next load without a prompt and deletes the caches of older versions, so only the current version's cache exists.
 - Why: a deploy must not leave stale files or unbounded storage behind (#93).
+- Proven by: tagged tests
+
+### REQ-97-1 Custom style shows a described text area with a counter
+
+- Status: active
+- Statement: when the Custom style card is checked on `/comic/create`, a required text area "Describe your style" appears below the style cards with a live counter "<n> of 500" that works like the story's (REQ-307-1). It is hidden, and its text is not sent, while a preset style is checked; switching back to a preset creates a comic with that style and no description.
+- Why: users can describe their own style in words (#97).
+- Proven by: tagged tests
+
+### REQ-97-2 A custom style description must be 10 to 500 characters
+
+- Status: active
+- Statement: submitting with Custom checked and a description that is empty, shorter than 10 or longer than 500 characters (after trimming) shows a field error on the text area ("Describe your style in at least 10 characters" or "Keep the description to 500 characters or fewer") and sends no generation request.
+- Why: a useful, bounded description reaches the prompt (#97).
+- Proven by: tagged tests
+
+### REQ-97-3 A custom style replaces the preset rules in every generation
+
+- Status: active
+- Statement: a comic created with Custom stores the description (`style: 'custom'`, `customStyle`), and the description replaces the preset style rules in the prompt of every generation for that comic: create comic, cover, panel images and insert panel, including images made later. Global instructions (REQ-051) still follow it.
+- Why: every image of the comic follows the user's own style (#97).
+- Proven by: tagged tests
+
+### REQ-97-4 A custom style is shown as Custom with its description
+
+- Status: active
+- Statement: a comic with a custom style shows "Custom" as its style on its library card (REQ-295-1) and in "Comic settings" on its page, where the description is shown under it. It can't be edited there.
+- Why: users see which style a comic has (#97).
 - Proven by: tagged tests
 
 ### REQ-90-1 The comic page exports the comic data as one .json file

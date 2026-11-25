@@ -19,7 +19,7 @@ import {
 	INCLUDE_IMAGE_VALUE_KEY,
 	INSTRUCTIONS_VALUE_KEY,
 } from '#lib/utils/db/dbTypes.ts';
-import { ImageFormatEnum, ImageVariantEnum } from '#lib/types/index.ts';
+import { CUSTOM_STYLE_MAX_LENGTH, ImageFormatEnum, ImageVariantEnum } from '#lib/types/index.ts';
 import z from 'zod';
 import { CharacterPromptSchema, toCharacterPrompt } from '../../comics/contracts/prompts';
 
@@ -59,6 +59,8 @@ export const CreatePanelImageValuesSchema = z.object({
 	panel: PanelImagePromptSchema,
 	comicId: z.string(),
 	style: ComicStyleEnum,
+	/** Only a `custom` style sends one: the description that replaces the preset rules (REQ-97-3). */
+	customStyle: z.optional(z.string().max(CUSTOM_STYLE_MAX_LENGTH)),
 	characters: z.array(CharacterPromptSchema),
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
 	[GLOBAL_INSTRUCTIONS_VALUE_KEY]: GlobalInstructionsSchema,
@@ -77,12 +79,18 @@ export function toCreatePanelImageValues(
 	characters: Character[],
 	style: CreatePanelImageValues['style'],
 	imageFormat: ImageFormat = ImageFormatEnum.enum.both,
-): Pick<CreatePanelImageValues, 'comicId' | 'panel' | 'characters' | 'style' | 'imageFormat'> {
+	customStyle?: string,
+): Pick<
+	CreatePanelImageValues,
+	'comicId' | 'panel' | 'characters' | 'style' | 'customStyle' | 'imageFormat'
+> {
 	return {
 		comicId,
 		panel: toPanelImagePrompt(panel),
 		characters: characters.map(toCharacterPrompt),
 		style,
+		// Left out, not empty, for a preset: the form then doesn't send a description at all.
+		...(customStyle === undefined ? {} : { customStyle }),
 		[IMAGE_FORMAT_VALUE_KEY]: imageFormat,
 	};
 }
@@ -102,6 +110,7 @@ export function decodeCreatePanelImageValues(formData: FormData) {
 		panel: readJsonField(formData, 'panel'),
 		comicId: readString(formData, 'comicId'),
 		style: readString(formData, 'style'),
+		customStyle: readString(formData, 'customStyle'),
 		characters: readJsonField(formData, 'characters'),
 		[INSTRUCTIONS_VALUE_KEY]: readString(formData, INSTRUCTIONS_VALUE_KEY),
 		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: decodeGlobalInstructions(formData),

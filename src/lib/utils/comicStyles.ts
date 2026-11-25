@@ -1,6 +1,8 @@
-import { ComicStyleEnum, type ComicStyleDescription } from '#lib/types/index.ts';
-import type z from 'zod';
-
+import {
+	PresetStyleEnum,
+	type ComicStyleDescription,
+	type PresetComicStyle,
+} from '#lib/types/index.ts';
 export const ANIME_STYLE: ComicStyleDescription = {
 	id: 'anime',
 	linework:
@@ -136,15 +138,15 @@ export const UKIYO_E_STYLE: ComicStyleDescription = {
 		'STYLE LOCK: Japanese woodblock print style, bold calligraphic black key lines, flat opaque colour areas, layered flat planes, traditional woodblock paper texture, limited palette of indigo, vermilion and ochre, absolute zero 3D shading, absolute zero photorealism',
 };
 
-export const STYLES: Record<z.infer<typeof ComicStyleEnum>, ComicStyleDescription> = {
-	[ComicStyleEnum.enum.anime]: ANIME_STYLE,
-	[ComicStyleEnum.enum['classic-marvel']]: CLASSIC_MARVEL_STYLE,
-	[ComicStyleEnum.enum['franco-belgian']]: FRANCO_BELGIAN_STYLE,
-	[ComicStyleEnum.enum.manga]: MANGA_STYLE,
-	[ComicStyleEnum.enum.noir]: NOIR_STYLE,
-	[ComicStyleEnum.enum['newspaper-strip']]: NEWSPAPER_STRIP_STYLE,
-	[ComicStyleEnum.enum.watercolour]: WATERCOLOUR_STYLE,
-	[ComicStyleEnum.enum.webtoon]: WEBTOON_STYLE,
-	[ComicStyleEnum.enum['pop-art']]: POP_ART_STYLE,
-	[ComicStyleEnum.enum['ukiyo-e']]: UKIYO_E_STYLE,
+export const STYLES: Record<PresetComicStyle, ComicStyleDescription> = {
+	[PresetStyleEnum.enum.anime]: ANIME_STYLE,
+	[PresetStyleEnum.enum['classic-marvel']]: CLASSIC_MARVEL_STYLE,
+	[PresetStyleEnum.enum['franco-belgian']]: FRANCO_BELGIAN_STYLE,
+	[PresetStyleEnum.enum.manga]: MANGA_STYLE,
+	[PresetStyleEnum.enum.noir]: NOIR_STYLE,
+	[PresetStyleEnum.enum['newspaper-strip']]: NEWSPAPER_STRIP_STYLE,
+	[PresetStyleEnum.enum.watercolour]: WATERCOLOUR_STYLE,
+	[PresetStyleEnum.enum.webtoon]: WEBTOON_STYLE,
+	[PresetStyleEnum.enum['pop-art']]: POP_ART_STYLE,
+	[PresetStyleEnum.enum['ukiyo-e']]: UKIYO_E_STYLE,
 };

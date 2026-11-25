@@ -4,7 +4,8 @@ export const SeasonEnum = z.enum(['spring', 'summer', 'autumn', 'winter']);
 
 export const TimeOfDayEnum = z.enum(['dawn', 'morning', 'noon', 'afternoon', 'dusk', 'night']);
 
-export const ComicStyleEnum = z.enum([
+/** The built-in styles; each has a description in `utils/comicStyles.ts`. */
+export const PresetStyleEnum = z.enum([
 	'anime',
 	'classic-marvel',
 	'franco-belgian',
@@ -16,9 +17,17 @@ export const ComicStyleEnum = z.enum([
 	'pop-art',
 	'ukiyo-e',
 ]);
+export type PresetComicStyle = z.infer<typeof PresetStyleEnum>;
+
+/** A preset, or `custom`: the user's own words, kept on the comic as `customStyle` (REQ-97). */
+export const ComicStyleEnum = z.enum([...PresetStyleEnum.options, 'custom']);
 export type ComicStyle = z.infer<typeof ComicStyleEnum>;
+
+export const CUSTOM_STYLE_MIN_LENGTH = 10;
+export const CUSTOM_STYLE_MAX_LENGTH = 500;
+
 export const ComicStyleDescriptionSchema = z.object({
-	id: ComicStyleEnum,
+	id: PresetStyleEnum,
 	linework: z
 		.string()
 		.describe("e.g. 'bold black ink outlines, variable line weights', 'delicate fine lines'"),
@@ -208,6 +217,8 @@ export const ComicSchema = z.object({
 	/** Has the variants the comic's format asks for, like a panel image (REQ-280-1). */
 	cover: z.optional(ResponsivePanelImageSchema),
 	style: ComicStyleEnum,
+	/** Only for a `custom` style: the description that replaces the preset rules (REQ-97-3). */
+	customStyle: z.optional(z.string().max(CUSTOM_STYLE_MAX_LENGTH)),
 	/** Unset for existing and example comics, which mean `both` (REQ-103-1). */
 	imageFormat: z.optional(ImageFormatEnum),
 	panels: PanelArraySchema,

@@ -2,21 +2,24 @@ import { m } from '#lib/paraglide/messages.js';
 import { expect, test } from '@playwright/test';
 import { storedComics } from '../../../../../tests/e2e/storage';
 import { tabTo } from '../../../../../tests/e2e/keyboard';
-import { COMIC_STYLES } from '../../../../../tests/e2e/comicStyles';
+import { COMIC_STYLES, STYLE_CARDS } from '../../../../../tests/e2e/comicStyles';
 import { CreatePage } from './utils/createPage';
 
 const STORY = 'A lighthouse keeper finds a message in a bottle.\nIt leads her to a hidden cove.';
 const COMIC_URL = /\/comic\/[0-9a-f-]{36}$/;
+const CARD_COUNT = STYLE_CARDS().length;
+const COLUMNS = 3;
+
 test(
-	'the comic style is a radio group of ten cards with Anime checked',
+	'the comic style is a radio group of eleven cards with Anime checked',
 	{ tag: '@REQ-306-1' },
 	async ({ page }) => {
 		const createPage = await new CreatePage(page).goto();
 		const group = page.getByRole('group', { name: m.comicStyles() });
 
 		await expect(group).toBeVisible();
-		await expect(group.getByRole('radio')).toHaveCount(10);
-		for (const [index, { name, description }] of COMIC_STYLES().entries()) {
+		await expect(group.getByRole('radio')).toHaveCount(CARD_COUNT);
+		for (const [index, { name, description }] of STYLE_CARDS().entries()) {
 			await expect(group.getByRole('radio').nth(index)).toHaveAccessibleName(name);
 			await expect(group.getByText(description)).toBeVisible();
 			await expect(createPage.styleRadio(name)).toHaveAttribute('required', '');
@@ -55,13 +58,13 @@ test.describe('the style cards form a full-width grid', { tag: ['@REQ-306-2', '@
 		[390, 844],
 		[320, 640],
 	]) {
-		test(`ten cards make rows of 3, 3, 3 and 1, filling the width, at ${width}px`, async ({
+		test(`eleven cards make rows of 3, 3, 3 and 2, filling the width, at ${width}px`, async ({
 			page,
 		}) => {
 			await page.setViewportSize({ width, height });
 			await new CreatePage(page).goto();
 			const cards = page.getByRole('group', { name: m.comicStyles() }).locator('label');
-			await expect(cards).toHaveCount(10);
+			await expect(cards).toHaveCount(CARD_COUNT);
 
 			const { boxes, container } = await cards.evaluateAll((els) => {
 				const rect = (el: Element) => el.getBoundingClientRect();
@@ -78,20 +81,26 @@ test.describe('the style cards form a full-width grid', { tag: ['@REQ-306-2', '@
 				};
 			});
 			const rowOf = (index: number) => Math.round(boxes[index].y);
-			for (const row of [0, 3, 6]) {
-				expect(rowOf(row + 1)).toBe(rowOf(row));
-				expect(rowOf(row + 2)).toBe(rowOf(row));
-				expect(Math.abs(boxes[row].x - container.x)).toBeLessThan(1.5);
-				expect(Math.abs(boxes[row + 2].right - container.right)).toBeLessThan(1.5);
-				expect(boxes[row + 1].x - boxes[row].right).toBeGreaterThan(0);
-				expect(boxes[row + 2].x - boxes[row + 1].right).toBeGreaterThan(0);
+			for (let index = 0; index < CARD_COUNT; index++) {
+				const rowStart = index - (index % COLUMNS);
+				// Cards fill a row left to right, with a gap between neighbours.
+				expect(rowOf(index)).toBe(rowOf(rowStart));
+				if (index % COLUMNS > 0) {
+					expect(boxes[index].x - boxes[index - 1].right).toBeGreaterThan(0);
+				}
 			}
-			expect(rowOf(3)).toBeGreaterThan(rowOf(0));
-			expect(rowOf(6)).toBeGreaterThan(rowOf(3));
-			expect(rowOf(9)).toBeGreaterThan(rowOf(6));
-			// The tenth card sits alone in the first column, as wide as the others.
-			expect(Math.abs(boxes[9].x - boxes[0].x)).toBeLessThan(1.5);
-			expect(Math.abs(boxes[9].width - boxes[0].width)).toBeLessThan(1.5);
+			// The first column lines up with the form's left edge; a full row's last card with its right edge.
+			for (let row = 0; row < CARD_COUNT; row += COLUMNS) {
+				expect(Math.abs(boxes[row].x - container.x)).toBeLessThan(1.5);
+				if (row + COLUMNS - 1 < CARD_COUNT) {
+					expect(Math.abs(boxes[row + COLUMNS - 1].right - container.right)).toBeLessThan(1.5);
+				}
+			}
+			// Each row sits below the one before it, and the cards are as wide as each other.
+			for (let row = COLUMNS; row < CARD_COUNT; row += COLUMNS) {
+				expect(rowOf(row)).toBeGreaterThan(rowOf(row - COLUMNS));
+			}
+			expect(Math.abs(boxes[CARD_COUNT - 1].width - boxes[0].width)).toBeLessThan(1.5);
 
 			expect(
 				await page.evaluate(
@@ -154,7 +163,7 @@ for (const { id, name } of COMIC_STYLES().slice(1)) {
 
 			await expect(page).toHaveURL(COMIC_URL);
 			await expect(page.locator('dt', { hasText: m.comicStyle() }).locator('+ dd')).toContainText(
-				id,
+				name,
 			);
 			expect((await storedComics(page)).map((comic) => comic.style)).toContain(id);
 		},

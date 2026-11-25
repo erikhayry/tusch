@@ -101,13 +101,19 @@ const STYLE_NAMES: Record<ComicStyle, () => string> = {
 	webtoon: m.styleWebtoon,
 	'pop-art': m.stylePopArt,
 	'ukiyo-e': m.styleUkiyoE,
+	custom: m.styleCustom,
 };
+
+/** The translated name of a style, as the user sees it (REQ-295-1, Comic settings). */
+export function styleName(style: ComicStyle): string {
+	return STYLE_NAMES[style]();
+}
 
 /** "Example · Anime · 3 panels" on a bundled example, "Anime · 1 panel" on the user's own. */
 export function comicMetaLine(comic: Comic): string {
 	const panels =
 		comic.panels.length === 1 ? m.panelCountOne() : m.panelCount({ count: comic.panels.length });
-	return [isExampleComic(comic) ? m.exampleComic() : null, STYLE_NAMES[comic.style](), panels]
+	return [isExampleComic(comic) ? m.exampleComic() : null, styleName(comic.style), panels]
 		.filter((part) => part !== null)
 		.join(' · ');
 }

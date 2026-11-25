@@ -30,6 +30,11 @@ export const COMIC_STYLES = () => [
 	{ id: 'ukiyo-e', name: m.styleUkiyoE(), description: m.styleUkiyoEDescription() },
 ];
 
-/** The style's name by id, as shown on a library card (REQ-295-1). */
-export const styleName = (id: string) =>
-	COMIC_STYLES().find((style) => style.id === id)?.name ?? id;
+/** Every card in the create form, in order: the presets, then Custom (REQ-97). */
+export const STYLE_CARDS = () => [
+	...COMIC_STYLES(),
+	{ id: 'custom', name: m.styleCustom(), description: m.styleCustomDescription() },
+];
+
+/** The style's name by id, as shown on a library card (REQ-295-1); Custom included. */
+export const styleName = (id: string) => STYLE_CARDS().find((style) => style.id === id)?.name ?? id;

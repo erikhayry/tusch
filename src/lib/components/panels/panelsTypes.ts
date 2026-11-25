@@ -1,4 +1,4 @@
-import { CharacterSchema, ComicStyleEnum, PanelSchema } from '#lib/types/index.ts';
+import { CharacterSchema, ComicSchema, ComicStyleEnum, PanelSchema } from '#lib/types/index.ts';
 import { z } from 'zod';
 import { PanelPropsSchema } from '../panel/panelTypes';
 
@@ -12,6 +12,7 @@ export const PanelsPropsSchema = z.object({
 		}),
 	),
 	style: ComicStyleEnum,
+	customStyle: ComicSchema.shape.customStyle,
 	characters: z.array(CharacterSchema),
 });
 
