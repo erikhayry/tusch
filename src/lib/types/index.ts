@@ -5,7 +5,18 @@ export const SeasonEnum = z.enum(['spring', 'summer', 'autumn', 'winter']);
 export const TimeOfDayEnum = z.enum(['dawn', 'morning', 'noon', 'afternoon', 'dusk', 'night']);
 
 /** The built-in styles; each has a description in `utils/comicStyles.ts`. */
-export const PresetStyleEnum = z.enum(['anime', 'classic-marvel', 'franco-belgian']);
+export const PresetStyleEnum = z.enum([
+	'anime',
+	'classic-marvel',
+	'franco-belgian',
+	'manga',
+	'noir',
+	'newspaper-strip',
+	'watercolour',
+	'webtoon',
+	'pop-art',
+	'ukiyo-e',
+]);
 export type PresetComicStyle = z.infer<typeof PresetStyleEnum>;
 
 /** A preset, or `custom`: the user's own words, kept on the comic as `customStyle` (REQ-97). */

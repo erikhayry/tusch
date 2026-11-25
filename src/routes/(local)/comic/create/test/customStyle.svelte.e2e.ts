@@ -8,6 +8,7 @@ import { gotoHydrated } from '../../../../../tests/e2e/gotoHydrated';
 import { activate, tabTo } from '../../../../../tests/e2e/keyboard';
 import { metaLine } from '../../../../../tests/e2e/landingCopy';
 import { storedComics } from '../../../../../tests/e2e/storage';
+import { STYLE_CARDS } from '../../../../../tests/e2e/comicStyles';
 import { ComicSchema } from '#lib/types/index.ts';
 import { LandingPage } from '../../../test/utils/landingPage';
 import { CreatePage } from './utils/createPage';
@@ -16,20 +17,11 @@ const STORY = 'A lighthouse keeper finds a message in a bottle.\nIt leads her to
 const COMIC_URL = /\/comic\/[0-9a-f-]{36}$/;
 const DESCRIPTION = 'Soft watercolour washes with loose pencil lines';
 
-/** Check Custom with the keyboard, as a user does: Tab to the group, arrow to the fourth card. */
-async function chooseCustom(page: Page, createPage: CreatePage) {
-	await tabTo(page, createPage.styleRadio(m.styleAnime()));
-	for (const name of [m.styleClassicMarvel(), m.styleFrancoBelgian(), m.styleCustom()]) {
-		await page.keyboard.press('ArrowRight');
-		await expect(createPage.styleRadio(name)).toBeChecked();
-	}
-}
-
 /** Fill the form with a story and a custom description; leave it ready to submit. */
 async function fillCustom(page: Page, description: string) {
 	const createPage = await new CreatePage(page).goto();
 	await createPage.pasteStory(STORY);
-	await chooseCustom(page, createPage);
+	await createPage.chooseStyle(m.styleCustom());
 	await expect(createPage.customStyleInput).toBeVisible();
 	await tabTo(page, createPage.customStyleInput);
 	await page.keyboard.press('ControlOrMeta+A');
@@ -46,16 +38,16 @@ async function createCustomComic(page: Page, description = DESCRIPTION) {
 }
 
 test.describe('the Custom style field', { tag: '@REQ-97-1' }, () => {
-	test('is the fourth card, and its text area shows only while Custom is checked', async ({
+	test('is the last card, and its text area shows only while Custom is checked', async ({
 		page,
 	}) => {
 		const createPage = await new CreatePage(page).goto();
 		const group = page.getByRole('group', { name: m.comicStyles() });
 
-		await expect(group.getByRole('radio').nth(3)).toHaveAccessibleName(m.styleCustom());
+		await expect(group.getByRole('radio').nth(10)).toHaveAccessibleName(m.styleCustom());
 		await expect(createPage.customStyleInput).toHaveCount(0);
 
-		await chooseCustom(page, createPage);
+		await createPage.chooseStyle(m.styleCustom());
 		await expect(createPage.customStyleInput).toBeVisible();
 		await expect(createPage.customStyleInput).toHaveAttribute('required', '');
 		// Below the cards.
@@ -64,13 +56,13 @@ test.describe('the Custom style field', { tag: '@REQ-97-1' }, () => {
 		expect(cards && field && field.y >= cards.y + cards.height).toBe(true);
 
 		await page.keyboard.press('ArrowLeft');
-		await expect(createPage.styleRadio(m.styleFrancoBelgian())).toBeChecked();
+		await expect(createPage.styleRadio(m.styleUkiyoE())).toBeChecked();
 		await expect(createPage.customStyleInput).toHaveCount(0);
 	});
 
 	test('the counter reads "<n> of 500" and follows the typing', async ({ page }) => {
 		const createPage = await new CreatePage(page).goto();
-		await chooseCustom(page, createPage);
+		await createPage.chooseStyle(m.styleCustom());
 		await expect(createPage.customStyleCount).toHaveText('0 of 500');
 
 		await tabTo(page, createPage.customStyleInput);
@@ -83,7 +75,8 @@ test.describe('the Custom style field', { tag: '@REQ-97-1' }, () => {
 	test('switching back to Anime sends no description and the comic is Anime', async ({ page }) => {
 		const createPage = await fillCustom(page, DESCRIPTION);
 		await tabTo(page, createPage.styleRadio(m.styleCustom()));
-		for (let presses = 0; presses < 3; presses++) {
+		// Custom is the last card, so ArrowLeft once per card before it reaches Anime.
+		for (let presses = 0; presses < STYLE_CARDS().length - 1; presses++) {
 			await page.keyboard.press('ArrowLeft');
 		}
 		await expect(createPage.styleRadio(m.styleAnime())).toBeChecked();

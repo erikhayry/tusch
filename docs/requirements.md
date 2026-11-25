@@ -51,7 +51,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-295-1 A library card shows its style and panel count
 
 - Status: active
-- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (Anime, Classic Marvel or Franco-Belgian) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
+- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (any of the ten style names in REQ-306-1) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
 - Why: the card says what a comic is without opening it (#295).
 - Proven by: tagged tests
 
@@ -300,7 +300,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-283-4 Viewer panel images fill the width and nearly the height
 
 - Status: active
-- Statement: on the viewer, a panel image is as wide as the content area and almost as tall as the viewport, but leaves room so the top of the next panel shows below it, whatever its shape.
+- Statement: on the viewer, a panel image is as wide as the content area and almost as tall as the viewport, but leaves room so the top of the next panel shows below it, whatever its shape. This applies on screen; printed, REQ-89-1 applies.
 - Why: readers see one panel at a time and a hint of the next, as in the reference viewer (#283).
 - Proven by: tagged tests
 
@@ -841,7 +841,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-044 Every view except the viewer follows the OS/browser colour scheme
 
 - Status: active
-- Statement: every view except the viewer (REQ-299-1) follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it shows dark text on a light background. There is no toggle and nothing is stored. The viewer and the downloaded file are always dark (`color-scheme: dark`) in both schemes.
+- Statement: every view except the viewer (REQ-299-1) follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it shows dark text on a light background. There is no toggle and nothing is stored. The viewer and the downloaded file are always dark (`color-scheme: dark`) in both schemes on screen; printed, they use white paper (REQ-89-2).
 - Why: users with a dark system setting otherwise get a bright white page; the reader is a dark stage by design (#299).
 - Proven by: tagged tests
 
@@ -990,14 +990,14 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-306-1 The comic style is a radio group of cards
 
 - Status: active
-- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of four cards, Anime, Classic Marvel, Franco-Belgian and Custom in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
+- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of eleven cards, Anime, Classic Marvel, Franco-Belgian, Manga, Noir, Newspaper strip, Watercolour storybook, Webtoon, Pop art, Ukiyo-e and Custom in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
 - Why: the styles are compared side by side, with native radio semantics and keyboard behaviour (#306).
 - Proven by: tagged tests
 
 ### REQ-306-2 The style cards form a full-width grid
 
 - Status: active
-- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; further styles wrap to a new row; the checked style is sent as `style` and the created comic has that style.
+- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; the eleven cards make rows of 3, 3, 3 and 2, each row filling the form's width from its first column; the checked style is sent as `style` and the created comic has that style.
 - Why: more styles are coming, so the cards wrap instead of changing layout (#306).
 - Proven by: tagged tests
 
@@ -1006,6 +1006,34 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: the story field on `/comic/create` shows a counter "<n> of 10,000" (sv-se "<n> av 10 000", numbers grouped by locale) to the right of its label, starting at 0. It follows what is typed or pasted, is linked to the field with `aria-describedby` after the helper text, and is not a live region (neither it nor an ancestor has `role="status"` or `aria-live`; the label's accessible name doesn't include the count). Above 10,000 it uses the danger colour, and submitting is still rejected (REQ-007).
 - Why: users see the story limit before they submit (#307).
+- Proven by: tagged tests
+
+### REQ-89-1 Printing uses A4 portrait pages with one panel per page
+
+- Status: active
+- Statement: printing the viewer or the downloaded file uses A4 portrait pages: the cover with its title box on page 1, then each panel on a page of its own, scaled to fit within the page with its caption and speech boxes still over the image. No cover or panel is split across pages.
+- Why: readers can print a comic on paper so it looks like a printed comic (#89).
+- Proven by: tagged tests
+
+### REQ-89-2 Printed pages are white with dark text
+
+- Status: active
+- Statement: printed, the viewer and the downloaded file have a white page background and dark text, images in colour, caption and speech boxes with their screen look, and cover or panel placeholders drawn as an outlined frame with no fill.
+- Why: white paper and no fills save ink and stay readable (#89).
+- Proven by: tagged tests
+
+### REQ-89-3 Printing hides the viewer's chrome
+
+- Status: active
+- Statement: printed, the viewer's sticky header and the ending block's links are hidden; "The end" and the panel count are still printed. There is no print control (REQ-87-3); users print with the browser.
+- Why: screen controls mean nothing on paper (#89).
+- Proven by: tagged tests
+
+### REQ-89-4 Printing shows the portrait variant
+
+- Status: active
+- Statement: printed, a cover or panel with both variants shows the portrait one, in the viewer and the downloaded file, whatever the page orientation.
+- Why: the pages are portrait, so the portrait image fits them (#89).
 - Proven by: tagged tests
 
 ### REQ-311-1 The nested comic views show a breadcrumb in the header
@@ -1053,7 +1081,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-93-3 The service worker leaves other requests to the network
 
 - Status: active
-- Statement: the service worker handles only same-origin `GET` requests for build and static files and page navigations. Form posts (`?/…`), `/api/…`, `/settings` and every other request go to the network untouched, so an AI action offline shows the existing error and leaves the comic unchanged, and `page.route` mocks still apply.
+- Statement: the service worker handles only same-origin `GET` requests for build and static files, page navigations and the `__data.json` of pages outside `/settings` and `/api` (network first, the last online copy as fallback; it holds only the `hasKey` flag, never the key). Form posts (`?/…`), `/api/…`, `/settings` and every other request go to the network untouched, so an AI action offline shows the existing error and leaves the comic unchanged, and `page.route` mocks still apply.
 - Why: the API key and AI results must never be cached or touched by the worker (REQ-029), and tests must be able to mock requests (#93).
 - Proven by: tagged tests
 

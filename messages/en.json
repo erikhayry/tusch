@@ -195,5 +195,19 @@
 	"styleCustomDescription": "Describe it in your own words",
 	"customStyleLabel": "Describe your style",
 	"customStyleTooShort": "Describe your style in at least 10 characters",
-	"customStyleTooLong": "Keep the description to 500 characters or fewer"
+	"customStyleTooLong": "Keep the description to 500 characters or fewer",
+	"styleManga": "Manga",
+	"styleNoir": "Noir",
+	"styleNewspaperStrip": "Newspaper strip",
+	"styleWatercolour": "Watercolour storybook",
+	"styleWebtoon": "Webtoon",
+	"stylePopArt": "Pop art",
+	"styleUkiyoE": "Ukiyo-e",
+	"styleMangaDescription": "Black and white, screentone, speed lines",
+	"styleNoirDescription": "Black and white, deep shadows, hard light",
+	"styleNewspaperStripDescription": "Simple lines, bright flat colours",
+	"styleWatercolourDescription": "Soft washes, pencil lines, pale colours",
+	"styleWebtoonDescription": "Clean digital colour, soft shading",
+	"stylePopArtDescription": "Big dots, thick outlines, loud colours",
+	"styleUkiyoEDescription": "Woodblock print, flat colour, bold outlines"
 }

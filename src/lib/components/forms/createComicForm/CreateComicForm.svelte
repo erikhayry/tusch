@@ -42,6 +42,34 @@
 			name: () => m.styleFrancoBelgian(),
 			description: () => m.styleFrancoBelgianDescription(),
 		},
+		[ComicStyleEnum.enum.manga]: {
+			name: () => m.styleManga(),
+			description: () => m.styleMangaDescription(),
+		},
+		[ComicStyleEnum.enum.noir]: {
+			name: () => m.styleNoir(),
+			description: () => m.styleNoirDescription(),
+		},
+		[ComicStyleEnum.enum['newspaper-strip']]: {
+			name: () => m.styleNewspaperStrip(),
+			description: () => m.styleNewspaperStripDescription(),
+		},
+		[ComicStyleEnum.enum.watercolour]: {
+			name: () => m.styleWatercolour(),
+			description: () => m.styleWatercolourDescription(),
+		},
+		[ComicStyleEnum.enum.webtoon]: {
+			name: () => m.styleWebtoon(),
+			description: () => m.styleWebtoonDescription(),
+		},
+		[ComicStyleEnum.enum['pop-art']]: {
+			name: () => m.stylePopArt(),
+			description: () => m.stylePopArtDescription(),
+		},
+		[ComicStyleEnum.enum['ukiyo-e']]: {
+			name: () => m.styleUkiyoE(),
+			description: () => m.styleUkiyoEDescription(),
+		},
 		[ComicStyleEnum.enum.custom]: {
 			name: () => m.styleCustom(),
 			description: () => m.styleCustomDescription(),
