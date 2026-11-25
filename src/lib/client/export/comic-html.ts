@@ -36,10 +36,10 @@ export type ExportedComic = z.infer<typeof ExportedComicSchema>;
 /** Characters that aren't allowed in file names on common systems, and control characters. */
 const UNSAFE_FILE_NAME_CHARACTERS = /[\\/:*?"<>|]|\p{Cc}/gu;
 
-/** The download's file name: the title (or "Untitled comic") with unsafe characters replaced. */
-export function comicFileName(title: string): string {
+/** A download's file name: the title (or "Untitled comic") with unsafe characters replaced. */
+export function comicFileName(title: string, extension: string = 'html'): string {
 	const name = title.trim().replace(UNSAFE_FILE_NAME_CHARACTERS, '-') || m.untitledComic();
-	return `${name}.html`;
+	return `${name}.${extension}`;
 }
 
 const HTML_ESCAPES: Record<string, string> = {
