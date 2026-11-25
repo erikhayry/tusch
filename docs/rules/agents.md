@@ -112,7 +112,8 @@ A shell doesn't change what a role may do. For every role:
 
 - **Multi-line text goes into a file.** Write comment and PR bodies to
   `.agent-tmp/<name>.md` (gitignored), then pass the file:
-  `gh issue comment <n> --body-file .agent-tmp/comment.md`.
+  `gh issue comment <n> --body-file .agent-tmp/comment.md`. The Write tool
+  creates `.agent-tmp/` itself; never run `mkdir` (it is denied).
 - Edit files with Edit/Write, not `sed -i`, `perl -pi` or `cp`. The reviewer has
   no Edit on purpose and doesn't change code through the shell either.
 - Never change `.github/` or `.claude/` (see "Workflow and agent files"), never
