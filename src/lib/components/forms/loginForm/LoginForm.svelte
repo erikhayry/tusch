@@ -15,6 +15,7 @@
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
 	import type { FieldMessages } from '#lib/forms/form-failure.ts';
 	import FieldError from '#lib/components/fieldError/FieldError.svelte';
+	import { describedBy } from '#lib/components/fieldError/describedBy.ts';
 	import { tick } from 'svelte';
 
 	import { type LoginFormProps } from './loginFormTypes';
@@ -79,7 +80,7 @@
 				autocomplete="off"
 				placeholder={m.keyPlaceholder()}
 				aria-invalid={fieldErrors.key ? 'true' : undefined}
-				aria-describedby={fieldErrors.key ? 'key-hint key-error' : 'key-hint'}
+				aria-describedby={describedBy(['key-hint'], 'key-error', fieldErrors.key)}
 			/>
 		</label>
 		<p id="key-hint">{m.keyHint()}</p>

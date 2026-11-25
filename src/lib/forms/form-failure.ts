@@ -28,7 +28,8 @@ export function toUserMessage(failure: FormFailure): { message: string; details?
 }
 
 /** The first message for each rejected field, keyed by the field's name. */
-export type FieldMessages = Record<string, string>;
+const FieldMessagesSchema = z.record(z.string(), z.string());
+export type FieldMessages = z.infer<typeof FieldMessagesSchema>;
 
 export function toFieldMessages(failure: FormFailure): FieldMessages {
 	const messages: FieldMessages = {};
@@ -39,7 +40,7 @@ export function toFieldMessages(failure: FormFailure): FieldMessages {
 		}
 	}
 
-	return messages;
+	return FieldMessagesSchema.parse(messages);
 }
 
 export function toFormFailure(data: unknown): FormFailure {

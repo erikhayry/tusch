@@ -9,6 +9,7 @@
 
 	import { localizedHref } from '#lib/components/header/header-navigation.ts';
 	import FieldError from '#lib/components/fieldError/FieldError.svelte';
+	import { describedBy } from '#lib/components/fieldError/describedBy.ts';
 	import Section from '#lib/components/relativeHeading/Section.svelte';
 	import { workflowDeps } from '#lib/client/workflow-deps.ts';
 	import { expectWorkflow } from '#lib/features/comics/client/workflows/asset-workflow.ts';
@@ -101,11 +102,6 @@
 			},
 		),
 	);
-
-	/** The hint ids, plus the field's error id while the server rejects the field. */
-	function describedBy(hintIds: string[], errorId: string, message: string | undefined) {
-		return (message ? [...hintIds, errorId] : hintIds).join(' ');
-	}
 </script>
 
 <Section data-testId={createComicFormTestId}>
