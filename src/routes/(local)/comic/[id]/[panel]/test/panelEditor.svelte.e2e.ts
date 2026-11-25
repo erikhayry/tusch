@@ -17,7 +17,7 @@ async function openCreatedComic(page: Page, index = 1) {
 const panelUrl = (comicId: string, panelId: string) => `/comic/${comicId}/${panelId}`;
 
 test(
-	'at 1280 px the panel list is one column beside the panel and its links are named "Panel N <title>"',
+	'at 1280 px the panel list is one row above the panel, with no sidebar, and its links are named "Panel N <title>"',
 	{ tag: ['@REQ-238-1', '@REQ-238-2'] },
 	async ({ page }) => {
 		await page.setViewportSize({ width: 1280, height: 920 });
@@ -31,19 +31,17 @@ test(
 			await expect(cards.link(index)).toHaveAccessibleName(name);
 		}
 
-		const lefts = await cards.items.evaluateAll((els) =>
-			els.map((el) => Math.round(el.getBoundingClientRect().left)),
-		);
-		expect(new Set(lefts).size).toBe(1);
-		expect(await cards.rowSpread()).toBeGreaterThan(0);
+		expect(await cards.rowSpread()).toBeLessThanOrEqual(1);
+		await expect(cards.list.locator('a[aria-current]')).toHaveCount(1);
+		await expect(cards.link(1)).toHaveAttribute('aria-current', 'page');
 
-		// Beside the panel: the list ends before the panel's heading starts.
+		// Above the panel, not beside it: the list ends before the panel's heading starts.
 		const listBox = await cards.list.boundingBox();
 		const headingBox = await page
 			.getByRole('heading', { name: titles[1], exact: true })
 			.boundingBox();
-		expect((listBox?.x ?? Infinity) + (listBox?.width ?? 0)).toBeLessThanOrEqual(
-			headingBox?.x ?? -1,
+		expect((listBox?.y ?? Infinity) + (listBox?.height ?? 0)).toBeLessThanOrEqual(
+			headingBox?.y ?? -1,
 		);
 	},
 );
@@ -131,6 +129,14 @@ test(
 	},
 );
 
+/** The control that stands in for an unavailable Prev/Next: not a link, `aria-disabled`, named by its text or `aria-label`. */
+function disabledPager(page: Page, name: string) {
+	return page
+		.locator(`[aria-disabled="true"][aria-label="${name}"]`)
+		.or(page.locator('[aria-disabled="true"]').filter({ hasText: name }))
+		.filter({ visible: true });
+}
+
 for (const { edge, index, shown, other } of [
 	{ edge: 'first', index: 0, shown: m.previousPanel(), other: m.nextPanel() },
 	{ edge: 'last', index: -1, shown: m.nextPanel(), other: m.previousPanel() },
@@ -142,8 +148,7 @@ for (const { edge, index, shown, other } of [
 			await openCreatedComic(page, index);
 
 			await expect(page.getByRole('link', { name: shown, exact: true })).toHaveCount(0);
-			// The arrow is decorative, so the disabled control's text is the word plus the arrow.
-			const disabled = page.locator('[aria-disabled="true"]').filter({ hasText: shown });
+			const disabled = disabledPager(page, shown);
 			await expect(disabled).toBeVisible();
 			await expect(disabled).toHaveAttribute('aria-disabled', 'true');
 			await expect(page.getByRole('link', { name: other, exact: true })).toBeVisible();

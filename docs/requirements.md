@@ -449,7 +449,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-279-1 A panel page offers to create a missing image variant
 
 - Status: active
-- Statement: on the panel page, when the comic's image format asks for a variant the panel image lacks (images made before #103, a partial failure, or a format changed later), a "Create landscape image" or "Create portrait image" button generates only that variant, using the existing variant as reference, and keeps the existing one. No such button is offered when the panel image has every variant the format asks for, or when the panel has no image. A failed request shows the error and leaves the panel image unchanged.
+- Statement: on the panel page, when the comic's image format asks for a variant the panel image lacks (images made before #103, a partial failure, or a format changed later), a "Create landscape image" or "Create portrait image" button generates only that variant, using the existing variant as reference, and keeps the existing one. No such button is offered when the panel image has every variant the format asks for, or when the panel has no image. A failed request shows the error and leaves the panel image unchanged. On a portrait-only or landscape-only comic the image section has a Portrait/Landscape switch (two controls named "Portrait" and "Landscape"); it starts on the format's variant, only changes which stored variant is shown and never changes the comic's format. Choosing a variant the panel lacks shows "Create portrait image" / "Create landscape image" in its place. "Restore previous image" sits next to Remove.
 - Why: users shouldn't have to replace a whole image to get the variant they lack (#279).
 - Proven by: tagged tests
 
@@ -572,10 +572,10 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: users recognise a panel by its picture faster than by a text link; the number and title already name the link, so the image adds no screen-reader noise.
 - Proven by: tagged tests
 
-### REQ-238-2 The panel list is a vertical sidebar from 48em and a horizontal row below
+### REQ-238-2 The panel list is one horizontal row at every width
 
 - Status: active
-- Statement: on the panel page, from 48em the panel list is one vertical column in a sidebar beside the panel; below 48em it is one horizontal row above the panel that scrolls inside its own box (the document never gets wider than the viewport). At every width the current panel's card is scrolled into view on load and is the only link marked `aria-current="page"`, and a card focused by keyboard is scrolled into view.
+- Statement: on the panel page the panel list is one horizontal row under the breadcrumb (or the narrow top bar) at every width, with no sidebar, that scrolls inside its own box (the document never gets wider than the viewport). The current panel's card is scrolled into view on load and is the only link marked `aria-current="page"`, and a card focused by keyboard is scrolled into view. Below 48em the row and a compact top bar are sticky.
 - Why: a long story would otherwise push the panel itself far down the page, and the user must see which panel they are on.
 - Proven by: tagged tests
 
@@ -589,7 +589,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-298-2 The panel page links to the previous and next panel
 
 - Status: active
-- Statement: the panel page has a "Prev" link to the previous panel and a "Next" link to the next one (arrows are decorative and hidden from assistive tech); on the first (last) panel, Prev (Next) is shown but is not a link and is marked `aria-disabled="true"`.
+- Statement: the panel page has a "Prev" link to the previous panel and a "Next" link to the next one (glyphs are decorative and hidden from assistive tech). From 48em they are ‹ › links at the two ends of the panel list; below 48em they read "← Prev" / "Next →" and are pinned to the bottom of the viewport. On the first (last) panel, Prev (Next) is shown but is not a link and is marked `aria-disabled="true"`.
 - Why: stepping through panels should not need the panel list (#298).
 - Proven by: tagged tests
 
@@ -1008,6 +1008,48 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Why: users see the story limit before they submit (#307).
 - Proven by: tagged tests
 
+### REQ-323-1 The panel page has a breadcrumb
+
+- Status: active
+- Statement: from 48em the panel page has a `nav` named "Breadcrumb" with "Comics" (link to `/`), the comic title or "Untitled comic" (link to `/comic/<id>`) and "Panel <number>" as the last item, which is not a link and has `aria-current="page"`. It replaces the "Back to Comic" text link; below 48em the narrow top bar has a back-arrow link named "Back to Comic" to the comic page and the "Read" link keeps the name "Read comic".
+- Why: users see where the panel sits and can go up a level in one step (#323).
+- Proven by: tagged tests
+
+### REQ-323-2 Add-panel buttons are "+" buttons in the panel list
+
+- Status: active
+- Statement: the add-panel buttons show only "+" (hidden from assistive tech) and are named, and titled, "Add panel before panel 1" or "Add panel after panel <number>"; there is one before the first panel and one after each panel, all inside the panel list, and none elsewhere on the page.
+- Why: the list stays compact while every insertion point stays reachable and named (#323).
+- Proven by: tagged tests
+
+### REQ-323-3 The panel page is four headed cards
+
+- Status: active
+- Statement: the panel page groups its content under the headings Scene (description, Time of day, Season and Year), Generate image, Captions and Dialogue, in that order. On a "Portrait and landscape" comic both images show side by side from 48em and stacked below, each with its caption and Remove button, and no Portrait/Landscape switch.
+- Why: the unstructured stack was hard to scan (#323).
+- Proven by: tagged tests
+
+### REQ-323-4 Character references are toggle buttons
+
+- Status: active
+- Statement: each character's references on the image form are 44 by 44 px toggle buttons (`aria-pressed`) named "<character> from panel <number>" in a row that scrolls sideways. Pressing one presses it and releases that character's other one, pressing it again releases it; the group header shows "<n> selected" for the characters with a reference. Generating sends only the pressed references (REQ-100-2).
+- Why: thumbnails are quicker to compare than radio rows, and the choice stays one reference or none per character (#323).
+- Proven by: tagged tests
+
+### REQ-323-5 A panel can be deleted from its page
+
+- Status: active
+- Statement: the panel page has a "Delete Panel <number>" button below the cards that deletes the panel without confirming (as REQ-013), with the cleanup of REQ-047, and then opens the previous panel, the new first panel if it was the first, or the comic page if no panel is left.
+- Why: users can remove a panel where they are editing it (#323).
+- Proven by: tagged tests
+
+### REQ-323-6 Controls on the panel page are at least 44 px tall
+
+- Status: active
+- Statement: on the panel page every visible button and link is at least 44 CSS px tall at 1280 px and 320 px, and dialogue avatars are 28 CSS px (24 below 48em).
+- Why: touch targets are easy to hit, and the dialogue stays dense (#323).
+- Proven by: tagged tests
+
 ### REQ-89-1 Printing uses A4 portrait pages with one panel per page
 
 - Status: active
@@ -1039,7 +1081,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-311-1 The nested comic views show a breadcrumb in the header
 
 - Status: active
-- Statement: the comic overview (`/comic/<id>`) and the panel page (`/comic/<id>/<panel>`) show a breadcrumb in the header as a second row under the wordmark row at every width: a `<nav aria-label="Breadcrumb">` holding an `<ol>`. The overview reads "Comics / <title>", the panel page "Comics / <title> / Panel <position>" (1-based, as in the panel list). "Comics" links to `/`, the title (when not current) links to `/comic/<id>`, and the last item is bold plain text, not a link, with `aria-current="page"`. The "/" separators are `aria-hidden`.
+- Statement: the comic overview (`/comic/<id>`) and the panel page (`/comic/<id>/<panel>`) show a breadcrumb in the header as a second row under the wordmark row (on the panel page from 48em only, see REQ-323-1; below it the narrow top bar replaces it): a `<nav aria-label="Breadcrumb">` holding an `<ol>`. The overview reads "Comics / <title>", the panel page "Comics / <title> / Panel <position>" (1-based, as in the panel list). "Comics" links to `/`, the title (when not current) links to `/comic/<id>`, and the last item is bold plain text, not a link, with `aria-current="page"`. The "/" separators are `aria-hidden`.
 - Why: users see where they are and can go up a level (#311).
 - Proven by: tagged tests
 
@@ -1060,7 +1102,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-311-4 The panel page has no "Back to Comic" link
 
 - Status: active
-- Statement: the panel page has no "Back to Comic" link; the breadcrumb's title link replaces it.
+- Statement: from 48em the panel page has no "Back to Comic" link; the breadcrumb's title link replaces it. Below 48em the narrow top bar has a back-arrow link with that name (REQ-323-1).
 - Why: one way up, not two (#311).
 - Proven by: tagged tests
 
