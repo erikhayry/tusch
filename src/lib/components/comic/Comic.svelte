@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { toCoverPrompt } from '#lib/features/comics/contracts/createCoverImage.ts';
-	import { panelCountsLine } from '#lib/features/comics/client/comic-selectors.ts';
+	import { panelCountsLine, styleName } from '#lib/features/comics/client/comic-selectors.ts';
 	import { m } from '#lib/paraglide/messages.js';
 	import {
 		imageFormatOf,
@@ -121,7 +121,11 @@
 						<CreateCoverImageForm
 							label={CREATE_LABELS[missingVariant]()}
 							baseImage={primaryVariant(comic.cover)?.asset.src}
-							values={{ comic: toCoverPrompt(comic), [IMAGE_FORMAT_VALUE_KEY]: missingVariant }}
+							values={{
+								comic: toCoverPrompt(comic),
+								...(comic.customStyle === undefined ? {} : { customStyle: comic.customStyle }),
+								[IMAGE_FORMAT_VALUE_KEY]: missingVariant,
+							}}
 						/>
 					{/if}
 					{#if storedVariants(comic.cover).length === 2}
@@ -143,7 +147,11 @@
 					{/if}
 				{:else}
 					<CreateCoverImageForm
-						values={{ comic: toCoverPrompt(comic), [IMAGE_FORMAT_VALUE_KEY]: imageFormat }}
+						values={{
+							comic: toCoverPrompt(comic),
+							...(comic.customStyle === undefined ? {} : { customStyle: comic.customStyle }),
+							[IMAGE_FORMAT_VALUE_KEY]: imageFormat,
+						}}
 						label={m.addCover()}
 					/>
 				{/if}
@@ -156,7 +164,12 @@
 				<ImageFormatForm comicId={comic.id} imageFormat={imageFormatOf(comic)} />
 				<dl class="facts">
 					<dt>{m.comicStyle()}</dt>
-					<dd>{comic.style}</dd>
+					<dd>
+						{styleName(comic.style)}
+						{#if comic.customStyle}
+							<p class="story">{comic.customStyle}</p>
+						{/if}
+					</dd>
 
 					<dt>{m.source()}</dt>
 					<dd>

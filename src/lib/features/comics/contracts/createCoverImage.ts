@@ -7,6 +7,7 @@ import { EXISTING_IMAGE_VALUE_KEY } from '#lib/features/panels/contracts/createP
 import { readCheckbox, readJsonField, readString } from '#lib/forms/form-data.ts';
 import {
 	ComicSchema,
+	CUSTOM_STYLE_MAX_LENGTH,
 	ImageFormatEnum,
 	ImageVariantEnum,
 	ResponsivePanelImageSchema,
@@ -48,6 +49,8 @@ export const CreateCoverImageValuesSchema = z.object({
 	comic: CoverPromptSchema,
 	[INSTRUCTIONS_VALUE_KEY]: z.string(),
 	[GLOBAL_INSTRUCTIONS_VALUE_KEY]: GlobalInstructionsSchema,
+	/** Its own field, not inside `comic`: the description must reach the prompt as typed (REQ-97-3). */
+	customStyle: z.optional(z.string().max(CUSTOM_STYLE_MAX_LENGTH)),
 	[IMAGE_VALUE_KEY]: z.string().optional(),
 	[INCLUDE_IMAGE_VALUE_KEY]: z.boolean().optional(),
 	/** The variants to make (the comic's format, REQ-011). Optional for API callers, which get both. */
@@ -69,6 +72,7 @@ export type CreateCoverImageResult = z.infer<typeof CreateCoverImageResultSchema
 export function decodeCreateCoverImageValues(formData: FormData) {
 	return {
 		comic: readJsonField(formData, 'comic'),
+		customStyle: readString(formData, 'customStyle'),
 		[INSTRUCTIONS_VALUE_KEY]: readString(formData, INSTRUCTIONS_VALUE_KEY),
 		[GLOBAL_INSTRUCTIONS_VALUE_KEY]: decodeGlobalInstructions(formData),
 		[IMAGE_VALUE_KEY]: readString(formData, IMAGE_VALUE_KEY),

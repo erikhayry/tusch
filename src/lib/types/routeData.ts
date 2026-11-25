@@ -34,6 +34,7 @@ export const PanelPageDataSchema = z.object({
 	/** The header breadcrumb names the comic; the panel itself has no title of its own. */
 	comicTitle: ComicSchema.shape.title,
 	style: ComicStyleEnum,
+	customStyle: ComicSchema.shape.customStyle,
 	characters: z.array(CharacterSchema),
 });
 

@@ -14,6 +14,7 @@
 			current={{ panel: data.panel, index: data.index }}
 			comicId={data.comicId}
 			style={data.style}
+			customStyle={data.customStyle}
 			characters={data.characters}
 		/>
 	</Page>

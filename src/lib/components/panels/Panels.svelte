@@ -10,7 +10,7 @@
 	import Heading from '../relativeHeading/Heading.svelte';
 	import { type PanelsProps } from './panelsTypes';
 
-	let { panels, comicId, current, style, characters }: PanelsProps = $props();
+	let { panels, comicId, current, style, customStyle, characters }: PanelsProps = $props();
 
 	let cardList: HTMLOListElement | undefined = $state();
 
@@ -89,6 +89,7 @@
 				totalNumberOfPanels={panels.length}
 				number={current.index + 1}
 				{style}
+				{customStyle}
 				{characters}
 			/>
 			<div class="pager">

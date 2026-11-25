@@ -25,6 +25,7 @@ import {
 	type FixCharacterCropValues,
 } from '#lib/features/panels/contracts/fixCharacterCrop.ts';
 import {
+	ComicStyleEnum,
 	ImageFormatEnum,
 	type Comic,
 	type Crop,
@@ -180,9 +181,10 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 		includeImage,
 		imageFormat = ImageFormatEnum.enum.both,
 		existingImage,
+		customStyle,
 	}: CreateCoverImageValues): Promise<CreateCoverImageResult> {
 		const messages = [
-			...buildCoverImageMessages({ comic, globalInstructions }),
+			...buildCoverImageMessages({ comic, customStyle, globalInstructions }),
 			`USER INSTRUCTION: ${instructions}`,
 		];
 		const { primary, variants, failedVariant } = await generateVariants(
@@ -216,11 +218,19 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			url,
 			story,
 			style,
+			customStyle,
 			panelCount,
 			globalInstructions,
 		}: CreateComicValues): Promise<CreateComicResult> {
+			// Only a custom style keeps its description; a preset comic never stores one (REQ-97-3).
+			const ownStyle = style === ComicStyleEnum.enum.custom ? customStyle : undefined;
 			const output: OpenAiOutput = await gateway.text({
-				messages: buildInitialMessages({ url, story, panelCount }, style, globalInstructions),
+				messages: buildInitialMessages(
+					{ url, story, panelCount },
+					style,
+					ownStyle,
+					globalInstructions,
+				),
 				schemaName: SchemaName.enum.initComic,
 			});
 
@@ -233,6 +243,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 					...initial,
 					// The style the user chose wins over whatever the model echoes back.
 					style,
+					customStyle: ownStyle,
 					panels: initial.panels.map((panel) => ({ ...panel, id: createId() })),
 				};
 			});
@@ -240,6 +251,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			// A comic gets the cover variants of the default format (REQ-006).
 			const { image: cover, failedVariant } = await createCoverImage({
 				comic: toCoverPrompt(comic),
+				customStyle: ownStyle,
 				[INSTRUCTIONS_VALUE_KEY]: '',
 				globalInstructions,
 			});
@@ -281,6 +293,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 			instructions,
 			globalInstructions,
 			style,
+			customStyle,
 			includeImage,
 			imageUrl,
 			referenceImages,
@@ -293,6 +306,7 @@ export function createGenerationService(gateway: AiGateway, createId: () => stri
 				instructions,
 				globalInstructions,
 				style,
+				customStyle,
 			});
 			const { primary, variants, failedVariant } = await generateVariants(
 				imageFormat,

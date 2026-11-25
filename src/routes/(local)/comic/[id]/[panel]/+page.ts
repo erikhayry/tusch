@@ -36,6 +36,7 @@ export async function load({ params, parent }) {
 		comicId,
 		comicTitle: comic.title,
 		style: comic.style,
+		customStyle: comic.customStyle,
 		characters: comic.characters,
 	});
 }

@@ -27,7 +27,8 @@
 	import FieldActions from './components/fieldActions/FieldActions.svelte';
 	import { type PanelProps } from './panelTypes';
 
-	let { number, totalNumberOfPanels, panel, comicId, style, characters }: PanelProps = $props();
+	let { number, totalNumberOfPanels, panel, comicId, style, customStyle, characters }: PanelProps =
+		$props();
 
 	const characterReferences = $derived(
 		getCharacterReferenceGroups(comicStore.comics, comicId, panel.id),
@@ -75,7 +76,7 @@
 			panelTitle={panel.editorialTitle}
 			label={m.addImage()}
 			{characterReferences}
-			values={toCreatePanelImageValues(comicId, panel, characters, style, imageFormat)}
+			values={toCreatePanelImageValues(comicId, panel, characters, style, imageFormat, customStyle)}
 			bind:submitButton={addImageButton}
 		/>
 	{:else}
@@ -94,7 +95,14 @@
 				label={CREATE_LABELS[missingVariant]()}
 				baseImage={primaryVariant(panel.image)?.asset.src}
 				{characterReferences}
-				values={toCreatePanelImageValues(comicId, panel, characters, style, missingVariant)}
+				values={toCreatePanelImageValues(
+					comicId,
+					panel,
+					characters,
+					style,
+					missingVariant,
+					customStyle,
+				)}
 				bind:submitButton={createVariantButton}
 				onSuccess={() => focusAfterUpdate(() => generateImageButton)}
 			/>
@@ -106,7 +114,14 @@
 				imageName={primaryVariant(panel.image)?.asset.src}
 				imageVariant={primaryVariant(panel.image)?.variant}
 				{characterReferences}
-				values={toCreatePanelImageValues(comicId, panel, characters, style, imageFormat)}
+				values={toCreatePanelImageValues(
+					comicId,
+					panel,
+					characters,
+					style,
+					imageFormat,
+					customStyle,
+				)}
 				bind:submitButton={generateImageButton}
 			/>
 		{/if}

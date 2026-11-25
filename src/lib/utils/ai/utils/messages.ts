@@ -1,7 +1,7 @@
 import type { CoverPrompt } from '#lib/features/comics/contracts/createCoverImage.ts';
 import type { CharacterPrompt, PanelPrompt } from '#lib/features/comics/contracts/prompts.ts';
 import type { CharacterBoxes } from '#lib/utils/ai/aiTypes.ts';
-import type { ComicStyle, Panel } from '#lib/types/index.ts';
+import { ComicStyleEnum, type ComicStyle, type Panel } from '#lib/types/index.ts';
 import { STYLES } from '#lib/utils/comicStyles.ts';
 import type { ResponseInputItem } from 'openai/resources/responses/responses.mjs';
 import { OPEN_AI_ROLE, OPEN_AI_TYPE } from './settings';
@@ -56,7 +56,18 @@ function buildGlobalInstructions(globalInstructions: string): string[] {
 	return globalInstructions ? [`USER GLOBAL INSTRUCTIONS: ${globalInstructions}`] : [];
 }
 
-function buildStyleInstruction(styleKey: ComicStyle): string[] {
+/**
+ * A preset's rules, or the user's own description (REQ-97-3). The description replaces the
+ * preset rules, so the model isn't given two styles to choose between.
+ */
+function buildStyleInstruction(styleKey: ComicStyle, customStyle: string | undefined): string[] {
+	if (styleKey === ComicStyleEnum.enum.custom) {
+		return [
+			`MANDATORY CUSTOM STYLE: "${customStyle ?? ''}"`,
+			'ENFORCEMENT: Apply this custom style strictly to the downstream image generator prompt string. DO NOT insert the style description or its keywords into "visualDescription" or "alt" fields.',
+		];
+	}
+
 	const styleDef = STYLES[styleKey];
 	if (!styleDef) {
 		return [`STYLE PRESET: ${styleKey}`];
@@ -76,6 +87,7 @@ function buildStyleInstruction(styleKey: ComicStyle): string[] {
 export function buildInitialMessages(
 	{ url, story, panelCount }: { url?: string; story?: string; panelCount: number },
 	style: ComicStyle,
+	customStyle: string | undefined,
 	globalInstructions = '',
 ): string[] {
 	return [
@@ -84,22 +96,24 @@ export function buildInitialMessages(
 		...(story ? [`USER STORY: ${story}`] : []),
 		...INIT.HOWS,
 		`${PANEL_COUNT_PREFIX}${panelCount} sequential panels that form a cohesive narrative arc.`,
-		...buildStyleInstruction(style),
+		...buildStyleInstruction(style, customStyle),
 		...buildGlobalInstructions(globalInstructions),
 	];
 }
 
 export function buildCoverImageMessages({
 	comic,
+	customStyle,
 	globalInstructions = '',
 }: {
 	comic: CoverPrompt;
+	customStyle?: string;
 	globalInstructions?: string;
 }): string[] {
 	return [
 		COVER_IMAGE.WHAT,
 		...COVER_IMAGE.HOWS,
-		...buildStyleInstruction(comic.style),
+		...buildStyleInstruction(comic.style, customStyle),
 		`CHARACTERS: ${JSON.stringify(comic.characters)}`,
 		`PANELS: ${JSON.stringify(comic.panels)}`,
 		...buildGlobalInstructions(globalInstructions),
@@ -111,6 +125,7 @@ export function buildPanelImageMessages({
 	instructions,
 	characters,
 	style,
+	customStyle,
 	globalInstructions = '',
 }: {
 	panel: Pick<
@@ -120,6 +135,7 @@ export function buildPanelImageMessages({
 	instructions: string;
 	characters: CharacterPrompt[];
 	style: ComicStyle;
+	customStyle?: string;
 	globalInstructions?: string;
 }): string[] {
 	const meta: string[] = [];
@@ -153,7 +169,7 @@ export function buildPanelImageMessages({
 		IMAGE.WHAT,
 		...meta,
 		...IMAGE.HOWS,
-		...buildStyleInstruction(style),
+		...buildStyleInstruction(style, customStyle),
 		...buildGlobalInstructions(globalInstructions),
 		`USER INSTRUCTION: ${instructions}`,
 	];

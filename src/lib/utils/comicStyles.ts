@@ -1,6 +1,8 @@
-import { ComicStyleEnum, type ComicStyleDescription } from '#lib/types/index.ts';
-import type z from 'zod';
-
+import {
+	PresetStyleEnum,
+	type ComicStyleDescription,
+	type PresetComicStyle,
+} from '#lib/types/index.ts';
 export const ANIME_STYLE: ComicStyleDescription = {
 	id: 'anime',
 	linework:
@@ -46,8 +48,8 @@ export const FRANCO_BELGIAN_STYLE: ComicStyleDescription = {
 		'STYLE LOCK: Franco-Belgian bande dessinée style, strict Ligne Claire art style, Hergé Tintin aesthetic, completely uniform unvaried ink outline width across all objects, flat matte solid color fills, zero shading, zero shadows, zero gradients, crisp architectural background detail, maximum graphic legibility, absolute zero digital painterly effects',
 };
 
-export const STYLES: Record<z.infer<typeof ComicStyleEnum>, ComicStyleDescription> = {
-	[ComicStyleEnum.enum.anime]: ANIME_STYLE,
-	[ComicStyleEnum.enum['classic-marvel']]: CLASSIC_MARVEL_STYLE,
-	[ComicStyleEnum.enum['franco-belgian']]: FRANCO_BELGIAN_STYLE,
+export const STYLES: Record<PresetComicStyle, ComicStyleDescription> = {
+	[PresetStyleEnum.enum.anime]: ANIME_STYLE,
+	[PresetStyleEnum.enum['classic-marvel']]: CLASSIC_MARVEL_STYLE,
+	[PresetStyleEnum.enum['franco-belgian']]: FRANCO_BELGIAN_STYLE,
 };
