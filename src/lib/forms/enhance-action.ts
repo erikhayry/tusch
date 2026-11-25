@@ -1,7 +1,13 @@
 import type { SubmitFunction } from '$app/forms';
 import { globalError } from '#lib/utils/states/error.svelte.ts';
 import { globalLoading } from '#lib/utils/states/loading.svelte.ts';
-import { toFormFailure, toUserMessage, type FormFailure } from './form-failure';
+import {
+	toFieldMessages,
+	toFormFailure,
+	toUserMessage,
+	type FieldMessages,
+	type FormFailure,
+} from './form-failure';
 
 export type UpdateForm = () => Promise<void>;
 
@@ -27,7 +33,15 @@ export type SubmissionProgress = {
 export function enhanceAction<T extends Record<string, unknown>>(
 	label: string,
 	onSuccess: ActionSuccessHandler<T>,
-	options: { onFailure?: (failure: FormFailure) => void; progress?: SubmissionProgress } = {},
+	options: {
+		onFailure?: (failure: FormFailure) => void;
+		/**
+		 * Receives the rejected fields' messages, to show next to each field (REQ-201-1).
+		 * Cleared at each submission, so a fixed field stops being marked (REQ-201-3).
+		 */
+		onFieldErrors?: (messages: FieldMessages) => void;
+		progress?: SubmissionProgress;
+	} = {},
 ): SubmitFunction<T> {
 	let inFlight = false;
 
@@ -39,6 +53,7 @@ export function enhanceAction<T extends Record<string, unknown>>(
 
 		inFlight = true;
 		globalError.reset();
+		options.onFieldErrors?.({});
 		const loadingId = options.progress ? undefined : globalLoading.start(label);
 		options.progress?.start(() => controller.abort());
 		let succeeded = false;
@@ -91,6 +106,7 @@ export function enhanceAction<T extends Record<string, unknown>>(
 					globalError.set(result.error.message);
 				} else if (result.type === 'failure') {
 					const failure = toFormFailure(result.data);
+					options.onFieldErrors?.(toFieldMessages(failure));
 					if (options.onFailure) {
 						options.onFailure(failure);
 					} else {
