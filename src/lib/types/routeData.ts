@@ -31,6 +31,8 @@ export const PanelPageDataSchema = z.object({
 	index: z.number().int().nonnegative(),
 	number: z.number().int().positive(),
 	comicId: ComicSchema.shape.id,
+	/** The header breadcrumb names the comic; the panel itself has no title of its own. */
+	comicTitle: ComicSchema.shape.title,
 	style: ComicStyleEnum,
 	characters: z.array(CharacterSchema),
 });
