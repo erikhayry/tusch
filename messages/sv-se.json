@@ -5,7 +5,7 @@
 	"addPanelBefore": "Lägg till panel före panel {number}",
 	"addPanelAfter": "Lägg till panel efter panel {number}",
 	"untitledComic": "Namnlös serie",
-	"breadcrumb": "Brödsmulespår",
+	"breadcrumb": "Brödsmulor",
 	"newCaption": "Ny bildtext",
 	"loadingCreateComic": "Skapar serie...",
 	"loadingCreatePanelImage": "Skapar rutans bild...",
@@ -151,7 +151,6 @@
 	"generatingImageNote": "Tar oftast 1–2 minuter. Stanna på sidan; lämnar du den avbryts bilden.",
 	"cancelGeneration": "Avbryt",
 	"generatingImageAnnouncement": "Skapar bild. Det kan ta ett par minuter.",
-	"breadcrumb": "Brödsmulor",
 	"scene": "Scen",
 	"generateImage": "Skapa bild",
 	"referencesSelected": "{count} valda",
@@ -169,5 +168,10 @@
 	"styleWatercolourDescription": "Mjuka laveringar, blyertslinjer, ljusa färger",
 	"styleWebtoonDescription": "Ren digital färg, mjuk skuggning",
 	"stylePopArtDescription": "Stora punkter, tjocka konturer, skrikiga färger",
-	"styleUkiyoEDescription": "Träsnitt, platta färger, kraftiga konturer"
+	"styleUkiyoEDescription": "Träsnitt, platta färger, kraftiga konturer",
+	"createComicStoryTooShort": "Skriv minst {min} tecken.",
+	"createComicStoryTooLong": "Korta ner berättelsen till högst {max} tecken.",
+	"createComicUrlInvalid": "Ange en fullständig webbadress som börjar med https://.",
+	"invalidInput": "Vissa värden är ogiltiga. Kontrollera de markerade fälten och försök igen.",
+	"byokRequired": "Ange din OpenAI-nyckel."
 }

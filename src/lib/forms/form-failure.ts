@@ -27,6 +27,22 @@ export function toUserMessage(failure: FormFailure): { message: string; details?
 		: { message: failure.message };
 }
 
+/** The first message for each rejected field, keyed by the field's name. */
+const FieldMessagesSchema = z.record(z.string(), z.string());
+export type FieldMessages = z.infer<typeof FieldMessagesSchema>;
+
+export function toFieldMessages(failure: FormFailure): FieldMessages {
+	const messages: FieldMessages = {};
+	for (const [field, fieldMessages] of Object.entries(failure.fieldErrors ?? {})) {
+		const first = fieldMessages?.[0];
+		if (first !== undefined) {
+			messages[field] = first;
+		}
+	}
+
+	return FieldMessagesSchema.parse(messages);
+}
+
 export function toFormFailure(data: unknown): FormFailure {
 	const record = typeof data === 'object' && data !== null ? data : {};
 	const parsed = FormFailureSchema.safeParse({ ...UNKNOWN_FAILURE, ...record });

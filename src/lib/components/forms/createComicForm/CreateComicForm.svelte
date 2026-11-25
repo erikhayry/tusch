@@ -8,6 +8,8 @@
 	import { resolve } from '$app/paths';
 
 	import { localizedHref } from '#lib/components/header/header-navigation.ts';
+	import FieldError from '#lib/components/fieldError/FieldError.svelte';
+	import { describedBy } from '#lib/components/fieldError/describedBy.ts';
 	import Section from '#lib/components/relativeHeading/Section.svelte';
 	import { workflowDeps } from '#lib/client/workflow-deps.ts';
 	import { expectWorkflow } from '#lib/features/comics/client/workflows/asset-workflow.ts';
@@ -22,6 +24,7 @@
 	} from '#lib/features/comics/contracts/createComic.ts';
 	import { withGlobalInstructions } from '#lib/features/settings/client/global-instructions.ts';
 	import { enhanceAction } from '#lib/forms/enhance-action.ts';
+	import type { FieldMessages } from '#lib/forms/form-failure.ts';
 	import { variantFailedMessage } from '#lib/forms/variant-failure.ts';
 	import { m } from '#lib/paraglide/messages.js';
 	import { getLocale } from '#lib/paraglide/runtime.js';
@@ -78,15 +81,26 @@
 	const numbers = new Intl.NumberFormat(getLocale());
 	const storyOver = $derived(story.length > STORY_MAX_LENGTH);
 
+	// The messages of the fields the server rejected; each one is shown next to its field.
+	let fieldErrors = $state<FieldMessages>({});
+
 	const handleSubmit = withGlobalInstructions(
-		enhanceAction<CreateComicResult>(m.loadingCreateComic(), async ({ data, showError }) => {
-			expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
-			// The comic is saved with the cover variant that was made (REQ-011).
-			if (data.failedVariant) {
-				showError(variantFailedMessage(data.failedVariant));
-			}
-			await goto(resolve(`comic/${data.comic.id}`));
-		}),
+		enhanceAction<CreateComicResult>(
+			m.loadingCreateComic(),
+			async ({ data, showError }) => {
+				expectWorkflow(await commitGeneratedComic(workflowDeps, data.comic));
+				// The comic is saved with the cover variant that was made (REQ-011).
+				if (data.failedVariant) {
+					showError(variantFailedMessage(data.failedVariant));
+				}
+				await goto(resolve(`comic/${data.comic.id}`));
+			},
+			{
+				onFieldErrors: (messages) => {
+					fieldErrors = messages;
+				},
+			},
+		),
 	);
 </script>
 
@@ -102,11 +116,17 @@
 			<input
 				type="text"
 				name="url"
-				aria-describedby="create-comic-url-hint"
+				aria-invalid={fieldErrors.url ? 'true' : undefined}
+				aria-describedby={describedBy(
+					['create-comic-url-hint'],
+					'create-comic-url-error',
+					fieldErrors.url,
+				)}
 				placeholder="https://sv.wikipedia.org/wiki/%C3%85dalsh%C3%A4ndelserna"
 			/>
 		</label>
 		<p class="hint" id="create-comic-url-hint">{m.createComicUrlHint()}</p>
+		<FieldError id="create-comic-url-error" message={fieldErrors.url} />
 		<p class="or">{m.createComicOr()}</p>
 		<div class="story-label">
 			<label for="create-comic-story">
@@ -126,8 +146,14 @@
 			name="story"
 			rows="6"
 			bind:value={story}
-			aria-describedby="create-comic-story-hint create-comic-story-count"></textarea>
+			aria-invalid={fieldErrors.story ? 'true' : undefined}
+			aria-describedby={describedBy(
+				['create-comic-story-hint', 'create-comic-story-count'],
+				'create-comic-story-error',
+				fieldErrors.story,
+			)}></textarea>
 		<p class="hint" id="create-comic-story-hint">{m.createComicStoryHint()}</p>
+		<FieldError id="create-comic-story-error" message={fieldErrors.story} />
 		<label>
 			{m.createComicPanelCount()}
 			<input
@@ -138,10 +164,16 @@
 				step="1"
 				required
 				value={PANEL_COUNT_DEFAULT}
-				aria-describedby="create-comic-panel-count-hint"
+				aria-invalid={fieldErrors.panelCount ? 'true' : undefined}
+				aria-describedby={describedBy(
+					['create-comic-panel-count-hint'],
+					'create-comic-panel-count-error',
+					fieldErrors.panelCount,
+				)}
 			/>
 		</label>
 		<p class="hint" id="create-comic-panel-count-hint">{m.createComicPanelCountHint()}</p>
+		<FieldError id="create-comic-panel-count-error" message={fieldErrors.panelCount} />
 		<fieldset class="style-choice">
 			<legend>{m.comicStyles()}</legend>
 			<div class="style-cards">

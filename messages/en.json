@@ -192,7 +192,6 @@
 	"generatingImageNote": "Usually takes 1–2 minutes. Stay on this page; leaving it cancels the image.",
 	"cancelGeneration": "Cancel generation",
 	"generatingImageAnnouncement": "Generating image. This can take a couple of minutes.",
-	"breadcrumb": "Breadcrumb",
 	"scene": "Scene",
 	"generateImage": "Generate image",
 	"referencesSelected": "{count} selected",
@@ -210,5 +209,10 @@
 	"styleWatercolourDescription": "Soft washes, pencil lines, pale colours",
 	"styleWebtoonDescription": "Clean digital colour, soft shading",
 	"stylePopArtDescription": "Big dots, thick outlines, loud colours",
-	"styleUkiyoEDescription": "Woodblock print, flat colour, bold outlines"
+	"styleUkiyoEDescription": "Woodblock print, flat colour, bold outlines",
+	"createComicStoryTooShort": "Write at least {min} characters.",
+	"createComicStoryTooLong": "Shorten the story to {max} characters or fewer.",
+	"createComicUrlInvalid": "Enter a full web address that starts with https://.",
+	"invalidInput": "Some values are invalid. Check the marked fields and try again.",
+	"byokRequired": "Enter your OpenAI API key."
 }

@@ -1153,4 +1153,23 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: an image whose file is no longer stored (REQ-036) is left out of the exported comic: that variant, or the whole image if no variant is left. A character image with a missing head or full crop is dropped; a missing `previous` drops only `previous`. The file still passes `ComicSchema` and the export succeeds.
 - Why: a cleared OPFS must not block exporting the rest of the comic (#90).
+### REQ-201-1 An invalid field is marked and explained next to it
+
+- Status: active
+- Statement: when a server-backed form rejects a field (a story under 20 characters on create comic, an empty API key on Settings), the field gets `aria-invalid="true"` and its accessible description includes a translated message about that field, not the schema library's default English text.
+- Why: users, screen reader users in particular, must be told which field is wrong and why (WCAG 3.3.1, 3.3.3) (#201).
+- Proven by: tagged tests
+
+### REQ-201-2 The generic invalid-input message is translated
+
+- Status: active
+- Statement: the message shown in the error region when submitted values are invalid is in the user's language; in Swedish it is never the English "Submitted values are invalid".
+- Why: Swedish users saw English (#201).
+- Proven by: tagged tests
+
+### REQ-201-3 A corrected field is no longer marked invalid
+
+- Status: active
+- Statement: once the user submits valid input, the field no longer has `aria-invalid="true"` and the field message is gone.
+- Why: a stale error would tell the user something that is no longer true (#201).
 - Proven by: tagged tests
