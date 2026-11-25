@@ -1063,3 +1063,31 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: the panel page has no "Back to Comic" link; the breadcrumb's title link replaces it.
 - Why: one way up, not two (#311).
 - Proven by: tagged tests
+
+### REQ-93-1 The app has a web app manifest and icons
+
+- Status: active
+- Statement: every page links a web app manifest (`<link rel="manifest">`, plus a `theme-color` meta) with name and short name "Tusch", `display: standalone`, start URL `/`, theme and background colours, and 192 px, 512 px and maskable PNG icons and an SVG icon, each of which returns an image.
+- Why: the browser offers to install Tusch as an app (#93).
+- Proven by: tagged tests
+
+### REQ-93-2 The app opens offline after one online visit
+
+- Status: active
+- Statement: a service worker caches the built app shell and static files on install, so after one online visit the landing page, a comic, a panel page and the viewer load and show stored comics, their titles, panels and images, with the network off.
+- Why: Tusch is local-first, so reading comics must not need a network (#93).
+- Proven by: tagged tests
+
+### REQ-93-3 The service worker leaves other requests to the network
+
+- Status: active
+- Statement: the service worker handles only same-origin `GET` requests for build and static files and page navigations. Form posts (`?/…`), `/api/…`, `/settings` and every other request go to the network untouched, so an AI action offline shows the existing error and leaves the comic unchanged, and `page.route` mocks still apply.
+- Why: the API key and AI results must never be cached or touched by the worker (REQ-029), and tests must be able to mock requests (#93).
+- Proven by: tagged tests
+
+### REQ-93-4 A new service worker takes over and deletes old caches
+
+- Status: active
+- Statement: a new service worker takes over on the next load without a prompt and deletes the caches of older versions, so only the current version's cache exists.
+- Why: a deploy must not leave stale files or unbounded storage behind (#93).
+- Proven by: tagged tests

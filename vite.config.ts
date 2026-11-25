@@ -24,6 +24,9 @@ export default defineConfig(({ mode }) => {
 						filename.split(/[/\\]/).includes('node_modules') ? undefined : true,
 				},
 				adapter: adapter(),
+				// The offline shell (the cached `/`) is served for every URL, so its asset
+				// links must be root-relative: relative ones resolve against `/comic/<id>`.
+				paths: { relative: false },
 			}),
 
 			paraglideVitePlugin({
