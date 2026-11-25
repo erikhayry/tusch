@@ -51,7 +51,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-295-1 A library card shows its style and panel count
 
 - Status: active
-- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (Anime, Classic Marvel or Franco-Belgian) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
+- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (any of the ten style names in REQ-306-1) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
 - Why: the card says what a comic is without opening it (#295).
 - Proven by: tagged tests
 
@@ -990,14 +990,14 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-306-1 The comic style is a radio group of cards
 
 - Status: active
-- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of three cards, Anime, Classic Marvel and Franco-Belgian in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
+- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of ten cards, Anime, Classic Marvel, Franco-Belgian, Manga, Noir, Newspaper strip, Watercolour storybook, Webtoon, Pop art and Ukiyo-e in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
 - Why: the styles are compared side by side, with native radio semantics and keyboard behaviour (#306).
 - Proven by: tagged tests
 
 ### REQ-306-2 The style cards form a full-width grid
 
 - Status: active
-- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; further styles wrap to a new row; the checked style is sent as `style` and the created comic has that style.
+- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; the ten cards make rows of 3, 3, 3 and 1, the tenth alone in the first column at the same width as the others; the checked style is sent as `style` and the created comic has that style.
 - Why: more styles are coming, so the cards wrap instead of changing layout (#306).
 - Proven by: tagged tests
 

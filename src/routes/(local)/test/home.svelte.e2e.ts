@@ -1,8 +1,10 @@
+import { m } from '#lib/paraglide/messages.js';
 import { expect, test } from '@playwright/test';
 import { createComic, deletePanel, storedComic } from '../../../tests/e2e/createdComic';
 import { EXAMPLES } from '../../../examples/examples';
 import { activate } from '../../../tests/e2e/keyboard';
 import { metaLine } from '../../../tests/e2e/landingCopy';
+import { CreatePage } from '../comic/create/test/utils/createPage';
 import { LandingPage } from './utils/landingPage';
 
 test.describe('home view card details', () => {
@@ -45,6 +47,29 @@ test.describe('home view card details', () => {
 		await expect(landingPage.card(created.title)).not.toContainText('1 panels');
 	});
 });
+
+test(
+	'shows the name of a new style on the card of a comic made with it',
+	{ tag: ['@REQ-295-1', '@REQ-306-2'] },
+	async ({ page }) => {
+		const createPage = await new CreatePage(page).goto();
+		await createPage.fillUrl('https://example.com/article');
+		await createPage.chooseStyle(m.styleUkiyoE());
+		await createPage.submit();
+		await expect(page).toHaveURL(/\/comic\/[0-9a-f-]{36}$/);
+		const created = await storedComic(page, page.url().split('/').at(-1) ?? '');
+		const landingPage = await new LandingPage(page).goto();
+
+		expect(created.style).toBe('ukiyo-e');
+		await expect(
+			landingPage
+				.card(created.title)
+				.getByText(`${m.styleUkiyoE()} · ${m.panelCount({ count: created.panels.length })}`, {
+					exact: true,
+				}),
+		).toBeVisible();
+	},
+);
 
 test.describe('home view heading', () => {
 	test(
