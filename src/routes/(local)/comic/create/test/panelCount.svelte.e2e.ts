@@ -1,5 +1,6 @@
 import { m } from '#lib/paraglide/messages.js';
 import { expect, test } from '@playwright/test';
+import { COMIC_STYLES } from '../../../../../tests/e2e/comicStyles';
 import { storedComics } from '../../../../../tests/e2e/storage';
 import { CreatePage } from './utils/createPage';
 
@@ -20,8 +21,9 @@ test('shows the panel count field with 5 and a hint', { tag: '@REQ-289-1' }, asy
 	const fields = page.locator(
 		'form[action$="create-comic"] :is(input[name="url"], textarea, input[type="number"], input[type="radio"])',
 	);
-	await expect(fields).toHaveCount(6);
-	for (const [index, name] of ['url', 'story', 'panelCount', 'style', 'style', 'style'].entries()) {
+	const names = ['url', 'story', 'panelCount', ...COMIC_STYLES().map(() => 'style')];
+	await expect(fields).toHaveCount(names.length);
+	for (const [index, name] of names.entries()) {
 		await expect(fields.nth(index)).toHaveAttribute('name', name);
 	}
 });

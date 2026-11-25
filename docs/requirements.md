@@ -51,7 +51,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-295-1 A library card shows its style and panel count
 
 - Status: active
-- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (Anime, Classic Marvel or Franco-Belgian) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
+- Statement: each card's meta line shows "Example" for a bundled example, then the comic's style name (any of the ten style names in REQ-306-1) and its panel count, separated by " · ": "Example · Anime · 3 panels"; a user's comic: "Anime · 1 panel".
 - Why: the card says what a comic is without opening it (#295).
 - Proven by: tagged tests
 
@@ -300,7 +300,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-283-4 Viewer panel images fill the width and nearly the height
 
 - Status: active
-- Statement: on the viewer, a panel image is as wide as the content area and almost as tall as the viewport, but leaves room so the top of the next panel shows below it, whatever its shape.
+- Statement: on the viewer, a panel image is as wide as the content area and almost as tall as the viewport, but leaves room so the top of the next panel shows below it, whatever its shape. This applies on screen; printed, REQ-89-1 applies.
 - Why: readers see one panel at a time and a hint of the next, as in the reference viewer (#283).
 - Proven by: tagged tests
 
@@ -841,7 +841,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-044 Every view except the viewer follows the OS/browser colour scheme
 
 - Status: active
-- Statement: every view except the viewer (REQ-299-1) follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it shows dark text on a light background. There is no toggle and nothing is stored. The viewer and the downloaded file are always dark (`color-scheme: dark`) in both schemes.
+- Statement: every view except the viewer (REQ-299-1) follows the colour scheme the OS or browser asks for (`prefers-color-scheme`). With a dark preference it shows light text on a dark background and native controls render dark (`color-scheme`); it updates when the preference changes, without a reload. With a light (or no) preference it shows dark text on a light background. There is no toggle and nothing is stored. The viewer and the downloaded file are always dark (`color-scheme: dark`) in both schemes on screen; printed, they use white paper (REQ-89-2).
 - Why: users with a dark system setting otherwise get a bright white page; the reader is a dark stage by design (#299).
 - Proven by: tagged tests
 
@@ -990,14 +990,14 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-306-1 The comic style is a radio group of cards
 
 - Status: active
-- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of three cards, Anime, Classic Marvel and Franco-Belgian in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
+- Statement: on `/comic/create` the comic style is a required radio group (`<fieldset>` with legend "Comic style") of ten cards, Anime, Classic Marvel, Franco-Belgian, Manga, Noir, Newspaper strip, Watercolour storybook, Webtoon, Pop art and Ukiyo-e in that order, each with its name and a one-line description; Anime is checked by default and the checked card has a visibly thicker dark border. Arrow keys move the choice and Tab leaves the group in one stop.
 - Why: the styles are compared side by side, with native radio semantics and keyboard behaviour (#306).
 - Proven by: tagged tests
 
 ### REQ-306-2 The style cards form a full-width grid
 
 - Status: active
-- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; further styles wrap to a new row; the checked style is sent as `style` and the created comic has that style.
+- Statement: the style cards are a grid of three per row at every width, filling the form's width with a gap between them; the ten cards make rows of 3, 3, 3 and 1, the tenth alone in the first column at the same width as the others; the checked style is sent as `style` and the created comic has that style.
 - Why: more styles are coming, so the cards wrap instead of changing layout (#306).
 - Proven by: tagged tests
 
@@ -1048,4 +1048,88 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: on the panel page every visible button and link is at least 44 CSS px tall at 1280 px and 320 px, and dialogue avatars are 28 CSS px (24 below 48em).
 - Why: touch targets are easy to hit, and the dialogue stays dense (#323).
+- Proven by: tagged tests
+
+### REQ-89-1 Printing uses A4 portrait pages with one panel per page
+
+- Status: active
+- Statement: printing the viewer or the downloaded file uses A4 portrait pages: the cover with its title box on page 1, then each panel on a page of its own, scaled to fit within the page with its caption and speech boxes still over the image. No cover or panel is split across pages.
+- Why: readers can print a comic on paper so it looks like a printed comic (#89).
+- Proven by: tagged tests
+
+### REQ-89-2 Printed pages are white with dark text
+
+- Status: active
+- Statement: printed, the viewer and the downloaded file have a white page background and dark text, images in colour, caption and speech boxes with their screen look, and cover or panel placeholders drawn as an outlined frame with no fill.
+- Why: white paper and no fills save ink and stay readable (#89).
+- Proven by: tagged tests
+
+### REQ-89-3 Printing hides the viewer's chrome
+
+- Status: active
+- Statement: printed, the viewer's sticky header and the ending block's links are hidden; "The end" and the panel count are still printed. There is no print control (REQ-87-3); users print with the browser.
+- Why: screen controls mean nothing on paper (#89).
+- Proven by: tagged tests
+
+### REQ-89-4 Printing shows the portrait variant
+
+- Status: active
+- Statement: printed, a cover or panel with both variants shows the portrait one, in the viewer and the downloaded file, whatever the page orientation.
+- Why: the pages are portrait, so the portrait image fits them (#89).
+- Proven by: tagged tests
+
+### REQ-311-1 The nested comic views show a breadcrumb in the header
+
+- Status: active
+- Statement: the comic overview (`/comic/<id>`) and the panel page (`/comic/<id>/<panel>`) show a breadcrumb in the header as a second row under the wordmark row (on the panel page from 48em only, see REQ-323-1; below it the narrow top bar replaces it): a `<nav aria-label="Breadcrumb">` holding an `<ol>`. The overview reads "Comics / <title>", the panel page "Comics / <title> / Panel <position>" (1-based, as in the panel list). "Comics" links to `/`, the title (when not current) links to `/comic/<id>`, and the last item is bold plain text, not a link, with `aria-current="page"`. The "/" separators are `aria-hidden`.
+- Why: users see where they are and can go up a level (#311).
+- Proven by: tagged tests
+
+### REQ-311-2 A breadcrumb title is one line, and an empty title is named
+
+- Status: active
+- Statement: a breadcrumb title is cut to one line with an ellipsis and the full title stays its accessible name; an empty title shows "Untitled comic".
+- Why: a long title must not push the header taller or off the 320 px screen (#311).
+- Proven by: tagged tests
+
+### REQ-311-3 Other views have no breadcrumb
+
+- Status: active
+- Statement: `/`, `/comic/create`, `/settings`, the viewer and the not-found page have no "Breadcrumb" navigation.
+- Why: they are top level, one level below home with their own back link, or have their own header (#311).
+- Proven by: tagged tests
+
+### REQ-311-4 The panel page has no "Back to Comic" link
+
+- Status: active
+- Statement: from 48em the panel page has no "Back to Comic" link; the breadcrumb's title link replaces it. Below 48em the narrow top bar has a back-arrow link with that name (REQ-323-1).
+- Why: one way up, not two (#311).
+- Proven by: tagged tests
+
+### REQ-93-1 The app has a web app manifest and icons
+
+- Status: active
+- Statement: every page links a web app manifest (`<link rel="manifest">`, plus a `theme-color` meta) with name and short name "Tusch", `display: standalone`, start URL `/`, theme and background colours, and 192 px, 512 px and maskable PNG icons and an SVG icon, each of which returns an image.
+- Why: the browser offers to install Tusch as an app (#93).
+- Proven by: tagged tests
+
+### REQ-93-2 The app opens offline after one online visit
+
+- Status: active
+- Statement: a service worker caches the built app shell and static files on install, so after one online visit the landing page, a comic, a panel page and the viewer load and show stored comics, their titles, panels and images, with the network off.
+- Why: Tusch is local-first, so reading comics must not need a network (#93).
+- Proven by: tagged tests
+
+### REQ-93-3 The service worker leaves other requests to the network
+
+- Status: active
+- Statement: the service worker handles only same-origin `GET` requests for build and static files, page navigations and the `__data.json` of pages outside `/settings` and `/api` (network first, the last online copy as fallback; it holds only the `hasKey` flag, never the key). Form posts (`?/…`), `/api/…`, `/settings` and every other request go to the network untouched, so an AI action offline shows the existing error and leaves the comic unchanged, and `page.route` mocks still apply.
+- Why: the API key and AI results must never be cached or touched by the worker (REQ-029), and tests must be able to mock requests (#93).
+- Proven by: tagged tests
+
+### REQ-93-4 A new service worker takes over and deletes old caches
+
+- Status: active
+- Statement: a new service worker takes over on the next load without a prompt and deletes the caches of older versions, so only the current version's cache exists.
+- Why: a deploy must not leave stale files or unbounded storage behind (#93).
 - Proven by: tagged tests

@@ -272,4 +272,12 @@
 		padding: 0;
 		list-style: none;
 	}
+
+	/* Screen controls mean nothing on paper; "The end" and the count stay (REQ-89-3). */
+	@media print {
+		.reader-header,
+		.end-links {
+			display: none;
+		}
+	}
 </style>

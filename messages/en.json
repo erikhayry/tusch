@@ -29,6 +29,7 @@
 	"comicStyle": "Style",
 	"characters": "Characters",
 	"untitledComic": "Untitled comic",
+	"breadcrumb": "Breadcrumb",
 	"comics": "Comics",
 	"createNewComic": "Create New Comic",
 	"deleteCaption": "Remove Caption {number}",
@@ -194,5 +195,19 @@
 	"scene": "Scene",
 	"generateImage": "Generate image",
 	"referencesSelected": "{count} selected",
-	"characterReferenceOption": "{character} from panel {number}"
+	"characterReferenceOption": "{character} from panel {number}",
+	"styleManga": "Manga",
+	"styleNoir": "Noir",
+	"styleNewspaperStrip": "Newspaper strip",
+	"styleWatercolour": "Watercolour storybook",
+	"styleWebtoon": "Webtoon",
+	"stylePopArt": "Pop art",
+	"styleUkiyoE": "Ukiyo-e",
+	"styleMangaDescription": "Black and white, screentone, speed lines",
+	"styleNoirDescription": "Black and white, deep shadows, hard light",
+	"styleNewspaperStripDescription": "Simple lines, bright flat colours",
+	"styleWatercolourDescription": "Soft washes, pencil lines, pale colours",
+	"styleWebtoonDescription": "Clean digital colour, soft shading",
+	"stylePopArtDescription": "Big dots, thick outlines, loud colours",
+	"styleUkiyoEDescription": "Woodblock print, flat colour, bold outlines"
 }

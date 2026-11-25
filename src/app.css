@@ -120,6 +120,11 @@
 	--color-reader-text: #f4f4f5;
 	--color-reader-link: #93b4ff;
 	--color-reader-focus: #6b9bff;
+	/* Printed comics (REQ-89-2): white paper and dark text, whatever the screen scheme. */
+	--color-print-background: #ffffff;
+	--color-print-text: #1c1b19;
+	/* Margin of the printed A4 page; the panels' height is relative to what is left (REQ-89-1). */
+	--print-page-margin: 12mm;
 	/* Captions are cream boxes, speech bubbles white; both keep dark text. */
 	--color-caption: #fff8dc;
 	--color-caption-text: #1c1c1f;
@@ -187,6 +192,59 @@
 
 :root:has(.reader) :focus-visible {
 	outline-color: var(--color-reader-focus);
+}
+
+/* Printed (REQ-89): the viewer and the downloaded file both carry `.reader`, so these
+   rules serve both. The screen-only chrome is hidden in the viewer's own styles. */
+@media print {
+	@page {
+		size: A4 portrait;
+		margin: var(--print-page-margin);
+	}
+
+	:root:has(.reader) {
+		/* Paper is light: native controls and scrollbars must not render dark. */
+		color-scheme: light;
+		background: var(--color-print-background);
+		color: var(--color-print-text);
+		/* Keeps the caption and speech boxes' colours when the browser's "background graphics"
+		   option is off, which is its default. */
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	/* The cover, then one panel per page; no cover or panel is split (REQ-89-1). */
+	.reader .cover,
+	.reader section {
+		break-inside: avoid;
+	}
+
+	.reader section {
+		break-before: page;
+	}
+
+	/* Fits the page: the cover is as tall as a viewer panel, not its 2:3 height. */
+	.reader .cover {
+		block-size: var(--viewer-panel-height);
+	}
+
+	.reader .cover picture,
+	.reader .cover img,
+	.reader .cover .cover-frame {
+		block-size: 100%;
+	}
+
+	.reader .cover img {
+		object-fit: cover;
+	}
+
+	/* Placeholders print as outlined frames with no fill (REQ-89-2, REQ-87-4). The
+	   selectors are longer than the viewer's tone-N rules, which they must beat. */
+	.reader .cover .cover-frame,
+	.reader .picture .frame {
+		background: transparent;
+		border: var(--border-width-thick) solid var(--color-reader-border);
+	}
 }
 
 /* Semantic baseline (narrow first) */
