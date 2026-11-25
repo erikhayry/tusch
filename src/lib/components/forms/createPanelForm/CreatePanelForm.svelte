@@ -28,5 +28,20 @@
 		<input type="hidden" name={entry[0]} value={encodeFormValue(entry[1])} />
 	{/each}
 
-	<button type="submit">{label}</button>
+	<!-- The sign is decoration: the name (and the tooltip) says which insertion point this is. -->
+	<button type="submit" aria-label={label} title={label}><span aria-hidden="true">+</span></button>
 </form>
+
+<style>
+	form {
+		display: flex;
+	}
+
+	button {
+		margin: 0;
+		inline-size: var(--control-min-size);
+		padding: 0;
+		font-size: var(--font-size-h2);
+		line-height: 1;
+	}
+</style>

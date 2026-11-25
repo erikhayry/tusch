@@ -62,7 +62,7 @@
 			// The panel heading is the first heading in the panel's section, before the form.
 			headingFallback =
 				submitButton?.form
-					?.closest('section')
+					?.closest('section.panel')
 					?.querySelector<HTMLHeadingElement>('h1, h2, h3, h4, h5, h6') ?? undefined;
 			generation = { startedAt: Date.now() };
 		},
@@ -99,6 +99,8 @@
 					showError(variantFailedMessage(data.failedVariant));
 				}
 				await update();
+				// The references were used up by this image: start the next one with none.
+				chosenReferences = {};
 				onSuccess?.();
 			},
 			{ progress },
@@ -113,6 +115,18 @@
 	);
 
 	const referenceFieldName = (characterId: string) => `reference-${characterId}`;
+
+	/** One reference per character, by crop id (REQ-100-2); pressing a toggle again clears it. */
+	let chosenReferences = $state<Record<string, string | undefined>>({});
+
+	function chosenOption(group: (typeof characterReferences)[number]) {
+		const imageId = chosenReferences[group.characterId];
+		return group.options.find((option) => option.imageId === imageId);
+	}
+
+	function toggleReference(characterId: string, imageId: string) {
+		chosenReferences[characterId] = chosenReferences[characterId] === imageId ? undefined : imageId;
+	}
 
 	/**
 	 * The radios only carry crop ids. The chosen full-body crops are read from
@@ -172,26 +186,34 @@
 	{/if}
 
 	{#each characterReferences as group (group.characterId)}
-		<fieldset>
+		{@const chosen = chosenOption(group)}
+		<fieldset class="references">
 			<legend>{m.characterReference({ character: group.characterName })}</legend>
-			<label>
-				<input type="radio" name={referenceFieldName(group.characterId)} value="" checked />
-				<span>{m.referenceNone()}</span>
-			</label>
-			{#each group.options as option (option.imageId)}
-				<label>
-					<input type="radio" name={referenceFieldName(group.characterId)} value={option.imageId} />
-					<span>{m.panel({ number: option.panelNumber })}</span>
-					<Image
-						width={50}
-						height={50}
-						image={option.head}
-						alt={m.characterReferenceThumbnail({
+			<!-- The form reads this field, so the buttons below stay out of the submitted data. -->
+			<input
+				type="hidden"
+				name={referenceFieldName(group.characterId)}
+				value={chosen?.imageId ?? ''}
+			/>
+			{#if chosen}
+				<p class="selected">{m.referencesSelected({ count: 1 })}</p>
+			{/if}
+			<div class="reference-row">
+				{#each group.options as option (option.imageId)}
+					<button
+						type="button"
+						class="reference"
+						aria-pressed={chosen?.imageId === option.imageId}
+						aria-label={m.characterReferenceOption({
 							character: group.characterName,
+							number: option.panelNumber,
 						})}
-					/>
-				</label>
-			{/each}
+						onclick={() => toggleReference(group.characterId, option.imageId)}
+					>
+						<Image image={option.head} alt="" />
+					</button>
+				{/each}
+			</div>
 		</fieldset>
 	{/each}
 
@@ -212,3 +234,50 @@
 	variants={variantsLabel}
 	onCancel={() => cancelRequest?.()}
 />
+
+<style>
+	.references {
+		display: grid;
+		gap: var(--space-2);
+		margin: 0;
+		padding: 0;
+		min-inline-size: 0;
+		border: 0;
+	}
+
+	.selected {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	/* Scrolls sideways inside its own box; the padding keeps focus rings from being cut off. */
+	.reference-row {
+		display: flex;
+		gap: var(--space-2);
+		overflow-x: auto;
+		padding: var(--space-2);
+	}
+
+	.reference {
+		display: block;
+		flex: none;
+		inline-size: var(--control-min-size);
+		block-size: var(--control-min-size);
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		background: var(--color-background);
+		border-color: var(--color-control-border);
+	}
+
+	.reference[aria-pressed='true'] {
+		border-width: var(--border-width-thick);
+		border-color: var(--color-text);
+	}
+
+	.reference :global(img) {
+		inline-size: 100%;
+		block-size: 100%;
+		object-fit: cover;
+	}
+</style>

@@ -8,6 +8,8 @@ export const PanelPropsSchema = z.object({
 	comicId: z.string(),
 	style: ComicStyleEnum,
 	characters: z.array(CharacterSchema),
+	/** Where Delete goes: the previous panel, else the next one, else (undefined) the comic page. */
+	afterDeletePanelId: z.string().optional(),
 });
 
 export const PanelThumbnailPropsSchema = z.object({

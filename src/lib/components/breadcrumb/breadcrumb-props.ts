@@ -11,47 +11,28 @@ export const BreadcrumbPropsSchema = z.object({
 
 export type BreadcrumbProps = z.infer<typeof BreadcrumbPropsSchema>;
 
-// Route ids as SvelteKit names them; the header is shared, so it decides by route.
+// Route id as SvelteKit names it; the header is shared, so it decides by route.
 const COMIC_ROUTE_ID = '/(local)/comic/[id]';
-const PANEL_ROUTE_ID = '/(local)/comic/[id]/[panel]';
 
 const ComicOverviewDataSchema = z.object({
 	comic: ComicSchema.pick({ id: true, title: true }),
 });
 
-const PanelDataSchema = PanelPageDataSchema.pick({
-	comicId: true,
-	comicTitle: true,
-	number: true,
-});
-
 /**
- * The breadcrumb for the route the header sits on, or `undefined` where there is none. Only the
- * two nested comic views have one; the data is parsed so a page that lacks it shows no breadcrumb.
+ * The header's breadcrumb for the comic overview, or `undefined` where there is none. The panel
+ * page draws its own breadcrumb in the panel list (`Panels.svelte`), from 48em only, so the
+ * header leaves that route alone. The data is parsed so a page that lacks it shows no breadcrumb.
  */
 export function breadcrumbProps(
 	routeId: string | null,
 	data: unknown,
 ): BreadcrumbProps | undefined {
-	if (routeId === COMIC_ROUTE_ID) {
-		const parsed = ComicOverviewDataSchema.safeParse(data);
-		if (!parsed.success) {
-			return undefined;
-		}
-		return { comicId: parsed.data.comic.id, comicTitle: parsed.data.comic.title };
+	if (routeId !== COMIC_ROUTE_ID) {
+		return undefined;
 	}
-
-	if (routeId === PANEL_ROUTE_ID) {
-		const parsed = PanelDataSchema.safeParse(data);
-		if (!parsed.success) {
-			return undefined;
-		}
-		return {
-			comicId: parsed.data.comicId,
-			comicTitle: parsed.data.comicTitle,
-			panelNumber: parsed.data.number,
-		};
+	const parsed = ComicOverviewDataSchema.safeParse(data);
+	if (!parsed.success) {
+		return undefined;
 	}
-
-	return undefined;
+	return { comicId: parsed.data.comic.id, comicTitle: parsed.data.comic.title };
 }
