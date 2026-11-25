@@ -1081,7 +1081,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 ### REQ-93-3 The service worker leaves other requests to the network
 
 - Status: active
-- Statement: the service worker handles only same-origin `GET` requests for build and static files and page navigations. Form posts (`?/…`), `/api/…`, `/settings` and every other request go to the network untouched, so an AI action offline shows the existing error and leaves the comic unchanged, and `page.route` mocks still apply.
+- Statement: the service worker handles only same-origin `GET` requests for build and static files, page navigations and the `__data.json` of pages outside `/settings` and `/api` (network first, the last online copy as fallback; it holds only the `hasKey` flag, never the key). Form posts (`?/…`), `/api/…`, `/settings` and every other request go to the network untouched, so an AI action offline shows the existing error and leaves the comic unchanged, and `page.route` mocks still apply.
 - Why: the API key and AI results must never be cached or touched by the worker (REQ-029), and tests must be able to mock requests (#93).
 - Proven by: tagged tests
 
