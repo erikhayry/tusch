@@ -1,5 +1,6 @@
 import { m } from '#lib/paraglide/messages.js';
 import type { Comic } from '#lib/types/index.ts';
+import { styleName } from './comicStyles';
 
 /** The copy of the home view (#295), read from the messages so the tests follow the locale. */
 export const LANDING_COPY = {
@@ -12,17 +13,11 @@ export const LANDING_COPY = {
 	panelCount: (count: number) => (count === 1 ? m.panelCountOne() : m.panelCount({ count })),
 } as const;
 
-const STYLE_NAMES = {
-	anime: m.styleAnime(),
-	'classic-marvel': m.styleClassicMarvel(),
-	'franco-belgian': m.styleFrancoBelgian(),
-} as const;
-
 /** The meta line of a card (REQ-295-1). */
 export function metaLine(comic: Comic, isExample: boolean): string {
 	return [
 		...(isExample ? [LANDING_COPY.example] : []),
-		STYLE_NAMES[comic.style],
+		styleName(comic.style),
 		LANDING_COPY.panelCount(comic.panels.length),
 	].join(' · ');
 }
