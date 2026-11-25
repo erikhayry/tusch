@@ -17,7 +17,7 @@
  * One style at a time, each one a `POST /api/generate/panel-image` request. A style
  * that fails is reported by id, keeps its existing file, and the others still run.
  */
-import { mkdir, writeFile } from 'node:fs/promises';
+import { stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -156,8 +156,15 @@ async function main(argv) {
 		return;
 	}
 
+	// The folder must already exist: this script never creates a directory from a
+	// command-line path. The owner makes `static/styles` once, or passes an existing one.
 	const out = path.resolve(values.out);
-	await mkdir(out, { recursive: true });
+	const outStat = await stat(out).catch(() => undefined);
+	if (!outStat?.isDirectory()) {
+		console.error(`The output folder ${out} does not exist. Create it, or pass --out <dir>.`);
+		process.exitCode = 1;
+		return;
+	}
 
 	const failed = [];
 	// Requests run one after another: a real key has rate limits, and a failure
