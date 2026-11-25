@@ -963,7 +963,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 
 - Status: active
 - Statement: "Cancel generation" aborts the request in the browser and closes the dialog: the panel image, its variants and the restore point (REQ-048) are unchanged and no error is shown.
-- Why: the user can back out of a long wait without losing anything (#301). The server's call is not stopped (#315).
+- Why: the user can back out of a long wait without losing anything (#301).
 - Proven by: tagged tests
 
 ### REQ-301-4 Leaving the panel page aborts the generation
@@ -1006,4 +1006,11 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: the story field on `/comic/create` shows a counter "<n> of 10,000" (sv-se "<n> av 10 000", numbers grouped by locale) to the right of its label, starting at 0. It follows what is typed or pasted, is linked to the field with `aria-describedby` after the helper text, and is not a live region (neither it nor an ancestor has `role="status"` or `aria-live`; the label's accessible name doesn't include the count). Above 10,000 it uses the danger colour, and submitting is still rejected (REQ-007).
 - Why: users see the story limit before they submit (#307).
+- Proven by: tagged tests
+
+### REQ-315-1 Aborting a generation request stops the server's AI call
+
+- Status: active
+- Statement: when the browser aborts a generation request (the user cancels it or leaves the page), the server aborts its AI provider call, starts no further call for that request (no image retry, no second variant) and reports nothing to Sentry or as a `provider_error`. A request that is not aborted is unchanged: no abort, and the result is saved.
+- Why: an abandoned generation must not keep running and be billed on the server (#315).
 - Proven by: tagged tests
