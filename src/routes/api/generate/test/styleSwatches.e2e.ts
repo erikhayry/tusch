@@ -1,8 +1,7 @@
 import { PresetStyleEnum } from '#lib/types/index.ts';
 import { expect, test } from '@playwright/test';
 import { execFile } from 'node:child_process';
-import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const SCRIPT = 'scripts/style-swatches.mjs';
@@ -31,8 +30,13 @@ const seed = (out: string, id: string) => writeFile(path.join(out, `${id}.webp`)
 
 let out: string;
 
+// The script only writes inside the repository, so each test's folder is made under
+// the gitignored `.agent-tmp/` in the repo root (the script's cwd in these runs).
+const TMP_ROOT = path.resolve('.agent-tmp');
+
 test.beforeEach(async () => {
-	out = await mkdtemp(path.join(tmpdir(), 'swatches-'));
+	await mkdir(TMP_ROOT, { recursive: true });
+	out = await mkdtemp(path.join(TMP_ROOT, 'swatches-'));
 });
 
 test.afterEach(async () => {

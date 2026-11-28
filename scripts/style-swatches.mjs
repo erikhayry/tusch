@@ -12,7 +12,8 @@
  *   --style <id>      Make only this style. Repeat it for several. Other files are left alone.
  *                     Default: every preset style (Custom has no swatch).
  *   --base-url <url>  Where the app runs. Default http://localhost:5173.
- *   --out <dir>       Where `<style-id>.webp` is written. Default static/styles.
+ *   --out <dir>       Where `<style-id>.webp` is written. Default static/styles. The folder
+ *                     must already exist (create static/styles once) and sit inside the repo.
  *
  * One style at a time, each one a `POST /api/generate/panel-image` request. A style
  * that fails is reported by id, keeps its existing file, and the others still run.
@@ -39,7 +40,10 @@ const PRESET_STYLES = [
 ];
 
 const DEFAULT_BASE_URL = 'http://localhost:5173';
-const DEFAULT_OUT = fileURLToPath(new URL('../static/styles', import.meta.url));
+// `--out` must stay inside the repository: the script writes only there, so a
+// command-line path can't point anywhere else on the owner's machine.
+const REPO_ROOT = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
+const DEFAULT_OUT = path.join(REPO_ROOT, 'static', 'styles');
 
 // One fixed scene for every style, so the cards differ only by style.
 const SWATCH_PANEL = {
@@ -156,9 +160,15 @@ async function main(argv) {
 		return;
 	}
 
-	// The folder must already exist: this script never creates a directory from a
-	// command-line path. The owner makes `static/styles` once, or passes an existing one.
+	// Checked before any filesystem call on the path. The folder must already exist:
+	// this script never creates a directory. The owner makes `static/styles` once, or
+	// passes an existing folder inside the repository.
 	const out = path.resolve(values.out);
+	if (!out.startsWith(`${REPO_ROOT}${path.sep}`)) {
+		console.error(`--out must be a folder inside the repository (${REPO_ROOT}).`);
+		process.exitCode = 1;
+		return;
+	}
 	const outStat = await stat(out).catch(() => undefined);
 	if (!outStat?.isDirectory()) {
 		console.error(`The output folder ${out} does not exist. Create it, or pass --out <dir>.`);
@@ -170,13 +180,9 @@ async function main(argv) {
 	// Requests run one after another: a real key has rate limits, and a failure
 	// then names the one style that failed.
 	for (const style of styles) {
-		const file = path.resolve(out, `${style}.webp`);
 		try {
-			// The id is from the fixed list, so this holds today; the check keeps every
-			// write inside `out` if that list ever takes free text.
-			if (!file.startsWith(`${out}${path.sep}`)) {
-				throw new Error('the swatch would be written outside the output folder');
-			}
+			// `style` comes from the fixed preset list (checked above), so the file stays in `out`.
+			const file = path.join(out, `${style}.webp`);
 			await writeFile(file, await makeSwatch(style, { baseUrl: values['base-url'], apiKey }));
 			console.log(`${style}: wrote ${file}`);
 		} catch (error) {
