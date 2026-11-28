@@ -95,10 +95,8 @@
 
 	/* Content widths per view. Only the default is applied here; each view sets its own. */
 	--width-compact: 45rem;
-	--width-form: 55rem;
-	--width-reader: 60rem;
-	--width-content: 70rem;
-	--width-wide: 77.5rem;
+	--width-reader: 70rem;
+	--width-content: 118.75rem;
 	/* Portrait covers are generated at 1024×1536. A placeholder of the same shape keeps rows aligned. */
 	--cover-aspect-ratio: 2 / 3;
 	--control-min-size: 2.75rem;
