@@ -111,6 +111,58 @@ test.describe('the style cards form a full-width grid', { tag: ['@REQ-306-2', '@
 	}
 });
 
+test.describe('the style cards show no radio circle', { tag: '@REQ-328-1' }, () => {
+	for (const [width, height] of [
+		[1280, 800],
+		[390, 844],
+		[320, 640],
+	]) {
+		test(`every style radio is visually hidden but still a named radio at ${width}px`, async ({
+			page,
+		}) => {
+			await page.setViewportSize({ width, height });
+			await new CreatePage(page).goto();
+			const group = page.getByRole('group', { name: m.comicStyles() });
+
+			for (const [index, { name }] of STYLE_CARDS().entries()) {
+				const radio = group.getByRole('radio').nth(index);
+				await expect(radio).toHaveAccessibleName(name);
+				const { width: w, height: h } = await radio.evaluate((el) => {
+					const { width, height } = el.getBoundingClientRect();
+					return { width, height };
+				});
+				expect(w).toBeLessThanOrEqual(1);
+				expect(h).toBeLessThanOrEqual(1);
+			}
+		});
+
+		test(`every style name starts at its card's left content edge at ${width}px`, async ({
+			page,
+		}) => {
+			await page.setViewportSize({ width, height });
+			await new CreatePage(page).goto();
+
+			for (const { name } of STYLE_CARDS()) {
+				const card = page.getByRole('group', { name: m.comicStyles() }).locator('label', {
+					has: page.getByText(name, { exact: true }),
+				});
+				const offset = await card.evaluate((el, label) => {
+					const style = getComputedStyle(el);
+					const edge =
+						el.getBoundingClientRect().x +
+						parseFloat(style.borderLeftWidth) +
+						parseFloat(style.paddingLeft);
+					const text = [...el.querySelectorAll('span')].find(
+						(s) => s.textContent?.trim() === label,
+					);
+					return text ? text.getBoundingClientRect().x - edge : Number.NaN;
+				}, name);
+				expect(Math.abs(offset)).toBeLessThan(1.5);
+			}
+		});
+	}
+});
+
 test(
 	'the checked card has a thicker border than the others',
 	{ tag: '@REQ-306-1' },

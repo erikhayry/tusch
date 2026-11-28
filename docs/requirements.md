@@ -1203,3 +1203,10 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: once the user submits valid input, the field no longer has `aria-invalid="true"` and the field message is gone.
 - Why: a stale error would tell the user something that is no longer true (#201).
 - Proven by: tagged tests
+
+### REQ-328-1 The style cards show no radio circle
+
+- Status: active
+- Statement: on `/comic/create` at every width the style cards show no radio circle: each style radio is visually hidden (rendered no larger than 1 px by 1 px) but stays a native, focusable radio with its style name as accessible name, and the style name starts at the card's left content edge with nothing drawn before it.
+- Why: the thicker border of the checked card (REQ-306-1) already shows the choice, and the circle takes room in the narrow three-column grid (#328).
+- Proven by: tagged tests
