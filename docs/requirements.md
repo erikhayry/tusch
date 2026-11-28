@@ -1223,6 +1223,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: on the comic page the overview side column stays 22rem wide and the main column takes the rest; on the panel page the panel image column stays 20rem wide.
 - Why: widening the container must not stretch the narrow side and image columns (#330).
+- Proven by: tagged tests
 
 ### REQ-316-1 A script makes one swatch image per preset style through the JSON API
 
