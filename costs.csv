@@ -655,3 +655,4 @@ date,issue,skill,target,model,turns,input_tokens,output_tokens,cache_read_tokens
 2026-11-28,330,plan,330,claude-opus-5-5,17,18,4289,397579,40498,0.4894,56,success,https://github.com/erikhayry/tusch/actions/runs/46147232888
 2026-11-28,328,plan,328,claude-opus-5-5,19,28,4513,616932,37536,0.5140,80,success,https://github.com/erikhayry/tusch/actions/runs/46147264286
 2026-11-28,349,plan,349,claude-opus-5-5,28,32,6243,833235,53432,0.7191,99,success,https://github.com/erikhayry/tusch/actions/runs/46147373392
+2026-11-28,316,develop,316,claude-haiku-5-5,15,24,8225,619322,48250,0.0200,632,success,https://github.com/erikhayry/tusch/actions/runs/46146731388
