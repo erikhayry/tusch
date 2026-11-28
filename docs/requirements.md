@@ -1224,3 +1224,10 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: a style whose request fails is reported by id with the endpoint's `message`, its existing file is kept, the other styles still run, and the script exits non-zero; without `OPENAI_API_KEY` it exits non-zero with a message and sends no request.
 - Why: one failed request must not lose a good image or hide the failure (#316).
 - Proven by: tagged tests
+
+### REQ-349-1 Every text request uses a schema OpenAI's strict mode accepts
+
+- Status: active
+- Statement: the structured-output schema of every text request the server sends to the AI provider (create comic, insert panel, fix character crop) is accepted by OpenAI's strict mode, so creating a comic, inserting a panel and fixing a character crop work on a comic the user created. The mock gateway builds the same text format as the real one, so a rejected schema fails the request in E2E too.
+- Why: `previous` on character images made the API reject every create-comic request in production (#349).
+- Proven by: tagged tests

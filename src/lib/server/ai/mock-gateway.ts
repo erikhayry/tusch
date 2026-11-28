@@ -10,6 +10,7 @@ import {
 	CURRENT_BOXES_PREFIX,
 	PANEL_COUNT_PREFIX,
 } from '#lib/utils/ai/utils/messages.ts';
+import { getSchemaAsTextFormat } from '#lib/utils/ai/utils/format.ts';
 import { IMAGE_SIZE } from '#lib/utils/ai/utils/settings.ts';
 import {
 	CANNED_COMIC_TITLE,
@@ -161,6 +162,8 @@ function fixCropResponse(messages: string[]): OpenAiOutput {
 
 const mockAiGateway: AiGateway = {
 	text: async ({ schemaName, messages }) => {
+		// Build the format as the real gateway does: it throws for a schema OpenAI's strict mode rejects (REQ-349-1).
+		getSchemaAsTextFormat(schemaName);
 		failIfRequested(messages);
 		if (messages.join('\n').includes(INVALID_TEXT)) {
 			return INVALID_TEXT_RESPONSE;
