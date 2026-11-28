@@ -51,7 +51,7 @@ Drive failures from the UI with markers in submitted text:
 - `mock-error:no-characters`: a create-comic request gets the usual response with no
   characters, so a comic without characters can be made through the UI
 - `mock-error:no-image`: an image request gets a response without an image
-  (every attempt, so the one retry fails too)
+  (every attempt, so the one retry fails too; in its messages or the API key)
 - `mock-error:no-image-once`: only the first image request of a request gets no
   image; the server's retry succeeds
 - `mock-error:invalid-text`: a text request gets a response whose data doesn't

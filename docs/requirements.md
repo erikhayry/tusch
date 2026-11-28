@@ -1181,6 +1181,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: an image whose file is no longer stored (REQ-036) is left out of the exported comic: that variant, or the whole image if no variant is left. A character image with a missing head or full crop is dropped; a missing `previous` drops only `previous`. The file still passes `ComicSchema` and the export succeeds.
 - Why: a cleared OPFS must not block exporting the rest of the comic (#90).
+- Proven by: tagged tests
 
 ### REQ-201-1 An invalid field is marked and explained next to it
 
@@ -1201,4 +1202,25 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: once the user submits valid input, the field no longer has `aria-invalid="true"` and the field message is gone.
 - Why: a stale error would tell the user something that is no longer true (#201).
+- Proven by: tagged tests
+
+### REQ-316-1 A script makes one swatch image per preset style through the JSON API
+
+- Status: active
+- Statement: `node scripts/style-swatches.mjs` sends one fixed panel prompt (the same scene for every style: one character, head and shoulders) to `POST /api/generate/panel-image` on `--base-url` (default `http://localhost:5173`) with `style: <id>` and `imageFormat: landscape`, and writes the returned landscape image unchanged to `<out>/<style-id>.webp` (`--out`, default `static/styles`). The key comes from `OPENAI_API_KEY` and is sent as `Authorization: Bearer`; it is never printed.
+- Why: the style cards need swatch art that the pipeline can't make, so the owner makes it locally with their own key (#316).
+- Proven by: tagged tests
+
+### REQ-316-2 The script covers every preset style or only the ones named
+
+- Status: active
+- Statement: with no `--style` the script makes a swatch for every preset style (the ten in REQ-306-1, not Custom); each `--style <id>` (repeatable) limits it to those styles and leaves the other files untouched; an unknown id exits non-zero, names the id and makes no request.
+- Why: updating one style must not change the others' images (#316).
+- Proven by: tagged tests
+
+### REQ-316-3 A failed style is reported and its file kept
+
+- Status: active
+- Statement: a style whose request fails is reported by id with the endpoint's `message`, its existing file is kept, the other styles still run, and the script exits non-zero; without `OPENAI_API_KEY` it exits non-zero with a message and sends no request.
+- Why: one failed request must not lose a good image or hide the failure (#316).
 - Proven by: tagged tests
