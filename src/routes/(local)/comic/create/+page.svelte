@@ -8,9 +8,10 @@
 
 <!-- The back link sits above the heading, so the page places its own <h1> (Page's default would come first). -->
 <Page title={m.createNewComic()} showTitle={false}>
-	<a class="back" href={resolve(localizedHref('/'))}
-		><span aria-hidden="true">←</span> {m.backToComics()}</a
-	>
+	<a class="back" href={resolve(localizedHref('/'))}>
+		<span aria-hidden="true">←</span>
+		{m.backToComics()}
+	</a>
 	<h1>{m.createNewComic()}</h1>
 	<CreateComicForm />
 </Page>

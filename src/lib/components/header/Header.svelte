@@ -20,9 +20,9 @@
 		<nav class="wide-only" aria-label={m.mainNavigation()}>
 			<ul class="nav-list">
 				<li>
-					<a href={resolve(localizedHref('/'))} aria-current={onHome ? 'page' : undefined}
-						>{m.comics()}</a
-					>
+					<a href={resolve(localizedHref('/'))} aria-current={onHome ? 'page' : undefined}>
+						{m.comics()}
+					</a>
 				</li>
 				<li>
 					<a
@@ -36,9 +36,9 @@
 		</nav>
 
 		{#if onHome}
-			<a class="create wide-only" href={resolve(localizedHref('/comic/create'))}
-				>{m.createNewComic()}</a
-			>
+			<a class="create wide-only" href={resolve(localizedHref('/comic/create'))}>
+				{m.createNewComic()}
+			</a>
 		{/if}
 
 		<nav class="wide-only" aria-label={m.languageNavigation()}>
