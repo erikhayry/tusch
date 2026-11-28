@@ -1210,6 +1210,26 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Statement: on `/comic/create` at every width the style cards show no radio circle: each style radio is visually hidden (rendered no larger than 1 px by 1 px) but stays a native, focusable radio with its style name as accessible name, and the style name starts at the card's left content edge with nothing drawn before it.
 - Why: the thicker border of the checked card (REQ-306-1) already shows the choice, and the circle takes room in the narrow three-column grid (#328).
 
+### REQ-330-1 The wide container is 1900 px and shares its edges with the header
+
+- Status: active
+- Statement: on landing, comic, panel, create and raw, the header bar, loader, error bar and `<main>` are capped at 1900 px (118.75rem), centred, and share the same left and right edges. At 1280 px `<main>` fills the window (no 1120 px cap).
+- Why: wide screens showed wide empty margins beside a 1120 px column (#330).
+- Proven by: tagged tests
+
+### REQ-330-2 The viewer and settings keep their own width caps
+
+- Status: active
+- Statement: at any window width, the viewer (`/comic/[id]/view`) `<main>` and its reader bar stay 70rem wide, and the `/settings` form stays 45rem wide.
+- Why: viewer panels fill the width (REQ-283-4) and would become huge; a settings form is not meant to stretch (#330).
+- Proven by: tagged tests
+
+### REQ-330-3 On wide screens only the main column grows
+
+- Status: active
+- Statement: on the comic page the overview side column stays 22rem wide and the main column takes the rest; on the panel page the panel image column stays 20rem wide.
+- Why: widening the container must not stretch the narrow side and image columns (#330).
+
 ### REQ-316-1 A script makes one swatch image per preset style through the JSON API
 
 - Status: active
