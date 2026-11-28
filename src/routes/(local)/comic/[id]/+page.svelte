@@ -36,8 +36,10 @@
 					class="action"
 					href={resolve(`comic/${data.comic.id}`)}
 					download={exportFileName}
-					onclick={exportComic}>{m.exportComicData()}</a
+					onclick={exportComic}
 				>
+					{m.exportComicData()}
+				</a>
 			</div>
 		</div>
 		<Comic comic={data.comic} />

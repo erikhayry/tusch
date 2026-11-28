@@ -71,13 +71,17 @@
 						<a
 							class="action"
 							href={resolve(`comic/${comic.id}/view`)}
-							aria-label={m.readComic({ title: comic.title })}>{m.read()}</a
+							aria-label={m.readComic({ title: comic.title })}
 						>
+							{m.read()}
+						</a>
 						<a
 							class="action"
 							href={resolve(`comic/${comic.id}`)}
-							aria-label={m.editComic({ title: comic.title })}>{m.edit()}</a
+							aria-label={m.editComic({ title: comic.title })}
 						>
+							{m.edit()}
+						</a>
 						<DeleteItemForm
 							values={{
 								comicId: comic.id,
