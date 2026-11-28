@@ -1181,6 +1181,7 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: an image whose file is no longer stored (REQ-036) is left out of the exported comic: that variant, or the whole image if no variant is left. A character image with a missing head or full crop is dropped; a missing `previous` drops only `previous`. The file still passes `ComicSchema` and the export succeeds.
 - Why: a cleared OPFS must not block exporting the rest of the comic (#90).
+- Proven by: tagged tests
 
 ### REQ-201-1 An invalid field is marked and explained next to it
 
