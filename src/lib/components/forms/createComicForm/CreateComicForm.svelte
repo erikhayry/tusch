@@ -199,6 +199,7 @@
 				{#each ComicStyleEnum.options as id (id)}
 					<label class="style-card">
 						<input
+							class="visually-hidden"
 							type="radio"
 							name="style"
 							value={id}
@@ -358,8 +359,9 @@
 	}
 
 	/* A card is a label, so the whole card selects the style; the radio keeps native keys and semantics. */
-	/* Three cards share a narrow row, so the radio sits above the text to give the names room. */
+	/* The radio is visually hidden (the thicker border shows the choice), so the text starts at the card's edge. */
 	.style-card {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
@@ -381,11 +383,6 @@
 	.style-card:has(:focus-visible) {
 		outline: var(--focus-width) solid var(--color-focus);
 		outline-offset: var(--focus-offset);
-	}
-
-	.style-card input {
-		flex-shrink: 0;
-		margin-block: 0;
 	}
 
 	.style-text {
@@ -420,14 +417,8 @@
 			padding: var(--space-4);
 		}
 
-		/* Wide cards have room for the radio beside its text, as in the single-row design. */
 		.style-card {
-			flex-direction: row;
 			padding: var(--space-2) var(--space-3);
-		}
-
-		.style-card input {
-			margin-block: var(--space-1) 0;
 		}
 	}
 </style>
