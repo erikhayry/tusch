@@ -10,6 +10,11 @@ export default defineConfig(({ mode }) => {
 	const { SENTRY_AUTH_TOKEN } = loadEnv(mode, process.cwd(), 'SENTRY_');
 
 	return {
+		// Node's own clients (the style-swatch script, #316) try `localhost` as IPv4 only and
+		// don't fall back to ::1, which is where Vite binds `localhost` on some machines.
+		// 127.0.0.1 is reachable from every client, so both servers listen there.
+		server: { host: '127.0.0.1' },
+		preview: { host: '127.0.0.1' },
 		plugins: [
 			sentrySvelteKit({
 				adapter: 'vercel',

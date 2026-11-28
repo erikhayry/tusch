@@ -1209,4 +1209,24 @@ The ledger of how Tusch must behave. Owned by the tech lead
 - Status: active
 - Statement: on `/comic/create` at every width the style cards show no radio circle: each style radio is visually hidden (rendered no larger than 1 px by 1 px) but stays a native, focusable radio with its style name as accessible name, and the style name starts at the card's left content edge with nothing drawn before it.
 - Why: the thicker border of the checked card (REQ-306-1) already shows the choice, and the circle takes room in the narrow three-column grid (#328).
+
+### REQ-316-1 A script makes one swatch image per preset style through the JSON API
+
+- Status: active
+- Statement: `node scripts/style-swatches.mjs` sends one fixed panel prompt (the same scene for every style: one character, head and shoulders) to `POST /api/generate/panel-image` on `--base-url` (default `http://localhost:5173`) with `style: <id>` and `imageFormat: landscape`, and writes the returned landscape image unchanged to `<out>/<style-id>.webp` (`--out`, default `static/styles`). The key comes from `OPENAI_API_KEY` and is sent as `Authorization: Bearer`; it is never printed.
+- Why: the style cards need swatch art that the pipeline can't make, so the owner makes it locally with their own key (#316).
+- Proven by: tagged tests
+
+### REQ-316-2 The script covers every preset style or only the ones named
+
+- Status: active
+- Statement: with no `--style` the script makes a swatch for every preset style (the ten in REQ-306-1, not Custom); each `--style <id>` (repeatable) limits it to those styles and leaves the other files untouched; an unknown id exits non-zero, names the id and makes no request.
+- Why: updating one style must not change the others' images (#316).
+- Proven by: tagged tests
+
+### REQ-316-3 A failed style is reported and its file kept
+
+- Status: active
+- Statement: a style whose request fails is reported by id with the endpoint's `message`, its existing file is kept, the other styles still run, and the script exits non-zero; without `OPENAI_API_KEY` it exits non-zero with a message and sends no request.
+- Why: one failed request must not lose a good image or hide the failure (#316).
 - Proven by: tagged tests

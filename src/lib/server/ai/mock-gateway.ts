@@ -208,7 +208,8 @@ export function createMockAiGateway({ apiKey }: AiCredentials = {}): AiGateway {
 		},
 		image: async (request) => {
 			failIfRequested(request.messages);
-			const text = request.messages.join('\n');
+			// The key counts for the no-image markers too: a script has no user text to put them in (#316).
+			const text = [apiKey ?? '', ...request.messages].join('\n');
 			const isFirstCall = imageCalls === 0;
 			imageCalls += 1;
 			const withoutVariant = NO_VARIANT_IMAGE.some(
