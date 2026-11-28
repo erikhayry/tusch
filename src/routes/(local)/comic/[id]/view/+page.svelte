@@ -115,11 +115,16 @@
 		border-block-end: var(--border-width) solid var(--color-reader-border);
 	}
 
+	/* Page renders the <main>, so the reader caps it from here (the global main uses --width-content). */
+	.reader :global(main) {
+		max-inline-size: var(--width-reader);
+	}
+
 	.bar {
 		display: flex;
 		align-items: center;
 		gap: var(--space-2);
-		max-inline-size: var(--width-content);
+		max-inline-size: var(--width-reader);
 		margin-inline: auto;
 		padding: var(--space-2) var(--space-3);
 	}
